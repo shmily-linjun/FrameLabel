@@ -716,6 +716,34 @@ class ModelManager(QObject):
 
         return True
 
+    @staticmethod
+    def _downloaded_model_roots() -> list[Path]:
+        """Directories that may contain downloaded models.
+
+        The configured ``model_directory`` is scanned first, followed by the
+        default and legacy locations so models downloaded before the setting
+        existed keep showing up in the UI.
+        """
+        configured_directory = None
+        try:
+            config = get_config()
+        except Exception:  # noqa: BLE001 - config may be unavailable in tests
+            config = None
+        if isinstance(config, dict):
+            configured_directory = config.get("model_directory")
+
+        roots: list[Path] = []
+        if configured_directory:
+            configured_root = Path(
+                os.path.expanduser(str(configured_directory))
+            ).resolve()
+            roots.append(configured_root)
+        for data_dir in ("xanylabeling_data", "anylabeling_data"):
+            root = Path(get_work_directory(), data_dir, "models").resolve()
+            if root not in roots:
+                roots.append(root)
+        return roots
+
     def get_downloaded_model_files(self, model_name):
         model_config = next(
             (
@@ -728,8 +756,7 @@ class ModelManager(QObject):
         if model_config is None or os.path.basename(model_name) != model_name:
             return []
         files = set()
-        for data_dir in ("xanylabeling_data", "anylabeling_data"):
-            root = Path(get_work_directory(), data_dir, "models").resolve()
+        for root in self._downloaded_model_roots():
             directory = root / model_name
             if directory.resolve().parent != root or directory.is_symlink():
                 continue

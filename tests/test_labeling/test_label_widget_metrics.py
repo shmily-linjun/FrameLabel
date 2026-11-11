@@ -72,13 +72,10 @@ class TestLabelWidgetMetrics(unittest.TestCase):
         _set_label_list_item_lock(item, False)
         self.assertFalse(item.is_locked())
 
-    def test_selected_object_keeps_label_background_in_each_mode(self):
+    def test_plain_object_list_keeps_item_background_in_each_mode(self):
         from anylabeling.resources import resources  # noqa: F401
         from anylabeling.views.labeling.utils.style import get_dock_style
-        from anylabeling.views.labeling.utils.theme import (
-            get_theme,
-            init_theme,
-        )
+        from anylabeling.views.labeling.utils.theme import init_theme
         from anylabeling.views.labeling.widgets import (
             LabelListWidget,
             LabelListWidgetItem,
@@ -91,45 +88,18 @@ class TestLabelWidgetMetrics(unittest.TestCase):
             item = LabelListWidgetItem("vase")
             item.setBackground(QtGui.QColor("#FF8A8A"))
             widget.add_iem(item)
-            delegate = widget.itemDelegate()
 
-            def render(check_state):
-                item.setCheckState(check_state)
-                image = QtGui.QImage(
-                    200, 24, QtGui.QImage.Format.Format_ARGB32
+            # The objects tab is a plain QListWidget: no checkbox/lock
+            # decoration, but the item background role is preserved.
+            self.assertEqual(
+                item.background().color(), QtGui.QColor("#FF8A8A")
+            )
+            self.assertFalse(
+                bool(
+                    item.flags()
+                    & QtCore.Qt.ItemFlag.ItemIsUserCheckable
                 )
-                image.fill(QtGui.QColor("#FFFFFF"))
-                painter = QtGui.QPainter(image)
-                option = QtWidgets.QStyleOptionViewItem()
-                option.rect = QtCore.QRect(0, 0, 200, 24)
-                option.state = (
-                    QtWidgets.QStyle.StateFlag.State_Enabled
-                    | QtWidgets.QStyle.StateFlag.State_Active
-                    | QtWidgets.QStyle.StateFlag.State_Selected
-                )
-                option.palette = widget.palette()
-                option.font = widget.font()
-                option.widget = widget
-                delegate.paint(painter, option, item.index())
-                painter.end()
-                return image
-
-            visible = render(QtCore.Qt.CheckState.Checked)
-            hidden = render(QtCore.Qt.CheckState.Unchecked)
-            primary = QtGui.QColor(get_theme()["primary"])
-
-            for image in (visible, hidden):
-                for y in (0, 12, 23):
-                    self.assertEqual(
-                        image.pixelColor(195, y), QtGui.QColor("#FF8A8A")
-                    )
-                self.assertEqual(image.pixelColor(7, 8), primary)
-                if mode == "dark":
-                    self.assertEqual(image.pixelColor(3, 5), primary)
-                else:
-                    self.assertNotEqual(image.pixelColor(3, 5), primary)
-            self.assertNotEqual(visible.pixelColor(10, 12), primary)
-            self.assertEqual(hidden.pixelColor(10, 12), primary)
+            )
             widget.close()
         init_theme("light")
 
@@ -249,7 +219,7 @@ class TestLabelWidgetMetrics(unittest.TestCase):
         self.assertEqual(len(emitted), 1)
         widget.close()
 
-    def test_right_click_requests_lock_for_selected_items(self):
+    def test_plain_object_list_does_not_emit_lock_requests(self):
         from anylabeling.views.labeling.widgets import (
             LabelListWidget,
             LabelListWidgetItem,
@@ -277,8 +247,13 @@ class TestLabelWidgetMetrics(unittest.TestCase):
         )
         self.app.processEvents()
 
-        self.assertEqual(emitted, [[first_item, second_item]])
-        self.assertEqual(widget.selected_items(), [first_item, second_item])
+        # Per-row right-click lock was removed together with the plain-list
+        # refactor; selection is unchanged.
+        self.assertEqual(emitted, [])
+        self.assertEqual(
+            sorted(item.text() for item in widget.selected_items()),
+            ["person", "vehicle"],
+        )
         widget.close()
 
     def test_canvas_lock_action_uses_checkbox_without_icon(self):

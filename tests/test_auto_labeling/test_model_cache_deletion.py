@@ -79,6 +79,36 @@ def test_delete_caches_preserves_local_and_other_files(manager, tmp_path):
     assert manager.model_configs[0]["name"] == "demo"
 
 
+def test_downloaded_model_files_use_configured_directory(
+    tmp_path, monkeypatch
+):
+    custom_directory = tmp_path / "custom-models"
+    monkeypatch.setattr(
+        model_manager, "get_work_directory", lambda: str(tmp_path / "home")
+    )
+    monkeypatch.setattr(
+        model_manager,
+        "get_config",
+        lambda: {"model_directory": str(custom_directory)},
+    )
+    monkeypatch.setattr(
+        model_manager.ModelManager, "load_model_configs", lambda self: None
+    )
+    manager = model_manager.ModelManager()
+    manager.model_configs = [
+        {
+            "name": "demo",
+            "encoder_model_path": "https://example.com/encoder.onnx",
+        }
+    ]
+    downloaded = write_file(custom_directory / "demo" / "encoder.onnx")
+    write_file(tmp_path / "home" / "xanylabeling_data/models/demo/old.onnx")
+
+    self_files = manager.get_downloaded_model_files("demo")
+
+    assert self_files == [str(downloaded.resolve())]
+
+
 @pytest.mark.parametrize("stage", ["download", "inference"])
 def test_busy_model_cannot_be_deleted(manager, tmp_path, stage):
     path = write_file(tmp_path / "xanylabeling_data/models/demo/encoder.onnx")

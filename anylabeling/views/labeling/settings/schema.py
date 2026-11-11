@@ -137,6 +137,12 @@ def _settings_translation_markers() -> None:
     QCoreApplication.translate("SettingsDialog", "Mask Opacity")
     QCoreApplication.translate("SettingsDialog", "Model Hub")
     QCoreApplication.translate("SettingsDialog", "Model download source.")
+    QCoreApplication.translate("SettingsDialog", "Model Directory")
+    QCoreApplication.translate(
+        "SettingsDialog",
+        "Folder used to store downloaded auto-labeling models. "
+        "Leave empty to use the default location.",
+    )
     QCoreApplication.translate("SettingsDialog", "Logger Level")
     QCoreApplication.translate("SettingsDialog", "Qt Image Allocation Limit")
     QCoreApplication.translate(
@@ -361,6 +367,7 @@ SETTINGS_GENERAL_KEYS = (
     "system_clipboard",
     "font_family",
     "model_hub",
+    "model_directory",
     "logger_level",
     "qt_image_allocation_limit",
 )
@@ -1348,6 +1355,22 @@ def _non_shortcut_fields() -> list[SettingField]:
             options=("github", "modelscope"),
             description=QT_TRANSLATE_NOOP(
                 SETTINGS_TRANSLATION_CONTEXT, "Model download source."
+            ),
+        ),
+        SettingField(
+            "model_directory",
+            QT_TRANSLATE_NOOP(
+                SETTINGS_TRANSLATION_CONTEXT, "Model Directory"
+            ),
+            "dir",
+            "General",
+            "Behavior",
+            "Runtime",
+            allow_none=True,
+            description=QT_TRANSLATE_NOOP(
+                SETTINGS_TRANSLATION_CONTEXT,
+                "Folder used to store downloaded auto-labeling models. "
+                "Leave empty to use the default location.",
             ),
         ),
         SettingField(

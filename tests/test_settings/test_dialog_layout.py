@@ -67,6 +67,39 @@ class TestSettingsDialogLayout(unittest.TestCase):
         editor.setCurrentIndex(editor.findData("traditional"))
         self.assertEqual(editor.currentData(), "traditional")
 
+    def test_model_directory_editor_browses_and_clears(self):
+        dialog = self._create_dialog()
+        dialog._render_primary("General")
+        self.app.processEvents()
+
+        row = dialog._field_rows["model_directory"]
+        line_edit = row.findChild(QtWidgets.QLineEdit)
+        browse_button = row.findChild(QtWidgets.QPushButton)
+        self.assertIsNotNone(line_edit)
+        self.assertIsNotNone(browse_button)
+
+        chosen_directory = os.path.join("temporary", "browse-models")
+        with mock.patch.object(
+            QtWidgets.QFileDialog,
+            "getExistingDirectory",
+            return_value=chosen_directory,
+        ) as chooser:
+            browse_button.click()
+        self.app.processEvents()
+
+        chooser.assert_called_once()
+        self.assertEqual(
+            dialog._controller.get_value("model_directory"),
+            chosen_directory,
+        )
+        self.assertEqual(line_edit.text(), chosen_directory)
+
+        line_edit.clear()
+        self.app.processEvents()
+        self.assertIsNone(
+            dialog._controller.get_value("model_directory")
+        )
+
     def test_general_uses_viewport_gap_and_fixed_bottom_height(self):
         dialog = self._create_dialog()
         dialog._render_primary("General")
@@ -197,7 +230,7 @@ class TestSettingsDialogLayout(unittest.TestCase):
         self.assertEqual(dialog._active_primary, "Canvas")
         self.assertEqual(crosshair_width.singleStep(), 0.5)
 
-    def test_general_titles_remain_english_while_descriptions_translate(self):
+    def test_general_titles_and_descriptions_translate(self):
         with mock.patch.object(
             SettingsDialog,
             "tr",
@@ -212,8 +245,10 @@ class TestSettingsDialogLayout(unittest.TestCase):
         first_row_texts = [
             label.text() for label in first_row.findChildren(QtWidgets.QLabel)
         ]
-        self.assertIn("Auto Highlight Shape", first_row_texts)
-        self.assertNotIn("zh:Auto Highlight Shape", first_row_texts)
+        # Field titles are QT_TRANSLATE_NOOP markers, so they are translated
+        # like the descriptions (consistent Chinese settings UI).
+        self.assertIn("zh:Auto Highlight Shape", first_row_texts)
+        self.assertNotIn("Auto Highlight Shape", first_row_texts)
         self.assertIn(
             "zh:In edit mode, automatically highlight vertices of selected objects.",
             first_row_texts,

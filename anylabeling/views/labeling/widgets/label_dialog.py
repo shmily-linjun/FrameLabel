@@ -1367,7 +1367,7 @@ class LabelDialog(QtWidgets.QDialog):
     ):
         if text is None:
             text = QCoreApplication.translate(
-                "LabelDialog", "Enter object label"
+                "LabelDialog", "Enter class"
             )
 
         if fit_to_content is None:
@@ -1517,7 +1517,9 @@ class LabelDialog(QtWidgets.QDialog):
 
         # text edit
         self.edit_description = QtWidgets.QTextEdit()
-        self.edit_description.setPlaceholderText(self.tr("Label description"))
+        self.edit_description.setPlaceholderText(
+            self.tr("Object description")
+        )
         self.edit_description.setFixedHeight(50)
         layout.addWidget(self.edit_description)
 

@@ -15,6 +15,7 @@ from abc import abstractmethod
 
 from PyQt6.QtCore import QCoreApplication, QFile, QObject
 from .types import AutoLabelingResult, DownloadCancelledError
+from .model_storage import default_model_directory, resolve_model_directory
 from anylabeling.config import get_config, get_work_directory
 from anylabeling.views.labeling.logger import logger
 from anylabeling.views.labeling.label_file import LabelFile, LabelFileError
@@ -166,6 +167,24 @@ class Model(QObject):
             logger.error(f"An error occurred during data migration: {str(e)}")
             return False
 
+    def _resolve_download_directory(self) -> str:
+        """Return the directory where downloaded models are stored.
+
+        A user configured ``model_directory`` always wins. Otherwise the
+        default location is used, keeping the legacy ``anylabeling_data``
+        folder when the old data could not be migrated.
+        """
+        work_dir = get_work_directory()
+        if self._config.get("model_directory"):
+            return resolve_model_directory(self._config, work_dir=work_dir)
+        if self.allow_migrate_data():
+            return default_model_directory(work_dir)
+        legacy_directory = os.path.abspath(
+            os.path.join(work_dir, "anylabeling_data", "models")
+        )
+        os.makedirs(legacy_directory, exist_ok=True)
+        return legacy_directory
+
     def _check_cancelled(self):
         if self._cancel_event and self._cancel_event.is_set():
             raise DownloadCancelledError("Download cancelled by user")
@@ -311,14 +330,7 @@ class Model(QObject):
         filename = get_filename_from_url(model_path)
         download_url = model_path
 
-        # Continue with the rest of your function logic
-        migrate_flag = self.allow_migrate_data()
-        work_dir = get_work_directory()
-        data_dir = "xanylabeling_data" if migrate_flag else "anylabeling_data"
-
-        # Create model folder
-        model_path = os.path.abspath(os.path.join(work_dir, data_dir))
-        model_directory = os.path.join(model_path, "models")
+        model_directory = self._resolve_download_directory()
         model_abs_path = self._ensure_path_within_directory(
             os.path.join(
                 model_directory,

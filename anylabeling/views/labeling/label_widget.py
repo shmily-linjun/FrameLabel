@@ -69,9 +69,9 @@ from .settings.schema import (
 )
 from .shape import Shape
 from .utils.file_search import (
-    parse_search_pattern,
-    matches_filename,
-    matches_label_attribute,
+    escape_query_value,
+    filter_image_files,
+    parse_search_query,
 )
 from .utils.qt import new_icon_path
 from .utils.theme import get_theme
@@ -93,12 +93,8 @@ from .utils.file_meta import (
     write_split,
 )
 from .utils.thumbnail import THUMBNAIL_SIZE, ThumbnailLoader
-from .widgets.panel import (
-    HoverControl,
-    HoverScrollBars,
-    PanelHeader,
-    RoundedPanel,
-)
+from .widgets.panel import HoverScrollBars, RoundedPanel
+from .widgets.statistics_table import StatisticsTable
 from .widgets import (
     AboutDialog,
     AutoLabelingWidget,
@@ -469,23 +465,10 @@ class LabelingWidget(LabelDialog):
             self.label_selection_changed
         )
         self.label_list.item_double_clicked.connect(self.edit_label)
-        self.label_list.items_lock_requested.connect(
-            self.toggle_label_items_lock
-        )
         self.label_list.item_changed.connect(self.label_item_changed)
-        self.label_list.item_dropped.connect(self.label_order_changed)
 
         self.unique_label_list = UniqueLabelQListWidget()
-        self.unique_label_list.items_lock_requested.connect(
-            self.toggle_unique_label_items_lock
-        )
-        self.unique_label_list.label_visibility_changed.connect(
-            self.set_label_visibility
-        )
         self.load_labels(self._config["labels"])
-        self.unique_label_list.setStyleSheet(
-            "QListWidget::item { padding: 0; }"
-        )
 
         self.shape_text_label = QLabel("Object Text")
         self.shape_text_edit = DescriptionEditor()
@@ -494,17 +477,19 @@ class LabelingWidget(LabelDialog):
         self.file_search.setPlaceholderText(self.tr("Search files..."))
         self.file_search.setToolTip(
             self.tr(
-                "Supported search modes:\n"
-                "- Text: plain text search\n"
+                "Supported search syntax:\n"
+                "- Text: plain text matches the file name\n"
                 "- Index: #N (e.g., #1, #10)\n"
                 "- Regex: <pattern> (e.g., <\\.png$>)\n"
-                "- Attributes: difficult::1, gid::0, shape::1, label::xxx, type::xxx\n"
-                "- Score range: score::[0,0.5], score::(0,0.6], score::[0,0.6), score::(0,0.6)\n"
-                "- Description: description::1, description::true, description::yes\n"
-                "- Check result: checked::passed, checked::failed, checked::unchecked\n"
-                "- Reviewed (passed or failed): checked::1; unchecked: checked::0\n"
-                "- Object review: review::pending, review::missed, review::false_positive\n"
-                "Press Enter to search."
+                "- Attributes: label::xxx, split::train, shape::1, type::xxx,\n"
+                "  gid::0, difficult::1, score::[0,0.5], description::1,\n"
+                "  checked::passed, review::pending\n"
+                "- split values: none/train/val/test (also 未划分/训练/验证/测试)\n"
+                "- Several values: label::cat|dog (or), label::cat,dog (and)\n"
+                "- Combine conditions: label::cat,split::train\n"
+                "- Negate: !label::cat\n"
+                "- Group with parentheses: (label::cat|dog),split::train\n"
+                "- ',' binds tighter than '|'; press Enter to search."
             )
         )
         self.file_search.returnPressed.connect(self.file_search_changed)
@@ -2895,73 +2880,17 @@ class LabelingWidget(LabelDialog):
         self.shape_attributes.hide()
         self.scroll_area.hide()
 
-        # ---- Right side: one tab panel with objects/labels/flags/description
-        self.labels_visibility_button = QtWidgets.QToolButton()
-        self.labels_visibility_button.setIcon(
-            get_icon("eye", theme["text"], theme["primary"])
-        )
-        self.labels_visibility_button.setAutoRaise(True)
-        self.labels_visibility_button.setToolTip(
-            self.tr("Show/hide all labels")
-        )
-        self.labels_visibility_button.clicked.connect(
-            self.toggle_all_labels_visibility
-        )
-        self.labels_lock_button = QtWidgets.QToolButton()
-        self.labels_lock_button.setIcon(
-            get_icon("unlock", theme["text"], theme["primary"])
-        )
-        self.labels_lock_button.setAutoRaise(True)
-        self.labels_lock_button.setCheckable(True)
-        self.labels_lock_button.setToolTip(self.tr("Lock/unlock all labels"))
-        self.labels_lock_button.clicked.connect(self.toggle_all_labels_lock)
-        labels_header_widget = PanelHeader(
-            None,
-            [
-                self.labels_visibility_button,
-                self.labels_lock_button,
-            ],
-        )
-
+        # ---- Right side: one tab panel with objects/classes/flags/description
         labels_panel = RoundedPanel()
         labels_panel_layout = QVBoxLayout(labels_panel)
         labels_panel_layout.setContentsMargins(0, 0, 0, 0)
         labels_panel_layout.setSpacing(0)
-        labels_panel_layout.addWidget(labels_header_widget)
         labels_panel_layout.addWidget(self.unique_label_list, 1)
-
-        self.shapes_visibility_button = QtWidgets.QToolButton()
-        self.shapes_visibility_button.setIcon(
-            get_icon("eye", theme["text"], theme["primary"])
-        )
-        self.shapes_visibility_button.setAutoRaise(True)
-        self.shapes_visibility_button.setToolTip(
-            self.tr("Show/hide all shapes")
-        )
-        self.shapes_visibility_button.clicked.connect(
-            self.toggle_all_shapes_visibility
-        )
-        self.shapes_lock_button = QtWidgets.QToolButton()
-        self.shapes_lock_button.setIcon(
-            get_icon("unlock", theme["text"], theme["primary"])
-        )
-        self.shapes_lock_button.setAutoRaise(True)
-        self.shapes_lock_button.setCheckable(True)
-        self.shapes_lock_button.setToolTip(self.tr("Lock/unlock all shapes"))
-        self.shapes_lock_button.clicked.connect(self.toggle_all_shapes_lock)
-        objects_header_widget = PanelHeader(
-            None,
-            [
-                self.shapes_visibility_button,
-                self.shapes_lock_button,
-            ],
-        )
 
         objects_panel = RoundedPanel()
         objects_panel_layout = QVBoxLayout(objects_panel)
         objects_panel_layout.setContentsMargins(0, 0, 0, 0)
         objects_panel_layout.setSpacing(0)
-        objects_panel_layout.addWidget(objects_header_widget)
         objects_panel_layout.addWidget(self.label_list, 1)
 
         flags_panel = RoundedPanel()
@@ -2976,6 +2905,11 @@ class LabelingWidget(LabelDialog):
         description_panel_layout.setSpacing(0)
         description_panel_layout.addWidget(self.shape_text_edit, 1)
 
+        self.statistics_table = StatisticsTable()
+        self.statistics_table.filter_requested.connect(
+            self._on_statistics_filter_requested
+        )
+
         self.right_tabs = QTabWidget()
         self.right_tabs.setObjectName("RightTabs")
         self.right_tabs.setDocumentMode(True)
@@ -2986,19 +2920,13 @@ class LabelingWidget(LabelDialog):
         tab_bar.customContextMenuRequested.connect(self.pop_right_tabs_menu)
         self._tab_pages = (
             ("objects", self.tr("Objects"), objects_panel),
-            ("labels", self.tr("Labels"), labels_panel),
+            ("labels", self.tr("Classes"), labels_panel),
             ("flags", self.tr("Flags"), flags_panel),
             ("description", self.tr("Description"), description_panel),
+            ("statistics", self.tr("Statistics"), self.statistics_table),
         )
         self._rebuild_right_tabs()
-
-        for panel, control in (
-            (labels_panel, self.labels_visibility_button),
-            (labels_panel, self.labels_lock_button),
-            (objects_panel, self.shapes_visibility_button),
-            (objects_panel, self.shapes_lock_button),
-        ):
-            HoverControl(panel, control)
+        self.right_tabs.currentChanged.connect(self._on_right_tab_changed)
 
         # ---- File table panel (search bar + image table, no dock wrapper)
         files_panel = RoundedPanel()
@@ -5175,6 +5103,7 @@ class LabelingWidget(LabelDialog):
             self.status(self.tr("Failed to update split for %s") % file_path)
             return
         self._refresh_file_row(row)
+        self._refresh_statistics_if_visible()
         self.status(
             self.tr("Split of %s set to %s")
             % (osp.basename(file_path), self._split_text(split))
@@ -5218,6 +5147,7 @@ class LabelingWidget(LabelDialog):
         elif str(self.filename) in self.fn_to_index:
             self._sync_file_selection()
         self.update_browse_actions()
+        self._refresh_statistics_if_visible()
 
     # ------------------------------------------------------------------
     # Right side tab helpers
@@ -5313,6 +5243,42 @@ class LabelingWidget(LabelDialog):
 
     def show_flags_page(self):
         self.show_right_tab("flags")
+
+    def _on_right_tab_changed(self, _index):
+        page = self.right_tabs.currentWidget()
+        if page is getattr(self, "statistics_table", None):
+            self._refresh_statistics()
+
+    def _refresh_statistics(self):
+        table = getattr(self, "statistics_table", None)
+        if table is None:
+            return
+        try:
+            table.refresh(self.image_list, self.output_dir)
+        except Exception:  # noqa: BLE001
+            logger.warning("Failed to refresh statistics table", exc_info=True)
+
+    def _refresh_statistics_if_visible(self):
+        table = getattr(self, "statistics_table", None)
+        if table is None or self.right_tabs.currentWidget() is not table:
+            return
+        self._refresh_statistics()
+
+    def _on_statistics_filter_requested(self, statistics_filter):
+        """Turn a statistics-table click into a search query."""
+        parts = []
+        if statistics_filter.objectless:
+            parts.append("shape::0")
+        elif statistics_filter.label:
+            parts.append(
+                "label::" + escape_query_value(statistics_filter.label)
+            )
+        if statistics_filter.split:
+            parts.append("split::" + statistics_filter.split)
+        if not parts:
+            return
+        self.file_search.setText(",".join(parts))
+        self.file_search_changed()
 
     def copy_file_path(self, file_path):
         popup = Popup(
@@ -6847,10 +6813,6 @@ class LabelingWidget(LabelDialog):
             and self.navigator_dialog.isVisible()
         ):
             self.update_navigator_shapes()
-
-    def label_order_changed(self):
-        self.set_dirty()
-        self.canvas.load_shapes([item.shape() for item in self.label_list])
 
     # Callback functions:
     def new_shape(self):
@@ -8493,35 +8455,15 @@ class LabelingWidget(LabelDialog):
         self.filename = None
         self.update_browse_actions()
         self._clear_file_list()
-        image_files = []
 
-        search_pattern = parse_search_pattern(pattern) if pattern else None
-
-        for file_index, filename in enumerate(
-            utils.scan_all_images(dirpath), start=1
-        ):
-            if search_pattern:
-                if search_pattern.mode == "index":
-                    if search_pattern.index != file_index:
-                        continue
-                else:
-                    if not matches_filename(filename, search_pattern):
-                        continue
-
-                    if search_pattern.mode == "attribute":
-                        label_file = osp.splitext(filename)[0] + ".json"
-                        if self.output_dir:
-                            label_file_without_path = osp.basename(label_file)
-                            label_file = (
-                                self.output_dir + "/" + label_file_without_path
-                            )
-
-                        if not matches_label_attribute(
-                            filename, label_file, search_pattern
-                        ):
-                            continue
-
-            image_files.append(filename)
+        files_on_disk = list(utils.scan_all_images(dirpath))
+        if pattern:
+            query = parse_search_query(pattern)
+            image_files = filter_image_files(
+                files_on_disk, query, self.output_dir
+            )
+        else:
+            image_files = files_on_disk
 
         self._import_times.update(ensure_import_times(image_files))
         for filename in image_files:
@@ -8541,6 +8483,7 @@ class LabelingWidget(LabelDialog):
 
         if image_files and self._config.get("exif_scan_enabled", True):
             self.async_exif_scanner.start_scan(image_files)
+        self._refresh_statistics_if_visible()
 
     def toggle_auto_labeling_widget(self):
         """Toggle auto labeling widget visibility."""

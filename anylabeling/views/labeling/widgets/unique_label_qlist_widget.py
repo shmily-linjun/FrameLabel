@@ -1,69 +1,49 @@
-# -*- encoding: utf-8 -*-
+"""Plain list of image classes (the "Classes" tab).
 
-import html
+Formerly this widget painted a checkbox per class (class visibility) and a
+lock icon, with a panel header holding show/hide and lock-all buttons. The
+tab is now a plain ``QListWidget``: the list only shows class names and
+supports selection. The ``lock_states`` dictionary is kept because the label
+manager dialog still sets a per-class lock policy; it is no longer rendered
+in the list.
+"""
 
-from PyQt6 import QtCore, QtWidgets, QtGui
-from PyQt6.QtCore import Qt
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 from .escapable_qlist_widget import EscapableQListWidget
-from .label_list_widget import HTMLDelegate, LOCKED_ROLE
+from .label_list_widget import LOCKED_ROLE
 
 
 class UniqueLabelQListWidget(EscapableQListWidget):
+    # Retained for API compatibility; the plain list no longer emits them.
     items_lock_requested = QtCore.pyqtSignal(list)
     label_visibility_changed = QtCore.pyqtSignal(str, bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.lock_states = {}
-        self.setItemDelegate(
-            HTMLDelegate(self, highlight_selected_check=False)
+        self.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection
         )
-        self.setMouseTracking(True)
-        self.model().dataChanged.connect(self._on_data_changed)
-
-    def _on_data_changed(self, top_left, bottom_right, roles):
-        if Qt.ItemDataRole.CheckStateRole not in roles:
-            return
-        for row in range(top_left.row(), bottom_right.row() + 1):
-            item = self.item(row)
-            self.label_visibility_changed.emit(
-                item.data(Qt.ItemDataRole.UserRole),
-                item.checkState() == Qt.CheckState.Checked,
-            )
-
-    # QT Overload
-    def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.RightButton:
-            item = self.itemAt(event.position().toPoint())
-            if item is not None:
-                if not item.isSelected():
-                    self.clearSelection()
-                    item.setSelected(True)
-                self.items_lock_requested.emit(self.selectedItems())
-            event.accept()
-            return
-        super().mousePressEvent(event)
-        if not self.indexAt(event.position().toPoint()).isValid():
-            self.clearSelection()
 
     def find_items_by_label(self, label):
         items = []
         for row in range(self.count()):
             item = self.item(row)
-            if item.data(Qt.ItemDataRole.UserRole) == label:
+            if item.data(QtCore.Qt.ItemDataRole.UserRole) == label:
                 items.append(item)
         return items
 
     def create_item_from_label(self, label):
         item = QtWidgets.QListWidgetItem()
-        item.setData(Qt.ItemDataRole.UserRole, label)
-        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-        item.setCheckState(Qt.CheckState.Checked)
+        item.setData(QtCore.Qt.ItemDataRole.UserRole, label)
+        item.setFlags(
+            item.flags() & ~QtCore.Qt.ItemFlag.ItemIsUserCheckable
+        )
         return item
 
     def set_item_label(self, item, label, color=None, opacity=255):
-        item.setText(html.escape(label))
+        item.setText(str(label))
         if color is not None:
             item.setBackground(QtGui.QColor(*color, opacity))
         self.set_item_locked(item, self.lock_states.get(label, False))
@@ -76,7 +56,5 @@ class UniqueLabelQListWidget(EscapableQListWidget):
             item.setBackground(QtGui.QColor(*color, opacity))
 
     def remove_items_by_label(self, label):
-        items = self.find_items_by_label(label)
-        for item in items:
-            row = self.row(item)
-            self.takeItem(row)
+        for item in reversed(self.find_items_by_label(label)):
+            self.takeItem(self.row(item))

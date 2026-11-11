@@ -1233,6 +1233,92 @@ class SettingsDialog(QtWidgets.QDialog):
             ),
         )
 
+    def _build_dir_editor(
+        self, field: SettingField
+    ) -> tuple[
+        QtWidgets.QWidget, Callable[[Any], None], Callable[[bool], None]
+    ]:
+        container = QtWidgets.QWidget(self.content_body)
+        layout = QtWidgets.QHBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(6)
+
+        editor = QtWidgets.QLineEdit(container)
+        editor.setFixedWidth(244)
+        editor.setFixedHeight(self._editor_height)
+        editor.setStyleSheet(self._line_edit_style())
+        editor.setClearButtonEnabled(True)
+        editor.setPlaceholderText(self.tr("Default location"))
+        editor.textChanged.connect(
+            lambda text, f=field: self._on_dir_text_changed(f, text)
+        )
+        editor.editingFinished.connect(
+            lambda f=field, w=editor: self._on_editor_value_changed(
+                f,
+                self._line_edit_payload(f, w.text()),
+            )
+        )
+
+        browse_button = QtWidgets.QPushButton(self.tr("Browse"), container)
+        browse_button.setFixedHeight(self._editor_height)
+        browse_button.setCursor(QtCore.Qt.CursorShape.PointingHandCursor)
+        browse_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        browse_button.setStyleSheet(f"""
+            QPushButton {{
+                min-width: 64px;
+                padding: 0 10px;
+                border: 1px solid {self._rgb('line')};
+                border-radius: 6px;
+                color: {self._rgb('title_text')};
+                background: {self._rgb('right_bg')};
+            }}
+            QPushButton:hover {{
+                background: {self._rgb('card_bg')};
+            }}
+            """)
+        browse_button.clicked.connect(
+            lambda _checked=False, f=field, w=editor: self._browse_directory(
+                f, w
+            )
+        )
+
+        layout.addWidget(editor)
+        layout.addWidget(browse_button)
+
+        return (
+            container,
+            lambda value, w=editor: self._set_line_edit_value(w, value),
+            lambda enabled, w=editor: self._set_error_style(
+                w, enabled, self._line_edit_style()
+            ),
+        )
+
+    def _on_dir_text_changed(self, field: SettingField, text: str) -> None:
+        # Clearing the field means "use the default location".
+        if text.strip():
+            return
+        self._on_editor_value_changed(field, None)
+
+    def _browse_directory(
+        self, field: SettingField, editor: QtWidgets.QLineEdit
+    ) -> None:
+        start_directory = editor.text().strip()
+        if not start_directory:
+            start_directory = QtCore.QStandardPaths.writableLocation(
+                QtCore.QStandardPaths.StandardLocation.HomeLocation
+            )
+        directory = QtWidgets.QFileDialog.getExistingDirectory(
+            self,
+            self.tr("Select Model Directory"),
+            start_directory,
+        )
+        if not directory:
+            return
+        editor.setText(directory)
+        self._on_editor_value_changed(
+            field, self._line_edit_payload(field, directory)
+        )
+
     def _build_color_editor(
         self, field: SettingField
     ) -> tuple[
@@ -1346,6 +1432,8 @@ class SettingsDialog(QtWidgets.QDialog):
             return self._build_float_editor(field)
         if field.control == "str":
             return self._build_str_editor(field)
+        if field.control == "dir":
+            return self._build_dir_editor(field)
         if field.control == "color":
             return self._build_color_editor(field)
         if field.control == "vector2":
@@ -1355,7 +1443,9 @@ class SettingsDialog(QtWidgets.QDialog):
     def _display_field_title(
         self, field: SettingField, strip_prefix: str | None
     ) -> str:
-        return field.label
+        # Field labels are QT_TRANSLATE_NOOP markers using the SettingsDialog
+        # context, so they must go through tr() to show translated titles.
+        return self.tr(field.label)
 
     def _shortcut_usage_hint(self, key: str) -> str | None:
         # Concise usage hints for AI shortcut bindings.

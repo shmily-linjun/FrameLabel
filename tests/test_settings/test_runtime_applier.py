@@ -1,7 +1,9 @@
 import os
+import pathlib
+import tempfile
 import unittest
 from types import SimpleNamespace
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -9,6 +11,9 @@ try:
     from PyQt6 import QtGui, QtWidgets
 
     from anylabeling.views.labeling.shape import Shape
+    from anylabeling.views.labeling.settings import (
+        runtime_applier as runtime_applier_module,
+    )
     from anylabeling.views.labeling.settings.runtime_applier import (
         SettingsRuntimeApplier,
     )
@@ -225,6 +230,94 @@ class TestMagicWandSettingsRuntimeApplier(unittest.TestCase):
         self.assertEqual(canvas._magic_wand_threshold, 22)
         canvas._update_magic_wand_preview.assert_not_called()
         canvas.update.assert_called_once_with()
+
+
+@unittest.skipUnless(PYQT_AVAILABLE, "PyQt6 is required for runtime tests")
+class TestModelDirectoryRuntimeApplier(unittest.TestCase):
+
+    def test_model_directory_change_moves_existing_models(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base = pathlib.Path(temp_dir)
+            old_directory = base / "old"
+            new_directory = base / "new"
+            (old_directory / "demo").mkdir(parents=True)
+            (old_directory / "demo" / "encoder.onnx").write_bytes(b"model")
+            widget = SimpleNamespace(
+                _config={"model_directory": str(new_directory)},
+                tr=lambda text: text,
+            )
+            applier = SettingsRuntimeApplier(widget)
+            applier._model_directory = str(old_directory)
+
+            applier.apply_change("model_directory", str(new_directory))
+
+            self.assertTrue(
+                (new_directory / "demo" / "encoder.onnx").is_file()
+            )
+            self.assertEqual(applier._model_directory, str(new_directory))
+
+    def test_model_directory_change_migrates_from_default_directory(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base = pathlib.Path(temp_dir)
+            default_models = base / "xanylabeling_data" / "models"
+            (default_models / "demo").mkdir(parents=True)
+            (default_models / "demo" / "encoder.onnx").write_bytes(b"model")
+            new_directory = base / "custom-models"
+            widget = SimpleNamespace(
+                _config={"model_directory": None},
+                tr=lambda text: text,
+            )
+            from anylabeling.services.auto_labeling import (
+                model_storage as model_storage_module,
+            )
+
+            with patch.object(
+                model_storage_module,
+                "get_work_directory",
+                lambda: str(base),
+            ):
+                applier = SettingsRuntimeApplier(widget)
+                self.assertEqual(
+                    applier._model_directory, str(default_models)
+                )
+
+                widget._config["model_directory"] = str(new_directory)
+                applier.apply_change(
+                    "model_directory", str(new_directory)
+                )
+
+            self.assertTrue(
+                (new_directory / "demo" / "encoder.onnx").is_file()
+            )
+            self.assertEqual(applier._model_directory, str(new_directory))
+
+    def test_model_directory_failure_warns_and_keeps_old_files(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base = pathlib.Path(temp_dir)
+            old_directory = base / "old"
+            new_directory = base / "new"
+            (old_directory / "demo").mkdir(parents=True)
+            model_file = old_directory / "demo" / "encoder.onnx"
+            model_file.write_bytes(b"model")
+            widget = SimpleNamespace(
+                _config={"model_directory": str(new_directory)},
+                tr=lambda text: text,
+            )
+            applier = SettingsRuntimeApplier(widget)
+            applier._model_directory = str(old_directory)
+
+            with (
+                patch.object(
+                    runtime_applier_module,
+                    "migrate_model_directory",
+                    return_value=["demo: access denied"],
+                ),
+                patch.object(QtWidgets.QMessageBox, "warning") as warning,
+            ):
+                applier.apply_change("model_directory", str(new_directory))
+
+            warning.assert_called_once()
+            self.assertTrue(model_file.is_file())
 
 
 if __name__ == "__main__":

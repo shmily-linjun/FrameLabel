@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import os
 from typing import Any, Callable
 
 from PyQt6 import QtCore, QtGui
@@ -285,6 +286,18 @@ class SettingsController(QtCore.QObject):
                     f"{field.label} must be <= {field.maximum}"
                 )
             return numeric
+
+        if control == "dir":
+            if value in (None, ""):
+                return None
+            if isinstance(value, os.PathLike):
+                value = os.fspath(value)
+            if not isinstance(value, str):
+                raise SettingsValidationError(
+                    f"{field.label} requires a directory path"
+                )
+            normalized = os.path.expanduser(value.strip())
+            return normalized or None
 
         if control == "str":
             if value in (None, "") and field.allow_none:

@@ -12,7 +12,7 @@ This guide provides comprehensive instructions for using X-AnyLabeling, covering
    * [2. Editing](#2-editing)
       * [2.1 Creating Shapes](#21-creating-shapes)
       * [2.2 Editing Shapes](#22-editing-shapes)
-      * [2.3 Editing Labels](#23-editing-labels)
+      * [2.3 Editing Classes](#23-editing-classes)
       * [2.4 Adding Image Captions](#24-adding-image-captions)
       * [2.5 Searching Images](#25-searching-images)
       * [2.6 Editing Text Descriptions](#26-editing-text-descriptions)
@@ -56,8 +56,9 @@ This guide provides comprehensive instructions for using X-AnyLabeling, covering
       * [7.5 Hover Auto-Highlight](#75-hover-auto-highlight)
       * [7.6 Shape Appearance](#76-shape-appearance)
       * [7.7 Model Download Source](#77-model-download-source)
-      * [7.8 Theme Settings](#78-theme-settings)
-      * [7.9 Font Settings](#79-font-settings)
+      * [7.8 Model Storage Directory](#78-model-storage-directory)
+      * [7.9 Theme Settings](#79-theme-settings)
+      * [7.10 Font Settings](#710-font-settings)
    * [8. Supported Tasks](#8-supported-tasks)
       * [8.1 Image Classification](#81-image-classification)
       * [8.2 Object Detection](#82-object-detection)
@@ -250,7 +251,7 @@ X-AnyLabeling provides two shape interaction modes:
 
 Press `Ctrl+J` to quickly switch between Drawing and Editing modes.
 
-In Editing Mode, click a shape on the canvas to select it. Its outline and control points are highlighted, and the corresponding entry is selected in the **Shapes** panel, making it easier to identify the active object in crowded scenes.
+In Editing Mode, click a shape on the canvas to select it. Its outline and control points are highlighted, and the corresponding entry is selected in the **Objects** tab, making it easier to identify the active object in crowded scenes.
 
 <p align="center">
   <img src="../../assets/resources/canvas_shape_selection.gif" alt="Selecting different annotation shapes directly on a crowded canvas">
@@ -258,11 +259,9 @@ In Editing Mode, click a shape on the canvas to select it. Its outline and contr
 
 Additional object-specific operations:
 
-To protect completed annotations, select one or more shapes and check **Lock Shape** in the canvas right-click menu. You can also right-click selected items in the **Shapes** panel to invert each item's lock state; locked items display a lock icon. Locked shapes remain selectable and allow label and attribute edits, while geometry changes and deletion are disabled.
+To protect completed annotations, select one or more shapes and check **Lock Shape** in the canvas right-click menu. Locked shapes remain selectable and allow class and attribute edits, while geometry changes and deletion are disabled.
 
-Right-click a category in **Labels** to lock or unlock all shapes of that category. Category rules apply across images during the current session, including subsequently loaded and newly created shapes. Hover over **Labels** or **Shapes** to reveal the header lock button: click to lock all when any are unlocked, or to unlock all when all are locked. Bulk operations replace previous states within their scope; clicking again does not restore earlier individual locks.
-
-Locks protect editing only during the current session. They are not written to annotation JSON and do not mark the file as unsaved. Object locks are retained when switching images and reset when the application closes. Legacy `locked` fields in annotation files are ignored and removed on normal save.
+Locks protect editing only during the current session. They are not written to annotation JSON and do not mark the file as unsaved. Object locks are retained when switching images and reset when the application closes. Legacy `locked` fields in annotation files are ignored and removed on normal save. The batch lock helpers of the label manager dialog still apply to the current session.
 
 When **Show Groups** is enabled, each group displays an interactive bounding frame and a compact badge such as `G3 · S5` (group 3 with 5 shapes). Clicking a shape still selects that shape first. Click the badge, frame, or empty area inside the frame to select the whole group, then drag it or use the arrow keys to move all members together (`Shift` accelerates keyboard movement). Copying and pasting a selected group assigns the pasted group the next available group ID and offsets it slightly. Deleting a selected group requires confirmation.
 
@@ -291,23 +290,23 @@ In Editing Mode, drag an empty area with the left mouse button to pan the canvas
   <img src="../../assets/resources/loop_shapes.gif" alt="Loop through shapes by selecting each one in sequence">
 </p>
 
-### 2.3 Editing Labels
+### 2.3 Editing Classes
 
-When you create a shape (with automatic reuse of the last label disabled) or edit a shape's label, the label dialog opens to edit its properties:
+When you create a shape (with automatic reuse of the last class disabled) or edit a shape's class, the class dialog opens to edit its properties:
 
 <p align="center">
-  <img src="../../assets/resources/label_editor.png" alt="Label editor with object review status">
+  <img src="../../assets/resources/label_editor.png" alt="Class editor with object review status">
 </p>
 
 | Field | Description |
 | --- | --- |
-| **Shape Label** | Enter or select the object's category label (supports fuzzy search). |
+| **Class** | Enter or select the object's class (category). Supports fuzzy search. |
 | **Group ID** | Assign a numeric ID to group related shapes (e.g., for poses, tracking). |
 | **Difficult** | Check this box if the object is difficult to recognize. |
 | **Review Status** | Pending (default), Missed, or False Positive. See [2.7 Reviewing Objects](#27-reviewing-objects). |
-| **Label List** | Displays available labels, allowing selection. |
-| **Description** | Add optional text notes specific to this shape instance. |
-| **Label Linking** | Used for linking shapes in tasks like Key Information Extraction (KIE). |
+| **Class List** | Displays available classes, allowing selection. |
+| **Object Description** | Add optional text notes specific to this shape instance. |
+| **Class Linking** | Used for linking shapes in tasks like Key Information Extraction (KIE). |
 | **Attributes** | (If configured) Set custom attributes for the shape. |
 
 ### 2.4 Adding Image Captions
@@ -354,7 +353,9 @@ Filter images by object attributes using the format `attribute::value`:
 - `difficult::1` or `difficult::true`: Find images containing difficult annotations
 - `gid::0`: Find images containing objects with group ID 0 (supports any integer group ID)
 - `shape::1` or `shape::true`: Find annotated images (containing at least one annotation object)
-- `label::person`: Find images containing objects labeled "person"
+- `shape::0` or `shape::false`: Find images without any object (including images without a label file)
+- `label::person`: Find images containing objects of class "person"
+- `split::train`: Find images assigned to a split. Accepted values: `none`, `train`, `val`, `test` (Chinese `未划分`, `训练`, `验证`, `测试` are also accepted)
 - `type::rectangle`: Find images containing rectangle objects. Supported types include: `rectangle`, `polygon`, `rotation`, `quadrilateral`, `point`, `line`, `circle`, `linestrip`
 - `score::[0,0.5]`: Find images containing objects with scores in the range [0, 0.5] (closed interval)
 - `score::(0,0.6]`: Find images containing objects with scores in the range (0, 0.6] (left-open, right-closed)
@@ -371,6 +372,27 @@ Filter images by object attributes using the format `attribute::value`:
 - `review::false_positive`: Find images containing False Positive objects
 
 For object review searches, objects in older annotations without a status are treated as Pending; images without objects do not match.
+
+**Boolean Queries**
+
+Conditions can be combined with logical operators:
+
+- `|` means OR: `label::cat|dog` finds images containing class "cat" or "dog"; `split::train|val` finds images assigned to train or val.
+- `,` means AND and binds tighter than `|`: `label::cat,split::train` finds images containing "cat" in the train split.
+- `!` negates the following condition: `!label::cat` finds images that do not contain class "cat".
+- Parentheses group conditions: `(label::cat|dog),split::train`.
+- Operators apply to the `label`, `split`, and `shape` conditions and can be combined across them.
+- Use `\` to escape a literal `|`, `,`, `!`, or parenthesis inside a value.
+
+Examples:
+
+- `label::cat|dog,split::train` — images whose split is train and that contain "cat" or "dog"
+- `!split::none,shape::1` — annotated images that have a split assigned
+- `(label::cat|bird),label::dog` — images containing "dog" and also containing "cat" or "bird"
+
+**Statistics Tab**
+
+The right panel has a **Statistics** tab showing a class × split grid built from the current file list: rows are the classes present in the dataset, `(No objects)`, and `Total`; columns are `Train`, `Val`, `Test`, `Unassigned`, and `Total`. Click a count cell to filter the file list by that class and split (the query is written into the search box); click a class name to filter by class only, or a split header to filter by split only. The `Total` row/column cells are not clickable. The table is refreshed when you switch to the tab after importing files or changing splits.
 
 ### 2.6 Editing Text Descriptions
 
@@ -464,14 +486,9 @@ When you hover over a shape, its dimensions (width and height) are displayed in 
 > Use **Filter by Label** or **Filter by Group ID** in the canvas right-click menu to filter objects.
 > The global show/hide control for all shapes is available in the left toolbar as an **eye/hidden** toggle button (click once to hide all, click again to show all).
 
-The right panels also provide visibility controls:
+The right panel provides the **Objects**, **Classes**, **Flags**, **Description**, and **Statistics** tabs. The **Objects** and **Classes** tabs are plain lists: click to select an object or class, double-click an object to edit it. The former header show/hide and lock-all buttons and the per-row visibility checkboxes / lock icons were removed.
 
-- **Labels item checkbox**: Show or hide an entire category. The setting is retained across images during the current session.
-- **Shapes item checkbox**: Show or hide an individual shape in the current image.
-- **Header eye button**: Appears on hover and toggles visibility in bulk. Labels controls all categories; Shapes controls all shapes in the current image. Click to hide all when any are visible, or to show all when all are hidden.
-- **Rightmost header checkbox**: Expand or hide the panel contents without changing shape visibility on the canvas.
-
-Visibility and locking are independent. Hiding shapes does not delete annotations.
+Visibility and locking are independent. Hiding shapes does not delete annotations. Use the left toolbar eye toggle, the **View** menu, or the canvas/Filter menus for visibility, and the canvas right-click **Lock Shape** action for per-object editing locks.
 
 The **View** menu also controls relation display: **Show KIE Linking** (`Ctrl+K`) toggles relation arrows and labels; **Show Labels** (`Ctrl+L`) toggles relation labels while keeping arrows visible; **Show Scores** toggles model confidence within the labels. Manual relations have no confidence score to display. Hiding these elements does not delete saved relations.
 
@@ -1151,7 +1168,19 @@ shape:
 
 3. **Language Setting (Lowest Priority)**: This fallback is used only when the environment variable is unset and `model_hub` is missing or empty. A Chinese interface (`language: zh_CN`) then uses ModelScope; other languages use the original model URL.
 
-### 7.8 Theme Settings
+### 7.8 Model Storage Directory
+
+By default, AI model files downloaded by the auto-labeling features are stored in `xanylabeling_data/models` under the X-AnyLabeling working directory (for example `C:\Users\<user>\xanylabeling_data\models`).
+
+You can change the directory in `Settings` (`Ctrl+0`) under `General > Behavior > Model Directory`: click **Browse** to select a folder, or clear the field to use the default location. The setting is stored as `model_directory` in `.xanylabelingrc`:
+
+```yaml
+model_directory: null  # null uses the default directory
+```
+
+When you change the directory and save the settings, models in the previous directory are moved to the new one. If a model cannot be moved (for example because of permission problems), a warning is shown; the old files are kept and the model can be downloaded again into the new directory. Models already present in the default directory are still detected, so existing downloads are not lost.
+
+### 7.9 Theme Settings
 
 X-AnyLabeling supports three theme modes, accessible from the top-level **Theme** menu:
 
@@ -1169,7 +1198,7 @@ You can also set the theme directly in `~/.xanylabelingrc`:
 theme: auto  # Options: auto, light, dark
 ```
 
-### 7.9 Font Settings
+### 7.10 Font Settings
 
 Open `Settings > General > Application Font` to choose the application font from a drop-down list. Qt automatically scans the fonts available on the current system, with support for Windows, macOS, and Linux. Select a font and click **Save** to apply it globally without restarting. Choose **System Default** to restore the operating system's default font and size.
 

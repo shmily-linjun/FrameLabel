@@ -189,10 +189,24 @@ def test_right_side_has_tabs_and_no_dock_widgets(window):
     assert not hasattr(widget, "shape_dock")
     assert not hasattr(widget, "description_dock")
     assert not hasattr(widget, "files_checkbox")
-    assert widget.right_tabs.count() == 4
+    assert widget.right_tabs.count() == 5
     assert isinstance(widget.right_splitter, QtWidgets.QSplitter)
     assert widget.right_splitter.orientation() == QtCore.Qt.Orientation.Vertical
     assert widget.right_splitter.count() == 2
+
+
+def test_objects_and_classes_tabs_are_plain_lists(window):
+    widget = window.labeling_widget.view
+    # The old per-tab header (show/hide + lock-all buttons) is gone.
+    for name in (
+        "labels_visibility_button",
+        "labels_lock_button",
+        "shapes_visibility_button",
+        "shapes_lock_button",
+    ):
+        assert not hasattr(widget, name)
+    assert isinstance(widget.label_list, QtWidgets.QListWidget)
+    assert isinstance(widget.unique_label_list, QtWidgets.QListWidget)
 
 
 def test_sorting_keeps_row_mapping_and_navigation_consistent(window, tmp_path):
@@ -294,20 +308,88 @@ def test_thumbnail_toggle_updates_row_height(window, tmp_path):
 def test_right_tabs_visibility_and_guard(window):
     widget = window.labeling_widget.view
     tabs = widget.right_tabs
-    assert tabs.count() == 4
+    assert tabs.count() == 5
+    assert [
+        tabs.tabText(i) for i in range(tabs.count())
+    ] == ["Objects", "Classes", "Flags", "Description", "Statistics"]
 
     widget.set_right_tab_visible("labels", False)
-    assert tabs.count() == 3
+    assert tabs.count() == 4
     assert "labels" in widget._config["right_tabs"]["hidden"]
     widget.set_right_tab_visible("labels", True)
-    assert tabs.count() == 4
+    assert tabs.count() == 5
 
     widget.set_right_tab_visible("objects", False)
     widget.set_right_tab_visible("description", False)
     widget.set_right_tab_visible("flags", False)
+    widget.set_right_tab_visible("statistics", False)
     assert tabs.count() == 1
     widget.set_right_tab_visible("labels", False)
     assert tabs.count() == 1
+
+
+def test_statistics_tab_click_filters_search(window, tmp_path):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, first, _second, _third = _make_dataset(tmp_path)
+    widget.dirty = False
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+
+    table = widget.statistics_table
+    widget.right_tabs.setCurrentWidget(table)
+    app.processEvents()
+    assert table.rowCount() == 5
+    assert table.columnCount() == 6
+    headers = [table.item(row, 0).text() for row in range(table.rowCount())]
+    assert headers == [
+        "object_0",
+        "object_1",
+        "object_2",
+        "(No objects)",
+        "Total",
+    ]
+    # The "Total" row counts files per split (3 files, 1 in train, 1 in val).
+    assert table.item(headers.index("Total"), 1).text() == "1"
+    assert table.item(headers.index("Total"), 6 - 1).text() == "3"
+
+    table.cellClicked.emit(headers.index("object_0"), 1)
+    app.processEvents()
+    assert widget.file_search.text() == "label::object_0,split::train"
+    assert widget.file_list_widget.rowCount() == 1
+    assert widget._file_path_at(0) == str(first)
+
+    table.cellClicked.emit(headers.index("(No objects)"), 4)
+    app.processEvents()
+    assert widget.file_search.text() == "shape::0,split::none"
+    assert widget.file_list_widget.rowCount() == 1
+
+
+def test_file_search_supports_split_and_boolean_queries(window, tmp_path):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, _first, second, _third = _make_dataset(tmp_path)
+    widget.dirty = False
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+
+    def search(text):
+        widget.dirty = False
+        widget.file_search.setText(text)
+        widget.file_search_changed()
+        widget.dirty = False
+        app.processEvents()
+        return widget.file_list_widget.rowCount()
+
+    assert search("split::train") == 1
+    assert search("split::训练") == 1
+    assert search("split::val") == 1
+    assert search("label::object_0") == 2
+    assert search("label::object_0,split::train") == 1
+    assert search("label::object_0|object_1") == 2
+    assert search("!label::object_0") == 1
+    assert search("shape::0") == 1  # second.png has no label file
+    assert search("") == 3
 
 
 def test_toolbar_can_be_docked_left_and_hidden(window):

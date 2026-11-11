@@ -8,6 +8,137 @@
 
 ---
 
+## 4.3.2+fork.2 — 2026-11-11
+
+### 1. 背景与原因
+
+本版本处理 6 项现场反馈：file_list 已有 `split`（划分）信息，但搜索栏不支持按划分筛选；
+原搜索只支持单条件，无法表达“类别与划分组合”的查询；自动标注模型固定下载到
+`C:\Users\<user>\xanylabeling_data\models`，现场希望可切换目录；界面把 object 的 class
+中译成“标签”，与底部图片 tag 混淆；对象/类别两个 tab 仍残留旧的标题栏、显隐/锁定按钮与
+逐行复选框/锁图标；同时需要一个按“类别 × 划分”汇总并可直接点击联动筛选的统计表。
+
+### 2. 主要实现与关键细节
+
+#### 2.1 搜索语法：split 关键字与布尔组合（`utils/file_search.py` 重写）
+
+- 新增 `split::` 条件，值接受 `none/train/val/test` 及中文 `未划分/训练/验证/测试`；
+  `shape::` 同时支持 `1/0`（有/无对象）。
+- 新增布尔语法：`|` = OR、`,` = AND（优先级高于 `|`）、`!` = 前缀取反、`()` 分组，
+  可跨 `label`/`split`/`shape` 组合；同字段多值可简写（`label::cat|dog`、`label::cat,dog`）。
+- 值内特殊字符用 `\` 转义；`escape_query_value()` 供统计表回填搜索框。
+- 兼容保留旧接口与行为：`parse_search_pattern`、`matches_filename`、
+  `matches_label_attribute` 签名不变，`#N`、`<regex>`、`checked/review/gid/difficult/`
+  `type/score/description/label` 等旧条件继续可用；无法解析的文本退化为文件名子串搜索。
+- `label_widget.import_image_folder` 改为统一走 `parse_search_query` +
+  `filter_image_files`；搜索框 tooltip 更新为新语法说明。
+
+#### 2.2 设置新增“模型保存目录”并自动迁移（需求 3）
+
+- 新增 config 键 `model_directory`（默认 `null` = `<work_dir>/xanylabeling_data/models`），
+  并在“设置 → 常规 → 行为”增加 Directory 控件（输入框 + Browse；清空 = 默认位置）。
+- 新增 `services/auto_labeling/model_storage.py`：解析生效目录、默认目录、目录迁移；
+  `model.py` 下载/缓存路径与 `model_manager.py` 的模型扫描/删除均改用配置目录，同时兼容
+  扫描默认与旧目录（已有模型不会消失）。
+- 保存设置时如目录变化，自动把旧目录下的模型条目 move 到新目录；目标同名跳过；失败/权限
+  不足时弹窗提示并保留旧文件（不做复杂回滚），可在新目录重新下载。
+
+#### 2.3 右侧 tab 中“类别”措辞与普通列表化（需求 4、5）
+
+- class 概念统一为“类别”（英文源 `Classes`）：右侧 tab `标签` → `类别`；标注弹窗占位符
+  `Enter object label` → `Enter class`（中译“输入类别”），`Label description` →
+  `Object description`（中译“对象描述”）；“标签”仅保留给图片 tag/标志等既有概念。
+- 右侧“对象”与“类别”两个 tab 改为普通 `QListWidget`：移除 PanelHeader 标题栏及其
+  显隐/锁定全部按钮、移除逐行复选框与锁形图标/右键锁定交互；保留选择联动、双击编辑、
+  类别管理器中的会话级锁定策略（不再在列表中绘制）。
+- 设置页字段标题改为走 `tr()`（原实现只翻译描述不翻译标题）；字段译文本就在 .ts 中，因此
+  中文设置页标题与描述都中文化（含新增“模型保存目录”）。
+
+#### 2.4 新增“统计/Statistics” tab（需求 6）
+
+- 右侧 tab 新增 `统计`：`QTableWidget` 按“类别 × 训练/验证/测试/未划分/合计”显示当前
+  文件列表数据，行含 `（无对象图）` 与 `合计`；合计行按 split 统计文件数、右下为文件总数。
+- 点击数值单元格 → 生成 `label::X,split::Y` 搜索并过滤文件列表；点类别名只按类别，点列头
+  只按 split，`（无对象图）` → `shape::0`（+ split）；合计行列不可点击。
+- 切换到统计 tab、导入/移除文件或修改 split 时刷新；数据聚合逻辑独立为
+  `utils/dataset_statistics.py`（可单测，无 Qt 依赖），控件为
+  `widgets/statistics_table.py`。
+
+#### 2.5 国际化与文档
+
+- 4 语言 `.ts` 用 `pylupdate6 --no-obsolete` 重生成并补译：本批新增/变更 12 条/语言、
+  统计表 `StatisticsTable` context 8 条手工条目、运行期 fallback 2 条；清理 8 条 obsolete；
+  重建 `.qm` 与 `resources.py`（0 unfinished）。
+- 用户手册 en/zh 更新：搜索语法（split/布尔/示例）、统计 tab、对象/类别 tab 普通列表化与
+  锁定说明、设置页“模型保存目录”章节及章节编号。
+
+### 3. 涉及模块与文件
+
+- 搜索：`anylabeling/views/labeling/utils/file_search.py`、`label_widget.py`
+- 统计：`anylabeling/views/labeling/utils/dataset_statistics.py`、
+  `anylabeling/views/labeling/widgets/statistics_table.py`
+- 列表/tab：`anylabeling/views/labeling/widgets/label_list_widget.py`、
+  `widgets/unique_label_qlist_widget.py`、`widgets/label_dialog.py`、`label_widget.py`
+- 模型目录：`services/auto_labeling/model_storage.py`、`model.py`、`model_manager.py`、
+  `views/labeling/settings/{schema,dialog,controller,runtime_applier}.py`、
+  `configs/xanylabeling_config.yaml`
+- 翻译：`anylabeling/resources/translations/*.ts|.qm`、`resources/resources.py`
+- 版本/文档：`anylabeling/app_info.py`、`docs/user/{en,zh_cn}/user_guide.md`、本文件
+- 测试：`tests/test_utils/test_file_search.py`、`test_dataset_statistics.py`、
+  `tests/test_widgets/test_statistics_table.py`、`tests/test_auto_labeling/test_model_storage.py`、
+  `tests/test_settings/*`、`tests/test_labeling/test_file_table.py`、`test_label_locks.py`、
+  `test_image_switch.py`、`test_label_widget_metrics.py` 等
+
+### 4. 行为、接口与兼容性影响
+
+- **版本号**：`4.3.2+fork.1` → `4.3.2+fork.2`。
+- **搜索**：旧语法全部兼容；新增 `split::`、布尔运算符与 `escape_query_value()` 等 API。
+- **配置**：新增 `model_directory`（null=默认）；设置项总数 139→140（General 9→10）。
+- **QSettings**：无新增键；模型目录保存在 config 而非 QSettings。
+- **tab/界面**：右侧 tab 变为 对象/类别/标志/描述/统计（隐藏集合持久化于
+  `right_tabs.hidden`，旧配置中未知 key 会被忽略）；对象/类别 tab 不再有标题栏、显隐/锁定
+  全部按钮与逐行复选框/锁图标。
+- **设置页标题**：现在会按 .ts 翻译（此前只翻译描述），中文界面字段标题全部中文化。
+- **模型目录**：切换目录时旧目录模型自动 move；失败时保留旧文件并提示，不做回滚。
+  极老 `anylabeling_data/models` 目录不自动迁移，但仍会被扫描到。
+
+### 5. 实际验证内容
+
+- 单元/集成测试（分批执行，避免一次性大批量运行触发本机页面文件/内存级崩溃）：
+  - `tests/test_widgets + tests/test_settings + tests/test_config + tests/test_utils +
+    test_model_storage.py`：**283 passed / 1 skipped**，1 条 `canvas_adjustment`
+    节流计时失败为本机 offscreen 计时抖动（改动前同样偶发）；
+  - `tests/test_labeling` 分批：`file_table/image_switch/label_locks/label_manager_locks/
+    label_widget_metrics/check_status/image_tags` 共 **60 passed**（1 条失败为 POSIX `/tmp`
+    路径在本机变成 `E:\tmp` 的既有环境断言），`test_relations.py` **21 passed**；
+  - `tests/test_utils`（含新搜索/统计用例）**162 passed**；i18n 相关 `pytest` **41 passed**；
+  - 注：`tests/test_labeling` 整目录单进程运行在本机会在若干重型用例处触发
+    `Fatal Python error: Aborted`（页面文件/内存环境问题，单独/分批运行均通过），
+    未声称整目录一次性通过。
+- 真实 Windows 平台冒烟：
+  - 搜索：split 中英文条件、`label::cat|dog,split::train`、`label::cat,dog`、`!label::cat`、
+    括号跨字段组合等 11 组经 UI 输入后文件列表结果全部正确；
+  - 统计 tab：构造 4 图数据集，表头/行列计数/合计口径与图二一致；点击单元格回填
+    `label::object_0,split::train` 并过滤出正确文件；点击 `（无对象图）` 回填
+    `shape::0,split::none`；
+  - 普通列表 tab：MainWindow 启动、tab 切换、对象/类别列表添加/选择/双击正常，
+    标题栏控件属性确认不存在；
+  - i18n：4 语言 QTranslator 探针通过（zh tab `对象/类别/标志/描述/统计`、弹窗
+    `输入类别/对象描述`、统计表头 `类别/训练/验证/测试/未划分/合计/（无对象图）`、
+    设置页 `模型保存目录/默认位置/浏览`），en_US 组件无中文泄漏。
+- 未联网真实下载模型，也未在真实 125%/150% HiDPI 显示器验证。
+
+### 6. 已知限制与后续事项
+
+- 统计表刷新为“切到统计 tab / 导入 / 移除 / 改 split”时同步读取当前文件列表的标注 JSON；
+  数万文件规模首次刷新可能卡顿，后续可加防抖或后台线程。
+- `statistics_table.py` 与 `runtime_applier.py` 中有少量 `self.tr(变量)` 形式的手工 .ts 条目，
+  未来重跑 `pylupdate6 --no-obsolete` 需复用临时补译脚本或改为显式 context。
+- 移除对象/类别 tab 的逐行显隐与锁定 UI 后，单对象显隐可通过视图菜单/筛选完成，逐对象
+  锁定仍可在画布右键菜单操作；类别管理器的会话级锁定策略保留但不再在列表绘制。
+- 模型目录迁移为简单 move，不支持跨卷失败回滚；极老 `anylabeling_data` 目录不自动迁移。
+- `docs/dev/CODE_STRUCTURE_REPORT.md` 仍为 4.3.2 基线静态分析快照。
+
 ## 4.3.2+fork.1 — 2026-11-10
 
 ### 1. 背景与原因

@@ -118,9 +118,7 @@ def test_switch_drops_old_objects_and_batches_list_updates(window, tmp_path):
         assert len(widget.canvas.shapes_backups[0]) == count
 
 
-def test_loaded_shapes_keep_filter_checkbox_lock_and_undo_behavior(
-    window, tmp_path
-):
+def test_loaded_shapes_keep_filter_and_undo_behavior(window, tmp_path):
     widget = window.labeling_widget.view
     path = generate_images(tmp_path / "images", [10], 64)[10][0]
     label_path = tmp_path / "images" / "polygons_010_0.json"
@@ -128,18 +126,18 @@ def test_loaded_shapes_keep_filter_checkbox_lock_and_undo_behavior(
     data["shapes"][0]["locked"] = True
     label_path.write_text(json.dumps(data), encoding="utf-8")
     assert widget.load_file(path)
+    # Locks are session state, not persisted annotation state.
     assert not widget.label_list[0].is_locked()
     assert not widget.canvas.shapes[0].locked
     widget.label_list[0].set_locked(True)
     widget.canvas.shapes[0].locked = True
-    changes = QtTest.QSignalSpy(widget.label_list.item_changed)
-    item = widget.label_list[1]
-    item.setCheckState(QtCore.Qt.CheckState.Unchecked)
-    assert len(changes) == 1
-    assert not item.shape().visible
-    assert not widget.canvas.is_visible(item.shape())
-    item.setCheckState(QtCore.Qt.CheckState.Checked)
-    assert item.shape().visible
+    # Visibility toggling is handled by the canvas / view actions now that the
+    # list tabs are plain lists without per-row checkboxes.
+    widget.toggle_visibility_shapes(False)
+    assert not widget.canvas.shapes[0].visible
+    assert not widget.canvas.is_visible(widget.canvas.shapes[0])
+    widget.toggle_visibility_shapes(True)
+    assert widget.canvas.shapes[0].visible
     widget.set_label_filter_value("object_2")
     assert [s.label for s in widget.canvas.shapes if s.visible] == ["object_2"]
     widget.set_label_filter_value("")
@@ -163,7 +161,8 @@ def test_brightness_pixmap_refresh_preserves_visibility(window, tmp_path):
     path = generate_images(tmp_path / "images", [1], 64)[1][0]
     assert widget.load_file(path)
     shape = widget.canvas.shapes[0]
-    widget.label_list[0].setCheckState(QtCore.Qt.CheckState.Unchecked)
+    shape.visible = False
+    widget.canvas.set_shape_visible(shape, False)
     widget.canvas.load_pixmap(
         QtGui.QPixmap.fromImage(widget.image), clear_shapes=False
     )

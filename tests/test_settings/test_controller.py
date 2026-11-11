@@ -110,6 +110,33 @@ class TestSettingsController(unittest.TestCase):
                 "font_family", 10, schedule_save=False
             )
 
+    def test_model_directory_normalization(self):
+        import os
+
+        self.assertIsNone(self.controller.get_value("model_directory"))
+
+        changed = self.controller.update_field(
+            "model_directory",
+            r"  C:\models\demo  ",
+            schedule_save=False,
+        )
+        self.assertTrue(changed)
+        self.assertEqual(
+            self.controller.get_value("model_directory"),
+            os.path.expanduser(r"C:\models\demo"),
+        )
+
+        changed = self.controller.update_field(
+            "model_directory", "", schedule_save=False
+        )
+        self.assertTrue(changed)
+        self.assertIsNone(self.controller.get_value("model_directory"))
+
+        with self.assertRaises(SettingsValidationError):
+            self.controller.update_field(
+                "model_directory", 10, schedule_save=False
+            )
+
     def test_canvas_field_validation(self):
         self.assertEqual(
             self.controller.get_value("canvas.label_font_size"), 8

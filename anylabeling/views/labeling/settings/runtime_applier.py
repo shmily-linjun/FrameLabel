@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import math
+import os
 from typing import Any
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt
 
+from anylabeling.services.auto_labeling.model_storage import (
+    migrate_model_directory,
+    resolve_model_directory,
+)
 from anylabeling.views.common.device_manager import device_manager
 
 from .. import utils
@@ -22,6 +27,16 @@ class SettingsRuntimeApplier:
         self._widget = widget
         self._shortcut_action_map: dict[str, QtGui.QAction] = {}
         self._hidden_actions: dict[str, QtGui.QAction] = {}
+        self._model_directory = self._read_model_directory()
+
+    def _read_model_directory(self) -> str | None:
+        config = getattr(self._widget, "_config", None)
+        if not isinstance(config, dict):
+            return None
+        try:
+            return resolve_model_directory(config, create=False)
+        except Exception:  # noqa: BLE001 - best effort, never block startup
+            return None
 
     @staticmethod
     def shortcut_value_to_text(value: Any) -> str:
@@ -216,6 +231,9 @@ class SettingsRuntimeApplier:
         )
 
     def apply_change(self, key: str, value: Any) -> None:
+        if key == "model_directory":
+            self.apply_model_directory(value)
+            return
         if key == "image_jump_step":
             self._widget.update_browse_actions()
             return
@@ -529,6 +547,76 @@ class SettingsRuntimeApplier:
         if key == "file_search":
             value_text = "" if value is None else str(value)
             self._widget.file_search.setText(value_text)
+
+    def apply_model_directory(self, value: Any) -> None:
+        """Migrate existing models when the storage directory changes.
+
+        The migration is a plain move of the top-level model entries. When
+        it fails (for example because of missing permissions) the old files
+        are kept untouched and the user is asked to download the models
+        again in the new directory.
+        """
+        config = getattr(self._widget, "_config", None)
+        if not isinstance(config, dict):
+            return
+        try:
+            new_directory = resolve_model_directory(config)
+        except OSError as exc:
+            logger.error("Could not create the model directory: %s", exc)
+            self._show_model_directory_error(self._model_directory, str(exc))
+            return
+
+        old_directory = self._model_directory
+        if (
+            old_directory
+            and os.path.normcase(os.path.abspath(old_directory))
+            == os.path.normcase(os.path.abspath(new_directory))
+        ):
+            self._model_directory = new_directory
+            return
+
+        self._model_directory = new_directory
+        if not old_directory:
+            return
+
+        errors = migrate_model_directory(old_directory, new_directory)
+        if not errors:
+            logger.info(
+                "Moved existing models from %s to %s",
+                old_directory,
+                new_directory,
+            )
+            return
+
+        logger.warning(
+            "Failed to move %d model entr(ies) from %s to %s: %s",
+            len(errors),
+            old_directory,
+            new_directory,
+            "; ".join(errors),
+        )
+        self._show_model_directory_error(old_directory, "\n".join(errors))
+
+    def _show_model_directory_error(
+        self, old_directory: str | None, details: str
+    ) -> None:
+        parent = (
+            self._widget
+            if isinstance(self._widget, QtWidgets.QWidget)
+            else None
+        )
+        message = self._widget.tr(
+            "Some model files could not be moved to the new directory:\n"
+            "{details}\n\n"
+            "The original files were kept in:\n"
+            "{old_directory}\n\n"
+            "You can download the models again in the new directory."
+        ).format(details=details, old_directory=old_directory or "")
+        QtWidgets.QMessageBox.warning(
+            parent,
+            self._widget.tr("Model Directory"),
+            message,
+        )
 
     def apply_shortcuts(self, key: str, value: Any) -> None:
         action = self._shortcut_action_map.get(key)

@@ -1,20 +1,28 @@
+"""Lock / visibility semantics that survive the plain-list refactor.
+
+The objects/classes tabs no longer paint per-row checkboxes, lock icons or a
+panel header with show/hide and lock-all buttons. The underlying session-lock
+policy is still used by the label manager dialog and the bulk lock helpers are
+kept, so those are covered here. Plain-list rendering itself is covered by
+``tests/test_widgets`` and the labeling smoke tests.
+"""
+
 import os
 from types import SimpleNamespace
 import unittest
-from functools import partial
 from unittest.mock import Mock
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PyQt6 import QtCore, QtWidgets
-from PyQt6.QtTest import QTest
 
 import anylabeling.resources.resources  # noqa: F401
 
 from anylabeling.views.labeling.label_widget import LabelingWidget
 from anylabeling.views.labeling.shape import Shape
-from anylabeling.views.labeling.widgets.label_list_widget import LOCKED_ROLE
-from anylabeling.views.labeling.widgets.panel import PanelHeader
+from anylabeling.views.labeling.widgets.label_list_widget import (
+    LOCKED_ROLE,
+)
 from anylabeling.views.labeling.widgets.unique_label_qlist_widget import (
     UniqueLabelQListWidget,
 )
@@ -41,39 +49,36 @@ class TestLabelLocks(unittest.TestCase):
             refresh_panel_controls=Mock(),
             _session_shape_locks={},
         )
-        self.widget.toggle_unique_label_items_lock = partial(
-            LabelingWidget.toggle_unique_label_items_lock, self.widget
-        )
-        self.widget._set_shapes_locked = partial(
-            LabelingWidget._set_shapes_locked, self.widget
-        )
-        self.labels.items_lock_requested.connect(
-            lambda items: LabelingWidget.toggle_unique_label_items_lock(
-                self.widget, items
+        self.widget.toggle_unique_label_items_lock = (
+            LabelingWidget.toggle_unique_label_items_lock.__get__(
+                self.widget
             )
+        )
+        self.widget._set_shapes_locked = (
+            LabelingWidget._set_shapes_locked.__get__(self.widget)
         )
 
     def tearDown(self):
         self.labels.close()
 
-    def test_right_click_toggles_whole_category(self):
-        self.labels.show()
-        self.app.processEvents()
-        position = self.labels.visualItemRect(self.labels.item(0)).center()
-        for expected in (True, False):
-            QTest.mouseClick(
-                self.labels.viewport(),
-                QtCore.Qt.MouseButton.RightButton,
-                pos=position,
+    def test_plain_list_has_no_checkboxes_or_lock_icon(self):
+        for item in (
+            self.labels.item(0),
+            self.labels.item(1),
+        ):
+            self.assertIsNone(item.data(QtCore.Qt.ItemDataRole.CheckStateRole))
+            self.assertFalse(item.data(LOCKED_ROLE))
+            self.assertFalse(
+                bool(item.flags() & QtCore.Qt.ItemFlag.ItemIsUserCheckable)
             )
-            self.assertEqual(
-                [s.locked for s in self.shapes], [expected, expected, False]
-            )
-            self.assertEqual(self.labels.lock_states["cat"], expected)
-            self.assertEqual(
-                self.labels.item(0).data(LOCKED_ROLE),
-                expected,
-            )
+
+    def test_find_and_remove_items_by_label(self):
+        found = self.labels.find_items_by_label("cat")
+        self.assertEqual(len(found), 1)
+        self.assertEqual(found[0].text(), "cat")
+        self.labels.remove_items_by_label("cat")
+        self.assertFalse(self.labels.find_items_by_label("cat"))
+        self.assertTrue(self.labels.find_items_by_label("dog"))
 
     def test_bulk_inverts_mixed_categories(self):
         LabelingWidget.toggle_unique_label_items_lock(
@@ -98,157 +103,26 @@ class TestLabelLocks(unittest.TestCase):
         self.assertTrue(item.data(LOCKED_ROLE))
 
     def test_bulk_labels_replaces_previous_individual_lock(self):
-        self.widget.toggle_unique_label_items_lock([self.labels.item(0)])
+        LabelingWidget.toggle_unique_label_items_lock(
+            self.widget, [self.labels.item(0)]
+        )
         for expected in (False, True, False):
             LabelingWidget.toggle_all_labels_lock(self.widget)
             self.assertEqual([s.locked for s in self.shapes], [expected] * 3)
             self.assertEqual(
-                self.labels.lock_states, {"cat": expected, "dog": expected}
+                self.labels.lock_states,
+                {"cat": expected, "dog": expected},
             )
 
     def test_bulk_shapes_clears_previous_category_policy(self):
-        self.widget.toggle_unique_label_items_lock([self.labels.item(0)])
+        LabelingWidget.toggle_unique_label_items_lock(
+            self.widget, [self.labels.item(0)]
+        )
         for expected in (False, True, False):
             LabelingWidget.toggle_all_shapes_lock(self.widget)
             self.assertEqual([s.locked for s in self.shapes], [expected] * 3)
             self.assertEqual(self.labels.lock_states, {})
             self.assertFalse(self.labels.item(0).data(LOCKED_ROLE))
-
-    def test_header_title_is_centered_with_compact_controls(self):
-        for count in (1, 2):
-            title = QtWidgets.QLabel("Image Description")
-            controls = [QtWidgets.QToolButton() for _ in range(count)]
-            header = PanelHeader(title, controls)
-            header.resize(280, 26)
-            header.show()
-            self.app.processEvents()
-            self.assertLessEqual(
-                abs(
-                    title.geometry().center().x() - header.rect().center().x()
-                ),
-                1,
-            )
-            if count == 2:
-                self.assertEqual(
-                    controls[1].x() - controls[0].geometry().right(), 3
-                )
-            header.close()
-
-    def test_category_checkbox_controls_all_matching_shapes(self):
-        from anylabeling.views.labeling.widgets.label_list_widget import (
-            LabelListWidget,
-            LabelListWidgetItem,
-        )
-
-        objects = LabelListWidget()
-        for shape in self.shapes:
-            objects.add_iem(LabelListWidgetItem(shape.label, shape))
-        self.widget.label_list = objects
-        self.widget.label_info = {}
-        self.widget.canvas.visible = {}
-        self.widget.canvas.update = Mock()
-        self.widget._get_rgb_by_label = Mock(return_value=(0, 255, 0))
-        self.widget._update_select_toggle_button_tooltip = Mock()
-        self.widget._sync_label_list_visibility = partial(
-            LabelingWidget._sync_label_list_visibility, self.widget
-        )
-        self.widget._refresh_shape_filters = partial(
-            LabelingWidget.apply_label_visibility, self.widget
-        )
-        self.labels.label_visibility_changed.connect(
-            partial(LabelingWidget.set_label_visibility, self.widget)
-        )
-        self.labels.show()
-        self.app.processEvents()
-        item = self.labels.item(0)
-        option = QtWidgets.QStyleOptionViewItem()
-        option.initFrom(self.labels)
-        option.rect = self.labels.visualItemRect(item)
-        self.labels.itemDelegate().initStyleOption(
-            option, self.labels.indexFromItem(item)
-        )
-        rect = self.labels.style().subElementRect(
-            QtWidgets.QStyle.SubElement.SE_ItemViewItemCheckIndicator,
-            option,
-            self.labels,
-        )
-        for visible in (False, True):
-            QTest.mouseClick(
-                self.labels.viewport(),
-                QtCore.Qt.MouseButton.LeftButton,
-                pos=rect.center(),
-            )
-            self.assertEqual(
-                [s.visible for s in self.shapes], [visible, visible, True]
-            )
-            self.assertEqual(self.widget.label_info["cat"]["visible"], visible)
-            self.assertEqual(
-                [
-                    i.checkState() == QtCore.Qt.CheckState.Checked
-                    for i in objects
-                ],
-                [visible, visible, True],
-            )
-        item.setCheckState(QtCore.Qt.CheckState.Unchecked)
-        self.labels.set_item_locked(item, True)
-        self.assertFalse(self.widget.label_info["cat"]["visible"])
-        self.labels.clear()
-        restored = self.labels.create_item_from_label("cat")
-        self.labels.addItem(restored)
-        self.widget._refresh_shape_filters()
-        self.assertEqual(restored.checkState(), QtCore.Qt.CheckState.Unchecked)
-        objects.close()
-
-    def test_lock_and_color_changes_do_not_emit_visibility(self):
-        changed = Mock()
-        self.labels.label_visibility_changed.connect(changed)
-        item = self.labels.item(0)
-        self.labels.set_item_locked(item, True)
-        self.labels.update_item_color("cat", (255, 0, 0))
-        changed.assert_not_called()
-
-    def test_header_visibility_toggles_all_categories(self):
-        self.widget.label_info = {
-            "cat": {"visible": False},
-            "dog": {"visible": True},
-        }
-        self.widget._refresh_shape_filters = Mock()
-        for visible in (False, True):
-            LabelingWidget.toggle_all_labels_visibility(self.widget)
-            self.assertEqual(
-                [info["visible"] for info in self.widget.label_info.values()],
-                [visible, visible],
-            )
-
-    def test_header_controls_reflect_current_state(self):
-        for name in (
-            "labels_visibility_button",
-            "shapes_visibility_button",
-            "labels_lock_button",
-            "shapes_lock_button",
-        ):
-            button = QtWidgets.QToolButton()
-            button.setCheckable(True)
-            setattr(self.widget, name, button)
-        self.widget.label_info = {}
-        self.widget.toggle_unique_label_items_lock(
-            [self.labels.item(0), self.labels.item(1)]
-        )
-        LabelingWidget.refresh_panel_controls(self.widget)
-        self.assertTrue(self.widget.labels_lock_button.isChecked())
-        self.assertTrue(self.widget.shapes_lock_button.isChecked())
-        self.assertFalse(self.widget.labels_visibility_button.icon().isNull())
-        self.shapes[0].locked = False
-        LabelingWidget.refresh_panel_controls(self.widget)
-        self.assertTrue(self.widget.shapes_lock_button.isChecked())
-        self.widget.toggle_unique_label_items_lock([self.labels.item(0)])
-        LabelingWidget.refresh_panel_controls(self.widget)
-        self.assertTrue(self.widget.labels_lock_button.isChecked())
-        self.assertTrue(self.widget.shapes_lock_button.isChecked())
-        self.widget.toggle_unique_label_items_lock([self.labels.item(1)])
-        LabelingWidget.refresh_panel_controls(self.widget)
-        self.assertFalse(self.widget.labels_lock_button.isChecked())
-        self.assertFalse(self.widget.shapes_lock_button.isChecked())
 
     def test_object_locks_survive_image_switch_in_memory(self):
         from anylabeling.views.labeling.widgets.label_list_widget import (
@@ -286,3 +160,7 @@ class TestLabelLocks(unittest.TestCase):
         self.widget.set_dirty = Mock()
         LabelingWidget._update_shapes_lock(self.widget, self.shapes)
         self.widget.set_dirty.assert_not_called()
+
+
+if __name__ == "__main__":
+    unittest.main()
