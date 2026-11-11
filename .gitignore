@@ -187,3 +187,6 @@ calibration_*.npy
 /temporary/
 /docs/session.md
 pytest-cache-files-*/
+
+# Runtime metadata written into image folders by the file list import
+.xanylabeling_import_time.json
