@@ -8,6 +8,124 @@
 
 ---
 
+## 4.3.2+fork.3 — 2026-11-11
+
+### 1. 背景与原因
+
+本版本处理文档治理和交接准确性问题：用户手册中英文双份同步维护增加 token 与人工成本；
+`开始.md` 尚未明确项目约束、当前代码结构和未来设计三类文档的职责；
+`docs/dev/CODE_STRUCTURE_REPORT.md` 仍主要反映上游 4.3.2，未覆盖 fork.1/fork.2 的界面和模型目录变化，
+且文档移至 `docs/dev` 后相对链接失效。与此同时，需要评估上游 README/CHANGELOG 在私有 fork 中的保留方式，
+但本批只形成建议，不直接删改这些上游文档。
+
+### 2. 主要实现与关键细节
+
+#### 2.1 交接文档定位与维护规则（`docs/开始.md`）
+
+- 明确 `开始.md` = 项目约束、`CODE_STRUCTURE_REPORT.md` = 当前代码结构、设计书 = 未来功能；
+  默认按该顺序阅读，当前实现仍以代码为最终证据。
+- 规定每次代码修改在同一提交批次内按差异更新结构报告，发现不符时同步修正；
+  无变化章节不重写，纯文档变化不虚构结构变化。
+- 用户手册以后只例行更新 `docs/user/zh_cn/user_guide.md`，冻结 `docs/user/en/user_guide.md` 为历史参考；
+  该规则不影响 en_US 界面翻译、`.ts/.qm` 或其他英文材料。
+- `CHANGELOG-fork.md`、结构报告、`开始.md` 和设计书等其他既定维护义务继续有效。
+- Git 规则进一步区分：行为变更才强制升级 fork 版本；fork 版本提交验证后自动普通 push 到 GitHub，
+  纯文档/非行为小改动不强制升版且默认只在本地提交。禁止 force push，推送失败不得伪报云端成功。
+- 升版判定细化为用户可观察行为、接口/数据契约、依赖/平台兼容性及迁移需求；文档、测试、格式化、
+  文案微调、资源移动和无行为变化的内部重构不升版。判定不看代码行数，一行缺陷修复仍升版，
+  大规模无行为重构不升版；难以判定时先询问，避免版本号滥用。
+- 新增累积改动默认阈值：排除文档等豁免改动后，自上一个 fork 版本起，独立改动点不少于 3 个
+  且涉及不少于 2 个结构模块时递增一次。同一问题的配套修改和跨文件机械性重复修改不重复计数；
+  达到阈值后仍只递增一次，不按改动点数量连续跳号。
+- 设计书定位同步澄清为“未定稿的方向性草案”：只作大方向指导和重大冲突提醒，不是任务清单、
+  需求基线或验收依据；具体任务以用户后续消息为准，避免新接手者按“定稿、待开工”误读并自行实施。
+
+#### 2.2 当前结构报告同步（`docs/dev/CODE_STRUCTURE_REPORT.md`）
+
+- 版本更新为 `4.3.2+fork.3`，分析起点记录为 `main/7718aad`；应用统计保持 427 个非生成 Python 文件、
+  648 个唯一类名；新增 `tests/conftest.py` 后，测试目录 Python 文件由 137 增至 138，核心类排名不变。
+- 补充工具栏顶部/左侧停靠及显式 QSettings 键、五列文件表、右侧对象/类别/标志/描述/统计 tab、
+  split/布尔搜索、统计点击反筛，以及 `model_directory` 的解析、迁移和旧目录兼容扫描。
+- 核心类由 16 增至 18，新增 `FileTableWidget` 与 `StatisticsTable`；全部类名引用排名、
+  文件扇入/扇出和主要维护提示按当前代码重算。
+- 修正文档在 `docs/dev` 下的源码/测试/脚本/图片相对链接；重新渲染模块依赖图和核心类总览图，
+  保留可编辑 Mermaid 源码及 SVG/JPG 两种图形格式。随后将四个受跟踪图形文件用 `git mv` 移至
+  `docs/dev/code_structure_assets`，报告改为同目录引用；根目录 `code_structure_assets` 中的
+  `.xanylabeling_import_time.json` 也按用户要求移至 `docs/dev/`。它仍是运行时元数据，
+  保持 Git 忽略，不改变程序对图片目录中同名 sidecar 的读写规则。
+- 已知限制同步记录：统计大数据集刷新可能阻塞 UI、模型目录迁移不是全量原子操作。
+
+#### 2.3 上游 README/CHANGELOG 评估
+
+- 结论为不建议直接删除：`pyproject.toml` 使用 `README.md` 作为包说明；`CHANGELOG.md` 保留上游历史，
+  且发布说明脚本和应用内“关于”仍引用它。
+- 建议后续把 README 改为 fork 入口，链接三份交接文档、中文用户手册和 `CHANGELOG-fork.md`，
+  并区分上游历史与 fork 当前功能；`CHANGELOG.md` 只保留上游记录。
+- 另发现发布说明脚本尚未适配 `+fork.N` 版本与 fork 变更日志，需要单独设计发布通道，本批未修改脚本。
+
+#### 2.4 pytest 临时目录统一（`tests/conftest.py`、`pyproject.toml`）
+
+- 《开始.md》明确所有一次性测试、调试和验证产物必须预先定向到 `temporary`，不得写入根目录后再移动，
+  也不能只凭 `.gitignore` 或 `git status` 判断无残留；权限或工具配置失败时不得擅自回退到系统临时目录。
+- 新增测试专用 `pytest_configure`：每次以 PID 和 UUID 建立 `temporary/runs/pytest-<PID>-<UUID>/`，
+  pytest 临时 fixture 使用 `fixtures`，直接调用 `tempfile` 的代码和子进程使用 `process`。
+  进程内统一设置 `TEMP`、`TMP`、`TMPDIR` 和 `tempfile.tempdir`，不修改全局环境；显式 `--basetemp` 仍优先。
+- 不写死共享 `basetemp`，因为 pytest 9.2.0 会删除已有的显式路径；自定义 fixture 根目录的父目录由配置预先创建。
+- `cache_dir` 固定为 `temporary/cache/pytest`，供跨运行复用。pytest 原子写缓存时生成的
+  `pytest-cache-files-*` 临时目录也随之进入 `temporary/cache`，不再落在仓库根目录。
+- 本次只改变测试临时文件和缓存位置，不改变应用运行逻辑、数据契约、依赖或支持平台，不额外递增 fork 版本。
+
+### 3. 涉及模块与文件
+
+- 规则与版本：`docs/开始.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`anylabeling/app_info.py`、`CHANGELOG-fork.md`。
+- 当前结构：`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/code_structure_assets/{module_dependencies,core_classes_overview}.{svg,jpg}`。
+- 忽略的文档辅助元数据：`docs/dev/.xanylabeling_import_time.json`（仅移动，不纳入版本控制）。
+- 测试支撑：`pyproject.toml`、`tests/conftest.py`；仅改变 pytest 临时目录与缓存位置。
+- 核对实现：`views/mainwindow.py`、`views/labeling/label_widget.py`、`utils/file_search.py`、
+  `utils/dataset_statistics.py`、`widgets/statistics_table.py`、`services/auto_labeling/{model,model_storage,model_manager}.py`。
+- 仅评估未修改：`README.md`、`README_zh-CN.md`、`CHANGELOG.md`、`docs/user/en/user_guide.md`。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本由 `4.3.2+fork.2` 升至 `4.3.2+fork.3`，版本字符串通过 PEP 440 解析。
+- 本批不修改搜索、统计、模型下载、训练或 UI 行为逻辑；新增配置只影响 pytest 临时文件和缓存位置，
+  其余为版本元数据、文档和图形变化，不改变应用行为、数据契约、依赖或支持平台。
+- 英文用户手册从本版本起会有意滞后，阅读时以中文手册和代码为准；英文界面翻译维护不受该规则影响。
+- 上游 `README.md`、`README_zh-CN.md`、`CHANGELOG.md` 未删除或改写。
+
+### 5. 实际验证内容
+
+- Markdown 静态检查：`开始.md` 与结构报告共检查 **186 个本地链接，0 个缺失**；
+  `4.3.2+fork.3` 经 `packaging.version.Version` 解析成功。
+- 本轮静态检查：`tests/conftest.py` AST 解析及 `pyproject.toml` TOML 读取通过；实测应用目录 436 个、
+  测试目录 138 个 Python 文件，按原排除口径应用统计仍为 427；《开始.md》、结构报告和本记录共检查
+  **191 个本地链接，0 个缺失**；`git diff --check` 通过。
+- 当前代码静态统计：应用源码仍为 427 个非生成 Python 文件、648 个唯一类名；新增 stdlib-only 测试配置不影响核心类与依赖排名。
+- 两张更新后的总览图均成功生成 SVG/JPG，并通过图片读取检查中文和布局。
+- 相关回归（指定 Conda 环境）：`test_file_search.py`、`test_dataset_statistics.py`、`test_model_storage.py`、
+  `test_file_table.py`、`test_statistics_table.py` 合计 **85 passed / 114 subtests passed**。
+  首次在受限环境运行时因系统临时目录和 pytest 缓存权限出现失败；经用户批准的一次性授权环境重跑全部通过，
+  未据此声称全量测试通过。
+- 新增临时目录配置后，在同一组 85 项测试上验证默认配置，首轮结果为 **32 passed / 19 failed / 49 errors**；
+  失败和错误均表现为临时目录 `PermissionError` 或 fixture 根目录父目录缺失，不是业务断言失败。
+  已修正父目录预创建，但权限诊断未发现其可修复的权限类型、未更改权限；未在受限环境中反复重跑，
+  因而新配置尚无完整通过结论。测试前后根目录条目无新增，未声称全量测试通过。
+
+### 6. 已知限制与后续事项
+
+- 结构报告按 fork 差异更新，未重新逐行分析所有模型算法、OpenGL/编辑器或第三方代码。
+- README fork 化、发布脚本适配 fork 版本与变更日志仍需单独实施和验证。
+- 英文用户手册会随功能演进而过时，后续如需恢复双语言维护，应由用户明确决定。
+- `temporary/fork3-docs-tests-full` 由用户选择手动清理，最终检查时已不存在；本轮未删除该目录。
+- 用户报告已手动清理 `temporary/runs/pytest-36252-cb6f241d20af4150aa97b0bd89dbcede` 及
+  `temporary/cache/pytest-cache-files-{bqn8wm0u,nxoxlqvm}`；最终受限检查仍无法枚举这些路径，
+  因而不能独立确认目录为空。它们位于 Git 忽略的 `temporary` 下，不纳入提交。
+  `temporary/cache/pytest` 是预留给后续运行的可复用缓存目录；本次因权限未成功生成，不列为清理对象。
+  最终检查根目录已无 `pytest-cache-files-*`，本轮未执行删除。
+- Windows 权限诊断未作出修改，报告为 `E:\dev-GitHub\dsh-acl-recovery\acl-report-c0dd8d7f13444916a7d4d86c7133998c.jsonl`；
+  新配置尚待在可正常读写临时目录的环境中复验。用户知悉该限制后明确要求保持 `4.3.2+fork.3`
+  并提交、推送本批累积更新；该授权不被解释为测试已经全部通过。
+
 ## 4.3.2+fork.2 — 2026-11-11
 
 ### 1. 背景与原因

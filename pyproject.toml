@@ -183,6 +183,7 @@ version = {attr = "anylabeling.app_info.__version__"}
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules --durations=30 --color=yes"
+cache_dir = "temporary/cache/pytest"
 testpaths = ["tests"]
 markers = [
     "slow: skip slow tests unless --slow is set",
