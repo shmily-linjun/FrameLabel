@@ -11262,4 +11262,68 @@ Response preview:
         <source>Ready!</source>
         <translation>준비 완료!</translation>
     </message>
+</context><context>
+    <name>OperatorBar</name>
+    <message><source>Login</source><translation>로그인</translation></message>
+    <message><source>Logout</source><translation>로그아웃</translation></message>
+    <message><source>Browse mode - editing annotations requires login</source><translation>찾아보기 모드 — 주석을 편집하려면 로그인해야 합니다</translation></message>
+    <message><source>Annotation mode: %s</source><translation>주석 모드: %s</translation></message>
+    <message><source>Author: not recorded</source><translation>작성자: 기록 없음</translation></message>
+    <message><source>Last modified: %s</source><translation>최종 수정: %s</translation></message>
+</context>
+<context>
+    <name>OperatorDialog</name>
+    <message><source>Operator Login</source><translation>작업자 로그인</translation></message>
+    <message><source>Login to edit annotations</source><translation>로그인하면 주석을 편집할 수 있습니다</translation></message>
+    <message><source>Register operator</source><translation>작업자 등록</translation></message>
+    <message><source>Select an operator.</source><translation>작업자를 선택하세요.</translation></message>
+    <message><source>The passwords do not match.</source><translation>비밀번호가 일치하지 않습니다.</translation></message>
+    <message><source>Unknown operator or wrong password.</source><translation>작업자가 없거나 비밀번호가 올바르지 않습니다.</translation></message>
+    <message><source>This operator is disabled.</source><translation>이 작업자는 비활성화되었습니다.</translation></message>
+    <message><source>This operator name is already registered.</source><translation>이 작업자 이름은 이미 등록되었습니다.</translation></message>
+    <message><source>This name is reserved.</source><translation>이 이름은 예약되어 있습니다.</translation></message>
+    <message><source>Password must be at least %d characters.</source><translation>비밀번호는 %d자 이상이어야 합니다.</translation></message>
+    <message><source>The operator name is not valid.</source><translation>작업자 이름이 올바르지 않습니다.</translation></message>
+    <message><source>This operator cannot manage other accounts.</source><translation>이 작업자는 다른 계정을 관리할 수 없습니다.</translation></message>
+    <message><source>Cannot open the operator database: %s</source><translation>작업자 데이터베이스를 열 수 없습니다: %s</translation></message>
+    <message><source>The operator operation failed: %s</source><translation>작업자 작업에 실패했습니다: %s</translation></message>
+</context>
+<context>
+    <name>_LoginPage</name>
+    <message><source>Operator name</source><translation>작업자 이름</translation></message>
+    <message><source>Password</source><translation>비밀번호</translation></message>
+    <message><source>Forgot password?</source><translation>비밀번호를 잊으셨나요?</translation></message>
+    <message><source>Register new operator</source><translation>새 작업자 등록</translation></message>
+    <message><source>Cancel</source><translation>취소</translation></message>
+    <message><source>Login</source><translation>로그인</translation></message>
+</context>
+<context>
+    <name>_RegisterPage</name>
+    <message><source>Operator name</source><translation>작업자 이름</translation></message>
+    <message><source>Password</source><translation>비밀번호</translation></message>
+    <message><source>Confirm password</source><translation>비밀번호 확인</translation></message>
+    <message><source>Back to login</source><translation>로그인으로 돌아가기</translation></message>
+    <message><source>Cancel</source><translation>취소</translation></message>
+    <message><source>Register</source><translation>등록</translation></message>
+    <message><source>The first registered account becomes the administrator.</source><translation>처음 등록된 계정이 관리자가 됩니다.</translation></message>
+</context>
+<context>
+    <name>PasswordResetDialog</name>
+    <message><source>Reset password</source><translation>비밀번호 재설정</translation></message>
+    <message><source>Administrator</source><translation>관리자</translation></message>
+    <message><source>Administrator password</source><translation>관리자 비밀번호</translation></message>
+    <message><source>Target operator</source><translation>대상 작업자</translation></message>
+    <message><source>New password</source><translation>새 비밀번호</translation></message>
+    <message><source>Confirm password</source><translation>비밀번호 확인</translation></message>
+    <message><source>Cancel</source><translation>취소</translation></message>
+    <message><source>The passwords do not match.</source><translation>비밀번호가 일치하지 않습니다.</translation></message>
+    <message><source>Unknown operator or wrong password.</source><translation>작업자가 없거나 비밀번호가 올바르지 않습니다.</translation></message>
+    <message><source>This operator is disabled.</source><translation>이 작업자는 비활성화되었습니다.</translation></message>
+    <message><source>This operator name is already registered.</source><translation>이 작업자 이름은 이미 등록되었습니다.</translation></message>
+    <message><source>This name is reserved.</source><translation>이 이름은 예약되어 있습니다.</translation></message>
+    <message><source>Password must be at least %d characters.</source><translation>비밀번호는 %d자 이상이어야 합니다.</translation></message>
+    <message><source>The operator name is not valid.</source><translation>작업자 이름이 올바르지 않습니다.</translation></message>
+    <message><source>This operator cannot manage other accounts.</source><translation>이 작업자는 다른 계정을 관리할 수 없습니다.</translation></message>
+    <message><source>Cannot open the operator database: %s</source><translation>작업자 데이터베이스를 열 수 없습니다: %s</translation></message>
+    <message><source>The operator operation failed: %s</source><translation>작업자 작업에 실패했습니다: %s</translation></message>
 </context></TS>

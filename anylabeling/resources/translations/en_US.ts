@@ -11262,4 +11262,68 @@ Response preview:
         <source>Ready!</source>
         <translation>Ready!</translation>
     </message>
+</context><context>
+    <name>OperatorBar</name>
+    <message><source>Login</source><translation>Login</translation></message>
+    <message><source>Logout</source><translation>Logout</translation></message>
+    <message><source>Browse mode - editing annotations requires login</source><translation>Browse mode - editing annotations requires login</translation></message>
+    <message><source>Annotation mode: %s</source><translation>Annotation mode: %s</translation></message>
+    <message><source>Author: not recorded</source><translation>Author: not recorded</translation></message>
+    <message><source>Last modified: %s</source><translation>Last modified: %s</translation></message>
+</context>
+<context>
+    <name>OperatorDialog</name>
+    <message><source>Operator Login</source><translation>Operator Login</translation></message>
+    <message><source>Login to edit annotations</source><translation>Login to edit annotations</translation></message>
+    <message><source>Register operator</source><translation>Register operator</translation></message>
+    <message><source>Select an operator.</source><translation>Select an operator.</translation></message>
+    <message><source>The passwords do not match.</source><translation>The passwords do not match.</translation></message>
+    <message><source>Unknown operator or wrong password.</source><translation>Unknown operator or wrong password.</translation></message>
+    <message><source>This operator is disabled.</source><translation>This operator is disabled.</translation></message>
+    <message><source>This operator name is already registered.</source><translation>This operator name is already registered.</translation></message>
+    <message><source>This name is reserved.</source><translation>This name is reserved.</translation></message>
+    <message><source>Password must be at least %d characters.</source><translation>Password must be at least %d characters.</translation></message>
+    <message><source>The operator name is not valid.</source><translation>The operator name is not valid.</translation></message>
+    <message><source>This operator cannot manage other accounts.</source><translation>This operator cannot manage other accounts.</translation></message>
+    <message><source>Cannot open the operator database: %s</source><translation>Cannot open the operator database: %s</translation></message>
+    <message><source>The operator operation failed: %s</source><translation>The operator operation failed: %s</translation></message>
+</context>
+<context>
+    <name>_LoginPage</name>
+    <message><source>Operator name</source><translation>Operator name</translation></message>
+    <message><source>Password</source><translation>Password</translation></message>
+    <message><source>Forgot password?</source><translation>Forgot password?</translation></message>
+    <message><source>Register new operator</source><translation>Register new operator</translation></message>
+    <message><source>Cancel</source><translation>Cancel</translation></message>
+    <message><source>Login</source><translation>Login</translation></message>
+</context>
+<context>
+    <name>_RegisterPage</name>
+    <message><source>Operator name</source><translation>Operator name</translation></message>
+    <message><source>Password</source><translation>Password</translation></message>
+    <message><source>Confirm password</source><translation>Confirm password</translation></message>
+    <message><source>Back to login</source><translation>Back to login</translation></message>
+    <message><source>Cancel</source><translation>Cancel</translation></message>
+    <message><source>Register</source><translation>Register</translation></message>
+    <message><source>The first registered account becomes the administrator.</source><translation>The first registered account becomes the administrator.</translation></message>
+</context>
+<context>
+    <name>PasswordResetDialog</name>
+    <message><source>Reset password</source><translation>Reset password</translation></message>
+    <message><source>Administrator</source><translation>Administrator</translation></message>
+    <message><source>Administrator password</source><translation>Administrator password</translation></message>
+    <message><source>Target operator</source><translation>Target operator</translation></message>
+    <message><source>New password</source><translation>New password</translation></message>
+    <message><source>Confirm password</source><translation>Confirm password</translation></message>
+    <message><source>Cancel</source><translation>Cancel</translation></message>
+    <message><source>The passwords do not match.</source><translation>The passwords do not match.</translation></message>
+    <message><source>Unknown operator or wrong password.</source><translation>Unknown operator or wrong password.</translation></message>
+    <message><source>This operator is disabled.</source><translation>This operator is disabled.</translation></message>
+    <message><source>This operator name is already registered.</source><translation>This operator name is already registered.</translation></message>
+    <message><source>This name is reserved.</source><translation>This name is reserved.</translation></message>
+    <message><source>Password must be at least %d characters.</source><translation>Password must be at least %d characters.</translation></message>
+    <message><source>The operator name is not valid.</source><translation>The operator name is not valid.</translation></message>
+    <message><source>This operator cannot manage other accounts.</source><translation>This operator cannot manage other accounts.</translation></message>
+    <message><source>Cannot open the operator database: %s</source><translation>Cannot open the operator database: %s</translation></message>
+    <message><source>The operator operation failed: %s</source><translation>The operator operation failed: %s</translation></message>
 </context></TS>

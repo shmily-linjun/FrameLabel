@@ -38,6 +38,12 @@ from PyQt6.QtWidgets import (
 
 from anylabeling.services.auto_labeling.types import AutoLabelingMode
 from anylabeling.services.auto_labeling import _THUMBNAIL_RENDER_MODELS
+from anylabeling.services.identity import (
+    content_signature,
+    get_operator_service,
+    read_attribution,
+    stamp_attribution,
+)
 from anylabeling.views.training import UltralyticsDialog
 
 from ...app_info import (
@@ -119,6 +125,8 @@ from .widgets import (
     DigitShortcutDialog,
     LabelModifyDialog,
     GroupIDModifyDialog,
+    OperatorBar,
+    OperatorDialog,
     OverviewDialog,
     Popup,
     SearchBar,
@@ -199,6 +207,41 @@ FILE_ROW_HEIGHT_COMPACT = 20
 
 FILE_PATH_ROLE = Qt.ItemDataRole.UserRole + 2
 FILE_SORT_ROLE = Qt.ItemDataRole.UserRole + 1
+
+#: Actions that change annotation content or image tags and therefore need a
+#: logged-in operator.  Register new editing actions here, otherwise the
+#: write-time guard would be the only thing catching them.
+OPERATOR_REQUIRED_ACTIONS = (
+    "create_mode",
+    "create_brush_polygon_mode",
+    "create_magic_wand_mode",
+    "create_rectangle_mode",
+    "create_cuboid_mode",
+    "create_rotation_mode",
+    "create_quadrilateral_mode",
+    "create_circle_mode",
+    "create_line_mode",
+    "create_point_mode",
+    "create_line_strip_mode",
+    "edit_mode",
+    "edit_brush_mode",
+    "edit",
+    "delete",
+    "duplicate",
+    "paste",
+    "undo",
+    "undo_last_point",
+    "remove_point",
+    "union_selection",
+    "create_relation",
+    "manage_relations",
+    "group_selected_shapes",
+    "ungroup_selected_shapes",
+    "label_manager",
+    "gid_manager",
+    "shape_manager",
+    "run_all_images",
+)
 
 
 class FileNameDelegate(QtWidgets.QStyledItemDelegate):
@@ -352,6 +395,7 @@ class LabelingWidget(LabelDialog):
         output=None,
         output_file=None,
         output_dir=None,
+        operator_service=None,
     ):
         self.parent = parent
         if output is not None:
@@ -398,6 +442,16 @@ class LabelingWidget(LabelDialog):
         self.pointcloud_window = None
         self._settings_runtime_applier = SettingsRuntimeApplier(self)
         self._auto_switch_signal_connected = False
+
+        # Operator identity: who may edit and who is credited for the labels.
+        self.operator_service = (
+            operator_service
+            if operator_service is not None
+            else get_operator_service()
+        )
+        self._author_baseline = None
+        self._applying_operator_gate = False
+        self._suppress_attribution = False
 
         # set default shape colors
         Shape.line_color = QtGui.QColor(*self._config["shape"]["line_color"])
@@ -2807,6 +2861,14 @@ class LabelingWidget(LabelDialog):
             *utility_actions[2:],
         )
         central_layout.addLayout(instruction_layout)
+        self.operator_bar = OperatorBar(self.operator_service, self)
+        self.operator_bar.login_requested.connect(self.open_operator_login)
+        self.operator_bar.logout_requested.connect(self.logout_operator)
+        central_layout.addWidget(self.operator_bar)
+        self._operator_unsubscribe = self.operator_service.session.subscribe(
+            self._on_operator_session_changed
+        )
+        self._apply_operator_gate()
         central_layout.addWidget(self.auto_labeling_widget)
         canvas_panel = RoundedPanel()
         canvas_panel_layout = QVBoxLayout(canvas_panel)
@@ -3470,7 +3532,13 @@ class LabelingWidget(LabelDialog):
             if self.output_dir:
                 label_file_without_path = osp.basename(label_file)
                 label_file = self.output_dir + "/" + label_file_without_path
-            self.save_labels(label_file)
+            if not self.save_labels(label_file):
+                # The save was refused (no operator yet): keep the content
+                # marked as unsaved so it is not silently lost.
+                self.dirty = True
+                self.actions.save.setEnabled(True)
+                self.update_progress_title()
+                return
             if (
                 hasattr(self, "navigator_dialog")
                 and self.navigator_dialog.isVisible()
@@ -3491,6 +3559,112 @@ class LabelingWidget(LabelDialog):
             return
         self.other_data[IMAGE_TAGS_FIELD] = list(tags)
         self.set_dirty()
+
+    # -- operator identity ---------------------------------------------------
+    def _operator_edit_allowed(self):
+        return self.operator_service.session.is_logged_in
+
+    def _on_operator_session_changed(self, _session=None):
+        self._apply_operator_gate()
+        self._refresh_attribution_display()
+
+    def _apply_operator_gate(self):
+        """Disable the annotation tools while nobody is logged in."""
+        if self._applying_operator_gate:
+            return
+        self._applying_operator_gate = True
+        try:
+            allowed = self._operator_edit_allowed()
+            if allowed and self.filename:
+                for name in OPERATOR_REQUIRED_ACTIONS:
+                    action = getattr(self.actions, name, None)
+                    if action is not None:
+                        action.setEnabled(True)
+            elif not allowed:
+                for name in OPERATOR_REQUIRED_ACTIONS:
+                    action = getattr(self.actions, name, None)
+                    if action is not None:
+                        action.setEnabled(False)
+            tags_widget = getattr(self, "image_tags_widget", None)
+            if tags_widget is not None:
+                tags_widget.set_interactions_enabled(
+                    bool(allowed and self.image_path)
+                )
+        finally:
+            self._applying_operator_gate = False
+
+    def open_operator_login(self):
+        """Ask for an operator and log in; returns True when logged in."""
+        if self.operator_service.session.is_logged_in:
+            return True
+        dialog = OperatorDialog(self.operator_service, self)
+        return dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted
+
+    def logout_operator(self):
+        if not self.operator_service.session.is_logged_in:
+            return
+        if self.dirty and self.image_path:
+            label_file = osp.splitext(self.image_path)[0] + ".json"
+            if self.output_dir:
+                label_file = osp.join(
+                    self.output_dir, osp.basename(label_file)
+                )
+            self.save_labels(label_file)
+        self.toggle_draw_mode(True)
+        self.operator_service.logout()
+
+    def _ensure_operator(self):
+        """Require an operator before content is written; prompts if needed."""
+        if self._operator_edit_allowed():
+            return True
+        return self.open_operator_login()
+
+    def _prepare_attribution(self, shapes, flags):
+        """Stamp the author when the content really changed.
+
+        Returns ``(signature, allowed)``; ``allowed`` is ``False`` when the
+        content changed but no operator is available, in which case the caller
+        must not write the file.
+        """
+        signature = content_signature(shapes, flags, self.other_data)
+        if self._suppress_attribution or signature == self._author_baseline:
+            return signature, True
+        operator_name = self.operator_service.session.operator_name
+        if not operator_name:
+            if not self._ensure_operator():
+                return signature, False
+            operator_name = self.operator_service.session.operator_name
+            if not operator_name:
+                return signature, False
+        stamp_attribution(self.other_data, operator_name)
+        return signature, True
+
+    def _content_signature_now(self):
+        shapes = [
+            item.shape().to_dict()
+            for item in self.label_list
+            if item.shape().label
+            not in [
+                AutoLabelingMode.OBJECT,
+                AutoLabelingMode.ADD,
+                AutoLabelingMode.REMOVE,
+            ]
+        ]
+        flags = {}
+        for i in range(self.flag_widget.count()):
+            item = self.flag_widget.item(i)
+            flags[item.text()] = item.checkState() == Qt.CheckState.Checked
+        return content_signature(shapes, flags, self.other_data)
+
+    def _refresh_attribution_display(self):
+        bar = getattr(self, "operator_bar", None)
+        if bar is None:
+            return
+        if not self.image_path:
+            bar.set_attribution(None, "")
+            return
+        author, modified_at = read_attribution(self.other_data)
+        bar.set_attribution(author, modified_at)
 
     def toggle_image_tags_visibility(self, checked):
         self._image_tags_visibility = (
@@ -3573,6 +3747,7 @@ class LabelingWidget(LabelDialog):
             self.actions.delete_file.setEnabled(True)
         else:
             self.actions.delete_file.setEnabled(False)
+        self._apply_operator_gate()
 
     def get_image_progress_info(self):
         if self.filename and self.filename in self.fn_to_index:
@@ -3595,6 +3770,7 @@ class LabelingWidget(LabelDialog):
         else:
             self.actions.shape_manager.setEnabled(False)
         self.update_browse_actions()
+        self._apply_operator_gate()
 
     def update_browse_actions(self):
         index = self.fn_to_index.get(str(self.filename), -1)
@@ -4402,6 +4578,7 @@ class LabelingWidget(LabelDialog):
             create_actions[create_mode].setEnabled(False)
         self.actions.edit_mode.setEnabled(not edit)
         self.update_labeling_instruction()
+        self._apply_operator_gate()
 
     def toggle_brush_polygon_mode(self):
         """Toggle brush drawing mode for polygons."""
@@ -6149,6 +6326,9 @@ class LabelingWidget(LabelDialog):
             flag = item.checkState() == Qt.CheckState.Checked
             flags[key] = flag
         self.other_data[CHECKED_FIELD] = self._annotation_checked()
+        signature, allowed = self._prepare_attribution(shapes, flags)
+        if not allowed:
+            return False
         try:
             image_path = osp.relpath(self.image_path, osp.dirname(filename))
             image_data = (
@@ -6167,6 +6347,7 @@ class LabelingWidget(LabelDialog):
                 flags=flags,
             )
             self.label_file = label_file
+            self._author_baseline = signature
             self.actions.save.setIcon(utils.new_icon("save-check"))
             self._update_file_row_after_save(len(shapes))
             # disable allows next and previous image to proceed
@@ -6676,6 +6857,9 @@ class LabelingWidget(LabelDialog):
             flag = item.checkState() == Qt.CheckState.Checked
             flags[key] = flag
         self.other_data[CHECKED_FIELD] = self._annotation_checked()
+        signature, allowed = self._prepare_attribution(shapes, flags)
+        if not allowed:
+            return False
         try:
             image_path = osp.relpath(self.image_path, osp.dirname(filename))
             image_data = (
@@ -6695,6 +6879,7 @@ class LabelingWidget(LabelDialog):
                 flags=flags,
             )
             self.label_file = label_file
+            self._author_baseline = signature
             self.actions.save.setIcon(utils.new_icon("save-check"))
             self._update_file_row_after_save(len(shapes))
             # disable allows next and previous image to proceed
@@ -7510,6 +7695,7 @@ class LabelingWidget(LabelDialog):
         self.shape_text_label.setText(self.tr("Image Description"))
         self.shape_text_edit.setDisabled(False)
         self.canvas.relations = self.other_data.get("relations", [])
+        self._author_baseline = None
 
         # TODO(jack): icc profile issue warning
         # - qt.gui.icc: fromIccProfile: failed minimal tag size sanity
@@ -7535,7 +7721,9 @@ class LabelingWidget(LabelDialog):
         self.image_tags_widget.set_tags(
             self.other_data.get(IMAGE_TAGS_FIELD, [])
         )
-        self.image_tags_widget.set_interactions_enabled(True)
+        self.image_tags_widget.set_interactions_enabled(
+            self._operator_edit_allowed()
+        )
         if has_image_tags:
             self._auto_show_image_tags()
 
@@ -7579,12 +7767,20 @@ class LabelingWidget(LabelDialog):
 
         # load shapes
         if self._config["keep_prev"] and self.no_shape():
-            self.load_shapes(
-                prev_shapes, replace=False, update_last_label=False
-            )
-            self.set_dirty()
+            # Carrying shapes over from the previous image is not an operator
+            # edit: keep the attribution of the loaded file untouched.
+            self._suppress_attribution = True
+            try:
+                self.load_shapes(
+                    prev_shapes, replace=False, update_last_label=False
+                )
+                self.set_dirty()
+            finally:
+                self._suppress_attribution = False
         else:
             self.set_clean()
+        self._author_baseline = self._content_signature_now()
+        self._refresh_attribution_display()
         self.canvas.setEnabled(True)
 
         saved_pan = QtCore.QPointF(
@@ -7850,6 +8046,10 @@ class LabelingWidget(LabelDialog):
                 self._thumbnail_loader.shutdown()
             except (RuntimeError, AttributeError):
                 pass
+
+        unsubscribe = getattr(self, "_operator_unsubscribe", None)
+        if unsubscribe is not None:
+            unsubscribe()
 
         # ask the use for where to save the labels
         # self.settings.setValue('window/geometry', self.saveGeometry())

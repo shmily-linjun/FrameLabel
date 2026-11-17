@@ -7,6 +7,8 @@ import tempfile
 from PIL import ImageFile
 from PyQt6.QtCore import QCoreApplication
 
+from anylabeling.services.identity.attribution import ensure_attribution
+
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 from . import utils
@@ -148,6 +150,11 @@ class LabelFile:
         other_data["checked"] = (
             "failed" if checked == "failed" else checked is True
         )
+
+        # Legacy files and files produced by importers/converter paths carry
+        # no author.  Mark them explicitly as "none" instead of guessing, so
+        # the field is self-describing once the file is written again.
+        ensure_attribution(other_data, bool(shapes))
 
         # Only replace data after everything is loaded.
         self.flags = flags

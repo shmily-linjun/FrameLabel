@@ -11260,4 +11260,68 @@ Response preview:
         <source>Ready!</source>
         <translation>就绪！</translation>
     </message>
+</context><context>
+    <name>OperatorBar</name>
+    <message><source>Login</source><translation>登录</translation></message>
+    <message><source>Logout</source><translation>注销</translation></message>
+    <message><source>Browse mode - editing annotations requires login</source><translation>浏览模式 — 编辑标注需要先登录</translation></message>
+    <message><source>Annotation mode: %s</source><translation>标注模式：%s</translation></message>
+    <message><source>Author: not recorded</source><translation>标注人：未记录</translation></message>
+    <message><source>Last modified: %s</source><translation>最后修改：%s</translation></message>
+</context>
+<context>
+    <name>OperatorDialog</name>
+    <message><source>Operator Login</source><translation>操作员登录</translation></message>
+    <message><source>Login to edit annotations</source><translation>登录后可编辑标注</translation></message>
+    <message><source>Register operator</source><translation>注册操作员</translation></message>
+    <message><source>Select an operator.</source><translation>请选择操作员。</translation></message>
+    <message><source>The passwords do not match.</source><translation>两次输入的口令不一致。</translation></message>
+    <message><source>Unknown operator or wrong password.</source><translation>操作员不存在或口令错误。</translation></message>
+    <message><source>This operator is disabled.</source><translation>该操作员已被禁用。</translation></message>
+    <message><source>This operator name is already registered.</source><translation>该操作员名称已注册。</translation></message>
+    <message><source>This name is reserved.</source><translation>该名称是保留名称。</translation></message>
+    <message><source>Password must be at least %d characters.</source><translation>口令至少需要 %d 个字符。</translation></message>
+    <message><source>The operator name is not valid.</source><translation>操作员名称不合法。</translation></message>
+    <message><source>This operator cannot manage other accounts.</source><translation>该操作员无权管理其他账号。</translation></message>
+    <message><source>Cannot open the operator database: %s</source><translation>无法打开操作员数据库：%s</translation></message>
+    <message><source>The operator operation failed: %s</source><translation>操作员操作失败：%s</translation></message>
+</context>
+<context>
+    <name>_LoginPage</name>
+    <message><source>Operator name</source><translation>操作员</translation></message>
+    <message><source>Password</source><translation>口令</translation></message>
+    <message><source>Forgot password?</source><translation>忘记口令？</translation></message>
+    <message><source>Register new operator</source><translation>注册新操作员</translation></message>
+    <message><source>Cancel</source><translation>取消</translation></message>
+    <message><source>Login</source><translation>登录</translation></message>
+</context>
+<context>
+    <name>_RegisterPage</name>
+    <message><source>Operator name</source><translation>操作员</translation></message>
+    <message><source>Password</source><translation>口令</translation></message>
+    <message><source>Confirm password</source><translation>确认口令</translation></message>
+    <message><source>Back to login</source><translation>返回登录</translation></message>
+    <message><source>Cancel</source><translation>取消</translation></message>
+    <message><source>Register</source><translation>注册</translation></message>
+    <message><source>The first registered account becomes the administrator.</source><translation>首个注册的账号将成为管理员。</translation></message>
+</context>
+<context>
+    <name>PasswordResetDialog</name>
+    <message><source>Reset password</source><translation>重置口令</translation></message>
+    <message><source>Administrator</source><translation>管理员</translation></message>
+    <message><source>Administrator password</source><translation>管理员口令</translation></message>
+    <message><source>Target operator</source><translation>目标操作员</translation></message>
+    <message><source>New password</source><translation>新口令</translation></message>
+    <message><source>Confirm password</source><translation>确认口令</translation></message>
+    <message><source>Cancel</source><translation>取消</translation></message>
+    <message><source>The passwords do not match.</source><translation>两次输入的口令不一致。</translation></message>
+    <message><source>Unknown operator or wrong password.</source><translation>操作员不存在或口令错误。</translation></message>
+    <message><source>This operator is disabled.</source><translation>该操作员已被禁用。</translation></message>
+    <message><source>This operator name is already registered.</source><translation>该操作员名称已注册。</translation></message>
+    <message><source>This name is reserved.</source><translation>该名称是保留名称。</translation></message>
+    <message><source>Password must be at least %d characters.</source><translation>口令至少需要 %d 个字符。</translation></message>
+    <message><source>The operator name is not valid.</source><translation>操作员名称不合法。</translation></message>
+    <message><source>This operator cannot manage other accounts.</source><translation>该操作员无权管理其他账号。</translation></message>
+    <message><source>Cannot open the operator database: %s</source><translation>无法打开操作员数据库：%s</translation></message>
+    <message><source>The operator operation failed: %s</source><translation>操作员操作失败：%s</translation></message>
 </context></TS>

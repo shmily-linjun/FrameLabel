@@ -21,6 +21,11 @@ from PyQt6.QtWidgets import (
 )
 
 from anylabeling.app_info import __version__
+from anylabeling.services.identity.attribution import (
+    AUTHOR_FIELD,
+    AUTHOR_NONE,
+    stamp_attribution,
+)
 from anylabeling.views.labeling.utils.theme import get_theme
 from anylabeling.services.auto_labeling import (
     _BATCH_PROCESSING_AUTO_GRID_MODELS,
@@ -490,6 +495,20 @@ def save_auto_labeling_result(self, image_file, auto_labeling_result):
                 data["checked"] = False
             flags.update(new_flags)
 
+        # Machine-generated results still count as a content change made by
+        # the operator who started the run.  When no operator is available
+        # (programmatic use), record the honest sentinel instead of a stale
+        # name.
+        operator_name = ""
+        service = getattr(self, "operator_service", None)
+        if service is not None:
+            operator_name = service.session.operator_name
+        if operator_name:
+            stamp_attribution(data, operator_name)
+        else:
+            data[AUTHOR_FIELD] = AUTHOR_NONE
+            data.pop("modified_at", None)
+
         with io_open(label_file, "w") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
@@ -845,6 +864,10 @@ def run_all_images(self):
         return
 
     if len(self.image_list) < 1:
+        return
+
+    ensure_operator = getattr(self, "_ensure_operator", None)
+    if ensure_operator is not None and not ensure_operator():
         return
 
     if self.auto_labeling_widget.model_manager.loaded_model_config is None:

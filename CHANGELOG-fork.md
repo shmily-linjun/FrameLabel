@@ -8,6 +8,81 @@
 
 ---
 
+## 4.3.2+fork.4 — 2026-11-17
+
+### 1. 背景与原因
+
+现场需要回答“这张图片的标注是谁改的”，此前只能靠人工给每张图片添加名字标签，既繁琐又容易遗忘，并且把人员信息混进了业务标签语义。本轮引入**本地操作员账号 + 自动归属记录**：
+
+- 账号只在本地 SQLite 中注册与登录，不依赖任何服务端；
+- 打开软件**不强制登录**，因为软件定位是标注/训练/评估解耦，训练和评估不应被登录挡住；
+- 编辑标注需要登录（浏览模式/标注模式），软件自动把操作员写入标注文件，不再依赖记忆；
+- 归属以一个 `author` 字段记录“最后修改人”，并可加 `modified_at`；完整修订历史留给后续数据库与 revision 审计。
+
+本轮决定（用户确认）：归属存名字而非 id；只有“标注内容/tags 变化”才盖章；先做单值、不建历史；导入数据记为 `none`；首个注册账号为管理员；未登录时工具置灰而不是操作时弹窗；账号只禁用不删除、名字唯一、`none` 保留。
+
+### 2. 主要实现与关键细节
+
+#### 2.1 操作员账号库（新增 `anylabeling/services/identity/`）
+
+- `passwords.py`：PBKDF2-HMAC-SHA256（260000 次迭代、每用户 16 字节随机 salt），只用标准库，不新增依赖；口令长度至少 4 位。
+- `store.py`：`OperatorStore` 管理 `operators.db`，表 `operator(name, name_key, password_hash, password_salt, password_iterations, is_admin, disabled, created_at)` 与 `meta(schema_version)`；`name_key` 为 `casefold` 后的唯一键，`none` 大小写不敏感保留；首个注册账号为管理员；提供 `register/authenticate/change_password/set_disabled/list_operators`。
+- `session.py`：`OperatorSession` 保存当前操作员并向监听者广播；`OperatorService` 组合 store 与 session；`get_operator_service()` 为进程级唯一访问点，`reset_operator_service()` 供测试替换；`default_database_path()` 固定为 `<work_dir>/xanylabeling_data/operators/operators.db`。
+- `attribution.py`：定义 `author`/`modified_at` 契约、`none` 哨兵、`ensure_attribution()`（旧文件与导入数据按未记录补齐）、`stamp_attribution()`、`read_attribution()` 与 `content_signature()`（内容签名，排除 `checked`/`split`/归属字段本身）。
+
+#### 2.2 门禁（浏览模式 / 标注模式）
+
+- `label_widget.py` 新增 `OPERATOR_REQUIRED_ACTIONS` 清单与 `_apply_operator_gate()`：未登录时禁用创建、编辑、删除、复制粘贴、撤销、关系、标签/群组/对象管理器及批量自动标注等会改内容的动作，并关闭图片标签控件交互；登录后恢复。
+- 门禁在 `set_clean()`、`toggle_actions()`、`toggle_draw_mode()` 和会话变化后重新应用，避免加载图片或切换绘制模式时把工具重新点亮。
+- 浏览、训练、评估、导出、统计、切换 split、导入外部标注不受门禁影响。
+
+#### 2.3 自动归属与写入保护
+
+- `save_labels()`/`save_attributes()` 写盘前调用 `_prepare_attribution()`：仅当内容签名变化且存在操作员时写入 `author`/`modified_at`；签名不变则保留原归属。
+- 内容变化但没有操作员时**拒绝写盘**并弹出登录窗口；用户取消则保持 `dirty` 状态，不向文件写入任何伪造归属。`set_dirty()` 已相应处理保存失败分支。
+- 批量自动标注写盘（`utils/batch.py` 的 `save_auto_labeling_result()`）按发起运行的操作员盖章；无操作员（程序化调用）写 `none` 而不是沿用旧名字。批量入口 `run_all_images()` 先要求登录。
+- `load_file()` 记录加载时的内容签名作为基线，并在会话变化/加载完成时刷新归属显示；`keep_prev` 自动带入上一张图形时抑制盖章，视为非操作员编辑。
+
+#### 2.4 界面与文案
+
+- 新增 `OperatorBar`（画布上方常显会话条）：显示浏览/标注模式、当前操作员、当前图片“最后修改/未记录”，提供登录与注销按钮。
+- 新增 `OperatorDialog`（登录/注册双页）与 `PasswordResetDialog`（管理员重置口令）；错误以内联文案提示，不弹额外对话框。
+- 关闭软件自动退出登录：会话只在内存，不写入 YAML/QSettings，不保存口令。
+- `zh_CN/en_US/ja_JP/ko_KR` 四个 `.ts` 增加 `OperatorBar`、`OperatorDialog`、`_LoginPage`、`_RegisterPage`、`PasswordResetDialog` 上下文并重新编译 `.qm`。
+
+### 3. 涉及模块与文件
+
+- 新增：`anylabeling/services/identity/{__init__,passwords,store,session,attribution}.py`、`anylabeling/views/labeling/widgets/{operator_bar,operator_dialog}.py`；
+- 修改：`anylabeling/app_info.py`、`anylabeling/views/labeling/label_widget.py`、`label_file.py`、`utils/batch.py`、`widgets/__init__.py`、四个 `.ts` 与对应 `.qm`；
+- 测试：新增 `tests/test_identity/test_operator_store.py`、`tests/test_labeling/test_label_file_author.py`、`tests/test_labeling/test_operator_gate.py`；
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/user/zh_cn/user_guide.md`。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本由 `4.3.2+fork.3` 升至 `4.3.2+fork.4`。
+- **数据格式**：XLABEL JSON 新增可选顶层字段 `author`、`modified_at`；旧文件缺少字段时按“未记录”处理，无需迁移；字段通过 `other_data` 读写，未改动 `create_xlabel_template`，未知字段仍按原逻辑保留。
+- **操作行为**：编辑标注前必须登录；未登录时相关工具栏置灰。这是用户可观察的行为变化。
+- **新增本地文件**：`<work_dir>/xanylabeling_data/operators/operators.db`；删除该文件会丢失账号（标注数据不受影响，已有 `author` 仍保留在 JSON 中）。
+- **依赖**：仅使用标准库 `sqlite3`、`hashlib`、`hmac`，未新增第三方依赖。
+- 未改动训练、导出、模型目录、搜索/统计逻辑；未改动数据库改造（T3）与项目文件（T5）规划。
+
+### 5. 实际验证内容
+
+- 定向 pytest（获授权的一次性环境）：`tests/test_identity`、`test_label_file_author.py`、`test_label_file_load.py`、`test_label_file_save.py`、`test_operator_gate.py`、`test_image_tags.py`、`test_check_status.py`、`test_label_widget_groups.py` 合计 **51 passed / 9 subtests passed**；未运行全量测试。
+- 离屏端到端脚本（`QT_QPA_PLATFORM=offscreen`）：构造完整 `LabelingWidget`，验证未登录时创建/编辑/删除/撤销/批量入口与 tags 控件均禁用；注册登录后工具恢复；加载图片后修改 tags，JSON 写入 `author=张三` 与 `modified_at`；仅切换 `checked` 的自保存不改变归属；注销后内容变化被拒绝写盘且文件保持原值、窗口保持 dirty。
+- 翻译校验：加载四个 `.qm`，抽查 `OperatorBar`/`_LoginPage`/`OperatorDialog`/`PasswordResetDialog` 新字符串均返回预期译文。
+- 代码静态检查：相关模块 `compileall` 通过，`label_widget` 可导入。
+
+### 6. 已知限制与后续事项
+
+- `author` 为单值“最后修改人”，不保留历史；多人先后编辑同一张图只留最后一次。完整历史与唯一权威仍属于 T3 的数据库与二期 revision 审计。
+- 点云、PPOCR、VQA、图像分类、视频分类等专项工作区未纳入门禁与归属；自动标注面板的按钮本身未置灰，依赖写入保护兜底。
+- 本地账号不构成安全边界：口令哈希只防止直接读取明文，不能防篡改或抵赖。
+- `docs/dev/数据库设计-讨论稿.md` 与设计书尚未补充 `author`/操作者字段契约（讨论稿当前 schema 无该列），留待 T1 文档合并时一并处理。
+- README、发布脚本与 `docs/user/en/user_guide.md` 未同步（英文手册按规则冻结）。
+
+---
+
 ## 4.3.2+fork.3 — 2026-11-11
 
 ### 1. 背景与原因

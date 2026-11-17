@@ -1,0 +1,155 @@
+import os
+import tempfile
+import unittest
+
+from anylabeling.services.identity import (
+    OperatorCredentialsError,
+    OperatorDisabledError,
+    OperatorExistsError,
+    OperatorPermissionError,
+    OperatorStore,
+    ReservedOperatorNameError,
+    content_signature,
+    ensure_attribution,
+    read_attribution,
+    stamp_attribution,
+)
+from anylabeling.services.identity import passwords
+
+
+class TestPasswords(unittest.TestCase):
+    def test_hash_round_trip(self):
+        hash_hex, salt_hex, iterations = passwords.hash_password("abcd")
+        self.assertTrue(
+            passwords.verify_password("abcd", hash_hex, salt_hex, iterations)
+        )
+        self.assertFalse(
+            passwords.verify_password("abce", hash_hex, salt_hex, iterations)
+        )
+
+    def test_two_hashes_use_different_salts(self):
+        first = passwords.hash_password("abcd")
+        second = passwords.hash_password("abcd")
+        self.assertNotEqual(first[0], second[0])
+        self.assertNotEqual(first[1], second[1])
+
+    def test_short_password_is_rejected(self):
+        with self.assertRaises(passwords.PasswordError):
+            passwords.validate_password("abc")
+
+
+class TestOperatorStore(unittest.TestCase):
+    def setUp(self):
+        self._temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self._temporary.cleanup)
+        self.db_path = os.path.join(self._temporary.name, "operators.db")
+        self.store = OperatorStore(self.db_path)
+
+    def test_first_account_is_admin(self):
+        first = self.store.register("张三", "abcd")
+        second = self.store.register("李四", "efgh")
+        self.assertTrue(first.is_admin)
+        self.assertFalse(second.is_admin)
+        self.assertEqual(self.store.count(), 2)
+
+    def test_names_are_unique_case_insensitively(self):
+        self.store.register("Alice", "abcd")
+        with self.assertRaises(OperatorExistsError):
+            self.store.register("alice", "abcd")
+
+    def test_reserved_none_is_rejected(self):
+        for name in ("none", "None", "NONE"):
+            with self.subTest(name=name):
+                with self.assertRaises(ReservedOperatorNameError):
+                    self.store.register(name, "abcd")
+
+    def test_authenticate(self):
+        self.store.register("张三", "abcd")
+        self.assertEqual(self.store.authenticate("张三", "abcd").name, "张三")
+        with self.assertRaises(OperatorCredentialsError):
+            self.store.authenticate("张三", "wrong")
+        with self.assertRaises(OperatorCredentialsError):
+            self.store.authenticate("unknown", "abcd")
+
+    def test_admin_changes_password(self):
+        self.store.register("张三", "abcd")
+        self.store.register("李四", "efgh")
+        self.store.change_password(
+            "李四", "newpass", admin_name="张三", admin_password="abcd"
+        )
+        self.assertEqual(
+            self.store.authenticate("李四", "newpass").name, "李四"
+        )
+
+    def test_non_admin_cannot_change_password(self):
+        self.store.register("张三", "abcd")
+        self.store.register("李四", "efgh")
+        with self.assertRaises(OperatorPermissionError):
+            self.store.change_password(
+                "张三", "hacked", admin_name="李四", admin_password="efgh"
+            )
+
+    def test_disabled_account_cannot_authenticate(self):
+        self.store.register("张三", "abcd")
+        self.store.register("李四", "efgh")
+        self.store.set_disabled(
+            "李四", True, admin_name="张三", admin_password="abcd"
+        )
+        with self.assertRaises(OperatorDisabledError):
+            self.store.authenticate("李四", "efgh")
+
+
+class TestAttribution(unittest.TestCase):
+    def test_legacy_content_is_marked_none(self):
+        other_data = {}
+        self.assertTrue(ensure_attribution(other_data, True))
+        self.assertEqual(other_data["author"], "none")
+        self.assertFalse(ensure_attribution(other_data, True))
+
+    def test_empty_content_gets_no_author(self):
+        other_data = {}
+        self.assertFalse(ensure_attribution(other_data, False))
+        self.assertNotIn("author", other_data)
+
+    def test_stamp_and_read(self):
+        other_data = {"tags": []}
+        stamp_attribution(other_data, "张三")
+        author, modified_at = read_attribution(other_data)
+        self.assertEqual(author, "张三")
+        self.assertTrue(modified_at)
+
+    def test_stamp_rejects_none(self):
+        with self.assertRaises(ValueError):
+            stamp_attribution({}, "none")
+
+    def test_signature_ignores_attribution_and_review_state(self):
+        shapes = [{"label": "cat", "points": [[0, 0], [1, 1]]}]
+        other_data = {"tags": ["a"], "description": "", "checked": False}
+        baseline = content_signature(shapes, {}, other_data)
+        stamp_attribution(other_data, "张三")
+        other_data["checked"] = True
+        other_data["split"] = "train"
+        self.assertEqual(
+            baseline, content_signature(shapes, {}, other_data)
+        )
+
+    def test_signature_tracks_content_changes(self):
+        shapes = [{"label": "cat", "points": [[0, 0], [1, 1]]}]
+        other_data = {"tags": ["a"], "description": ""}
+        baseline = content_signature(shapes, {}, other_data)
+        self.assertNotEqual(
+            baseline,
+            content_signature(shapes, {}, {"tags": ["b"], "description": ""}),
+        )
+        self.assertNotEqual(
+            baseline,
+            content_signature([], {}, other_data),
+        )
+        self.assertNotEqual(
+            baseline,
+            content_signature(shapes, {"flag": True}, other_data),
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()

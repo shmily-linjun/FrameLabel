@@ -11260,4 +11260,68 @@ Response preview:
         <source>Ready!</source>
         <translation>準備完了！</translation>
     </message>
+</context><context>
+    <name>OperatorBar</name>
+    <message><source>Login</source><translation>ログイン</translation></message>
+    <message><source>Logout</source><translation>ログアウト</translation></message>
+    <message><source>Browse mode - editing annotations requires login</source><translation>閲覧モード — アノテーションの編集にはログインが必要です</translation></message>
+    <message><source>Annotation mode: %s</source><translation>アノテーションモード：%s</translation></message>
+    <message><source>Author: not recorded</source><translation>作成者：未記録</translation></message>
+    <message><source>Last modified: %s</source><translation>最終更新：%s</translation></message>
+</context>
+<context>
+    <name>OperatorDialog</name>
+    <message><source>Operator Login</source><translation>オペレーターログイン</translation></message>
+    <message><source>Login to edit annotations</source><translation>ログインするとアノテーションを編集できます</translation></message>
+    <message><source>Register operator</source><translation>オペレーターの登録</translation></message>
+    <message><source>Select an operator.</source><translation>オペレーターを選択してください。</translation></message>
+    <message><source>The passwords do not match.</source><translation>パスワードが一致しません。</translation></message>
+    <message><source>Unknown operator or wrong password.</source><translation>オペレーターが存在しないか、パスワードが違います。</translation></message>
+    <message><source>This operator is disabled.</source><translation>このオペレーターは無効です。</translation></message>
+    <message><source>This operator name is already registered.</source><translation>このオペレーター名は既に登録されています。</translation></message>
+    <message><source>This name is reserved.</source><translation>この名前は予約されています。</translation></message>
+    <message><source>Password must be at least %d characters.</source><translation>パスワードは %d 文字以上必要です。</translation></message>
+    <message><source>The operator name is not valid.</source><translation>オペレーター名が無効です。</translation></message>
+    <message><source>This operator cannot manage other accounts.</source><translation>このオペレーターは他のアカウントを管理できません。</translation></message>
+    <message><source>Cannot open the operator database: %s</source><translation>オペレーターデータベースを開けません：%s</translation></message>
+    <message><source>The operator operation failed: %s</source><translation>オペレーター操作に失敗しました：%s</translation></message>
+</context>
+<context>
+    <name>_LoginPage</name>
+    <message><source>Operator name</source><translation>オペレーター名</translation></message>
+    <message><source>Password</source><translation>パスワード</translation></message>
+    <message><source>Forgot password?</source><translation>パスワードをお忘れですか？</translation></message>
+    <message><source>Register new operator</source><translation>新しいオペレーターを登録</translation></message>
+    <message><source>Cancel</source><translation>キャンセル</translation></message>
+    <message><source>Login</source><translation>ログイン</translation></message>
+</context>
+<context>
+    <name>_RegisterPage</name>
+    <message><source>Operator name</source><translation>オペレーター名</translation></message>
+    <message><source>Password</source><translation>パスワード</translation></message>
+    <message><source>Confirm password</source><translation>パスワードの確認</translation></message>
+    <message><source>Back to login</source><translation>ログインに戻る</translation></message>
+    <message><source>Cancel</source><translation>キャンセル</translation></message>
+    <message><source>Register</source><translation>登録</translation></message>
+    <message><source>The first registered account becomes the administrator.</source><translation>最初に登録されたアカウントが管理者になります。</translation></message>
+</context>
+<context>
+    <name>PasswordResetDialog</name>
+    <message><source>Reset password</source><translation>パスワードのリセット</translation></message>
+    <message><source>Administrator</source><translation>管理者</translation></message>
+    <message><source>Administrator password</source><translation>管理者パスワード</translation></message>
+    <message><source>Target operator</source><translation>対象オペレーター</translation></message>
+    <message><source>New password</source><translation>新しいパスワード</translation></message>
+    <message><source>Confirm password</source><translation>パスワードの確認</translation></message>
+    <message><source>Cancel</source><translation>キャンセル</translation></message>
+    <message><source>The passwords do not match.</source><translation>パスワードが一致しません。</translation></message>
+    <message><source>Unknown operator or wrong password.</source><translation>オペレーターが存在しないか、パスワードが違います。</translation></message>
+    <message><source>This operator is disabled.</source><translation>このオペレーターは無効です。</translation></message>
+    <message><source>This operator name is already registered.</source><translation>このオペレーター名は既に登録されています。</translation></message>
+    <message><source>This name is reserved.</source><translation>この名前は予約されています。</translation></message>
+    <message><source>Password must be at least %d characters.</source><translation>パスワードは %d 文字以上必要です。</translation></message>
+    <message><source>The operator name is not valid.</source><translation>オペレーター名が無効です。</translation></message>
+    <message><source>This operator cannot manage other accounts.</source><translation>このオペレーターは他のアカウントを管理できません。</translation></message>
+    <message><source>Cannot open the operator database: %s</source><translation>オペレーターデータベースを開けません：%s</translation></message>
+    <message><source>The operator operation failed: %s</source><translation>オペレーター操作に失敗しました：%s</translation></message>
 </context></TS>
