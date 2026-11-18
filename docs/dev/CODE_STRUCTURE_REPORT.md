@@ -1,7 +1,7 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
-> 最近核对日期：2026-11-17（Asia/Shanghai）
-> 对应版本：4.3.2+fork.4
+> 最近核对日期：2026-11-18（Asia/Shanghai）
+> 对应版本：4.3.2+fork.5
 > 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批运行了与操作员身份、归属字段和标注持久化相关的定向 pytest，未运行全量测试。
 > 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4 已改变的结构以本文当前版本说明为准。
 > 行号锚点：`label_widget.py` 在 fork.4 中新增了身份/门禁相关代码，早前记录的行号会整体后移；定位时优先使用类名和方法名，行号仅作参考。
@@ -12,7 +12,7 @@
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
 | Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；本批随后形成 fork.4 提交，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.4，见 [app_info.py](../../anylabeling/app_info.py) |
+| 版本 | 4.3.2+fork.5，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
@@ -173,6 +173,7 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 - 写入保护与盖章：`save_labels()`/`save_attributes()` 先用 `content_signature()` 比对内容签名，只有标注内容、flags、tags、description 或 relations 变化才写 `author`/`modified_at`；勾选 `checked`、切换 `split` 不更新归属。内容确实变化但无操作员时可拒绝写盘，不会伪造作者。
 - 旧文件与导入数据统一按 `author="none"` 读取（[label_file.py](../../anylabeling/views/labeling/label_file.py) 的 `ensure_attribution`），不反推文件修改时间；自动标注批量写盘（[batch.py](../../anylabeling/views/labeling/utils/batch.py)）按发起批量运行的操作员盖章。
 - 界面表现：画布上方常显 `OperatorBar`（当前模式、当前操作员、当前图片归属、登录/注销）。未登录时工具置灰，这是刻意的可见状态，不是缺陷。
+- 契约同步：`docs/开始.md` §10、[讨论稿 §12A](数据库设计-讨论稿.md)、[设计书 §3.4](工业机器视觉数据平台-设计书-v1.6.md) 记录同一契约；账号库为应用级、项目库为数据级，不共享存储、不做外键。项目数据库的操作者列尚未落地，见 T6。
 - 已知边界：点云、PPOCR、VQA、图像分类、视频分类等专项工作区不在本批门禁和归属范围内；自动标注面板按钮本身未置灰，依赖写入保护兜底；归属只记最后修改人，不保留历史（历史/单一权威仍留给 T3 的数据库与 revision 审计）。
 
 ## 6. 模块依赖图
@@ -578,6 +579,7 @@ model_manager.py:14
 - **设置与设备：**`SettingsController` 负责校验/延迟保存，`SettingsRuntimeApplier` 将键映射到 QAction、Canvas 和 Shape。[DeviceManager](../../anylabeling/views/common/device_manager.py) 是单例，按“环境变量 → 用户 YAML → 自动检测”选择设备，并缓存 ONNX provider。
 - **更新与资源：**[protocol.py](../../anylabeling/services/updates/protocol.py) 强制 HTTPS，验证 Ed25519 清单、版本、平台、SHA-256 和大小；自动安装只在符合要求的冻结安装环境启用。[installer.py](../../anylabeling/services/updates/installer.py) 是独立更新 helper。
 - **外围脚本：**[build_executable.sh](../../scripts/build_executable.sh) 调用 PyInstaller 和各平台打包；[package_windows.ps1](../../scripts/package_windows.ps1) 调用 Inno Setup；[package_updates.py](../../scripts/package_updates.py) 准备并签名更新清单；[generate_update_key.py](../../scripts/generate_update_key.py) 生成 Ed25519 私钥；[generate_languages.py](../../scripts/generate_languages.py) 重新提取翻译；[compile_languages.py](../../scripts/compile_languages.py) 编译现有翻译和资源；[build_and_publish_pypi.sh](../../scripts/build_and_publish_pypi.sh) 构建并上传 PyPI；[generate_release_notes.py](../../scripts/generate_release_notes.py) 依赖 Git 标签；[format_code.sh](../../scripts/format_code.sh) 执行 `black .`。
+- **翻译生效链路：**运行时从 Qt 资源 `:/languages/translations/<lang>.qm` 加载（[app.py:382-384](../../anylabeling/app.py#L382-L384)），该资源内嵌在 `anylabeling/resources/resources.py`。只改 `.ts/.qm` 不会生效，必须运行 [compile_languages.py](../../scripts/compile_languages.py) 重建 `resources.py`；fork.4 曾因此出现登录界面漏译，fork.5 修正。
 - **pytest 临时目录：**[tests/conftest.py](../../tests/conftest.py) 按 PID 和 UUID 为每个测试进程建立 `temporary/runs` 下的独立目录，区分 pytest fixture 与 `tempfile`/子进程临时文件；[pyproject.toml](../../pyproject.toml) 将可复用缓存固定到 `temporary/cache/pytest`。显式 `--basetemp` 优先，但 pytest 会删除已有的显式路径，不得传共享目录。
 
 ## 15. 术语表

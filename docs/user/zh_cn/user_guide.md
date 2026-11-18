@@ -223,7 +223,7 @@ X-AnyLabeling 默认开启自动保存功能，用户在初次启动界面时，
 | `cuboid3d`    | 字典  | 仅 `cuboid` 使用的 3D 元数据，包含 `version`、`mode`、`vertices2d_order`、`depth_vector`、`source`，用于记录前后面映射和深度向量。 |
 
 
-特殊字段的定义参见 [Shape](../../anylabeling/views/labeling/shape.py) 类。
+特殊字段的定义参见 [Shape](../../../anylabeling/views/labeling/shape.py) 类。
 
 当前，用户可通过左侧工具栏中的对应功能选项、画布右键菜单或快捷键创建以下对象：
 
@@ -564,8 +564,8 @@ X-AnyLabeling 支持导入和导出 YOLO 目标检测、实例分割、旋转框
 
 在导入/导出 YOLO 标注文件之前，需要准备一份标签配置文件，具体如下：
 
-1. 对于 YOLO 目标检测、实例分割和旋转框检测任务，请参考 [classes.txt](../../assets/classes.txt) 准备配置文件，每一行代表一个类别，编号从上至下从 0 开始依次递增。
-2. 对于 YOLO 关键点检测任务，请参考 [yolov8_pose.yaml](../../assets/yolov8_pose.yaml) 进行准备，其中 `has_visible` 参数请参考[官方定义](https://docs.ultralytics.com/datasets/pose/#ultralytics-yolo-format)。
+1. 对于 YOLO 目标检测、实例分割和旋转框检测任务，请参考 [classes.txt](../../../assets/classes.txt) 准备配置文件，每一行代表一个类别，编号从上至下从 0 开始依次递增。
+2. 对于 YOLO 关键点检测任务，请参考 [yolov8_pose.yaml](../../../assets/yolov8_pose.yaml) 进行准备，其中 `has_visible` 参数请参考[官方定义](https://docs.ultralytics.com/datasets/pose/#ultralytics-yolo-format)。
 
 > 要导出 YOLO Pose 格式，需要为每组检测框及其关键点指定 `group_id`，以记录对象之间的从属关系。
 
@@ -589,7 +589,7 @@ X-AnyLabeling 支持导入和导出 YOLO 目标检测、实例分割、旋转框
 
 导出路径默认保存在当前图片目录的同级目录下的 `labels` 文件夹内。
 
-> YOLO 标签文件样式可参考 [demo.txt](../../assets/labels/demo.txt)。
+> YOLO 标签文件样式可参考 [demo.txt](../../../assets/labels/demo.txt)。
 
 ### 4.2 VOC标签
 
@@ -608,7 +608,7 @@ X-AnyLabeling 支持导入和导出检测及分割任务的 Pascal VOC 标签文
 
 导出路径默认保存在当前图片目录的同级目录下的 `Annotations` 文件夹内。
 
-> VOC 标签文件样式可参考 [demo.xml](../../assets/Annotations/demo.xml)。
+> VOC 标签文件样式可参考 [demo.xml](../../../assets/Annotations/demo.xml)。
 
 ### 4.3 COCO标签
 
@@ -616,9 +616,9 @@ X-AnyLabeling 支持导入和导出目标检测、实例分割及关键点检测
 
 在导入/导出 COCO 标注文件之前，需要准备一份标签配置文件，具体如下：
 
-1. 对于 COCO 目标检测、实例分割任务，请参考 [classes.txt](../../assets/classes.txt) 准备配置文件，其中每一行代表一个类别，编号从上至下依次递增。
-2. 对于 COCO 关键点检测任务，请参考 [yolov8_pose.yaml](../../assets/yolov8_pose.yaml) 进行准备，其中 `has_visible` 参数请参考[官方定义](https://docs.ultralytics.com/datasets/pose/#ultralytics-yolo-format)。
-3. 对于 COCO 实例分割任务，请参考 [labels.txt](../../assets/labels.txt) 进行准备。
+1. 对于 COCO 目标检测、实例分割任务，请参考 [classes.txt](../../../assets/classes.txt) 准备配置文件，其中每一行代表一个类别，编号从上至下依次递增。
+2. 对于 COCO 关键点检测任务，请参考 [yolov8_pose.yaml](../../../assets/yolov8_pose.yaml) 进行准备，其中 `has_visible` 参数请参考[官方定义](https://docs.ultralytics.com/datasets/pose/#ultralytics-yolo-format)。
+3. 对于 COCO 实例分割任务，请参考 [labels.txt](../../../assets/labels.txt) 进行准备。
 
 **导入任务**：
 
@@ -636,7 +636,7 @@ X-AnyLabeling 支持导入和导出目标检测、实例分割及关键点检测
 
 导出路径默认保存在当前图片目录的同级目录下的 `annotations` 文件夹内。
 
-> COCO 格式的对应标签文件样式可参考 [annotations](../../assets/annotations) 目录。
+> COCO 格式的对应标签文件样式可参考 [annotations](../../../assets/annotations) 目录。
 
 ### 4.4 DOTA标签
 
@@ -657,7 +657,7 @@ X-AnyLabeling 支持导入和导出 DOTA 标签文件（`*.txt`），每行格�
 
 导出路径默认保存在当前图片目录的同级目录下的 `labelTxt` 文件夹内。
 
-> DOTA 标签文件示例参见 [demo_obb.txt](../../assets/labelTxt/demo_obb.txt)。
+> DOTA 标签文件示例参见 [demo_obb.txt](../../../assets/labelTxt/demo_obb.txt)。
 
 ### 4.5 MASK标签
 
@@ -665,8 +665,8 @@ X-AnyLabeling 支持导入和导出语义分割掩码（`*.png`）。
 
 在导入/导出掩码标注文件之前，需要准备好配置文件，具体如下：
 
-1. 对于彩色图颜色映射表文件，可参考 [mask_color_map.json](../../assets/mask_color_map.json)。
-2. 对于灰度图颜色映射表文件，可参考 [mask_grayscale_map.json](../../assets/mask_grayscale_map.json)。
+1. 对于彩色图颜色映射表文件，可参考 [mask_color_map.json](../../../assets/mask_color_map.json)。
+2. 对于灰度图颜色映射表文件，可参考 [mask_grayscale_map.json](../../../assets/mask_grayscale_map.json)。
 
 可选的 `label_priority` 对象用于处理多边形重叠。整数越大，类别优先级越高；未配置的类别默认优先级为 `0`。优先级相同时按照 XLABEL `shapes` 数组中的标注层级处理，列表中靠后的形状显示在上层。未配置 `label_priority` 时，仅使用标注层级顺序。该过程只影响导出的语义掩码，不会修改原始标注。
 
@@ -697,7 +697,7 @@ X-AnyLabeling 支持导入和导出语义分割掩码（`*.png`）。
 
 X-AnyLabeling 支持一键导入/导出多目标跟踪任务相关的标签文件。
 
-在导入/导出标注文件之前，需要准备好标签配置文件，具体可参考 [classes.txt](../../assets/classes.txt)，其中每一行代表一个类别，编号由上往下依次递增。
+在导入/导出标注文件之前，需要准备好标签配置文件，具体可参考 [classes.txt](../../../assets/classes.txt)，其中每一行代表一个类别，编号由上往下依次递增。
 
 **导出任务**：
 
@@ -712,7 +712,7 @@ X-AnyLabeling 支持一键导入/导出多目标跟踪任务相关的标签文�
 3. 上传准备好的配置文件。
 4. 选择标签文件（`gt.txt`）所在目录，点击确定即可。
 
-> 标签文件样式可参考 [MOT](../../assets/MOT/) 目录，其中包含三个子文件：`seqinfo.ini`、`det.txt` 和 `gt.txt`。
+> 标签文件样式可参考 [MOT](../../../assets/MOT/) 目录，其中包含三个子文件：`seqinfo.ini`、`det.txt` 和 `gt.txt`。
 
 **seqinfo.ini**
 
@@ -786,20 +786,20 @@ X-AnyLabeling 支持一键导入/导出以下两种 PPOCR 任务的标签：
 2. `rec_gt.txt`: 识别结果
 3. `crop_img`: 识别结果对应的图片训练数据
 
-具体的标签文件样式可参考 [ppocr-rec](../../assets/ppocr/ppocr-rec/)。
+具体的标签文件样式可参考 [ppocr-rec](../../../assets/ppocr/ppocr-rec/)。
 
 对于**关键信息提取**任务，默认导出到同级的 `ppocr_kie` 文件夹，包含：
 
 1. `class_list.txt`: 标签类别列表
 2. `ppocr_kie.json`: KIE 标注结果
 
-具体的标签文件样式可参考 [ppocr-kie](../../assets/ppocr/ppocr-kie/)。
+具体的标签文件样式可参考 [ppocr-kie](../../../assets/ppocr/ppocr-kie/)。
 
 ### 4.8 ODVG标签
 
 X-AnyLabeling 支持一键导入/导出 Grounding 任务相关的标签文件。
 
-在导入/导出 ODVG 标注文件之前，需要准备好一份标签配置文件，具体可参考 [classes.txt](../../assets/classes.txt)，其中每一行代表一个类别，编号从上至下依次递增。
+在导入/导出 ODVG 标注文件之前，需要准备好一份标签配置文件，具体可参考 [classes.txt](../../../assets/classes.txt)，其中每一行代表一个类别，编号从上至下依次递增。
 
 **导入任务**：
 
@@ -814,7 +814,7 @@ X-AnyLabeling 支持一键导入/导出 Grounding 任务相关的标签文件。
 3. 上传准备好的配置文件。
 4. 选择保存路径点击确定即可。
 
-> ODVG 标签文件样式可参考 [ODVG](../../assets/ODVG)。
+> ODVG 标签文件样式可参考 [ODVG](../../../assets/ODVG)。
 
 ### 4.9 VLM-R1-OVD标签
 
@@ -832,9 +832,9 @@ X-AnyLabeling 支持一键导入/导出 VLM-R1-OVD 标签文件。
 2. 选择对应的任务。
 3. 根据实际需要填写相应的配置项点击确定即可。
 
-其中，[classes.txt](../../assets/classes.txt) 文件用于指定需要导出的类别或短语提示。若不指定，则默认以每张图片为单位检测到所有类别或短语提示作为提示类别进行导出，并自动跳过空标签文件。
+其中，[classes.txt](../../../assets/classes.txt) 文件用于指定需要导出的类别或短语提示。若不指定，则默认以每张图片为单位检测到所有类别或短语提示作为提示类别进行导出，并自动跳过空标签文件。
 
-> VLM-R1-OVD 标签文件导出示例可参考 [vlm_r1_ovd.jsonl](../../assets/vlm_r1_ovd.jsonl) 文件。
+> VLM-R1-OVD 标签文件导出示例可参考 [vlm_r1_ovd.jsonl](../../../assets/vlm_r1_ovd.jsonl) 文件。
 
 ### 4.10 MMGD标签
 
@@ -847,7 +847,7 @@ X-AnyLabeling 支持一键导入基于 [MM-Grounding-DINO](https://github.com/op
 3. 上传类别文件。
 4. 选择标签文件所在目录，并根据自己需求勾选感兴趣的类别并设置过滤阈值，点击确定即可。
 
-其中，[classes.txt](../../assets/classes.txt) 文件用于后续标签序号到类别名称的映射，每一行代表一个类别，编号从上至下从 0 开始依次递增。
+其中，[classes.txt](../../../assets/classes.txt) 文件用于后续标签序号到类别名称的映射，每一行代表一个类别，编号从上至下从 0 开始依次递增。
 
 ## 5. 工具栏
 
@@ -1284,84 +1284,84 @@ font_family: null  # null 表示使用系统默认字体，也可填写字体名
 
 ### 8.1 图像分类
 
-- 图像级分类：[链接](../../examples/classification/image-level/README.md)
-- 对象级分类：[链接](../../examples/classification/shape-level/README.md)
+- 图像级分类：[链接](../../../examples/classification/image-level/README.md)
+- 对象级分类：[链接](../../../examples/classification/shape-level/README.md)
 
 ### 8.2 目标检测
 
-- 水平目标检测：[链接](../../examples/detection/hbb/README.md)
-- 旋转目标检测：[链接](../../examples/detection/obb/README.md)
+- 水平目标检测：[链接](../../../examples/detection/hbb/README.md)
+- 旋转目标检测：[链接](../../../examples/detection/obb/README.md)
 
 ### 8.3 图像分割
 
-- 语义分割 & 实例分割：[链接](../../examples/segmentation/README.md)
-- 实例分割：[链接](../../examples/segmentation/instance_segmentation/)
-- 二值语义分割：[链接](../../examples/segmentation/binary_semantic_segmentation/)
-- 多类语义分割：[链接](../../examples/segmentation/multiclass_semantic_segmentation/)
+- 语义分割 & 实例分割：[链接](../../../examples/segmentation/README.md)
+- 实例分割：[链接](../../../examples/segmentation/instance_segmentation/)
+- 二值语义分割：[链接](../../../examples/segmentation/binary_semantic_segmentation/)
+- 多类语义分割：[链接](../../../examples/segmentation/multiclass_semantic_segmentation/)
 
 ### 8.4 姿态估计
 
-- 关键点检测：[链接](../../examples/estimation/pose_estimation/README.md)
+- 关键点检测：[链接](../../../examples/estimation/pose_estimation/README.md)
 
 ### 8.5 人脸估计
 
-- 人脸检测与关键点：[链接](../../examples/estimation/face_estimation/README.md)
+- 人脸检测与关键点：[链接](../../../examples/estimation/face_estimation/README.md)
 
 ### 8.6 多目标跟踪
 
-- 多目标跟踪：[链接](../../examples/multiple_object_tracking/README.md)
+- 多目标跟踪：[链接](../../../examples/multiple_object_tracking/README.md)
 
 ### 8.7 深度估计
 
-- 深度估计：[链接](../../examples/estimation/depth_estimation/README.md)
+- 深度估计：[链接](../../../examples/estimation/depth_estimation/README.md)
 
 ### 8.8 光学字符识别
 
-- 文本检测与识别：[链接](../../examples/optical_character_recognition/text_recognition/README.md)
-- 关键信息提取：[链接](../../examples/optical_character_recognition/key_information_extraction/README.md)
-- 文档版面分析：[链接](../../examples/optical_character_recognition/document_layout_analysis/README.md)
+- 文本检测与识别：[链接](../../../examples/optical_character_recognition/text_recognition/README.md)
+- 关键信息提取：[链接](../../../examples/optical_character_recognition/key_information_extraction/README.md)
+- 文档版面分析：[链接](../../../examples/optical_character_recognition/document_layout_analysis/README.md)
 
 ### 8.9 交互式视频目标分割
 
-- SAM 2 Video：[链接](../../examples/interactive_video_object_segmentation/sam2/README.md)
-- SAM 3 Video：[链接](../../examples/interactive_video_object_segmentation/sam3/README.md)
+- SAM 2 Video：[链接](../../../examples/interactive_video_object_segmentation/sam2/README.md)
+- SAM 3 Video：[链接](../../../examples/interactive_video_object_segmentation/sam3/README.md)
 
 ### 8.10 抠图
 
-- 图像抠图：[链接](../../examples/matting/image_matting/README.md)
+- 图像抠图：[链接](../../../examples/matting/image_matting/README.md)
 
 ### 8.11 视觉基础模型
 
-- Rex-Omni: [链接](../../examples/vision_foundation/rexomni/README.md)
-- Florence 2：[链接](../../examples/vision_foundation/florence2/README.md)
-- LocateAnything：[链接](../../examples/vision_foundation/locateanything/README.md)
-- WeVisOne-VL：[链接](../../examples/vision_foundation/wevisone_vl/README.md)
-- Xiaomi-Lens-0：[链接](../../examples/vision_foundation/xiaomi_lens/README.md)
-- GroundingPI / GroundAnything / GroundAnything-VLM: [链接](../../examples/vision_foundation/groundingpi/README.md)
+- Rex-Omni: [链接](../../../examples/vision_foundation/rexomni/README.md)
+- Florence 2：[链接](../../../examples/vision_foundation/florence2/README.md)
+- LocateAnything：[链接](../../../examples/vision_foundation/locateanything/README.md)
+- WeVisOne-VL：[链接](../../../examples/vision_foundation/wevisone_vl/README.md)
+- Xiaomi-Lens-0：[链接](../../../examples/vision_foundation/xiaomi_lens/README.md)
+- GroundingPI / GroundAnything / GroundAnything-VLM: [链接](../../../examples/vision_foundation/groundingpi/README.md)
 
 ### 8.12 目标计数
 
-- GeCo：[链接](../../examples/counting/geco/README.md)
-- GeCo2：[链接](../../examples/counting/geco2/README.md)
+- GeCo：[链接](../../../examples/counting/geco/README.md)
+- GeCo2：[链接](../../../examples/counting/geco2/README.md)
 
 ### 8.13 视觉定位
 
-- YOLOE：[链接](../../examples/grounding/yoloe/README.md)
-- SAM 3：[链接](../../examples/grounding/sam3/README.md)
+- YOLOE：[链接](../../../examples/grounding/yoloe/README.md)
+- SAM 3：[链接](../../../examples/grounding/sam3/README.md)
 
 ### 8.14 关系识别
 
-- RelateAnything：[链接](../../examples/relation/relateanything/README.md)
+- RelateAnything：[链接](../../../examples/relation/relateanything/README.md)
 
 ### 8.15 图像描述
 
-- 图像标记：[链接](../../examples/description/tagging/README.md)
-- 图像描述：[链接](../../examples/description/captioning/README.md)
+- 图像标记：[链接](../../../examples/description/tagging/README.md)
+- 图像描述：[链接](../../../examples/description/captioning/README.md)
 
 ### 8.16 文档解析
 
-- PaddleOCR-VL：[链接](../../examples/document_parsing/paddleocr_vl/README.md)
-- Unlimited-OCR-2：[链接](../../examples/document_parsing/unlimited_ocr_2/README.md)
+- PaddleOCR-VL：[链接](../../../examples/document_parsing/paddleocr_vl/README.md)
+- Unlimited-OCR-2：[链接](../../../examples/document_parsing/unlimited_ocr_2/README.md)
 
 ## 9. 模型
 
@@ -1374,7 +1374,7 @@ font_family: null  # null 表示使用系统默认字体，也可填写字体名
 - 视觉问答：[链接](./vqa.md)
 - 图像分类器：[链接](./image_classifier.md)
 - 视频分类器：[链接](./video_classifier.md)
-- Ultralytics 训练平台：[链接](../../examples/training/ultralytics/README.md)
+- Ultralytics 训练平台：[链接](../../../examples/training/ultralytics/README.md)
 - 文档解析器：[链接](./document_parser.md)
 - 3D 点云标注：[链接](./point_cloud.md)
 

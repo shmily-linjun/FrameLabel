@@ -8,6 +8,44 @@
 
 ---
 
+## 4.3.2+fork.5 — 2026-11-18
+
+### 1. 背景与原因
+
+fork.4 上线后发现登录相关界面仍是英文，用户在中文界面看不到 `登录/注销/忘记口令` 等译文。排查结论：应用从 Qt 资源 `:/languages/translations/<lang>.qm` 加载翻译，而该资源由 `anylabeling/resources/resources.py` 从 `resources.qrc` 编译生成；fork.4 只更新了散装的 `.ts/.qm` 文件，没有重新编译资源包，因此运行时仍使用旧译文。同批处理用户在评审中提出的文档缺口与失效链接。
+
+### 2. 主要实现与关键细节
+
+- **翻译资源重新编译**：执行 `scripts/compile_languages.py`（`pyside6-lrelease` + `pyside6-rcc`），重新生成四个 `.qm` 并重建 `anylabeling/resources/resources.py`，新增的 `OperatorBar`/`OperatorDialog`/`_LoginPage`/`_RegisterPage`/`PasswordResetDialog` 上下文进入内嵌资源。验证方式：从资源路径 `:/languages/translations/zh_CN.qm` 加载 `QTranslator` 并抽查新字符串。
+- **用户手册失效链接修复**：`docs/user/zh_cn/user_guide.md` 中 55 处形如 `../../assets/...`、`../../examples/...`、`../../anylabeling/...` 的相对链接实际指向 `docs/` 下，改为 `../../../...`；全文件 270 条本地链接现全部可解析。
+- **归属契约写入三份文档**：`docs/开始.md` 新增“十、标注归属与操作员契约”并登记 T6；`docs/dev/数据库设计-讨论稿.md` 新增 §12A“操作员归属与账号库边界”；`docs/dev/工业机器视觉数据平台-设计书-v1.6.md` 新增 §3.4 并记录变更行。核心结论：账号库是应用级、项目库是数据级，两者不共享存储、不做外键。
+
+### 3. 涉及模块与文件
+
+- 资源与翻译：`anylabeling/resources/resources.py`（重新生成）、`anylabeling/resources/translations/*.qm`；
+- 版本：`anylabeling/app_info.py`；
+- 文档：`CHANGELOG-fork.md`、`docs/开始.md`、`docs/dev/数据库设计-讨论稿.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/user/zh_cn/user_guide.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本由 `4.3.2+fork.4` 升至 `4.3.2+fork.5`；属于缺陷修复（界面译文不生效），不改变数据格式、接口或依赖。
+- `resources.py` 由项目脚本重新生成，行级差异很大属生成器/压缩输出差异，不是手工改写；已验证图片与翻译资源路径均可加载。
+- 文档链接修复只影响 Markdown 跳转。
+
+### 5. 实际验证内容
+
+- 从 Qt 资源路径加载 `zh_CN/ja_JP/ko_KR` 的 `.qm`，抽查 `OperatorBar.Login`、`OperatorBar.Annotation mode: %s`、`_LoginPage.Forgot password?`、`OperatorDialog` 与 `PasswordResetDialog` 的错误文案，均返回预期译文。
+- 文档本地链接检查：三份文档共 270 条本地链接，0 缺失。
+- 未重新运行 fork.4 的代码回归（本批未改 Python 业务代码）；未做 GUI 实机截图验证，译文验证基于 `QTranslator` 资源加载结果。
+
+### 6. 已知限制与后续事项
+
+- 登录会话条仍占用画布上方一行，位置是否改为菜单栏/标题栏区域尚未决定；无边框自绘标题栏方案只做了评估，未实施（见 §附录说明）。
+- `database design` 讨论稿与设计书只补充了契约说明，项目数据库 schema 仍无操作者列，待 T3 按 T6 落地。
+- 英文用户手册仍按规则冻结，未同步链接修复。
+
+---
+
 ## 4.3.2+fork.4 — 2026-11-17
 
 ### 1. 背景与原因
@@ -78,7 +116,7 @@
 - `author` 为单值“最后修改人”，不保留历史；多人先后编辑同一张图只留最后一次。完整历史与唯一权威仍属于 T3 的数据库与二期 revision 审计。
 - 点云、PPOCR、VQA、图像分类、视频分类等专项工作区未纳入门禁与归属；自动标注面板的按钮本身未置灰，依赖写入保护兜底。
 - 本地账号不构成安全边界：口令哈希只防止直接读取明文，不能防篡改或抵赖。
-- `docs/dev/数据库设计-讨论稿.md` 与设计书尚未补充 `author`/操作者字段契约（讨论稿当前 schema 无该列），留待 T1 文档合并时一并处理。
+- `docs/dev/数据库设计-讨论稿.md` 与设计书尚未补充 `author`/操作者字段契约（讨论稿当前 schema 无该列），留待 T1 文档合并时一并处理。→ **fork.5 已补契约说明**（讨论稿 §12A、设计书 §3.4、`开始.md` §10/T6）；项目数据库的操作者列仍待 T3/T6 落地。
 - README、发布脚本与 `docs/user/en/user_guide.md` 未同步（英文手册按规则冻结）。
 
 ---
