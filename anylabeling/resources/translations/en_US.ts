@@ -9271,6 +9271,11 @@ Changes will not be saved until you click Save.</translation>
         <source>Zoom To Original</source>
         <translation>Zoom To Original</translation>
     </message>
+    <message><source>Toolbar</source><translation>Toolbar</translation></message>
+    <message><source>Show Tool Labels</source><translation>Show Tool Labels</translation></message>
+    <message><source>Show a short label under every tool; turn it off to show more tools without scrolling.</source><translation>Show a short label under every tool; turn it off to show more tools without scrolling.</translation></message>
+    <message><source>Select All</source><translation>Select All</translation></message>
+    <message><source>Toolbar changes are applied immediately</source><translation>Toolbar changes are applied immediately</translation></message>
 </context><context>
     <name>SettingsRuntimeApplier</name>
     <message>

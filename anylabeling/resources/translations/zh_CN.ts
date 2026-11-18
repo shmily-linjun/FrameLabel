@@ -9269,6 +9269,11 @@ Changes will not be saved until you click Save.</source>
         <source>Zoom To Original</source>
         <translation>原始大小</translation>
     </message>
+    <message><source>Toolbar</source><translation>工具栏</translation></message>
+    <message><source>Show Tool Labels</source><translation>显示工具标签</translation></message>
+    <message><source>Show a short label under every tool; turn it off to show more tools without scrolling.</source><translation>在每个工具下方显示简短文字；关闭后可在不滚动的情况下显示更多工具。</translation></message>
+    <message><source>Select All</source><translation>全选</translation></message>
+    <message><source>Toolbar changes are applied immediately</source><translation>工具栏修改立即生效</translation></message>
 </context><context>
     <name>SettingsRuntimeApplier</name>
     <message>

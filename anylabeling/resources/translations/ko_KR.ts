@@ -9271,6 +9271,11 @@ Changes will not be saved until you click Save.</source>
         <source>Zoom To Original</source>
         <translation>원래 크기</translation>
     </message>
+    <message><source>Toolbar</source><translation>도구 모음</translation></message>
+    <message><source>Show Tool Labels</source><translation>도구 라벨 표시</translation></message>
+    <message><source>Show a short label under every tool; turn it off to show more tools without scrolling.</source><translation>각 도구 아래에 짧은 라벨을 표시합니다. 끄면 스크롤하지 않고 더 많은 도구를 표시할 수 있습니다.</translation></message>
+    <message><source>Select All</source><translation>모두 선택</translation></message>
+    <message><source>Toolbar changes are applied immediately</source><translation>도구 모음 변경 사항은 즉시 적용됩니다</translation></message>
 </context><context>
     <name>SettingsRuntimeApplier</name>
     <message>

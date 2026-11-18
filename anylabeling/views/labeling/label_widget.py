@@ -3155,6 +3155,13 @@ class LabelingWidget(LabelDialog):
         # XXX: Could be completely declarative.
         # Restore application settings.
         self.settings = QtCore.QSettings("anylabeling", "anylabeling")
+        self._toolbar_show_labels = self.settings.value(
+            "toolbar/show_labels", True, type=bool
+        )
+        hidden = self.settings.value("toolbar/hidden_actions", []) or []
+        self._toolbar_hidden_keys = {str(key) for key in hidden}
+        if hasattr(self, "tools"):
+            self.tools.set_label_mode(self._toolbar_show_labels)
         self.recent_files = self.settings.value("recent_files", []) or []
         self.last_open_dir = self.settings.value("last_open_dir", None) or None
 
@@ -3529,9 +3536,7 @@ class LabelingWidget(LabelDialog):
         toolbar = ToolBar(title, parent=self)
         toolbar.setObjectName(f"{title}ToolBar")
         toolbar.setOrientation(Qt.Orientation.Horizontal)
-        toolbar.setToolButtonStyle(
-            Qt.ToolButtonStyle.ToolButtonTextUnderIcon
-        )
+        toolbar.set_label_mode(getattr(self, "_toolbar_show_labels", True))
         toolbar.setIconSize(QtCore.QSize(18, 18))
         if actions:
             utils.add_actions(toolbar, actions)
@@ -3557,8 +3562,16 @@ class LabelingWidget(LabelDialog):
             if label:
                 action.setIconText(label)
             button = toolbar.widgetForAction(action)
-            if button is not None and action.toolTip():
-                button.setToolTip(action.toolTip())
+            if button is not None:
+                if action.toolTip():
+                    button.setToolTip(action.toolTip())
+                # Fixed size keeps QToolBar from squeezing labels; the
+                # overflow goes to the toolbar's extension button instead.
+                if getattr(self, "_toolbar_show_labels", True):
+                    hint = button.sizeHint()
+                    button.setFixedSize(hint.width(), hint.height())
+                else:
+                    button.setFixedSize(26, 30)
         theme = get_theme()
         for button, label, icon_name in (
             (self.settings_button, self.tr("Settings"), "settings"),
@@ -3607,11 +3620,52 @@ class LabelingWidget(LabelDialog):
     def no_shape(self):
         return len(self.label_list) == 0
 
+    def toolbar_preferences(self):
+        return (
+            bool(getattr(self, "_toolbar_show_labels", True)),
+            set(getattr(self, "_toolbar_hidden_keys", set())),
+        )
+
+    def toolbar_entries(self):
+        entries = []
+        for index, tool_action in enumerate(self.actions.tool):
+            if tool_action is None:
+                continue
+            entries.append(
+                (str(index), tool_action.text(), tool_action.toolTip())
+            )
+        return entries
+
+    def apply_toolbar_preferences(self, show_labels, hidden_keys):
+        self._toolbar_show_labels = bool(show_labels)
+        self._toolbar_hidden_keys = {str(key) for key in hidden_keys}
+        self.settings.setValue(
+            "toolbar/show_labels", self._toolbar_show_labels
+        )
+        self.settings.setValue(
+            "toolbar/hidden_actions", sorted(self._toolbar_hidden_keys)
+        )
+        self.settings.sync()
+        self.tools.set_label_mode(self._toolbar_show_labels)
+        self.populate_mode_actions()
+
     def populate_mode_actions(self):
         tool = self.actions.tool
         menu = self.actions.menu
         self.tools.clear()
-        utils.add_actions(self.tools, tool)
+        visible_tool = []
+        for index, tool_action in enumerate(tool):
+            if tool_action is None:
+                visible_tool.append(None)
+            elif str(index) not in getattr(
+                self, "_toolbar_hidden_keys", set()
+            ):
+                visible_tool.append(tool_action)
+        while visible_tool and visible_tool[0] is None:
+            visible_tool.pop(0)
+        while visible_tool and visible_tool[-1] is None:
+            visible_tool.pop()
+        utils.add_actions(self.tools, tuple(visible_tool))
         self._apply_toolbar_short_labels(self.tools)
         # Keep settings/shortcuts visible at the top of a vertical toolbar;
         # otherwise the overflow menu hides them on smaller windows.

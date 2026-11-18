@@ -81,7 +81,7 @@ class TestSettingsSchema(unittest.TestCase):
     def test_primary_and_key_sets(self):
         self.assertEqual(
             SETTINGS_PRIMARY_ORDER,
-            ("Shortcuts", "General", "Shape", "Canvas"),
+            ("Shortcuts", "General", "Toolbar", "Shape", "Canvas"),
         )
         self.assertEqual(len(SETTINGS_GENERAL_KEYS), 10)
         self.assertEqual(len(SETTINGS_SHAPE_KEYS), 9)

@@ -9269,6 +9269,11 @@ Changes will not be saved until you click Save.</source>
         <source>Zoom To Original</source>
         <translation>元のサイズ</translation>
     </message>
+    <message><source>Toolbar</source><translation>ツールバー</translation></message>
+    <message><source>Show Tool Labels</source><translation>ツールラベルを表示</translation></message>
+    <message><source>Show a short label under every tool; turn it off to show more tools without scrolling.</source><translation>各ツールの下に短いラベルを表示します。オフにすると、スクロールせずにより多くのツールを表示できます。</translation></message>
+    <message><source>Select All</source><translation>すべて選択</translation></message>
+    <message><source>Toolbar changes are applied immediately</source><translation>ツールバーの変更はすぐに反映されます</translation></message>
 </context><context>
     <name>SettingsRuntimeApplier</name>
     <message>

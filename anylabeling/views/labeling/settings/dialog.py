@@ -101,6 +101,9 @@ class SettingsDialog(QtWidgets.QDialog):
         self._did_show_once = False
         self._combo_animation_effect: Any | None = None
         self._combo_animation_prev_enabled: bool | None = None
+        self._toolbar_checks: dict[str, QtWidgets.QCheckBox] = {}
+        self._toolbar_labels_check: QtWidgets.QCheckBox | None = None
+        self._toolbar_all_check: QtWidgets.QCheckBox | None = None
 
         self.setModal(False)
         self.setWindowTitle(self.tr("Settings"))
@@ -183,6 +186,7 @@ class SettingsDialog(QtWidgets.QDialog):
         icon_names = {
             "Shortcuts": "command",
             "General": "sliders-horizontal",
+            "Toolbar": "settings",
             "Canvas": "frame",
             "Shape": "shapes",
         }
@@ -811,6 +815,18 @@ class SettingsDialog(QtWidgets.QDialog):
             )
 
         fields = fields_for_primary(primary)
+        if primary == "Toolbar":
+            self._set_bottom_controls_visible(False)
+            self._render_toolbar_page()
+            self._content_height_hint = max(
+                340, self.content_body.sizeHint().height()
+            )
+            self._update_card_max_height()
+            self._set_status(
+                self.tr("Toolbar changes are applied immediately"), "info"
+            )
+            self.content_scroll.verticalScrollBar().setValue(0)
+            return
         if primary in {"General", "Shape", "Canvas"}:
             strip_prefix = "canvas." if primary == "Canvas" else None
             self._render_form_fields(fields, strip_prefix=strip_prefix)
@@ -831,6 +847,92 @@ class SettingsDialog(QtWidgets.QDialog):
         )
         self._update_card_max_height()
         self.content_scroll.verticalScrollBar().setValue(0)
+
+    def _render_toolbar_page(self) -> None:
+        parent = self.parent()
+        show_labels = True
+        hidden: set[str] = set()
+        entries: list[tuple[str, str, str]] = []
+        if parent is not None and hasattr(parent, "toolbar_preferences"):
+            show_labels, hidden = parent.toolbar_preferences()
+            entries = parent.toolbar_entries()
+
+        container = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout(container)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(6)
+
+        self._toolbar_labels_check = QtWidgets.QCheckBox(
+            self.tr("Show Tool Labels"), container
+        )
+        self._toolbar_labels_check.setChecked(bool(show_labels))
+        layout.addWidget(self._toolbar_labels_check)
+        hint = QtWidgets.QLabel(
+            self.tr(
+                "Show a short label under every tool; turn it off to show "
+                "more tools without scrolling."
+            ),
+            container,
+        )
+        hint.setWordWrap(True)
+        hint.setStyleSheet(f"color: {self._rgb('desc_text')};")
+        layout.addWidget(hint)
+
+        self._toolbar_all_check = QtWidgets.QCheckBox(
+            self.tr("Select All"), container
+        )
+        self._toolbar_all_check.setChecked(not hidden)
+        layout.addWidget(self._toolbar_all_check)
+
+        self._toolbar_checks = {}
+        for key, name, tip in entries:
+            check = QtWidgets.QCheckBox(name, container)
+            check.setChecked(key not in hidden)
+            if tip:
+                check.setToolTip(tip)
+            layout.addWidget(check)
+            self._toolbar_checks[key] = check
+        layout.addStretch(1)
+        self.content_body_layout.addWidget(container)
+
+        self._toolbar_labels_check.toggled.connect(
+            lambda _checked=False: self._apply_toolbar_state()
+        )
+        self._toolbar_all_check.toggled.connect(
+            self._on_toolbar_all_toggled
+        )
+        for check in self._toolbar_checks.values():
+            check.toggled.connect(
+                lambda _checked=False: self._apply_toolbar_state()
+            )
+
+    def _on_toolbar_all_toggled(self, checked: bool) -> None:
+        for check in self._toolbar_checks.values():
+            check.blockSignals(True)
+            check.setChecked(checked)
+            check.blockSignals(False)
+        self._apply_toolbar_state()
+
+    def _apply_toolbar_state(self) -> None:
+        parent = self.parent()
+        if parent is None or not hasattr(
+            parent, "apply_toolbar_preferences"
+        ):
+            return
+        if self._toolbar_labels_check is None:
+            return
+        hidden = {
+            key
+            for key, check in self._toolbar_checks.items()
+            if not check.isChecked()
+        }
+        parent.apply_toolbar_preferences(
+            self._toolbar_labels_check.isChecked(), hidden
+        )
+        if self._toolbar_all_check is not None:
+            self._toolbar_all_check.blockSignals(True)
+            self._toolbar_all_check.setChecked(not hidden)
+            self._toolbar_all_check.blockSignals(False)
 
     def _update_card_max_height(self) -> None:
         card_parent = self.content_card.parentWidget()

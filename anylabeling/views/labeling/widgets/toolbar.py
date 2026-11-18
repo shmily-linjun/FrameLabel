@@ -43,13 +43,25 @@ class ToolBar(QtWidgets.QToolBar):
         )
         self._icon_size = 18
         self._button_size = 26
+        self._label_mode = True
         self.setIconSize(
             QtCore.QSize(self._icon_size, self._icon_size),
         )
         self._apply_style()
 
+    def set_label_mode(self, enabled):
+        self._label_mode = bool(enabled)
+        self.setToolButtonStyle(
+            QtCore.Qt.ToolButtonStyle.ToolButtonTextUnderIcon
+            if self._label_mode
+            else QtCore.Qt.ToolButtonStyle.ToolButtonIconOnly
+        )
+        self._apply_style()
+
     def _apply_style(self):
         t = get_theme()
+        min_width = self._button_size + (44 if self._label_mode else 0)
+        min_height = self._button_size + (20 if self._label_mode else 0)
         self.setStyleSheet(f"""
             QToolBar {{
                 background: transparent;
@@ -63,8 +75,8 @@ class ToolBar(QtWidgets.QToolBar):
                 background: transparent;
                 padding: 2px 4px;
                 margin: 0px;
-                min-width: {self._button_size}px;
-                min-height: {self._button_size + 16}px;
+                min-width: {min_width}px;
+                min-height: {min_height}px;
             }}
             QToolBar QToolButton:hover {{
                 border: 1px solid {t["border_light"]};

@@ -8,6 +8,53 @@
 
 ---
 
+## 4.3.2+fork.15 — 2026-11-18
+
+### 1. 背景与原因
+
+fork.14 的工具栏在顶部停靠时仍会被 QToolBar 压缩，四字标签变成“…”或被挤压；左侧也仍靠滚动/溢出隐藏工具。用户要求：带文字的工具不得压缩，放不下的应收进“»/⌵”折叠菜单；并在设置窗口增加“工具栏”页控制各工具显隐与标签开关。
+
+### 2. 修改与关键细节
+
+- **禁止压缩**：每个工具按钮按内容计算并 `setFixedSize`；`ToolBar` 的 QSS `min-width` 在标签模式下为 70px、图标模式下为 26px。放不下的项由 QToolBar 自带的 extension 按钮（“»”）折叠，不再挤压文字。
+- **设置页“工具栏”**：`SETTINGS_PRIMARY_ORDER` 增加 `Toolbar`（位于“常规”之后），页面提供：
+  - “显示工具标签”开关（关闭后切回纯图标，可显示更多工具）；
+  - “全选”；
+  - 按工具逐项勾选显示/隐藏（列出全部 45 项，含名称与动作描述 tooltip）；
+  - 修改即时生效并写入 `QSettings`：`toolbar/show_labels`、`toolbar/hidden_actions`。
+- 工具栏布局在 `LabelingWidget.populate_mode_actions()` 中按隐藏键过滤；隐藏键使用 `actions.tool` 的索引字符串，避免依赖翻译后的名称。
+- 设置页没有沿用快捷键页的底部“重置/保存”按钮：本页采用即时生效（与常规/画布页一致的自动保存语义）。
+
+### 3. 涉及模块与文件
+
+- `anylabeling/views/labeling/widgets/toolbar.py`（标签模式 QSS/尺寸）；
+- `anylabeling/views/labeling/label_widget.py`（过滤、设置读写、按钮固定尺寸）；
+- `anylabeling/views/labeling/settings/schema.py`、`dialog.py`（新页面与渲染）；
+- `tests/test_settings/test_schema.py`（主分类顺序）；
+- 翻译与文档。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本 `4.3.2+fork.14` → `4.3.2+fork.15`；无数据契约变化。
+- 新增 QSettings 键 `toolbar/show_labels`、`toolbar/hidden_actions`（应用级，不随项目）。
+- 设置窗口新增“工具栏”页；工具显隐与标签开关立即生效，重启后保持。
+- 原有“工具栏停靠到顶部/左侧”与显隐逻辑不变。
+
+### 5. 实际验证内容
+
+- 顶部停靠几何：按钮宽度 78–103px（不再 34px），extension 按钮可见；左侧停靠宽度 119px，标签单行。
+- 离屏冒烟：设置页列出 45 个工具项；“显示工具标签”关闭后工具栏切到 `ToolButtonIconOnly`；取消勾选一项后工具栏动作数 51→50。
+- `tests/test_settings`：48 passed、1 skipped；`tests/test_widgets`：72 passed（另 1 个既有 canvas 节流用例时序敏感失败，单跑通过）；模块单测 17 passed。
+- 未执行：真实鼠标逐个悬停确认；真实点击设置页并重启验证持久化（本会话 QSettings 写入受沙箱限制返回 AccessError，代码路径与读取已验证）。
+
+### 6. 已知限制与后续事项
+
+- 设置页采用即时生效，没有“重置/保存”按钮（与用户草图不同）；如需要可再加“恢复默认（全部显示 + 标签开）”。
+- 隐藏项仍保留快捷键与菜单入口，只是不在工具栏出现。
+- 英文界面短标签仍可能同名；中文为 4 字截断。
+
+---
+
 ## 4.3.2+fork.14 — 2026-11-18
 
 ### 1. 背景与原因

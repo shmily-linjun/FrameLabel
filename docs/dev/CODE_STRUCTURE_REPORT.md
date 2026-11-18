@@ -1,7 +1,7 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-18（Asia/Shanghai）
-> 对应版本：4.3.2+fork.14
+> 对应版本：4.3.2+fork.15
 > 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批运行了与操作员身份、归属字段和标注持久化相关的定向 pytest，未运行全量测试。
 > 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4 已改变的结构以本文当前版本说明为准。
 > 行号锚点：`label_widget.py` 在 fork.4 中新增了身份/门禁相关代码，早前记录的行号会整体后移；定位时优先使用类名和方法名，行号仅作参考。
@@ -12,7 +12,7 @@
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
 | Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；本批随后形成 fork.4 提交，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.14，见 [app_info.py](../../anylabeling/app_info.py) |
+| 版本 | 4.3.2+fork.15，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
@@ -204,7 +204,8 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 ```
 
 - 工具栏默认停靠左侧；`window/toolbar_area_scheme` 做一次性迁移，之后用户选择优先。
-- 按钮短标签由 `LabelingWidget._short_tool_label()` 生成并写入 `QAction.iconText`；`ToolBar` QSS 使用 `min-width/min-height` 让按钮随文字自适应。
+- 按钮短标签由 `LabelingWidget._short_tool_label()` 生成并写入 `QAction.iconText`；`ToolBar` QSS 使用 `min-width/min-height` 让按钮随文字自适应；按钮再按内容 `setFixedSize`，放不下的项交给 QToolBar 的 extension 折叠，不再压缩文字。
+- 设置窗口新增“工具栏”页（`SETTINGS_PRIMARY_ORDER` 中的 `Toolbar`）：显示/隐藏标签、全选、逐项显隐；写入 `toolbar/show_labels`、`toolbar/hidden_actions`，`populate_mode_actions()` 按索引过滤。
 - 导入入口复用 `import_files_dialog()`（追加）与 `open_folder_dialog()`（重建），右键菜单允许空列表使用。
 - 状态栏消息标签位于文档标签之前，临时提示不会把文档信息推到右侧或隐藏。
 
