@@ -8,6 +8,44 @@
 
 ---
 
+## 4.3.2+fork.16 — 2026-11-18
+
+### 1. 背景与原因
+
+fork.15 后实测发现：取消“显示工具标签”时设置/快捷键仍显示文字；设置页出现两个无名称 checkbox；点击工具栏“»”后 QMenu 因高度超屏被拆成多列并排，画面错乱；暗色主题下“»”几乎看不见。
+
+### 2. 修改与关键细节
+
+- **标签开关覆盖设置/快捷键**：`_apply_toolbar_short_labels()` 根据 `_toolbar_show_labels` 同时切换这两个 QWidgetAction 按钮的 `ToolButtonIconOnly` 与空文本（标签模式下恢复“设置/快捷键”）。
+- **无名 checkbox**：`toolbar_entries()` 跳过文本为空的动作（设置/快捷键的 QWidgetAction），设置页不再生成空白项；当前列出 43 个可切换工具。
+- **折叠改为可滚动弹层**：断开 QToolBar 内置 extension 按钮的 `clicked/pressed` 连接，改为自绘 `QFrame` 弹层（`Qt.Popup` + `QScrollArea`，240×最多 520），内部按单列列出放不下的工具，超出时用垂直滚动条而不是多列并排；点击项触发动作并关闭弹层。
+- **暗色主题可见性**：extension 按钮改为自绘 16px 主题色箭头（水平向下、垂直向右），固定 28×30，并设置 tooltip“更多工具”；不再依赖 Qt 默认箭头颜色。
+
+### 3. 涉及模块与文件
+
+- `anylabeling/views/labeling/label_widget.py`（短标签开关、空项过滤、overflow 弹层、箭头图标）；
+- `anylabeling/views/mainwindow.py`（停靠后重新安装 overflow 处理）；
+- 文档与版本号。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本 `4.3.2+fork.15` → `4.3.2+fork.16`；无配置键/数据契约变化。
+- 用户可观察：关闭标签后设置/快捷键变为纯图标；设置页无空白项；点击“»”弹出单列可滚动列表；暗色下箭头清晰。
+
+### 5. 实际验证内容
+
+- 离屏冒烟：`apply_toolbar_preferences(False, set())` 后设置/快捷键均为 `ToolButtonIconOnly` 且文本为空；`toolbar_entries()` 返回 43 项且无空文本；点击 extension 生成 `QFrame` 弹层（240×520），无可见 `QMenu`（内置菜单已被断开）。
+- `tests/test_settings`：48 passed、1 skipped；`tests/test_widgets`：72 passed（另 1 个既有 canvas 节流用例时序敏感失败，单跑通过）；模块单测 17 passed。
+- 未执行：真实暗色主题下的箭头/弹层目视确认（逻辑与配色已按主题设置）。
+
+### 6. 已知限制与后续事项
+
+- 弹层为单列滚动，未做搜索框；工具很多时滚动仍较长。
+- 断开 QToolBar 内置 extension 连接属于 Qt 内部行为依赖，升级 Qt 后需回归一次。
+- 设置页仍为即时生效，无“重置/保存”按钮。
+
+---
+
 ## 4.3.2+fork.15 — 2026-11-18
 
 ### 1. 背景与原因

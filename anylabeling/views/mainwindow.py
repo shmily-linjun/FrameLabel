@@ -366,6 +366,9 @@ class MainWindow(FramelessWindow):
         if not toolbar.isVisible():
             toolbar.show()
         self.addToolBar(area, toolbar)
+        view = getattr(self.labeling_widget, "view", None)
+        if view is not None and hasattr(view, "_install_toolbar_overflow"):
+            QtCore.QTimer.singleShot(0, view._install_toolbar_overflow)
         self._save_toolbar_area()
 
     def set_toolbar_visible(self, visible):
