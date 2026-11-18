@@ -286,8 +286,8 @@ class MainWindow(FramelessWindow):
         # Users who never chose an area get the new left default; an explicit
         # later choice is persisted and respected.
         scheme = self.settings.value("window/toolbar_area_scheme", 1, type=int)
-        if scheme < 2:
-            self.settings.setValue("window/toolbar_area_scheme", 2)
+        if scheme < 3:
+            self.settings.setValue("window/toolbar_area_scheme", 3)
             self.settings.setValue("window/toolbar_area", "left")
             self.settings.sync()
             return _TOOLBAR_AREA_NAMES["left"]

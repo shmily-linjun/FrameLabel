@@ -2864,6 +2864,7 @@ class LabelingWidget(LabelDialog):
             None,
             *utility_actions,
         )
+        self._utility_toolbar_actions = utility_actions
         central_layout.addLayout(instruction_layout)
         self.operator_bar = OperatorBar(self.operator_service, self)
         self.operator_bar.login_requested.connect(self.open_operator_login)
@@ -3555,6 +3556,24 @@ class LabelingWidget(LabelDialog):
             label = self._short_tool_label(action.text())
             if label:
                 action.setIconText(label)
+            button = toolbar.widgetForAction(action)
+            if button is not None and action.toolTip():
+                button.setToolTip(action.toolTip())
+        theme = get_theme()
+        for button, label, icon_name in (
+            (self.settings_button, self.tr("Settings"), "settings"),
+            (self.shortcuts_button, self.tr("Shortcuts"), "command"),
+        ):
+            button.setToolButtonStyle(
+                Qt.ToolButtonStyle.ToolButtonTextUnderIcon
+            )
+            button.setText(self._short_tool_label(label))
+            button.setToolTip(label)
+            button.setIcon(
+                get_icon(icon_name, theme["text"], theme["primary"])
+            )
+            button.setIconSize(QtCore.QSize(18, 18))
+            button.setFixedSize(56, 46)
 
     def toolbar_scroll_area(self, toolbar):
         scroll_area = ToolBarScrollArea()
@@ -3594,6 +3613,12 @@ class LabelingWidget(LabelDialog):
         self.tools.clear()
         utils.add_actions(self.tools, tool)
         self._apply_toolbar_short_labels(self.tools)
+        # Keep settings/shortcuts visible at the top of a vertical toolbar;
+        # otherwise the overflow menu hides them on smaller windows.
+        for action in reversed(getattr(self, "_utility_toolbar_actions", [])):
+            actions = self.tools.actions()
+            if actions:
+                self.tools.insertAction(actions[0], action)
 
         self.canvas.menus[0].clear()
         utils.add_actions(self.canvas.menus[0], menu)
