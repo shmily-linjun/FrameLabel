@@ -1,7 +1,7 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-18（Asia/Shanghai）
-> 对应版本：4.3.2+fork.6
+> 对应版本：4.3.2+fork.7
 > 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批运行了与操作员身份、归属字段和标注持久化相关的定向 pytest，未运行全量测试。
 > 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4 已改变的结构以本文当前版本说明为准。
 > 行号锚点：`label_widget.py` 在 fork.4 中新增了身份/门禁相关代码，早前记录的行号会整体后移；定位时优先使用类名和方法名，行号仅作参考。
@@ -12,7 +12,7 @@
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
 | Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；本批随后形成 fork.4 提交，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.6，见 [app_info.py](../../anylabeling/app_info.py) |
+| 版本 | 4.3.2+fork.7，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
@@ -22,13 +22,13 @@
 
 ### 1.1 规模与统计口径
 
-当前枚举 `anylabeling` 下有 443 个 Python 文件，`tests` 下有 141 个 Python 文件。AST 与依赖统计仍排除：
+当前枚举 `anylabeling` 下有 452 个 Python 文件，`tests` 下有 142 个 Python 文件。AST 与依赖统计仍排除：
 
 - [resources.py](../../anylabeling/resources/resources.py)：生成代码，只分析加载关系；
 - `anylabeling/services/auto_labeling/visualgd/model/ops/build` 下 8 个生成 Python 文件；
 - `__pycache__` 缓存。
 
-因此当前统计集合为 **434 个 Python 文件、667 个唯一类名**。相比 fork.3，新增 7 个应用文件来自操作员身份服务包（4 个模块与 1 个包入口）、登录/注册对话框和会话条控件；新增 3 个测试文件为身份库、归属字段与门禁逻辑测试。核心类排名未整体重算，新增类按职责补入模块表与核心类表。
+因此当前统计集合为 **443 个 Python 文件、676 个唯一类名**。相比 fork.3，新增应用文件来自操作员身份服务包、登录/注册对话框与会话控件，以及 fork.7 的无边框窗口包（`anylabeling/widgets/frameless/` 8 个模块 + `anylabeling/widgets/__init__.py`）；新增测试文件为身份库、归属字段、门禁逻辑与无边框窗口测试。
 
 ### 1.2 纳入范围
 
@@ -97,6 +97,7 @@ main() → MainWindow → LabelingWrapper → LabelingWidget
 | 应用入口 | CLI 分发、GUI 初始化、更新启动 | [app.py](../../anylabeling/app.py)、[app_info.py](../../anylabeling/app_info.py) | `main()` | 配置、主窗口、转换、训练、更新 | 入口 | 深入 | 修改命令参数须同步训练 worker 的命令构造，不能只改帮助文本 |
 | 配置与设置 | 默认/用户/CLI 配置合并及保存 | [config.py](../../anylabeling/config.py)、[controller.py](../../anylabeling/views/labeling/settings/controller.py) | `get_config()`、`save_config()`、`SettingsController` | 默认 YAML、日志 | 支撑 | 深入 | 新增键需同步默认 schema 与设置 schema；未知键不会自动加入配置 |
 | 主窗口与标注编排 | 文件、图形、菜单、右侧 tab、工具栏及自动标注状态协调 | [mainwindow.py](../../anylabeling/views/mainwindow.py)、[label_widget.py](../../anylabeling/views/labeling/label_widget.py) | `MainWindow`、`LabelingWidget` | 多个 UI 与业务服务 | 核心 | 深入 | 工具栏状态使用显式 QSettings 键；`LabelingWidget` 直接访问自动标注 manager，并持有训练/专项窗口，改构造参数或生命周期会多点联动 |
+| 无边框窗口 chrome | 启动形态二选一、自绘标题栏与窗口按钮、菜单嵌入/显隐、全屏、Windows 原生命中测试 | [widgets/frameless/](../../anylabeling/widgets/frameless) | `FramelessWindow`、`FrameMenuBar`、`TitleBar`、`FramelessTheme` | Qt、`get_theme()`、QSettings（宿主） | 支撑 | 新增 | 模块不依赖业务代码，可整包复制；Windows 原生行为需实机回归；启动后不能切换形态 |
 | 文件列表、搜索与统计 | 五列文件表、布尔/`split` 查询、类别×划分统计及点击反筛 | [label_widget.py](../../anylabeling/views/labeling/label_widget.py)、[file_search.py](../../anylabeling/views/labeling/utils/file_search.py)、[dataset_statistics.py](../../anylabeling/views/labeling/utils/dataset_statistics.py)、[statistics_table.py](../../anylabeling/views/labeling/widgets/statistics_table.py) | `FileTableWidget`、`parse_search_query()`、`filter_image_files()`、`StatisticsTable` | 标注 JSON、文件元数据、配置 | 核心 | 本批补充 | 查询语法、统计计数和点击反筛必须共用同一 split/无对象语义；改文件表映射时同时检查排序与当前文件索引 |
 | 模型存储目录 | 解析自定义/默认模型目录、迁移及旧目录扫描 | [model_storage.py](../../anylabeling/services/auto_labeling/model_storage.py)、[model.py](../../anylabeling/services/auto_labeling/model.py)、[model_manager.py](../../anylabeling/services/auto_labeling/model_manager.py) | `resolve_model_directory()`、`migrate_model_directory()` | 用户配置、文件系统、模型下载 | 支撑 | 本批补充 | 配置目录优先，默认/旧目录用于兼容扫描；迁移遇同名跳过，失败保留旧文件，修改时不能把它当成全量原子迁移 |
 | 画布与通用部件 | 图形编辑、缩放、列表及交互组件 | [canvas.py](../../anylabeling/views/labeling/widgets/canvas.py)、[shape.py](../../anylabeling/views/labeling/shape.py) | `Canvas`、`Shape` | Qt、标注编排 | 核心 | 深入 | `Shape` 同时连接画布、标签列表和文件读写，坐标/字段变更须检查三处一致性 |
@@ -175,6 +176,23 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 - 界面表现：`MainWindow` 把 `OperatorBar` 放在菜单栏右上角 corner widget、把 `AttributionLabel` 放在状态栏永久控件，二者都不占画布高度；独立嵌入且无菜单栏时回退到画布上方。未登录时工具置灰，这是刻意的可见状态，不是缺陷。
 - 契约同步：`docs/开始.md` §10、[讨论稿 §12A](数据库设计-讨论稿.md)、[设计书 §3.4](工业机器视觉数据平台-设计书-v1.6.md) 记录同一契约；账号库为应用级、项目库为数据级，不共享存储、不做外键。项目数据库的操作者列尚未落地，见 T6。
 - 已知边界：点云、PPOCR、VQA、图像分类、视频分类等专项工作区不在本批门禁和归属范围内；自动标注面板按钮本身未置灰，依赖写入保护兜底；归属只记最后修改人，不保留历史（历史/单一权威仍留给 T3 的数据库与 revision 审计）。
+
+### 5.7 窗口 chrome 与启动形态（fork.7）
+
+```text
+启动 → _resolve_frameless(config / XANYLABELING_NATIVE_FRAME)
+      ├─ true  → setMenuWidget(TitleBar(菜单栏 + 宿主按钮 + 窗口控制))
+      └─ false → setMenuBar(QMenuBar) + 原生标题栏
+菜单构建 → LabelingWidget.menu() → MainWindow.menuBar() → FrameMenuBar
+```
+
+- `MainWindow` 继承 [FramelessWindow](../../anylabeling/widgets/frameless/window.py)，启动时按 `frameless` 配置（默认 `true`）或环境变量 `XANYLABELING_NATIVE_FRAME` 决定形态；**运行中不切换**，切换需重启。
+- 无边框模式用 `setMenuWidget()` 把自绘标题栏放在菜单栏区域，标题栏内嵌真实 `QMenuBar`；因此 `LabelingWidget.menu()`、子菜单、`Alt` 激活与快捷键都不用重写。工具条、状态栏、dock 仍由 `QMainWindow` 管理。
+- 菜单显隐：`FrameMenuBar` 通过 `QAction.setVisible(False)` 隐藏顶层菜单入口，`menu_visibility_changed` 由 `MainWindow` 持久化到 `frameless/menu_visibility`；隐藏后快捷键仍有效。菜单溢出交给 Qt 内建的 menubar extension 按钮，不自绘折叠逻辑。
+- 全屏：`F11` 动作加入“视图”菜单；首版全屏保留标题栏，退出恢复进入前的最大化/普通状态。
+- 窗口状态：`window/size`、`window/position` 恢复时用 `window_state.clamp_geometry()` 做多屏可见性校正；新增 `window/maximized` 持久化。
+- 主题：`MainWindow.apply_theme(get_theme())` 生成标题栏/菜单栏 QSS，浅色模式不再依赖系统调色板；窗口激活/失活由 `FramelessWindow.event()` 切换标题颜色。
+- Windows 原生能力：`nativeEvent()` 处理 `WM_NCHITTEST`（缩放）与 `WM_GETMINMAXINFO`（最大化贴合工作区）；其他平台用 `QWindow.startSystemResize()` 兜底。
 
 ## 6. 模块依赖图
 
@@ -309,6 +327,8 @@ AST 统计排除 import、类定义本身和字符串，统计构造、继承、
 | `LabelingWidget` | [label_widget.py](../../anylabeling/views/labeling/label_widget.py) | 标注主流程和共享状态 | `filename/image_data/other_data/dirty`、右侧 tab/文件表；`load_file()`、`new_shape()`、`load_shapes()`、`save_labels()` | 源码 2 处，第 193/648；`LabelingWrapper`；测试 91 处 | `LabelDialog`、`Canvas`、`Shape`、`LabelFile`、自动标注和训练 UI | `set_dirty()` 同时影响自动保存、撤销和关闭提示；右侧 tab/文件表改动还需检查隐藏状态、排序和当前文件映射 |
 | `OperatorStore` | [store.py](../../anylabeling/services/identity/store.py) | 本地账号库：注册、认证、管理员改口令/禁用 | `register()`、`authenticate()`、`change_password()`、`set_disabled()`；`name_key` 唯一 | `OperatorService`；测试 9 处 | sqlite3、passwords | 名字大小写不敏感唯一、`none` 保留；账号只禁用不删除，删除会断开已写入的归属 |
 | `OperatorService` | [session.py](../../anylabeling/services/identity/session.py) | 账号库 + 进程级会话，向 UI 广播登录状态 | `store`、`session`、`login()`、`register()`、`current_operator_name` | `LabelingWidget`、`OperatorBar`、`batch.py` | `OperatorStore`、`OperatorSession` | 进程级实例由 `get_operator_service()` 提供；不得持久化登录状态，否则违反“关闭即退出” |
+| `FramelessWindow` | [window.py](../../anylabeling/widgets/frameless/window.py) | 窗口 chrome：启动形态、标题栏/菜单嵌入、全屏、原生 hit test | `frameless`、`menu_bar`、`title_bar`；`toggle_fullscreen()`、`nativeEvent()` | `MainWindow`；测试 6 处 | Qt、`FrameMenuBar`、`TitleBar`、`window_state` | 启动后不改形态；Windows 原生行为需实机回归；`menuBar()` 覆写必须保留原生模式路径 |
+| `FrameMenuBar` | [menu_bar.py](../../anylabeling/widgets/frameless/menu_bar.py) | 真实 `QMenuBar` 与顶层菜单显隐 | `add_menu()`、`set_menu_visible()`、`visibility_state()`、`menu_visibility_changed` | `FramelessWindow`、`MainWindow`；测试 | Qt | 显隐用 `QAction` 可见性，不要重排菜单；溢出依赖 Qt 内建 extension 按钮 |
 | `FileTableWidget` | [label_widget.py](../../anylabeling/views/labeling/label_widget.py) | 五列文件表、排序、列宽及文件选择 | 自定义 item 排序键和文件表事件；配合 `FileTableItem` | 源码 1 处，第 326/648；由 `LabelingWidget` 创建；直接类名测试引用 0 | Qt、文件元数据、搜索过滤结果 | 修改列或排序时必须同步 `fn_to_index`、当前文件选择和列宽持久化；不能只看表格显示 |
 | `StatisticsTable` | [statistics_table.py](../../anylabeling/views/labeling/widgets/statistics_table.py) | 类别×划分统计展示与点击过滤 | `_statistics`；`set_entries()`、`refresh()`、`cell_filter()`、`header_filter()` | 源码 1 处，第 462/648；`LabelingWidget`；测试 2 处 | `dataset_statistics`、Qt | 类别单元格按图片数、合计行按文件数；修改统计口径时必须同步 `StatisticsFilter` 和搜索转义 |
 | `Canvas` | [canvas.py](../../anylabeling/views/labeling/widgets/canvas.py) | 鼠标交互、绘制、几何编辑、撤销及渲染 | `shapes/current/selected_shapes/shapes_backups/scale/pixmap`；`finalise()`、`load_shapes()`、`paintEvent()` | 源码 1 处，第 263/648；`LabelingWidget`；测试 22 处 | `Shape`、`AutoLabelingMode`、OpenCV/NumPy、Qt | 列表与画布共享 `Shape`；改坐标或缓存时需同步撤销快照、选择状态和重绘 |
@@ -338,7 +358,7 @@ AST 统计排除 import、类定义本身和字符串，统计构造、继承、
 
 ### 9.1 核心类总览
 
-下图覆盖核心类表中标注范围内的 18 个类；fork.4 新增的 `OperatorStore`/`OperatorService`、`OperatorBar` 及归属写入关系见 §5.6，本批未重绘总览图与 SVG/JPG 资源，身份相关结构以 §5.6 的链路说明为准。
+下图覆盖核心类表中标注范围内的 18 个类；fork.4 新增的 `OperatorStore`/`OperatorService`、`OperatorBar` 及归属写入关系见 §5.6，fork.7 新增的 `FramelessWindow`/`FrameMenuBar` 见 §5.7。本批未重绘总览图与 SVG/JPG 资源，身份与窗口 chrome 结构以对应章节的链路说明为准。
 
 [![核心类关系总览](code_structure_assets/core_classes_overview.jpg)](code_structure_assets/core_classes_overview.svg)
 
@@ -540,7 +560,7 @@ model_manager.py:14
 | 新增自动标注模型 | [model_manager.py](../../anylabeling/services/auto_labeling/model_manager.py)、[model.py](../../anylabeling/services/auto_labeling/model.py)、[models.yaml](../../anylabeling/configs/models.yaml) |
 | 改配置或快捷键 | [config.py](../../anylabeling/config.py)、[xanylabeling_config.yaml](../../anylabeling/configs/xanylabeling_config.yaml)、[runtime_applier.py](../../anylabeling/views/labeling/settings/runtime_applier.py) |
 | 改登录/门禁/标注归属 | [identity/session.py](../../anylabeling/services/identity/session.py)、[label_widget.py](../../anylabeling/views/labeling/label_widget.py)（`OPERATOR_REQUIRED_ACTIONS`、`_prepare_attribution`）、[label_file.py](../../anylabeling/views/labeling/label_file.py)（`ensure_attribution`）、[test_operator_gate.py](../../tests/test_labeling/test_operator_gate.py) |
-| 改窗口 chrome/标题栏/菜单 | [mainwindow.py](../../anylabeling/views/mainwindow.py)（`_install_operator_chrome`、toolbar 停靠、窗口状态）、[label_widget.py](../../anylabeling/views/labeling/label_widget.py)（`menu()`、`update_progress_title()`）；自绘无边框方案见 [无边框窗口模块-讨论稿](无边框窗口模块-讨论稿.md)（未实现） |
+| 改窗口 chrome/标题栏/菜单 | [widgets/frameless/window.py](../../anylabeling/widgets/frameless/window.py)、[title_bar.py](../../anylabeling/widgets/frameless/title_bar.py)、[menu_bar.py](../../anylabeling/widgets/frameless/menu_bar.py)、[mainwindow.py](../../anylabeling/views/mainwindow.py)；设计见 [无边框窗口模块-讨论稿](无边框窗口模块-讨论稿.md) |
 | 改训练 payload/事件 | [trainer.py](../../anylabeling/services/auto_training/ultralytics/trainer.py)、[worker.py](../../anylabeling/services/auto_training/ultralytics/worker.py)、[environment.py](../../anylabeling/services/auto_training/ultralytics/environment.py) |
 | 改 PPOCR 服务或结果 | [pipeline.py](../../anylabeling/views/labeling/ppocr/pipeline.py)、[data_manager.py](../../anylabeling/views/labeling/ppocr/data_manager.py)、[config.py](../../anylabeling/views/labeling/ppocr/config.py) |
 | 改依赖、打包或更新 | [pyproject.toml](../../pyproject.toml)、[build_executable.sh](../../scripts/build_executable.sh)、[package_updates.py](../../scripts/package_updates.py) |
@@ -574,6 +594,10 @@ model_manager.py:14
 - 归属是单值“最后修改人”：多人先后编辑同一张图片时只保留最后一次，不会保留历史；需要完整历史应等 T3 的 revision 审计，不要在此字段上叠加数组。
 - 门禁依赖 `OPERATOR_REQUIRED_ACTIONS` 清单：新增编辑类动作若未登记，界面不会置灰，只能靠写入保护兜底，用户会遇到“改了才要求登录”的打断。
 - 专项工作区（点云/PPOCR/VQA/分类）与自动标注面板按钮未纳入门禁；它们改动的不是主标注 JSON 的 `author` 约定，但会让部分工作流在未登录状态下仍可产生内容。
+- 无边框窗口的 Windows 原生行为（`WM_NCHITTEST`、`WM_GETMINMAXINFO`）只有静态与离屏验证，未在真实桌面回归；出问题时可用 `frameless: false` 回退，但**回退需重启**。
+- 标题栏/菜单栏与 Qt 内建 overflow 按钮的样式可能不完全一致；`QMenuBar` 内建 extension 的配色未单独定制。
+- 菜单显隐状态存于 QSettings；若用户换了工作目录或配置，菜单显示状态可能与预期不同，属于按应用保存而非按项目保存。
+- 标题栏宿主按钮（登录芯片）沿用原控件，键盘焦点/可访问性未专门调整。
 
 ## 14. 支撑设施与外围补充
 
@@ -608,8 +632,9 @@ model_manager.py:14
 - 入口与配置、标注及持久化、自动标注、训练/导出、点云、PPOCR、VQA、聊天、图像/视频分类、设置、更新、打包脚本；
 - fork.1/fork.2 的文件表格化、右侧 tab、工具栏停靠、搜索语法、统计反筛、类别措辞及模型目录；
 - fork.4 的本地操作员账号、会话与门禁、XLABEL `author`/`modified_at` 归属、批量自动标注盖章、四个语言的界面翻译；
+- fork.7 的无边框窗口模块（标题栏/菜单嵌入/窗口按钮/全屏/命中测试/主题）与主窗口接入、菜单显隐与全屏、`frameless` 启动配置与原生回退；
 - 模块和核心类关系、跨线程/进程/网络边界、引用统计、维护路径、已知问题和风险；
-- 核心类表共 20 类：18 类进入总览图，fork.4 新增的 2 个身份类见 §5.6；
+- 核心类表共 22 类：18 类进入总览图，fork.4 的 2 个身份类与 fork.7 的 2 个窗口类见 §5.6/§5.7；
 - 最终统计排除生成文件，依赖循环及扇入/扇出已按同一范围复核。
 
 ### 未覆盖及原因

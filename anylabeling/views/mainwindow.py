@@ -2,9 +2,8 @@
 
 import os
 
-from PyQt6 import QtCore
+from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import (
-    QMainWindow,
     QMenu,
     QStatusBar,
     QVBoxLayout,
@@ -12,7 +11,9 @@ from PyQt6.QtWidgets import (
 )
 
 from ..app_info import __appdescription__, __appname__, __version__
+from ..widgets.frameless import FramelessWindow, window_state
 from .labeling.label_wrapper import LabelingWrapper
+from .labeling.utils.theme import get_theme
 
 # Toolbar positions supported by the labeling toolbar. They are persisted by
 # name so the saved value stays readable and independent of Qt enum values.
@@ -32,7 +33,25 @@ def _is_wsl_environment() -> bool:
         return False
 
 
-class MainWindow(QMainWindow):
+def _resolve_frameless(config) -> bool:
+    """Decide the window chrome for this launch.
+
+    Precedence: environment override, then the ``frameless`` config key,
+    then the default (frameless).  Runtime switching is intentionally not
+    supported; a restart is required.
+    """
+    override = os.environ.get("XANYLABELING_NATIVE_FRAME", "").strip().lower()
+    if override in ("1", "true", "yes", "on"):
+        return False
+    if override in ("0", "false", "no", "off"):
+        return True
+    try:
+        return bool(config.get("frameless", True))
+    except (AttributeError, TypeError):
+        return True
+
+
+class MainWindow(FramelessWindow):
     """Main application window"""
 
     def __init__(
@@ -44,12 +63,13 @@ class MainWindow(QMainWindow):
         output_file=None,
         output_dir=None,
     ):
-        super().__init__()
+        super().__init__(frameless=_resolve_frameless(config))
         self.app = app
         self.config = config
+        self.set_app_title(__appname__)
+        self.apply_theme(get_theme())
 
         self.setContentsMargins(0, 0, 0, 0)
-        self.setWindowTitle(__appname__)
 
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(10, 2, 10, 10)
@@ -64,9 +84,10 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(self.labeling_widget)
         widget = QWidget()
         widget.setLayout(main_layout)
-        self.setCentralWidget(widget)
+        self.set_content_widget(widget)
         self.settings = self.labeling_widget.view.settings
         self._install_toolbar()
+        self._install_window_actions()
         self._is_wsl_environment = _is_wsl_environment()
         if self._is_wsl_environment:
             self.settings.remove("window/size")
@@ -80,23 +101,47 @@ class MainWindow(QMainWindow):
         )
         self.setStatusBar(status_bar)
         self._install_operator_chrome()
+        self._restore_menu_visibility()
         self._restore_window_geometry()
 
-    def _install_operator_chrome(self):
-        """Put the operator chip and attribution into native window chrome.
+    def _install_window_actions(self):
+        """Add window-level actions (full screen) to the View menu."""
+        view = getattr(self.labeling_widget, "view", None)
+        view_menu = getattr(getattr(view, "menus", None), "view", None)
+        if view_menu is None:
+            return
+        view_menu.addSeparator()
+        view_menu.addAction(self.fullscreen_action)
 
-        The menu bar corner and the status bar already exist, so the two
-        widgets cost no canvas height.  They are created by ``LabelingWidget``
-        and reparented here, which keeps the session ownership in one place.
+    def _restore_menu_visibility(self):
+        state = self.settings.value(
+            "frameless/menu_visibility", {}, type=dict
+        )
+        if state:
+            self.restore_menu_visibility(state)
+        self.menu_visibility_changed.connect(self._save_menu_visibility)
+
+    def _save_menu_visibility(self, state):
+        self.settings.setValue("frameless/menu_visibility", state)
+
+    def _install_operator_chrome(self):
+        """Place the operator chip and attribution into the window chrome.
+
+        Frameless mode puts the chip in the custom title bar; native mode
+        keeps the menu-bar corner widget.  The attribution text always goes
+        to the status bar, so neither mode costs canvas height.
         """
         view = getattr(self.labeling_widget, "view", None)
         if view is None:
             return
         bar = getattr(view, "operator_bar", None)
         if bar is not None:
-            self.menuBar().setCornerWidget(
-                bar, QtCore.Qt.Corner.TopRightCorner
-            )
+            if self.frameless:
+                self.add_title_widget(bar, key="operator")
+            else:
+                self.menuBar().setCornerWidget(
+                    bar, QtCore.Qt.Corner.TopRightCorner
+                )
             bar.show()
         attribution = getattr(view, "attribution_label", None)
         if attribution is not None:
@@ -248,6 +293,9 @@ class MainWindow(QMainWindow):
         else:
             self.settings.setValue("window/size", self.size())
             self.settings.setValue("window/position", self.pos())
+            self.settings.setValue(
+                "window/maximized", bool(self.isMaximized())
+            )
             self._save_toolbar_area()
             self._save_toolbar_visibility()
             # Never write a QMainWindow state again: it can contain a floating
@@ -258,13 +306,30 @@ class MainWindow(QMainWindow):
     def _restore_window_geometry(self):
         if self._is_wsl_environment:
             return
+        size = None
+        position = None
         if self.settings.contains("window/size"):
-            size = self.settings.value("window/size", type=QtCore.QSize)
-            if isinstance(size, QtCore.QSize) and size.isValid():
-                self.resize(size)
+            candidate = self.settings.value(
+                "window/size", type=QtCore.QSize
+            )
+            if isinstance(candidate, QtCore.QSize) and candidate.isValid():
+                size = candidate
         if self.settings.contains("window/position"):
-            position = self.settings.value(
+            candidate = self.settings.value(
                 "window/position", type=QtCore.QPoint
             )
-            if isinstance(position, QtCore.QPoint):
-                self.move(position)
+            if isinstance(candidate, QtCore.QPoint):
+                position = candidate
+        if size is not None and position is not None:
+            rect = window_state.clamp_geometry(
+                QtCore.QRect(position, size),
+                QtWidgets.QApplication.screens(),
+            )
+            self.resize(rect.size())
+            self.move(rect.topLeft())
+        elif size is not None:
+            self.resize(size)
+        elif position is not None:
+            self.move(position)
+        if self.settings.value("window/maximized", False, type=bool):
+            self.showMaximized()

@@ -11331,4 +11331,27 @@ Response preview:
     <name>AttributionLabel</name>
     <message><source>Author: not recorded</source><translation>작성자: 기록 없음</translation></message>
     <message><source>Last modified: %s</source><translation>최종 수정: %s</translation></message>
+</context><context>
+    <name>FramelessWindow</name>
+    <message><source>Toggle Full Screen</source><translation>전체 화면 전환</translation></message>
+</context>
+<context>
+    <name>FrameMenuBar</name>
+    <message><source>Show All Menus</source><translation>모든 메뉴 표시</translation></message>
+</context>
+<context>
+    <name>TitleBar</name>
+    <message><source>Restore</source><translation>이전 크기로</translation></message>
+    <message><source>Maximize</source><translation>최대화</translation></message>
+    <message><source>Minimize</source><translation>최소화</translation></message>
+    <message><source>Exit Full Screen</source><translation>전체 화면 종료</translation></message>
+    <message><source>Full Screen</source><translation>전체 화면</translation></message>
+    <message><source>Close</source><translation>닫기</translation></message>
+</context>
+<context>
+    <name>WindowButton</name>
+    <message><source>Minimize</source><translation>최소화</translation></message>
+    <message><source>Maximize</source><translation>최대화</translation></message>
+    <message><source>Restore</source><translation>이전 크기로</translation></message>
+    <message><source>Close</source><translation>닫기</translation></message>
 </context></TS>

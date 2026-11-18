@@ -11329,4 +11329,27 @@ Response preview:
     <name>AttributionLabel</name>
     <message><source>Author: not recorded</source><translation>作成者：未記録</translation></message>
     <message><source>Last modified: %s</source><translation>最終更新：%s</translation></message>
+</context><context>
+    <name>FramelessWindow</name>
+    <message><source>Toggle Full Screen</source><translation>全画面の切り替え</translation></message>
+</context>
+<context>
+    <name>FrameMenuBar</name>
+    <message><source>Show All Menus</source><translation>すべてのメニューを表示</translation></message>
+</context>
+<context>
+    <name>TitleBar</name>
+    <message><source>Restore</source><translation>元に戻す</translation></message>
+    <message><source>Maximize</source><translation>最大化</translation></message>
+    <message><source>Minimize</source><translation>最小化</translation></message>
+    <message><source>Exit Full Screen</source><translation>全画面を終了</translation></message>
+    <message><source>Full Screen</source><translation>全画面</translation></message>
+    <message><source>Close</source><translation>閉じる</translation></message>
+</context>
+<context>
+    <name>WindowButton</name>
+    <message><source>Minimize</source><translation>最小化</translation></message>
+    <message><source>Maximize</source><translation>最大化</translation></message>
+    <message><source>Restore</source><translation>元に戻す</translation></message>
+    <message><source>Close</source><translation>閉じる</translation></message>
 </context></TS>

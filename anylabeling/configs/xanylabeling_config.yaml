@@ -2,6 +2,10 @@ language: en_US
 theme: auto  # auto, light, dark
 font_family: null  # null uses the system default font
 model_hub: github  # github, modelscope
+# Use the custom frameless window chrome (title bar merged with the menu bar).
+# Set to false (or export XANYLABELING_NATIVE_FRAME=1) to use the native window
+# frame; changing it requires restarting the application.
+frameless: true
 # Directory used to store downloaded auto-labeling models.
 # null keeps the default location: <work_dir>/xanylabeling_data/models
 model_directory: null

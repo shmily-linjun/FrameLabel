@@ -8,6 +8,73 @@
 
 ---
 
+## 4.3.2+fork.7 — 2026-11-18
+
+### 1. 背景与原因
+
+按 `docs/dev/无边框窗口模块-讨论稿.md` v0.4 的冻结设计，连做 M1+M2+M3：新建可复用的无边框窗口模块，并把主窗口接入，合并原生标题栏与菜单栏，回收一条窗口 chrome 的高度；同时补齐全屏、菜单溢出与菜单显隐。
+
+### 2. 主要实现与关键细节
+
+#### 2.1 可复用模块 `anylabeling/widgets/frameless/`
+
+| 文件 | 职责 |
+|---|---|
+| `window.py` | `FramelessWindow(QMainWindow)`：启动时二选一（自绘/原生）、菜单与标题按钮 API、全屏、Windows 原生命中测试与最大化工区、非 Windows 缩放兜底 |
+| `title_bar.py` | `TitleBar` + `TitleButton`：图标、标题（过长省略）、菜单槽位、宿主按钮、窗口按钮、拖动/双击最大化/右键菜单 |
+| `window_buttons.py` | 自绘最小化/最大化/还原/关闭按钮（无图标资源依赖，跟随主题色） |
+| `menu_bar.py` | `FrameMenuBar`：真实 `QMenuBar`，`add_menu` 任意层级、右键显隐顶层菜单、`menu_visibility_changed` 信号 |
+| `hit_test.py` | 纯几何边缘检测与 Windows `HT*` 映射，可单测 |
+| `window_state.py` | 模式判断、多屏几何校正、全屏退出恢复模式 |
+| `theme.py` | `FramelessTheme`：从宿主主题字典映射颜色/尺寸并生成 QSS |
+
+#### 2.2 主窗口接入（M3）
+
+- `MainWindow` 改为继承 `FramelessWindow`；启动时按 `frameless` 配置（默认 `true`）或环境变量 `XANYLABELING_NATIVE_FRAME=1` 决定形态，**不支持运行中切换**。
+- 菜单仍由 `LabelingWidget` 通过 `self.parent.parent.menuBar()` 创建；`FramelessWindow.menuBar()` 返回嵌入标题栏的 `FrameMenuBar`，原生模式返回普通 `QMenuBar`，因此菜单构建代码无需重写。
+- 登录芯片：无边框模式放入标题栏按钮区；原生模式仍用菜单栏右上角 corner widget。归属文字继续在状态栏。
+- `F11` 全屏动作加入“视图”菜单，首版全屏保留标题栏（按 v0.4 决策）；退出全屏恢复进入前的最大化/普通状态。
+- 菜单显隐持久化到 `QSettings` 的 `frameless/menu_visibility`；窗口最大化状态持久化到 `window/maximized`；恢复几何时做多屏可见性校正。
+- 菜单溢出交由 Qt 内建的 menubar extension 按钮（“»”）处理，不再自写折叠逻辑。
+
+#### 2.3 主题与翻译
+
+- 启动时把 `get_theme()` 映射为 `FramelessTheme`，浅色/深色都显式着色（浅色模式全局 QSS 为空的问题在模块内解决）；窗口激活/失活时标题文字变灰。
+- 四语言新增 `FramelessWindow`、`FrameMenuBar`、`TitleBar`、`WindowButton` 上下文并重建 `.qm` 与 `resources.py`。
+- 新增示例 `examples/frameless_demo.py`，可脱离项目直接运行。
+
+### 3. 涉及模块与文件
+
+- 新增：`anylabeling/widgets/__init__.py`、`anylabeling/widgets/frameless/{__init__,theme,hit_test,window_buttons,menu_bar,title_bar,window_state,window}.py`、`examples/frameless_demo.py`、`tests/test_widgets/test_frameless_window.py`；
+- 修改：`anylabeling/views/mainwindow.py`、`anylabeling/configs/xanylabeling_config.yaml`、`anylabeling/resources/translations/*.ts|*.qm`、`anylabeling/resources/resources.py`、`anylabeling/app_info.py`；
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/无边框窗口模块-讨论稿.md`、`docs/user/zh_cn/user_guide.md`、`docs/开始.md`。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本由 `4.3.2+fork.6` 升至 `4.3.2+fork.7`。
+- **用户可观察**：窗口默认无边框，标题栏与菜单栏合并为一条，托盘高度减少；提供 `F11` 全屏；右键菜单栏可隐藏/显示顶层菜单；启动配置可回退原生窗口。
+- **配置契约**：新增 `frameless` 配置键（默认 `true`）；新增环境变量 `XANYLABELING_NATIVE_FRAME`；新增 QSettings 键 `window/maximized`、`frameless/menu_visibility`。
+- **兼容性**：原生模式仍可用；旧 `window/size`、`window/position`、`window/toolbar_area`、`window/toolbar_visible` 继续有效；未改动标注数据格式、`author`/`modified_at` 契约、门禁规则与业务模块；无新增第三方依赖。
+
+### 5. 实际验证内容
+
+- 新增单元测试：hit-test 边缘与 `HT*` 码、几何校正、主题映射与 QSS、无边框/原生两种结构、标题按钮增删、菜单显隐信号、全屏切换与恢复。
+- 离屏冒烟：完整 `MainWindow` 在无边框与原生两种模式下构造成功；菜单 11 项进入嵌入菜单栏；登录芯片分别位于标题栏/菜单栏 corner；`F11` 动作在“视图”菜单；菜单显隐切换正常。
+- 定向回归：`tests/test_widgets`、`tests/test_identity` 及标注读写/门禁/tags/审核相关用例合计 **120 passed / 11 subtests passed**；另有一个既有用例 `test_canvas_adjustment...throttled` 在合并运行中偶发失败、单独运行与重跑通过（时序敏感，未发现与本次改动相关）。
+- 翻译资源：`lrelease` 生成四个 `.qm`（2159 条，0 未完成）并重建 `resources.py`；资源加载抽查通过。
+- 未执行：真实 Windows 桌面的拖动/缩放/贴边/最大化工区/多屏 DPI 实测；macOS 与 Wayland 实机验证；全量测试。
+
+### 6. 已知限制与后续事项
+
+- Windows 原生行为（`WM_NCHITTEST`、`WM_GETMINMAXINFO`）只有静态与离屏验证，**需在真实 Windows 桌面确认**；若异常可用 `frameless: false` 或环境变量回退。
+- macOS 默认无边框，但全局菜单栏/交通灯/全屏行为未实机验证；必要时按讨论稿退回原生或透明标题栏。Wayland 下拖动/缩放可能不可用。
+- 菜单溢出使用 Qt 内建 extension 按钮，样式与自绘标题栏可能不完全一致。
+- 标题栏右键菜单是简化版系统菜单（还原/最大化/最小化/全屏/关闭），不含“移动/大小”。
+- 全屏首版保留标题栏，沉浸式自动隐藏未实现。
+- 标题栏宿主按钮（登录芯片）沿用原控件，键盘焦点行为未专门调整。
+
+---
+
 ## 4.3.2+fork.6 — 2026-11-18
 
 ### 1. 背景与原因

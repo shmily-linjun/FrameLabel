@@ -11331,4 +11331,27 @@ Response preview:
     <name>AttributionLabel</name>
     <message><source>Author: not recorded</source><translation>Author: not recorded</translation></message>
     <message><source>Last modified: %s</source><translation>Last modified: %s</translation></message>
+</context><context>
+    <name>FramelessWindow</name>
+    <message><source>Toggle Full Screen</source><translation>Toggle Full Screen</translation></message>
+</context>
+<context>
+    <name>FrameMenuBar</name>
+    <message><source>Show All Menus</source><translation>Show All Menus</translation></message>
+</context>
+<context>
+    <name>TitleBar</name>
+    <message><source>Restore</source><translation>Restore</translation></message>
+    <message><source>Maximize</source><translation>Maximize</translation></message>
+    <message><source>Minimize</source><translation>Minimize</translation></message>
+    <message><source>Exit Full Screen</source><translation>Exit Full Screen</translation></message>
+    <message><source>Full Screen</source><translation>Full Screen</translation></message>
+    <message><source>Close</source><translation>Close</translation></message>
+</context>
+<context>
+    <name>WindowButton</name>
+    <message><source>Minimize</source><translation>Minimize</translation></message>
+    <message><source>Maximize</source><translation>Maximize</translation></message>
+    <message><source>Restore</source><translation>Restore</translation></message>
+    <message><source>Close</source><translation>Close</translation></message>
 </context></TS>

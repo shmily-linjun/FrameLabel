@@ -11329,4 +11329,27 @@ Response preview:
     <name>AttributionLabel</name>
     <message><source>Author: not recorded</source><translation>标注人：未记录</translation></message>
     <message><source>Last modified: %s</source><translation>最后修改：%s</translation></message>
+</context><context>
+    <name>FramelessWindow</name>
+    <message><source>Toggle Full Screen</source><translation>切换全屏</translation></message>
+</context>
+<context>
+    <name>FrameMenuBar</name>
+    <message><source>Show All Menus</source><translation>显示全部菜单</translation></message>
+</context>
+<context>
+    <name>TitleBar</name>
+    <message><source>Restore</source><translation>还原</translation></message>
+    <message><source>Maximize</source><translation>最大化</translation></message>
+    <message><source>Minimize</source><translation>最小化</translation></message>
+    <message><source>Exit Full Screen</source><translation>退出全屏</translation></message>
+    <message><source>Full Screen</source><translation>全屏</translation></message>
+    <message><source>Close</source><translation>关闭</translation></message>
+</context>
+<context>
+    <name>WindowButton</name>
+    <message><source>Minimize</source><translation>最小化</translation></message>
+    <message><source>Maximize</source><translation>最大化</translation></message>
+    <message><source>Restore</source><translation>还原</translation></message>
+    <message><source>Close</source><translation>关闭</translation></message>
 </context></TS>
