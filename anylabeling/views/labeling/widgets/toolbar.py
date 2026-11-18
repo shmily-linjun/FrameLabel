@@ -5,27 +5,79 @@ from anylabeling.views.labeling.utils.theme import get_theme
 
 
 class ToolBarScrollArea(QtWidgets.QScrollArea):
-    """Kept for backwards compatibility with existing imports.
+    """Scrollable viewport hosting a complete ``QToolBar``.
 
-    The horizontal toolbar is now a dockable ``QToolBar`` that manages its
-    own overflow through the extension button, so the scroll area wrapper is
-    no longer used by the labeling widget.
+    Qt only exposes hidden toolbar items through its extension button. The
+    application requires the whole toolbar to be reachable with one
+    scrollbar: vertical when docked left and horizontal when docked at the
+    top. The wheel is forwarded to whichever scrollbar is active.
     """
 
     def wheelEvent(self, event):
-        scroll_bar = self.horizontalScrollBar()
-        if scroll_bar.maximum() > scroll_bar.minimum():
-            QtWidgets.QApplication.sendEvent(scroll_bar, event)
+        horizontal = self.horizontalScrollBar()
+        vertical = self.verticalScrollBar()
+        if (
+            self.horizontalScrollBarPolicy()
+            == QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+            and vertical.maximum() > 0
+        ):
+            delta = event.angleDelta().y() or event.angleDelta().x()
+            vertical.setValue(vertical.value() - delta)
+            event.accept()
+            return
+        if (
+            self.verticalScrollBarPolicy()
+            == QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+            and horizontal.maximum() > 0
+        ):
+            delta = event.angleDelta().y() or event.angleDelta().x()
+            horizontal.setValue(horizontal.value() - delta)
+            event.accept()
             return
         super().wheelEvent(event)
 
+    def sizeHint(self):  # noqa: N802 - Qt naming
+        """Size the dock to the toolbar, not to the whole tool list.
+
+        The scroll area's widget keeps its full natural size (that is what
+        makes the toolbar scrollable), but the dock itself must only take the
+        toolbar's width when docked left and its height when docked at the
+        top.  Otherwise the top dock would ask for the full toolbar width and
+        the left dock for the full toolbar height.
+        """
+        widget = self.widget()
+        if widget is None:
+            return super().sizeHint()
+        hint = widget.sizeHint().expandedTo(widget.minimumSizeHint())
+        vertical_mode = (
+            self.verticalScrollBarPolicy()
+            == QtCore.Qt.ScrollBarPolicy.ScrollBarAsNeeded
+        )
+        extent = self.style().pixelMetric(
+            QtWidgets.QStyle.PixelMetric.PM_ScrollBarExtent,
+            None,
+            self,
+        )
+        # A small allowance keeps the widget clear of the scrollbar when the
+        # toolbar's reported hint is a few pixels smaller than its laid-out
+        # size (QToolBar includes style padding at layout time).
+        if vertical_mode:
+            width = hint.width() + extent + 4
+            return QtCore.QSize(width, 200)
+        height = hint.height() + extent + 4
+        return QtCore.QSize(200, height)
+
+    def minimumSizeHint(self):  # noqa: N802 - Qt naming
+        return self.sizeHint()
+
 
 class ToolBar(QtWidgets.QToolBar):
-    """Dockable toolbar widget for labeling tool.
+    """Labeling tool bar hosted inside a scrollable dock pane.
 
-    A real ``QToolBar`` added to the ``QMainWindow`` so it can be docked at
-    the top or in the left tool-bar area. Floating is intentionally disabled:
-    Qt 6's floating-toolbar path mis-sizes the floating window on Windows
+    The bar itself is a real ``QToolBar``; ``MainWindow`` places it inside
+    :class:`ToolBarScrollArea` in a ``QDockWidget`` so the complete tool set is
+    reachable through a scrollbar. Floating is intentionally disabled: Qt 6's
+    floating-toolbar path mis-sizes the floating window on Windows
     (``QWindowsWindow::setGeometry`` warnings with huge geometry), which made
     the toolbar unusable once detached.
     """

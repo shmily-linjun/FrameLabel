@@ -143,6 +143,12 @@ def _toolbar(window):
     return window.findChild(QtWidgets.QToolBar, "ToolsToolBar")
 
 
+def _toolbar_dock_area(window):
+    dock = window.findChild(QtWidgets.QDockWidget, "ToolsDock")
+    assert dock is not None
+    return window.dockWidgetArea(dock)
+
+
 def test_legacy_floating_state_is_discarded(window_factory):
     app = window_factory.app
     settings = window_factory.settings()
@@ -160,8 +166,8 @@ def test_legacy_floating_state_is_discarded(window_factory):
     assert toolbar is not None
     assert not toolbar.isFloating()
     assert (
-        window.toolBarArea(toolbar)
-        == QtCore.Qt.ToolBarArea.LeftToolBarArea
+        _toolbar_dock_area(window)
+        == QtCore.Qt.DockWidgetArea.LeftDockWidgetArea
     )
     assert not window.settings.contains("window/state")
 
@@ -180,8 +186,8 @@ def test_toolbar_area_is_persisted(window_factory):
     app.processEvents()
     toolbar = _toolbar(second)
     assert (
-        second.toolBarArea(toolbar)
-        == QtCore.Qt.ToolBarArea.LeftToolBarArea
+        _toolbar_dock_area(second)
+        == QtCore.Qt.DockWidgetArea.LeftDockWidgetArea
     )
     assert not toolbar.isFloating()
 

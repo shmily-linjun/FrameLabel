@@ -14,6 +14,7 @@ from ..app_info import __appname__
 from ..widgets.frameless import FramelessWindow, window_state
 from .labeling.label_wrapper import LabelingWrapper
 from .labeling.utils.theme import get_theme
+from .labeling.widgets.toolbar import ToolBarScrollArea
 
 # Toolbar positions supported by the labeling toolbar. They are persisted by
 # name so the saved value stays readable and independent of Qt enum values.
@@ -270,8 +271,35 @@ class MainWindow(FramelessWindow):
         if not toolbar.objectName():
             toolbar.setObjectName("ToolsToolBar")
         self._toolbar = toolbar
+        toolbar.setFloatable(False)
+        toolbar.setMovable(False)
+        toolbar.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Fixed,
+        )
+
+        # A dock widget hosting a scroll area is used instead of a docked
+        # QToolBar: Qt only scrolls toolbars through the hidden extension
+        # button, while the requirement is one scrollbar for the complete
+        # toolbar (vertical on the left, horizontal at the top).
+        self._toolbar_scroll = ToolBarScrollArea(self)
+        self._toolbar_scroll.setObjectName("ToolsToolBarScroll")
+        self._toolbar_scroll.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignLeft
+            | QtCore.Qt.AlignmentFlag.AlignTop
+        )
+        self._toolbar_scroll.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self._toolbar_scroll.viewport().setAutoFillBackground(False)
+        self._toolbar_scroll.setWidget(toolbar)
+        self._toolbar_dock = QtWidgets.QDockWidget(self)
+        self._toolbar_dock.setObjectName("ToolsDock")
+        self._toolbar_dock.setFeatures(
+            QtWidgets.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures
+        )
+        self._toolbar_dock.setTitleBarWidget(QtWidgets.QWidget(self._toolbar_dock))
+        self._toolbar_dock.setWidget(self._toolbar_scroll)
         self._toolbar_area = self._load_toolbar_area()
-        self.addToolBar(self._toolbar_area, toolbar)
+        self._apply_toolbar_area(self._toolbar_area)
         toolbar.setContextMenuPolicy(
             QtCore.Qt.ContextMenuPolicy.CustomContextMenu
         )
@@ -280,6 +308,40 @@ class MainWindow(FramelessWindow):
         )
         self._install_toolbar_menu_actions(toolbar)
         self.set_toolbar_visible(self._load_toolbar_visibility())
+
+    def _apply_toolbar_area(self, area):
+        """Orient the toolbar and scrollbar for the requested dock position."""
+        toolbar = getattr(self, "_toolbar", None)
+        scroll = getattr(self, "_toolbar_scroll", None)
+        dock = getattr(self, "_toolbar_dock", None)
+        if toolbar is None or scroll is None or dock is None:
+            return
+        if area == _TOOLBAR_AREA_NAMES["left"]:
+            toolbar.setOrientation(QtCore.Qt.Orientation.Vertical)
+            scroll.setVerticalScrollBarPolicy(
+                QtCore.Qt.ScrollBarPolicy.ScrollBarAsNeeded
+            )
+            scroll.setHorizontalScrollBarPolicy(
+                QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+            )
+            dock_area = QtCore.Qt.DockWidgetArea.LeftDockWidgetArea
+        else:
+            area = _TOOLBAR_AREA_NAMES["top"]
+            toolbar.setOrientation(QtCore.Qt.Orientation.Horizontal)
+            scroll.setVerticalScrollBarPolicy(
+                QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+            )
+            scroll.setHorizontalScrollBarPolicy(
+                QtCore.Qt.ScrollBarPolicy.ScrollBarAsNeeded
+            )
+            dock_area = QtCore.Qt.DockWidgetArea.TopDockWidgetArea
+        toolbar.adjustSize()
+        view = getattr(self.labeling_widget, "view", None)
+        if view is not None and hasattr(view, "refresh_toolbar_geometry"):
+            view.refresh_toolbar_geometry()
+        scroll.updateGeometry()
+        self.addDockWidget(dock_area, dock)
+        dock.show()
 
     def _load_toolbar_area(self):
         # One-time migration: the toolbar used to default to the top area.
@@ -363,20 +425,16 @@ class MainWindow(FramelessWindow):
         if area not in _TOOLBAR_AREA_NAMES.values():
             area = QtCore.Qt.ToolBarArea.TopToolBarArea
         self._toolbar_area = area
-        if not toolbar.isVisible():
-            toolbar.show()
-        self.addToolBar(area, toolbar)
-        view = getattr(self.labeling_widget, "view", None)
-        if view is not None and hasattr(view, "_install_toolbar_overflow"):
-            QtCore.QTimer.singleShot(0, view._install_toolbar_overflow)
+        self._apply_toolbar_area(area)
+        self.set_toolbar_visible(True)
         self._save_toolbar_area()
 
     def set_toolbar_visible(self, visible):
-        toolbar = getattr(self, "_toolbar", None)
-        if toolbar is None:
+        dock = getattr(self, "_toolbar_dock", None)
+        if dock is None:
             return
         self._toolbar_visible = bool(visible)
-        toolbar.setVisible(self._toolbar_visible)
+        dock.setVisible(self._toolbar_visible)
         action = getattr(self, "_toolbar_view_menu_action", None)
         if action is not None:
             action.setChecked(self._toolbar_visible)

@@ -60,7 +60,6 @@ from .utils.style import (
     get_ok_btn_style,
     get_scrollbar_style,
     get_tab_widget_style,
-    get_toolbar_scroll_area_style,
 )
 from ...config import get_config, save_config
 from .label_file import LabelFile, LabelFileError
@@ -88,7 +87,6 @@ from .widgets.relation_dialog import (
     RelationManagerDialog,
     show_relation_message,
 )
-from .widgets.toolbar import ToolBarScrollArea
 from .utils.file_meta import (
     SPLIT_KEYS,
     SPLIT_NONE,
@@ -3594,146 +3592,6 @@ class LabelingWidget(LabelDialog):
             else:
                 button.setFixedSize(26, 30)
 
-    def _toolbar_more_icon(self):
-        theme = get_theme()
-        pixmap = QtGui.QPixmap(16, 16)
-        pixmap.fill(QtCore.Qt.GlobalColor.transparent)
-        painter = QtGui.QPainter(pixmap)
-        painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-        pen = QtGui.QPen(QtGui.QColor(theme["text"]))
-        pen.setWidthF(1.8)
-        pen.setCapStyle(QtCore.Qt.PenCapStyle.RoundCap)
-        painter.setPen(pen)
-        if self.tools.orientation() == Qt.Orientation.Vertical:
-            painter.drawLine(6, 4, 11, 8)
-            painter.drawLine(11, 8, 6, 12)
-        else:
-            painter.drawLine(4, 6, 8, 11)
-            painter.drawLine(8, 11, 12, 6)
-        painter.end()
-        return QtGui.QIcon(pixmap)
-
-    def _install_toolbar_overflow(self):
-        extension = self.tools.findChild(
-            QtWidgets.QToolButton, "qt_toolbar_ext_button"
-        )
-        if extension is None:
-            return
-        for signal_name in ("clicked", "pressed"):
-            try:
-                getattr(extension, signal_name).disconnect()
-            except TypeError:
-                pass
-        extension.setIcon(self._toolbar_more_icon())
-        extension.setIconSize(QtCore.QSize(16, 16))
-        extension.setToolTip(self.tr("More tools"))
-        extension.setFixedSize(28, 30)
-        extension.clicked.connect(self._show_toolbar_overflow)
-
-    def _show_toolbar_overflow(self):
-        hidden = []
-        for action in self.tools.actions():
-            if action is None or action.isSeparator():
-                continue
-            widget = self.tools.widgetForAction(action)
-            if widget is not None and not widget.isVisible():
-                hidden.append(action)
-        if not hidden:
-            return
-
-        theme = get_theme()
-        popup = QtWidgets.QFrame(self, QtCore.Qt.WindowType.Popup)
-        popup.setObjectName("ToolbarOverflowPopup")
-        popup.setStyleSheet(
-            f"QFrame#ToolbarOverflowPopup {{"
-            f" background: {theme['surface']};"
-            f" border: 1px solid {theme['border']};"
-            f" border-radius: 8px; }}"
-        )
-        outer = QtWidgets.QVBoxLayout(popup)
-        outer.setContentsMargins(4, 4, 4, 4)
-        outer.setSpacing(0)
-
-        scroll = QtWidgets.QScrollArea(popup)
-        scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
-        scroll.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarPolicy.ScrollBarAsNeeded
-        )
-        scroll.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff
-        )
-        content = QtWidgets.QWidget()
-        column = QtWidgets.QVBoxLayout(content)
-        column.setContentsMargins(0, 0, 0, 0)
-        column.setSpacing(2)
-        for action in hidden:
-            button = QtWidgets.QToolButton(content)
-            button.setDefaultAction(action)
-            button.setToolButtonStyle(
-                Qt.ToolButtonStyle.ToolButtonTextBesideIcon
-            )
-            button.setIconSize(QtCore.QSize(16, 16))
-            button.setFixedHeight(30)
-            button.setSizePolicy(
-                QtWidgets.QSizePolicy.Policy.Expanding,
-                QtWidgets.QSizePolicy.Policy.Fixed,
-            )
-            button.setStyleSheet(
-                f"QToolButton {{ border: none; text-align: left;"
-                f" padding: 2px 6px; color: {theme['text']}; }}"
-                f"QToolButton:hover {{ background: {theme['surface_hover']};"
-                f" border-radius: 4px; }}"
-            )
-            button.clicked.connect(popup.close)
-            column.addWidget(button)
-        column.addStretch(1)
-        scroll.setWidget(content)
-        outer.addWidget(scroll)
-
-        popup.resize(240, min(520, max(80, len(hidden) * 32 + 8)))
-        extension = self.tools.findChild(
-            QtWidgets.QToolButton, "qt_toolbar_ext_button"
-        )
-        if extension is not None:
-            if self.tools.orientation() == Qt.Orientation.Vertical:
-                position = extension.mapToGlobal(
-                    QtCore.QPoint(extension.width() + 2, 0)
-                )
-            else:
-                position = extension.mapToGlobal(
-                    QtCore.QPoint(0, extension.height() + 2)
-                )
-            popup.move(position)
-        popup.show()
-        self._toolbar_overflow_popup = popup
-
-    def toolbar_scroll_area(self, toolbar):
-        scroll_area = ToolBarScrollArea()
-        scroll_area.setObjectName(f"{toolbar.objectName()}ScrollArea")
-        scroll_area.setFrameShape(QFrame.Shape.NoFrame)
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setHorizontalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAsNeeded
-        )
-        scroll_area.setVerticalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
-        )
-        scroll_area.setStyleSheet(get_toolbar_scroll_area_style())
-        scroll_area.setSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Fixed,
-        )
-        scroll_area.viewport().setAutoFillBackground(False)
-        scroll_area.setFixedHeight(toolbar.height())
-        scroll_area.horizontalScrollBar().rangeChanged.connect(
-            lambda minimum, maximum: scroll_area.setFixedHeight(
-                toolbar.height() + (6 if maximum > minimum else 0)
-            )
-        )
-        scroll_area.setWidget(toolbar)
-        return scroll_area
-
     def statusBar(self):
         return self.parent.parent.statusBar()
 
@@ -3745,6 +3603,20 @@ class LabelingWidget(LabelDialog):
             bool(getattr(self, "_toolbar_show_labels", True)),
             set(getattr(self, "_toolbar_hidden_keys", set())),
         )
+
+    def refresh_toolbar_geometry(self):
+        """Resize the toolbar to its natural size inside the scroll pane."""
+        toolbar = getattr(self, "tools", None)
+        if toolbar is None:
+            return
+        toolbar.adjustSize()
+        toolbar.updateGeometry()
+        parent = toolbar.parentWidget()
+        while parent is not None:
+            if isinstance(parent, QtWidgets.QScrollArea):
+                parent.updateGeometry()
+                break
+            parent = parent.parentWidget()
 
     def toolbar_entries(self):
         entries = []
@@ -3770,6 +3642,7 @@ class LabelingWidget(LabelDialog):
         self.settings.sync()
         self.tools.set_label_mode(self._toolbar_show_labels)
         self.populate_mode_actions()
+        self.refresh_toolbar_geometry()
 
     def populate_mode_actions(self):
         tool = self.actions.tool
@@ -3778,15 +3651,11 @@ class LabelingWidget(LabelDialog):
         visible_tool = []
         for index, tool_action in enumerate(tool):
             if tool_action is None:
-                visible_tool.append(None)
-            elif str(index) not in getattr(
+                continue
+            if str(index) not in getattr(
                 self, "_toolbar_hidden_keys", set()
             ):
                 visible_tool.append(tool_action)
-        while visible_tool and visible_tool[0] is None:
-            visible_tool.pop(0)
-        while visible_tool and visible_tool[-1] is None:
-            visible_tool.pop()
         utils.add_actions(self.tools, tuple(visible_tool))
         self._apply_toolbar_short_labels(self.tools)
         # Keep settings/shortcuts visible at the top of a vertical toolbar;
@@ -3795,7 +3664,7 @@ class LabelingWidget(LabelDialog):
             actions = self.tools.actions()
             if actions:
                 self.tools.insertAction(actions[0], action)
-        QtCore.QTimer.singleShot(0, self._install_toolbar_overflow)
+        self.refresh_toolbar_geometry()
 
         self.canvas.menus[0].clear()
         utils.add_actions(self.canvas.menus[0], menu)

@@ -394,15 +394,37 @@ def test_file_search_supports_split_and_boolean_queries(window, tmp_path):
 
 def test_toolbar_can_be_docked_left_and_hidden(window):
     toolbar = window.findChild(QtWidgets.QToolBar, "ToolsToolBar")
+    scroll = window.findChild(QtWidgets.QScrollArea, "ToolsToolBarScroll")
+    dock = window.findChild(QtWidgets.QDockWidget, "ToolsDock")
+    assert scroll is not None and dock is not None
     window.dock_toolbar(QtCore.Qt.ToolBarArea.LeftToolBarArea)
     assert (
-        window.toolBarArea(toolbar) == QtCore.Qt.ToolBarArea.LeftToolBarArea
+        window.dockWidgetArea(dock)
+        == QtCore.Qt.DockWidgetArea.LeftDockWidgetArea
     )
     assert toolbar.orientation() == QtCore.Qt.Orientation.Vertical
+    assert (
+        scroll.verticalScrollBarPolicy()
+        == QtCore.Qt.ScrollBarPolicy.ScrollBarAsNeeded
+    )
+    assert (
+        scroll.horizontalScrollBarPolicy()
+        == QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+    )
 
     window.dock_toolbar(QtCore.Qt.ToolBarArea.TopToolBarArea)
     assert (
-        window.toolBarArea(toolbar) == QtCore.Qt.ToolBarArea.TopToolBarArea
+        window.dockWidgetArea(dock)
+        == QtCore.Qt.DockWidgetArea.TopDockWidgetArea
+    )
+    assert toolbar.orientation() == QtCore.Qt.Orientation.Horizontal
+    assert (
+        scroll.horizontalScrollBarPolicy()
+        == QtCore.Qt.ScrollBarPolicy.ScrollBarAsNeeded
+    )
+    assert (
+        scroll.verticalScrollBarPolicy()
+        == QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff
     )
 
     window.set_toolbar_visible(False)
@@ -418,13 +440,49 @@ def test_toolbar_can_be_docked_left_and_hidden(window):
 
 def test_toolbar_is_installed_and_dockable(window):
     toolbar = window.findChild(QtWidgets.QToolBar, "ToolsToolBar")
+    dock = window.findChild(QtWidgets.QDockWidget, "ToolsDock")
     assert toolbar is not None
-    assert window.toolBarArea(toolbar) == QtCore.Qt.ToolBarArea.TopToolBarArea
-    assert toolbar.isMovable()
+    assert dock is not None
+    assert (
+        window.dockWidgetArea(dock)
+        == QtCore.Qt.DockWidgetArea.LeftDockWidgetArea
+    )
+    assert not toolbar.isMovable()
     assert not toolbar.isFloatable()
     areas = toolbar.allowedAreas()
     assert areas & QtCore.Qt.ToolBarArea.TopToolBarArea
     assert areas & QtCore.Qt.ToolBarArea.LeftToolBarArea
+
+
+def test_toolbar_scrolls_the_whole_tool_set(window):
+    toolbar = window.findChild(QtWidgets.QToolBar, "ToolsToolBar")
+    scroll = window.findChild(QtWidgets.QScrollArea, "ToolsToolBarScroll")
+    view = window.labeling_widget.view
+    app = QtWidgets.QApplication.instance()
+
+    window.dock_toolbar(QtCore.Qt.ToolBarArea.LeftToolBarArea)
+    view.apply_toolbar_preferences(False, set())
+    app.processEvents()
+    assert scroll.verticalScrollBar().maximum() > 0
+    assert scroll.horizontalScrollBar().maximum() == 0
+
+    # No separator widgets are inserted into the toolbar: in icon-only mode
+    # they used to leave unlabelled dark blocks between adjacent tools.
+    assert not any(action.isSeparator() for action in toolbar.actions())
+    for action in toolbar.actions():
+        assert isinstance(
+            toolbar.widgetForAction(action), QtWidgets.QToolButton
+        )
+    extension = toolbar.findChild(
+        QtWidgets.QToolButton, "qt_toolbar_ext_button"
+    )
+    assert extension is None or not extension.isVisible()
+
+    window.dock_toolbar(QtCore.Qt.ToolBarArea.TopToolBarArea)
+    view.apply_toolbar_preferences(True, set())
+    app.processEvents()
+    assert scroll.horizontalScrollBar().maximum() > 0
+    assert scroll.verticalScrollBar().maximum() == 0
 
 
 def _settle_ui():

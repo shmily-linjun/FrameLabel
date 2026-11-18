@@ -8,6 +8,60 @@
 
 ---
 
+## 4.3.2+fork.17 — 2026-11-18
+
+### 1. 背景与原因
+
+fork.16 把放不下的工具收进自绘弹层，并把 QToolBar 内置“»”改成 28×30 的小箭头。实测后用户明确否定：
+
+- 取消“显示工具标签”后，工具之间出现无法点击的黑色方块；
+- “⌵/»”被改小，点击面积反而不如改前；
+- 弹层仍是“弹出项目列表”，不是用户要的整条工具栏滚动；顶部停靠横向、左侧停靠纵向都应像可滚动窗格一样访问全部工具。
+
+### 2. 修改与关键细节
+
+- **移除工具栏分隔项**：`populate_mode_actions()` 不再把 `actions.tool` 中的 `None` 分隔符插入工具栏。此前竖向工具栏把分隔符渲染成 26×30 的深色空块，关闭标签后尤其明显；现在工具按钮连续排列。
+- **整条工具栏改为可滚动窗格**：`MainWindow._install_toolbar()` 用 `QDockWidget`（`ToolsDock`，隐藏标题栏、禁用浮动/关闭）承载 `ToolBarScrollArea`（`ToolsToolBarScroll`），滚动区内放原有 `ToolsToolBar`；`_apply_toolbar_area()` 按停靠位置切换工具栏方向与滚动条策略：
+  - 左侧：`Vertical`，垂直滚动条按需显示，水平滚动条关闭；
+  - 顶部：`Horizontal`，水平滚动条按需显示，垂直滚动条关闭。
+- **滚动区域尺寸**：`ToolBarScrollArea.sizeHint()/minimumSizeHint()` 只按工具栏自然宽度（左侧）或高度（顶部）加滚动条宽度申请停靠尺寸，避免顶部停靠要求整条工具栏的超宽尺寸、或左侧停靠要求整条工具栏的高度。
+- **滚轮**：`ToolBarScrollArea.wheelEvent()` 把滚轮转给当前方向的可滚动条，鼠标停在工具按钮上也能滚动。
+- **移除 fork.16 的弹层与自绘箭头**：删除 `_toolbar_more_icon()`、`_install_toolbar_overflow()`、`_show_toolbar_overflow()`，不再断开 Qt 内置 extension 按钮信号，也不再缩成 28×30；空间不足时由滚动条访问全部工具，无需末端按钮。
+- **几何同步**：新增 `LabelingWidget.refresh_toolbar_geometry()`，在 `populate_mode_actions()`、`apply_toolbar_preferences()` 和切换停靠方向后调用 `adjustSize()` 并刷新滚动区，保证标签开关、显隐过滤和方向切换后内容尺寸正确。
+- **停靠契约**：`ToolsToolBar` 仍是带原 objectName 的 `QToolBar`，但由 `ToolsDock` 承载，`setMovable(False)`、`setFloatable(False)`；左右/顶部切换仍走 `dock_toolbar()` 与视图菜单，持久化键仍是 `window/toolbar_area` 与 `window/toolbar_visible`，`window/toolbar_area_scheme` 仍为 3。
+
+### 3. 涉及模块与文件
+
+- `anylabeling/views/mainwindow.py`（`QDockWidget` + 滚动区安装、方向/滚动条策略、停靠与显隐）；
+- `anylabeling/views/labeling/widgets/toolbar.py`（`ToolBarScrollArea` 尺寸、滚轮）；
+- `anylabeling/views/labeling/label_widget.py`（分隔符过滤、几何刷新、移除弹层与箭头）；
+- `tests/test_widgets/test_mainwindow_state.py`、`tests/test_labeling/test_file_table.py`（停靠断言改为 dock area，新增加滚动/无分隔块回归）；
+- 结构报告、中文用户手册与版本号。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本 `4.3.2+fork.16` → `4.3.2+fork.17`；无配置键、数据格式或 CLI 变化。
+- 用户可观察：关闭“显示工具标签”后不再出现黑色空块；工具不再被末端小箭头折叠，左侧用垂直滚动条、顶部用水平滚动条访问全部工具；滚轮可滚动工具栏。
+- 代码接口：`MainWindow` 不再把 `ToolsToolBar` 直接 `addToolBar()`；需要读取停靠位置的外部代码应使用 `window.findChild(QDockWidget, "ToolsDock")` 与 `dockWidgetArea()`。`window/toolbar_area` 值仍为 `left`/`top`。
+- 设置页“工具栏”仍是即时生效，无重置/保存按钮。
+
+### 5. 实际验证内容
+
+- 离屏几何探针（1400×900，`temporary/fork4-toolbar-scroll/probe.py`）：
+  - 左侧标签模式：dock 137px 宽，工具栏 119×2467，垂直滚动条 `maximum=1621`，水平 `maximum=0`；图标模式：dock 52px，工具栏 34×1438，垂直 `maximum=592`，水平 `maximum=0`；
+  - 顶部标签模式：dock 高 70px，工具栏 4301×53，水平 `maximum=2903`，垂直 `maximum=0`；图标模式：水平 `maximum=220`，垂直 `maximum=0`；
+  - 两种方向、两种标签模式均无可见 `qt_toolbar_ext_button`，工具栏动作中无 separator。
+- pytest：`tests/test_widgets`、`tests/test_labeling/test_file_table.py`、`tests/test_settings` 共 138 passed、1 skipped、11 subtests passed；新增 `test_toolbar_scrolls_the_whole_tool_set` 通过。
+- 未执行：真实 Windows 窗口中的鼠标滚轮/拖动滚动、暗色主题滚动条目视确认、全量 pytest 与打包。
+
+### 6. 已知限制与后续事项
+
+- `QDockWidget` 会占用停靠区并显示分隔线；标题栏已用空 widget 替换，但不同平台边框可能有 1–2px 差异。
+- 左侧宽度按最长按钮计算，较长的英文短标签会把工具栏拉宽；顶部标签模式内容总宽较大，需要横向滚动。
+- 滚动区的尺寸提示加入 4px 余量，以抵消 QToolBar 样式内边距与滚动条宽度差；更换 Qt 主题/样式后应回归一次。
+- 滚轮事件依赖子控件不消费 wheel；如某类工具按钮自行处理滚轮，需要再补事件过滤。
+- 未做工具分组或搜索，工具栏很长时仍需滚动查找。
+
 ## 4.3.2+fork.16 — 2026-11-18
 
 ### 1. 背景与原因

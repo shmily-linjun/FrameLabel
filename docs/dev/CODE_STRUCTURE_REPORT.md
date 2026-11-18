@@ -1,8 +1,8 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-18（Asia/Shanghai）
-> 对应版本：4.3.2+fork.16
-> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批运行了与操作员身份、归属字段和标注持久化相关的定向 pytest，未运行全量测试。
+> 对应版本：4.3.2+fork.17
+> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批运行了主窗口工具栏停靠/滚动、文件表格与设置相关的定向 pytest，未运行全量测试。
 > 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4 已改变的结构以本文当前版本说明为准。
 > 行号锚点：`label_widget.py` 在 fork.4 中新增了身份/门禁相关代码，早前记录的行号会整体后移；定位时优先使用类名和方法名，行号仅作参考。
 
@@ -11,14 +11,14 @@
 | 项目 | 结论 |
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
-| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；本批随后形成 fork.4 提交，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.16，见 [app_info.py](../../anylabeling/app_info.py) |
+| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.17 的结构变化见 §5/§16，实际提交哈希以 Git 记录为准 |
+| 版本 | 4.3.2+fork.17，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
 | 主入口 | `xanylabeling = anylabeling.app:main`；亦支持 `python -m anylabeling.app` |
 | 包构建 | `python -m build --no-isolation`，见 [build_and_publish_pypi.sh](../../scripts/build_and_publish_pypi.sh) |
-| 最近核对日期 | 2026-11-17 |
+| 最近核对日期 | 2026-11-18 |
 
 ### 1.1 规模与统计口径
 
@@ -70,7 +70,7 @@ GUI 组合链为：
 main() → MainWindow → LabelingWrapper → LabelingWidget
 ```
 
-对应 [app.py:427-449](../../anylabeling/app.py#L427-L449)、[mainwindow.py:35-82](../../anylabeling/views/mainwindow.py#L35-L82)、[label_wrapper.py:8-37](../../anylabeling/views/labeling/label_wrapper.py#L8-L37)。`MainWindow` 负责窗口外壳、状态栏、关闭事件、窗口几何状态，以及把标注工具栏安装为可停靠顶部/左侧的 `QToolBar`。工具栏位置和可见性显式保存为 `window/toolbar_area`、`window/toolbar_visible`；旧 `window/state` 在启动和关闭时移除，避免 Qt 恢复浮动工具栏导致 Windows 几何异常，见 [mainwindow.py:84-141](../../anylabeling/views/mainwindow.py#L84-L141)、[mainwindow.py:216-234](../../anylabeling/views/mainwindow.py#L216-L234)。
+对应 [app.py:427-449](../../anylabeling/app.py#L427-L449)、[mainwindow.py:35-82](../../anylabeling/views/mainwindow.py#L35-L82)、[label_wrapper.py:8-37](../../anylabeling/views/labeling/label_wrapper.py#L8-L37)。`MainWindow` 负责窗口外壳、状态栏、关闭事件、窗口几何状态，以及把标注工具栏安装到 `ToolsDock`（`QDockWidget`）承载的 `ToolBarScrollArea` 中，实现左侧垂直滚动、顶部水平滚动的可停靠工具栏。工具栏位置和可见性显式保存为 `window/toolbar_area`、`window/toolbar_visible`；旧 `window/state` 在启动和关闭时移除，避免 Qt 恢复浮动工具栏导致 Windows 几何异常，见 [mainwindow.py:84-141](../../anylabeling/views/mainwindow.py#L84-L141)、[mainwindow.py:216-234](../../anylabeling/views/mainwindow.py#L216-L234)。
 
 **维护重点：**把 GUI 或训练依赖移到入口顶层，可能破坏轻量 CLI 的懒加载；隐藏训练命令被子进程实际调用，不能当作死代码删除。修改窗口持久化时，不得重新写回 `window/state` 或绕过显式工具栏键。
 
@@ -195,18 +195,22 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 - 状态栏：`DocumentStatusBar` 左侧常驻 `[x,y|绝对路径]`；临时消息写入独立标签，应用层过滤器拦截 `QStatusTipEvent`，因此状态提示不会隐藏文档信息。
 - Windows 原生能力：`nativeEvent()` 处理 `WM_NCHITTEST`（缩放）与 `WM_GETMINMAXINFO`（最大化贴合工作区）；其他平台用 `QWindow.startSystemResize()` 兜底。
 
-### 5.8 工具栏、导入入口与状态提示（fork.13）
+### 5.8 工具栏、导入入口与状态提示（fork.13，fork.17 更新）
 
 ```text
-工具栏：ToolBar(QToolBar) → MainWindow.addToolBar(左侧) → 按钮 iconText（≤4 字）
+工具栏：ToolBar(QToolBar) → ToolBarScrollArea(QScrollArea) → QDockWidget(ToolsDock) → 左/顶停靠
+       左侧：Vertical + 垂直滚动条按需；顶部：Horizontal + 水平滚动条按需
 导入：文件列表右键 / 搜索框“+” → 单文件导入（追加）或文件夹导入（重建列表）
 状态：画布 mouse_position_changed → [x,y|路径]；形状尺寸/长度提示不再带坐标
 ```
 
 - 工具栏默认停靠左侧；`window/toolbar_area_scheme` 做一次性迁移，之后用户选择优先。
-- 按钮短标签由 `LabelingWidget._short_tool_label()` 生成并写入 `QAction.iconText`；`ToolBar` QSS 使用 `min-width/min-height` 让按钮随文字自适应；按钮再按内容 `setFixedSize`，放不下的项交给 QToolBar 的 extension 折叠，不再压缩文字。
+- `MainWindow._install_toolbar()` 创建无标题栏、不可浮动/关闭的 `ToolsDock`，把 `ToolsToolBar` 放进 `ToolBarScrollArea`；`_apply_toolbar_area()` 负责切换 `Vertical/Horizontal` 方向与滚动条策略，`dock_toolbar()` 只切换停靠区，不再把工具栏直接 `addToolBar()`。
+- `ToolBarScrollArea.sizeHint()/minimumSizeHint()` 按工具栏自然宽度（左侧）或高度（顶部）加滚动条宽度申请停靠尺寸，避免顶部按整条工具栏超宽尺寸布局；`wheelEvent()` 把滚轮转给当前方向滚动条。
+- 按钮短标签由 `LabelingWidget._short_tool_label()` 生成并写入 `QAction.iconText`；`ToolBar` QSS 使用 `min-width/min-height` 让按钮随文字自适应；按钮再按内容 `setFixedSize`，不再依赖 QToolBar extension 折叠。
+- 工具栏不插入 `None` 分隔符：`populate_mode_actions()` 只添加真实动作，避免竖向工具栏把分隔符渲染成深色空块。
+- `refresh_toolbar_geometry()` 在 `populate_mode_actions()`、`apply_toolbar_preferences()` 与方向切换后调用 `adjustSize()` 并刷新滚动区尺寸。
 - 设置窗口新增“工具栏”页（`SETTINGS_PRIMARY_ORDER` 中的 `Toolbar`）：显示/隐藏标签、全选、逐项显隐；写入 `toolbar/show_labels`、`toolbar/hidden_actions`，`populate_mode_actions()` 按索引过滤。
-- 溢出：断开 QToolBar 内置 extension 按钮的内部连接，改用自绘 `QFrame` + `QScrollArea` 单列弹层；箭头图标按主题自绘，避免暗色主题不可见。
 - 导入入口复用 `import_files_dialog()`（追加）与 `open_folder_dialog()`（重建），右键菜单允许空列表使用。
 - 状态栏消息标签位于文档标签之前，临时提示不会把文档信息推到右侧或隐藏。
 
@@ -650,13 +654,14 @@ model_manager.py:14
 - fork.1/fork.2 的文件表格化、右侧 tab、工具栏停靠、搜索语法、统计反筛、类别措辞及模型目录；
 - fork.4 的本地操作员账号、会话与门禁、XLABEL `author`/`modified_at` 归属、批量自动标注盖章、四个语言的界面翻译；
 - fork.7 的无边框窗口模块（标题栏/菜单嵌入/窗口按钮/全屏/命中测试/主题）与主窗口接入、菜单显隐与全屏、`frameless` 启动配置与原生回退；
+- fork.17 的工具栏滚动窗格（`ToolsDock` + `ToolBarScrollArea`）、停靠方向与滚动条策略、分隔符移除与几何刷新；
 - 模块和核心类关系、跨线程/进程/网络边界、引用统计、维护路径、已知问题和风险；
 - 核心类表共 22 类：18 类进入总览图，fork.4 的 2 个身份类与 fork.7 的 2 个窗口类见 §5.6/§5.7；
 - 最终统计排除生成文件，依赖循环及扇入/扇出已按同一范围复核。
 
 ### 未覆盖及原因
 
-- 未运行应用、模型、训练、导出、更新或打包；本批在获授权的一次性环境中运行了身份库、归属字段、门禁逻辑及标注读写相关的定向 pytest，未运行全量测试，不提供全量通过率、性能或实机结论；
+- 未运行应用、模型、训练、导出、更新或打包；本批在获授权的一次性环境中运行了工具栏停靠/滚动、主窗口状态、文件表格与设置相关的定向 pytest，未运行全量测试，不提供全量通过率、性能或实机结论；
 - 未逐行阅读全部模型算法、OpenGL/相机投影、PPOCR 富文本编辑器及第三方库，按计划只覆盖公共接口；
 - 动态注册、条件导入和实际导入顺序可能不完整；本批只复核受 fork 改动影响的模块，没有重新执行全项目逐行分析；
 - 本批发现主窗口描述、文件规模、核心类排名和链接位置已过时并已修正；README 和全部注释未逐项核对。
@@ -665,4 +670,4 @@ model_manager.py:14
 
 ---
 
-**文档自检：**核心类表 20 类中 18 类入图，fork.4 新增 2 类以 §5.6 链路说明代替重绘；各 Mermaid 图未改动并保持既有节点上限；所引项目文件均确认存在；未将低置信度推测写入事实段。本批改变了应用运行逻辑（登录/门禁/归属字段），结构、数据流与风险章节已按实际代码更新。
+**文档自检：**核心类表 20 类中 18 类入图，fork.4 新增 2 类以 §5.6 链路说明代替重绘；各 Mermaid 图未改动并保持既有节点上限；所引项目文件均确认存在；未将低置信度推测写入事实段。本批改变了主窗口工具栏的承载与滚动方式（`ToolsDock` + `ToolBarScrollArea`），结构、行为、验证与风险章节已按实际代码更新。
