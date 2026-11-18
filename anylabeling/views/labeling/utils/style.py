@@ -209,6 +209,42 @@ def get_normal_button_style():
     """
 
 
+def get_compact_button_style(primary=False):
+    """Small button for the menu bar corner and other inline chrome."""
+    t = get_theme()
+    if primary:
+        background = t["primary"]
+        hover = t["primary_hover"]
+        pressed = t["primary_pressed"]
+        color = "white"
+        border = "none"
+    else:
+        background = t["surface"]
+        hover = t["surface_hover"]
+        pressed = t["surface_pressed"]
+        color = t["text"]
+        border = f"1px solid {t['border_light']}"
+    return f"""
+        QPushButton {{
+            height: 18px;
+            min-width: 0px;
+            padding: 1px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: {color};
+            background-color: {background};
+            border: {border};
+        }}
+        QPushButton:hover {{
+            background-color: {hover};
+        }}
+        QPushButton:pressed {{
+            background-color: {pressed};
+        }}
+    """
+
+
 def get_settings_button_style():
     t = get_theme()
     return f"""

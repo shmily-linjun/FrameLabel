@@ -11262,6 +11262,7 @@ Response preview:
     </message>
 </context><context>
     <name>OperatorBar</name>
+    <message><source>Not logged in</source><translation>未ログイン</translation></message>
     <message><source>Login</source><translation>ログイン</translation></message>
     <message><source>Logout</source><translation>ログアウト</translation></message>
     <message><source>Browse mode - editing annotations requires login</source><translation>閲覧モード — アノテーションの編集にはログインが必要です</translation></message>
@@ -11324,4 +11325,8 @@ Response preview:
     <message><source>This operator cannot manage other accounts.</source><translation>このオペレーターは他のアカウントを管理できません。</translation></message>
     <message><source>Cannot open the operator database: %s</source><translation>オペレーターデータベースを開けません：%s</translation></message>
     <message><source>The operator operation failed: %s</source><translation>オペレーター操作に失敗しました：%s</translation></message>
+</context><context>
+    <name>AttributionLabel</name>
+    <message><source>Author: not recorded</source><translation>作成者：未記録</translation></message>
+    <message><source>Last modified: %s</source><translation>最終更新：%s</translation></message>
 </context></TS>

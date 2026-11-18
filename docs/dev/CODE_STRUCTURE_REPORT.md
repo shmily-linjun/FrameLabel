@@ -1,7 +1,7 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-18（Asia/Shanghai）
-> 对应版本：4.3.2+fork.5
+> 对应版本：4.3.2+fork.6
 > 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批运行了与操作员身份、归属字段和标注持久化相关的定向 pytest，未运行全量测试。
 > 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4 已改变的结构以本文当前版本说明为准。
 > 行号锚点：`label_widget.py` 在 fork.4 中新增了身份/门禁相关代码，早前记录的行号会整体后移；定位时优先使用类名和方法名，行号仅作参考。
@@ -12,7 +12,7 @@
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
 | Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；本批随后形成 fork.4 提交，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.5，见 [app_info.py](../../anylabeling/app_info.py) |
+| 版本 | 4.3.2+fork.6，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
@@ -101,7 +101,7 @@ main() → MainWindow → LabelingWrapper → LabelingWidget
 | 模型存储目录 | 解析自定义/默认模型目录、迁移及旧目录扫描 | [model_storage.py](../../anylabeling/services/auto_labeling/model_storage.py)、[model.py](../../anylabeling/services/auto_labeling/model.py)、[model_manager.py](../../anylabeling/services/auto_labeling/model_manager.py) | `resolve_model_directory()`、`migrate_model_directory()` | 用户配置、文件系统、模型下载 | 支撑 | 本批补充 | 配置目录优先，默认/旧目录用于兼容扫描；迁移遇同名跳过，失败保留旧文件，修改时不能把它当成全量原子迁移 |
 | 画布与通用部件 | 图形编辑、缩放、列表及交互组件 | [canvas.py](../../anylabeling/views/labeling/widgets/canvas.py)、[shape.py](../../anylabeling/views/labeling/shape.py) | `Canvas`、`Shape` | Qt、标注编排 | 核心 | 深入 | `Shape` 同时连接画布、标签列表和文件读写，坐标/字段变更须检查三处一致性 |
 | 标签持久化与转换 | XLABEL JSON 读写及多格式转换 | [label_file.py](../../anylabeling/views/labeling/label_file.py)、[label_converter.py](../../anylabeling/views/labeling/label_converter.py)、[converter.py](../../anylabeling/views/common/converter.py) | `LabelFile.load/save()`、`LabelConverter`、`handle_convert_command()` | Shape、schema、本地文件 | 核心 | 深入 | 保存会规范化矩形并合并 `other_data`；改字段时需检查加载兼容和转换器 |
-| 操作员身份与标注归属 | 本地账号库、会话状态、未登录门禁、JSON 归属字段 | [identity/](../../anylabeling/services/identity)、[operator_dialog.py](../../anylabeling/views/labeling/widgets/operator_dialog.py)、[operator_bar.py](../../anylabeling/views/labeling/widgets/operator_bar.py)、[label_file.py](../../anylabeling/views/labeling/label_file.py)、[batch.py](../../anylabeling/views/labeling/utils/batch.py) | `OperatorStore`、`OperatorService`、`OperatorSession`、`get_operator_service()`、`content_signature()`、`stamp_attribution()` | 配置工作目录、`LabelingWidget`、自动标注批量写盘、Qt | 支撑 | 新增 | 账号库在 `work_dir/xanylabeling_data/operators`；新增修改类动作必须登记到 `OPERATOR_REQUIRED_ACTIONS`；归属只在内容签名变化时盖章，账号不是安全边界 |
+| 操作员身份与标注归属 | 本地账号库、会话状态、未登录门禁、JSON 归属字段 | [identity/](../../anylabeling/services/identity)、[operator_dialog.py](../../anylabeling/views/labeling/widgets/operator_dialog.py)、[operator_bar.py](../../anylabeling/views/labeling/widgets/operator_bar.py)、[label_file.py](../../anylabeling/views/labeling/label_file.py)、[batch.py](../../anylabeling/views/labeling/utils/batch.py) | `OperatorStore`、`OperatorService`、`OperatorSession`、`get_operator_service()`、`content_signature()`、`stamp_attribution()` | 配置工作目录、`MainWindow`、`LabelingWidget`、自动标注批量写盘、Qt | 支撑 | 新增 | 账号库在系统应用数据目录（与 work_dir 无关），旧路径仅作迁移来源；新增修改类动作必须登记到 `OPERATOR_REQUIRED_ACTIONS`；归属只在内容签名变化时盖章，账号不是安全边界 |
 | 自动标注 | 模型配置、下载/加载、推理和结果回传 | [model_manager.py](../../anylabeling/services/auto_labeling/model_manager.py)、[auto_labeling.py](../../anylabeling/views/labeling/widgets/auto_labeling/auto_labeling.py) | `ModelManager`、`AutoLabelingWidget` | 配置、模型适配器、标注 UI | 核心 | 深入 | 模型 `type`、模型清单、动态类映射和适配器构造参数必须同步 |
 | 自动训练 | 训练配置、进程启动、事件回传与导出 | [ultralytics_dialog.py](../../anylabeling/views/training/ultralytics_dialog.py)、[trainer.py](../../anylabeling/services/auto_training/ultralytics/trainer.py) | `UltralyticsDialog`、`TrainingManager` | 标注 UI、训练 worker、Ultralytics | 核心 | 深入 | payload、stdout 事件协议和隐藏 CLI 命令是跨进程契约，需成套修改 |
 | 专项工作区 | 点云、PPOCR、VQA、图像/视频分类、聊天 | `views/labeling/{pointcloud,ppocr,vqa,classifier,video_classifier,chatbot}` | `LabelingWidget.open_*()` | 主标注窗口、各自服务与工具 | 可插拔 | 主链路深入、算法选读 | 视频分类依赖可选 QtMultimedia；点云采用延迟导入，不能移除异常和空值分支 |
@@ -167,12 +167,12 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 标注内容/tags 变化 → content_signature 比对 → stamp_attribution → XLABEL JSON
 ```
 
-- 账号库固定为 `<work_dir>/xanylabeling_data/operators/operators.db`，只存账号，不存标注内容；口令用标准库 PBKDF2-HMAC-SHA256 加每用户 salt。首个注册账号成为管理员，账号只禁用不删除，`none` 为保留名（大小写不敏感禁止注册）。
+- 账号库固定在系统应用数据目录（Windows `%APPDATA%\X-AnyLabeling\operators\operators.db`，Linux/macOS 对应 XDG/Application Support），与 `--work-dir` 无关；旧路径 `<work_dir>/xanylabeling_data/operators/operators.db` 只作为首次复制迁移来源。库中只存账号，不存标注内容；口令用标准库 PBKDF2-HMAC-SHA256 加每用户 salt。首个注册账号成为管理员，账号只禁用不删除，`none` 为保留名（大小写不敏感禁止注册）。
 - 会话为进程级单例，只存在于内存，关闭软件即失效；`get_operator_service()` 是唯一访问点，`reset_operator_service()` 供测试替换。
 - 未登录为“浏览模式”：`OPERATOR_REQUIRED_ACTIONS` 中的动作、图片 tags 控件和批量自动标注入口被禁用；浏览、训练、评估、导出、切换 split、导入外部标注不受影响。
 - 写入保护与盖章：`save_labels()`/`save_attributes()` 先用 `content_signature()` 比对内容签名，只有标注内容、flags、tags、description 或 relations 变化才写 `author`/`modified_at`；勾选 `checked`、切换 `split` 不更新归属。内容确实变化但无操作员时可拒绝写盘，不会伪造作者。
 - 旧文件与导入数据统一按 `author="none"` 读取（[label_file.py](../../anylabeling/views/labeling/label_file.py) 的 `ensure_attribution`），不反推文件修改时间；自动标注批量写盘（[batch.py](../../anylabeling/views/labeling/utils/batch.py)）按发起批量运行的操作员盖章。
-- 界面表现：画布上方常显 `OperatorBar`（当前模式、当前操作员、当前图片归属、登录/注销）。未登录时工具置灰，这是刻意的可见状态，不是缺陷。
+- 界面表现：`MainWindow` 把 `OperatorBar` 放在菜单栏右上角 corner widget、把 `AttributionLabel` 放在状态栏永久控件，二者都不占画布高度；独立嵌入且无菜单栏时回退到画布上方。未登录时工具置灰，这是刻意的可见状态，不是缺陷。
 - 契约同步：`docs/开始.md` §10、[讨论稿 §12A](数据库设计-讨论稿.md)、[设计书 §3.4](工业机器视觉数据平台-设计书-v1.6.md) 记录同一契约；账号库为应用级、项目库为数据级，不共享存储、不做外键。项目数据库的操作者列尚未落地，见 T6。
 - 已知边界：点云、PPOCR、VQA、图像分类、视频分类等专项工作区不在本批门禁和归属范围内；自动标注面板按钮本身未置灰，依赖写入保护兜底；归属只记最后修改人，不保留历史（历史/单一权威仍留给 T3 的数据库与 revision 审计）。
 
@@ -540,6 +540,7 @@ model_manager.py:14
 | 新增自动标注模型 | [model_manager.py](../../anylabeling/services/auto_labeling/model_manager.py)、[model.py](../../anylabeling/services/auto_labeling/model.py)、[models.yaml](../../anylabeling/configs/models.yaml) |
 | 改配置或快捷键 | [config.py](../../anylabeling/config.py)、[xanylabeling_config.yaml](../../anylabeling/configs/xanylabeling_config.yaml)、[runtime_applier.py](../../anylabeling/views/labeling/settings/runtime_applier.py) |
 | 改登录/门禁/标注归属 | [identity/session.py](../../anylabeling/services/identity/session.py)、[label_widget.py](../../anylabeling/views/labeling/label_widget.py)（`OPERATOR_REQUIRED_ACTIONS`、`_prepare_attribution`）、[label_file.py](../../anylabeling/views/labeling/label_file.py)（`ensure_attribution`）、[test_operator_gate.py](../../tests/test_labeling/test_operator_gate.py) |
+| 改窗口 chrome/标题栏/菜单 | [mainwindow.py](../../anylabeling/views/mainwindow.py)（`_install_operator_chrome`、toolbar 停靠、窗口状态）、[label_widget.py](../../anylabeling/views/labeling/label_widget.py)（`menu()`、`update_progress_title()`）；自绘无边框方案见 [无边框窗口模块-讨论稿](无边框窗口模块-讨论稿.md)（未实现） |
 | 改训练 payload/事件 | [trainer.py](../../anylabeling/services/auto_training/ultralytics/trainer.py)、[worker.py](../../anylabeling/services/auto_training/ultralytics/worker.py)、[environment.py](../../anylabeling/services/auto_training/ultralytics/environment.py) |
 | 改 PPOCR 服务或结果 | [pipeline.py](../../anylabeling/views/labeling/ppocr/pipeline.py)、[data_manager.py](../../anylabeling/views/labeling/ppocr/data_manager.py)、[config.py](../../anylabeling/views/labeling/ppocr/config.py) |
 | 改依赖、打包或更新 | [pyproject.toml](../../pyproject.toml)、[build_executable.sh](../../scripts/build_executable.sh)、[package_updates.py](../../scripts/package_updates.py) |

@@ -10,7 +10,10 @@ from anylabeling.services.identity import (
     OperatorStore,
     ReservedOperatorNameError,
     content_signature,
+    default_database_path,
     ensure_attribution,
+    legacy_database_path,
+    migrate_legacy_database,
     read_attribution,
     stamp_attribution,
 )
@@ -149,6 +152,39 @@ class TestAttribution(unittest.TestCase):
             baseline,
             content_signature(shapes, {"flag": True}, other_data),
         )
+
+
+class TestAccountDatabaseLocation(unittest.TestCase):
+    def test_default_path_is_not_derived_from_work_directory(self):
+        path = default_database_path()
+        self.assertTrue(
+            path.endswith(os.path.join("operators", "operators.db"))
+        )
+        self.assertIn("X-AnyLabeling", path)
+        self.assertNotEqual(
+            os.path.normcase(path),
+            os.path.normcase(legacy_database_path(os.path.join("C:", "p"))),
+        )
+
+    def test_migrates_legacy_database_once(self):
+        with tempfile.TemporaryDirectory() as directory:
+            legacy = os.path.join(directory, "legacy", "operators.db")
+            os.makedirs(os.path.dirname(legacy))
+            OperatorStore(legacy).register("张三", "abcd")
+            target = os.path.join(directory, "app", "operators.db")
+
+            self.assertTrue(migrate_legacy_database(target, legacy))
+            self.assertTrue(os.path.exists(target))
+            self.assertTrue(os.path.exists(legacy))
+            self.assertEqual(OperatorStore(target).count(), 1)
+            self.assertFalse(migrate_legacy_database(target, legacy))
+
+    def test_missing_legacy_database_is_not_an_error(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = os.path.join(directory, "app", "operators.db")
+            legacy = os.path.join(directory, "missing", "operators.db")
+            self.assertFalse(migrate_legacy_database(target, legacy))
+            self.assertFalse(os.path.exists(target))
 
 
 if __name__ == "__main__":

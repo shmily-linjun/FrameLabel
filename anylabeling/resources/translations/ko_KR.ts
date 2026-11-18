@@ -11264,6 +11264,7 @@ Response preview:
     </message>
 </context><context>
     <name>OperatorBar</name>
+    <message><source>Not logged in</source><translation>로그인 안 됨</translation></message>
     <message><source>Login</source><translation>로그인</translation></message>
     <message><source>Logout</source><translation>로그아웃</translation></message>
     <message><source>Browse mode - editing annotations requires login</source><translation>찾아보기 모드 — 주석을 편집하려면 로그인해야 합니다</translation></message>
@@ -11326,4 +11327,8 @@ Response preview:
     <message><source>This operator cannot manage other accounts.</source><translation>이 작업자는 다른 계정을 관리할 수 없습니다.</translation></message>
     <message><source>Cannot open the operator database: %s</source><translation>작업자 데이터베이스를 열 수 없습니다: %s</translation></message>
     <message><source>The operator operation failed: %s</source><translation>작업자 작업에 실패했습니다: %s</translation></message>
+</context><context>
+    <name>AttributionLabel</name>
+    <message><source>Author: not recorded</source><translation>작성자: 기록 없음</translation></message>
+    <message><source>Last modified: %s</source><translation>최종 수정: %s</translation></message>
 </context></TS>

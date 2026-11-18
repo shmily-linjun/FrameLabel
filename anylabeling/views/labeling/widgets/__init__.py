@@ -24,7 +24,7 @@ from .label_dialog import (
 from .label_list_widget import LabelListWidget, LabelListWidgetItem
 from .model_dropdown_widget import SearchBar
 from .navigator_widget import NavigatorDialog
-from .operator_bar import OperatorBar
+from .operator_bar import AttributionLabel, OperatorBar
 from .operator_dialog import OperatorDialog, PasswordResetDialog
 from .overview_dialog import OverviewDialog
 from .polygon_sides_dialog import PolygonSidesDialog

@@ -14,28 +14,97 @@ persisted, so the next launch starts in browse mode.
 from __future__ import annotations
 
 import logging
+import os
 import os.path as osp
+import shutil
+import sys
 import threading
 
 from .store import Operator, OperatorStore
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_DATA_DIRNAME = "xanylabeling_data"
+APP_DIRNAME = "X-AnyLabeling"
 DEFAULT_IDENTITY_DIRNAME = "operators"
 DEFAULT_DATABASE_FILENAME = "operators.db"
+#: Legacy location: written below the configurable work directory until
+#: fork.5, which made accounts disappear when ``--work-dir`` changed.
+LEGACY_DATA_DIRNAME = "xanylabeling_data"
+
+
+def _platform_data_directory() -> str:
+    """Return a per-user application data directory independent of work_dir."""
+    home = osp.expanduser("~")
+    if os.name == "nt":
+        base = os.environ.get("APPDATA") or osp.join(
+            home, "AppData", "Roaming"
+        )
+    elif sys.platform == "darwin":
+        base = osp.join(home, "Library", "Application Support")
+    else:
+        base = os.environ.get("XDG_DATA_HOME") or osp.join(
+            home, ".local", "share"
+        )
+    return osp.join(base, APP_DIRNAME)
 
 
 def default_database_path() -> str:
-    """Return the account database path inside the work directory."""
-    from anylabeling.config import get_work_directory
+    """Return the account database path (machine-scoped, not project-scoped).
 
+    The operator accounts follow the application, not the dataset directory,
+    so this path must not depend on ``--work-dir``.
+    """
     return osp.join(
-        get_work_directory(),
-        DEFAULT_DATA_DIRNAME,
+        _platform_data_directory(),
         DEFAULT_IDENTITY_DIRNAME,
         DEFAULT_DATABASE_FILENAME,
     )
+
+
+def legacy_database_path(work_dir: str | None = None) -> str:
+    """Return the pre-fork.5 account database location below ``work_dir``."""
+    if work_dir is None:
+        from anylabeling.config import get_work_directory
+
+        work_dir = get_work_directory()
+    return osp.join(
+        work_dir,
+        LEGACY_DATA_DIRNAME,
+        DEFAULT_IDENTITY_DIRNAME,
+        DEFAULT_DATABASE_FILENAME,
+    )
+
+
+def migrate_legacy_database(
+    target_path: str | None = None, legacy_path: str | None = None
+) -> bool:
+    """Copy a pre-fork.5 account database to the stable location.
+
+    The legacy file is copied, not moved: it is the only source of the
+    account names and removing it is left to the user.
+    """
+    target = target_path or default_database_path()
+    if osp.exists(target):
+        return False
+    legacy = (
+        legacy_path if legacy_path is not None else legacy_database_path()
+    )
+    if not legacy or not osp.exists(legacy):
+        return False
+    directory = osp.dirname(target)
+    try:
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+        shutil.copy2(legacy, target)
+    except OSError:
+        logger.warning(
+            "Could not migrate the operator database from %s", legacy
+        )
+        return False
+    logger.info(
+        "Migrated the operator database from %s to %s", legacy, target
+    )
+    return True
 
 
 class OperatorSession:
@@ -106,6 +175,7 @@ class OperatorService:
 
     def __init__(self, db_path: str | None = None, *, store=None):
         self._db_path = db_path
+        self._explicit_db_path = db_path is not None
         self._store = store
         self.session = OperatorSession()
 
@@ -118,7 +188,10 @@ class OperatorService:
     @property
     def store(self) -> OperatorStore:
         if self._store is None:
-            self._store = OperatorStore(self.db_path)
+            target = self.db_path
+            if not self._explicit_db_path:
+                migrate_legacy_database(target)
+            self._store = OperatorStore(target)
         return self._store
 
     # -- session convenience -------------------------------------------------

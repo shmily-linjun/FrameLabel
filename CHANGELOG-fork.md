@@ -8,6 +8,64 @@
 
 ---
 
+## 4.3.2+fork.6 — 2026-11-18
+
+### 1. 背景与原因
+
+fork.4 把操作员会话条放在画布上方，占掉一行画布高度，影响标注/浏览主功能；同时账号库路径依赖 `--work-dir`，一旦换工作目录就会“找不到账号”，与“账号随软件走”的定位矛盾。按用户确认的方案：登录入口移到菜单栏右上角、归属文字移到状态栏；账号库改为与 `work_dir` 无关的固定系统目录。并要求评估无边框窗口方案、产出一份可复用模块的讨论稿。
+
+### 2. 主要实现与关键细节
+
+#### 2.1 登录入口与归属显示改到原生窗口区域
+
+- `OperatorBar` 改为紧凑控件（模式文字 + 登录/注销按钮），新增 `AttributionLabel` 承载“最后修改/未记录”文字。
+- `MainWindow` 新增 `_install_operator_chrome()`：把 `OperatorBar` 放进 `menuBar().setCornerWidget(..., TopRightCorner)`，把 `AttributionLabel` 放进 `statusBar().addPermanentWidget(...)`。两者都不再占用画布高度。
+- 画布上方不再插入会话条；仅当宿主没有菜单栏（独立嵌入、非 `MainWindow`）时回退为原布局，避免登录入口丢失。
+- `OperatorBar` 新增紧凑按钮样式 `get_compact_button_style()`；悬停提示随登录状态变化。
+- 新增译文：`OperatorBar/Not logged in`、`AttributionLabel/Author: not recorded`、`AttributionLabel/Last modified: %s`，四语言 `.ts` 与 `.qm` 同步；`resources.py` 由脚本重新生成。
+
+#### 2.2 账号库改为固定系统目录
+
+- 路径改为与 `--work-dir` 无关：Windows `%APPDATA%\X-AnyLabeling\operators\operators.db`；Linux `$XDG_DATA_HOME/X-AnyLabeling/...`（缺省 `~/.local/share`）；macOS `~/Library/Application Support/X-AnyLabeling/...`。
+- 旧路径 `<work_dir>/xanylabeling_data/operators/operators.db` 保留为迁移来源：首次使用新路径时若新库不存在而旧库存在，则**复制**（不移动、不删除）到新位置，旧文件留给用户处理。
+- `OperatorService` 支持显式 `db_path`（测试与特殊部署），显式路径不触发迁移。
+
+#### 2.3 无边框窗口模块评估
+
+新增讨论稿 `docs/dev/无边框窗口模块-讨论稿.md`：给出可复用模块的 API 草案（一级/二级菜单、标题/图标、标题栏按钮、内容区）、子模块划分、平台差异与降级、以及接入本项目需要改动/重写的模块清单与分阶段工作量。本批不实现无边框窗口。
+
+### 3. 涉及模块与文件
+
+- 代码：`anylabeling/views/labeling/widgets/operator_bar.py`、`label_widget.py`、`views/mainwindow.py`、`views/labeling/utils/style.py`、`services/identity/session.py`、`services/identity/__init__.py`、`app_info.py`；
+- 资源：`resources/translations/*.ts`、`*.qm`、`resources/resources.py`；
+- 测试：`tests/test_identity/test_operator_store.py`（新增路径与迁移用例）；
+- 文档：本文件、`docs/开始.md`、`docs/dev/数据库设计-讨论稿.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/user/zh_cn/user_guide.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、新增 `docs/dev/无边框窗口模块-讨论稿.md`。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本由 `4.3.2+fork.5` 升至 `4.3.2+fork.6`。
+- **用户可观察**：登录入口从画布上方移到菜单栏右上角，归属文字移到状态栏；画布高度增加约一行。
+- **存储契约**：账号库路径变化，属于需要迁移的契约变化；旧库自动复制到新位置，不删除旧文件。
+- 不改变标注数据格式、`author`/`modified_at` 语义、门禁规则与依赖。
+- `resources.py` 行级差异很大仍是生成器输出差异；`.qm` 每次重编可能产生少量非确定字节，属已知现象。
+
+### 5. 实际验证内容
+
+- 离屏构造 `MainWindow`：菜单栏右上角 corner widget 即 `OperatorBar`，状态栏包含 `AttributionLabel`，画布布局中不再有会话条；`OperatorBar.parent()` 为菜单栏。
+- 账号库路径：`default_database_path()` 返回 `%APPDATA%\X-AnyLabeling\operators\operators.db`，不受工作目录影响；`legacy_database_path()` 仍指向旧位置。
+- 迁移用例：旧库复制到新位置后账号数一致，旧文件保留，二次调用不覆盖。
+- 定向 pytest：身份库、归属字段、门禁三组共 30 项通过；离屏 widget 冒烟通过。
+- 译文：资源内新增上下文可加载（四语言）。未做 GUI 实机截图与全量测试。
+
+### 6. 已知限制与后续事项
+
+- 菜单栏 corner widget 在极窄窗口下会挤压菜单文字，尚未做自适应收起。
+- 旧账号库只复制不删除；迁移只在当前 `work_dir` 下能找到旧库时发生，用户换过工作目录的旧库需手动复制。
+- 无边框窗口仅完成评估与讨论稿，未实现。
+- 英文用户手册仍冻结，未同步路径与界面位置说明。
+
+---
+
 ## 4.3.2+fork.5 — 2026-11-18
 
 ### 1. 背景与原因

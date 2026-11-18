@@ -11262,6 +11262,7 @@ Response preview:
     </message>
 </context><context>
     <name>OperatorBar</name>
+    <message><source>Not logged in</source><translation>未登录</translation></message>
     <message><source>Login</source><translation>登录</translation></message>
     <message><source>Logout</source><translation>注销</translation></message>
     <message><source>Browse mode - editing annotations requires login</source><translation>浏览模式 — 编辑标注需要先登录</translation></message>
@@ -11324,4 +11325,8 @@ Response preview:
     <message><source>This operator cannot manage other accounts.</source><translation>该操作员无权管理其他账号。</translation></message>
     <message><source>Cannot open the operator database: %s</source><translation>无法打开操作员数据库：%s</translation></message>
     <message><source>The operator operation failed: %s</source><translation>操作员操作失败：%s</translation></message>
+</context><context>
+    <name>AttributionLabel</name>
+    <message><source>Author: not recorded</source><translation>标注人：未记录</translation></message>
+    <message><source>Last modified: %s</source><translation>最后修改：%s</translation></message>
 </context></TS>

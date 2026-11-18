@@ -11264,6 +11264,7 @@ Response preview:
     </message>
 </context><context>
     <name>OperatorBar</name>
+    <message><source>Not logged in</source><translation>Not logged in</translation></message>
     <message><source>Login</source><translation>Login</translation></message>
     <message><source>Logout</source><translation>Logout</translation></message>
     <message><source>Browse mode - editing annotations requires login</source><translation>Browse mode - editing annotations requires login</translation></message>
@@ -11326,4 +11327,8 @@ Response preview:
     <message><source>This operator cannot manage other accounts.</source><translation>This operator cannot manage other accounts.</translation></message>
     <message><source>Cannot open the operator database: %s</source><translation>Cannot open the operator database: %s</translation></message>
     <message><source>The operator operation failed: %s</source><translation>The operator operation failed: %s</translation></message>
+</context><context>
+    <name>AttributionLabel</name>
+    <message><source>Author: not recorded</source><translation>Author: not recorded</translation></message>
+    <message><source>Last modified: %s</source><translation>Last modified: %s</translation></message>
 </context></TS>

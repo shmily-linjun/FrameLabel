@@ -1,8 +1,12 @@
-"""Compact operator session bar shown above the canvas.
+"""Operator session chrome: a menu-bar chip and a status-bar attribution.
 
-The bar is the always-visible answer to "who is logged in and can I edit?".
-Disabled tools alone are easy to mistake for a defect, so the mode and the
-login entry point must always be visible.
+Both widgets are deliberately tiny and framework-native.  The login entry
+lives in the menu bar corner and the "last modified by" text in the status
+bar, so neither costs any canvas height - the canvas is the main working
+area of the application and must not be squeezed by account chrome.
+
+The chips only display state; :class:`anylabeling.views.labeling.label_widget`
+owns the session, the login dialog and the attribution formatting inputs.
 """
 
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -13,16 +17,15 @@ from anylabeling.services.identity.attribution import (
     format_display_time,
 )
 from anylabeling.views.labeling.utils.style import (
-    get_normal_button_style,
-    get_ok_btn_style,
+    get_compact_button_style,
 )
 
-_STATE_STYLE = "font-size: 12px; font-weight: 600;"
-_ATTRIBUTION_STYLE = "font-size: 12px; color: #8a8a8a;"
+_STATE_STYLE = "font-size: 12px; color: #6b6b6b; padding: 0px 4px;"
+_ATTRIBUTION_STYLE = "font-size: 12px; color: #8a8a8a; padding-right: 8px;"
 
 
 class OperatorBar(QWidget):
-    """Shows the current operator and offers login/logout."""
+    """Compact operator chip: mode text plus login/logout button."""
 
     login_requested = pyqtSignal()
     logout_requested = pyqtSignal()
@@ -30,65 +33,55 @@ class OperatorBar(QWidget):
     def __init__(self, service, parent=None):
         super().__init__(parent)
         self.service = service
-        self._attribution_text = ""
+        self.setObjectName("OperatorBar")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, False)
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(8, 2, 8, 2)
-        layout.setSpacing(10)
+        layout.setContentsMargins(4, 0, 4, 0)
+        layout.setSpacing(6)
 
         self.state_label = QLabel("")
         self.state_label.setStyleSheet(_STATE_STYLE)
         layout.addWidget(self.state_label)
 
-        self.attribution_label = QLabel("")
-        self.attribution_label.setStyleSheet(_ATTRIBUTION_STYLE)
-        layout.addWidget(self.attribution_label)
-
-        layout.addStretch()
-
         self.login_button = QPushButton(self.tr("Login"))
-        self.login_button.setStyleSheet(get_ok_btn_style())
+        self.login_button.setStyleSheet(get_compact_button_style(primary=True))
         self.login_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.login_button.clicked.connect(self.login_requested.emit)
         layout.addWidget(self.login_button)
 
         self.logout_button = QPushButton(self.tr("Logout"))
-        self.logout_button.setStyleSheet(get_normal_button_style())
+        self.logout_button.setStyleSheet(get_compact_button_style())
         self.logout_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.logout_button.clicked.connect(self.logout_requested.emit)
         layout.addWidget(self.logout_button)
 
-        self._unsubscribe = self.service.session.subscribe(
+        self.setToolTip(
+            self.tr("Browse mode - editing annotations requires login")
+        )
+        unsubscribe = self.service.session.subscribe(
             lambda _session: self.refresh()
         )
+        self._unsubscribe = unsubscribe
+        # The chip is reparented into the window chrome; closeEvent is not
+        # guaranteed then, so also drop the listener when Qt destroys it.
+        self.destroyed.connect(lambda *_args: unsubscribe())
         self.refresh()
 
     def refresh(self):
         operator = self.service.session.operator
         if operator is None:
-            self.state_label.setText(
-                self.tr("Browse mode - editing annotations requires login")
-            )
+            self.state_label.setText(self.tr("Not logged in"))
             self.login_button.show()
             self.logout_button.hide()
-        else:
-            self.state_label.setText(
-                self.tr("Annotation mode: %s") % operator.name
+            self.setToolTip(
+                self.tr("Browse mode - editing annotations requires login")
             )
+        else:
+            self.state_label.setText(operator.name)
             self.login_button.hide()
             self.logout_button.show()
-        self.attribution_label.setText(self._attribution_text)
-
-    def set_attribution(self, author, modified_at):
-        """Show the attribution of the current image (display only)."""
-        if not author or author == AUTHOR_NONE:
-            text = self.tr("Author: not recorded")
-        else:
-            when = format_display_time(modified_at)
-            detail = f"{author} · {when}" if when else author
-            text = self.tr("Last modified: %s") % detail
-        self._attribution_text = text
-        self.attribution_label.setText(text)
+            self.setToolTip(self.tr("Annotation mode: %s") % operator.name)
 
     def closeEvent(self, event):
         try:
@@ -96,3 +89,23 @@ class OperatorBar(QWidget):
         except Exception:  # noqa: BLE001 - shutdown must not raise
             pass
         super().closeEvent(event)
+
+
+class AttributionLabel(QLabel):
+    """Status-bar text showing who last modified the current image."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setStyleSheet(_ATTRIBUTION_STYLE)
+        self.clear_attribution()
+
+    def clear_attribution(self):
+        self.setText(self.tr("Author: not recorded"))
+
+    def set_attribution(self, author, modified_at):
+        if not author or author == AUTHOR_NONE:
+            self.clear_attribution()
+            return
+        when = format_display_time(modified_at)
+        detail = f"{author} · {when}" if when else author
+        self.setText(self.tr("Last modified: %s") % detail)

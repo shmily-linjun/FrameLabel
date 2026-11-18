@@ -79,7 +79,29 @@ class MainWindow(QMainWindow):
             f"{__appname__} v{__version__} - {__appdescription__}"
         )
         self.setStatusBar(status_bar)
+        self._install_operator_chrome()
         self._restore_window_geometry()
+
+    def _install_operator_chrome(self):
+        """Put the operator chip and attribution into native window chrome.
+
+        The menu bar corner and the status bar already exist, so the two
+        widgets cost no canvas height.  They are created by ``LabelingWidget``
+        and reparented here, which keeps the session ownership in one place.
+        """
+        view = getattr(self.labeling_widget, "view", None)
+        if view is None:
+            return
+        bar = getattr(view, "operator_bar", None)
+        if bar is not None:
+            self.menuBar().setCornerWidget(
+                bar, QtCore.Qt.Corner.TopRightCorner
+            )
+            bar.show()
+        attribution = getattr(view, "attribution_label", None)
+        if attribution is not None:
+            self.statusBar().addPermanentWidget(attribution)
+            attribution.show()
 
     # -- toolbar docking ---------------------------------------------------
     def _install_toolbar(self):

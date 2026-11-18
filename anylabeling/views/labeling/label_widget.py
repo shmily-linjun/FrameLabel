@@ -125,6 +125,7 @@ from .widgets import (
     DigitShortcutDialog,
     LabelModifyDialog,
     GroupIDModifyDialog,
+    AttributionLabel,
     OperatorBar,
     OperatorDialog,
     OverviewDialog,
@@ -2864,11 +2865,17 @@ class LabelingWidget(LabelDialog):
         self.operator_bar = OperatorBar(self.operator_service, self)
         self.operator_bar.login_requested.connect(self.open_operator_login)
         self.operator_bar.logout_requested.connect(self.logout_operator)
-        central_layout.addWidget(self.operator_bar)
+        self.attribution_label = AttributionLabel(self)
         self._operator_unsubscribe = self.operator_service.session.subscribe(
             self._on_operator_session_changed
         )
         self._apply_operator_gate()
+        # The main window moves these two widgets into its menu bar corner
+        # and status bar so they cost no canvas height.  Standalone embedding
+        # (no menu bar host) keeps the compact bar above the canvas.
+        host = getattr(self.parent, "parent", None)
+        if host is None or not hasattr(host, "menuBar"):
+            central_layout.addWidget(self.operator_bar)
         central_layout.addWidget(self.auto_labeling_widget)
         canvas_panel = RoundedPanel()
         canvas_panel_layout = QVBoxLayout(canvas_panel)
@@ -3657,14 +3664,14 @@ class LabelingWidget(LabelDialog):
         return content_signature(shapes, flags, self.other_data)
 
     def _refresh_attribution_display(self):
-        bar = getattr(self, "operator_bar", None)
-        if bar is None:
+        label = getattr(self, "attribution_label", None)
+        if label is None:
             return
         if not self.image_path:
-            bar.set_attribution(None, "")
+            label.clear_attribution()
             return
         author, modified_at = read_attribution(self.other_data)
-        bar.set_attribution(author, modified_at)
+        label.set_attribution(author, modified_at)
 
     def toggle_image_tags_visibility(self, checked):
         self._image_tags_visibility = (
