@@ -5401,7 +5401,6 @@ The original files were kept in:
 
 You can download the models again in the new directory.</translation>
     </message>
-    <message><source>Toggle adjustment panel</source><translation>Toggle adjustment panel</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>

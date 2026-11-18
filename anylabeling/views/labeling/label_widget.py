@@ -2790,24 +2790,18 @@ class LabelingWidget(LabelDialog):
             self._panel_toggle_icon("sidebar", True)
         )
         self.sidebar_toggle_button.clicked.connect(self.toggle_right_sidebar)
-        self.bottom_panel_toggle_button = QtWidgets.QToolButton()
+        self.image_tags_toggle_button = QtWidgets.QToolButton()
         self._configure_toggle_button(
-            self.bottom_panel_toggle_button,
+            self.image_tags_toggle_button,
             toggle_style,
-            self.tr("Toggle adjustment panel"),
+            self.tr("Show or hide image tags"),
         )
-        self.bottom_panel_toggle_button.setIcon(
-            self._panel_toggle_icon("bottom", True)
-        )
-        self.bottom_panel_toggle_button.clicked.connect(
-            self.toggle_adjustment_panel
-        )
-        self._adjustment_panel_enabled = True
+        self.image_tags_toggle_button.setDefaultAction(show_image_tags)
         # These two buttons live in the title bar in frameless mode and are
         # re-added to the toolbar in native mode (see MainWindow).
         self.window_control_buttons = (
             self.sidebar_toggle_button,
-            self.bottom_panel_toggle_button,
+            self.image_tags_toggle_button,
         )
         self.shortcuts_button = QtWidgets.QToolButton()
         self.shortcuts_button.setIcon(
@@ -2867,7 +2861,6 @@ class LabelingWidget(LabelDialog):
             *display_actions,
             None,
             *utility_actions,
-            show_image_tags,
         )
         central_layout.addLayout(instruction_layout)
         self.operator_bar = OperatorBar(self.operator_service, self)
@@ -3252,21 +3245,6 @@ class LabelingWidget(LabelDialog):
                     "sidebar", not self.right_sidebar.isHidden()
                 )
             )
-        if hasattr(self, "bottom_panel_toggle_button"):
-            self.bottom_panel_toggle_button.setIcon(
-                self._panel_toggle_icon(
-                    "bottom", not self.canvas_adjustment.isHidden()
-                )
-            )
-
-    def toggle_adjustment_panel(self):
-        visible = self.canvas_adjustment.isHidden()
-        self._adjustment_panel_enabled = visible
-        self.canvas_adjustment.setVisible(visible)
-        if visible:
-            self._position_canvas_adjustment()
-            self.canvas_adjustment.raise_()
-        self._sync_panel_toggle_icons()
 
     def toggle_right_sidebar(self):
         show = self.right_sidebar.isHidden()
@@ -3763,25 +3741,32 @@ class LabelingWidget(LabelDialog):
         value = 225 + ((label_id >> 16) % 26)
         return QtGui.QColor.fromHsv(hue, saturation, value).getRgb()[:3]
 
+    def _document_status_text(self):
+        """Image path, review status, size and index for the status bar."""
+        if self.filename is None:
+            return f"{__appname__} v{__version__}"
+        current_index, total_count = self.get_image_progress_info()
+        file_path = osp.abspath(str(self.filename))
+        dirty_marker = "*" if self.dirty else ""
+        checked_status = self._annotation_checked_text()
+        image_size = ""
+        if hasattr(self, "image") and not self.image.isNull():
+            image_size = f" [{self.image.width()}x{self.image.height()}]"
+        return (
+            f"{file_path}{dirty_marker} [{checked_status}]"
+            f"{image_size} [{current_index}/{total_count}]"
+        )
+
     def _window_title(self):
-        title = __appname__
-        if self.filename is not None:
-            current_index, total_count = self.get_image_progress_info()
-            file_path = osp.abspath(str(self.filename))
-            dirty_marker = "*" if self.dirty else ""
-            checked_status = self._annotation_checked_text()
-            image_size = ""
-            if hasattr(self, "image") and not self.image.isNull():
-                image_size = f" [{self.image.width()}x{self.image.height()}]"
-            title = (
-                f"{title} - {file_path}{dirty_marker} [{checked_status}]"
-                f"{image_size} "
-                f"[{current_index}/{total_count}]"
-            )
-        return title
+        if self.filename is None:
+            return __appname__
+        return f"{__appname__} - {self._document_status_text()}"
 
     def update_progress_title(self):
         self.parent.parent.setWindowTitle(self._window_title())
+        updater = getattr(self.parent.parent, "update_document_status", None)
+        if updater is not None:
+            updater(self._document_status_text())
 
     def set_clean(self):
         self.dirty = False
@@ -7923,12 +7908,9 @@ class LabelingWidget(LabelDialog):
         self._sync_annotation_checked_state()
         self.update_thumbnail_display()
 
-        # Reveal the adjustment panel now that an image is loaded, unless the
-        # operator switched it off from the title bar toggle.
-        if getattr(self, "_adjustment_panel_enabled", True):
-            self.canvas_adjustment.show()
-            self._position_canvas_adjustment()
-        self._sync_panel_toggle_icons()
+        # Reveal the adjustment panel now that an image is loaded.
+        self.canvas_adjustment.show()
+        self._position_canvas_adjustment()
 
         if self.compare_view_manager.is_active():
             self.compare_view_manager.load_compare_for_file(self.filename)

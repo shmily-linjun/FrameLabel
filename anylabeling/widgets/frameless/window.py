@@ -62,6 +62,7 @@ class FramelessWindow(QtWidgets.QMainWindow):
         self._menu_bar = FrameMenuBar(self, in_window=self._frameless)
         self._title_bar = None
         self._fullscreen_restore_mode = "normal"
+        self._display_title = None
 
         self._fullscreen_action = QtGui.QAction(
             self.tr("Toggle Full Screen"), self
@@ -125,11 +126,18 @@ class FramelessWindow(QtWidgets.QMainWindow):
     def set_app_title(self, text: str) -> None:
         self.setWindowTitle(text)
 
+    def set_display_title(self, text: str) -> None:
+        """Set the custom title bar text (separate from the OS title)."""
+        self._display_title = text
+        if self._title_bar is not None:
+            self._title_bar.set_title(text)
+
     def setWindowTitle(self, title: str) -> None:  # noqa: N802 - Qt naming
         super().setWindowTitle(title)
         title_bar = getattr(self, "_title_bar", None)
         if title_bar is not None:
-            title_bar.set_title(title)
+            display = getattr(self, "_display_title", None)
+            title_bar.set_title(display if display is not None else title)
 
     def set_app_icon(self, icon) -> None:
         if isinstance(icon, str):

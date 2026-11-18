@@ -5401,7 +5401,6 @@ You can download the models again in the new directory.</source>
 
 새 폴더에서 모델을 다시 다운로드할 수 있습니다.</translation>
     </message>
-    <message><source>Toggle adjustment panel</source><translation>조정 패널 전환</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>

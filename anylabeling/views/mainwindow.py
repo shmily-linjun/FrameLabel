@@ -67,6 +67,7 @@ class MainWindow(FramelessWindow):
         self.app = app
         self.config = config
         self.set_app_title(__appname__)
+        self.set_display_title(__appname__)
         self.apply_theme(get_theme())
 
         self.setContentsMargins(0, 0, 0, 0)
@@ -96,9 +97,13 @@ class MainWindow(FramelessWindow):
             self.settings.sync()
 
         status_bar = QStatusBar()
-        status_bar.showMessage(
+        self.document_status_label = QtWidgets.QLabel(
             f"{__appname__} v{__version__} - {__appdescription__}"
         )
+        self.document_status_label.setTextInteractionFlags(
+            QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
+        )
+        status_bar.addWidget(self.document_status_label, 1)
         self.setStatusBar(status_bar)
         self._install_operator_chrome()
         self._restore_menu_visibility()
@@ -123,6 +128,12 @@ class MainWindow(FramelessWindow):
 
     def _save_menu_visibility(self, state):
         self.settings.setValue("frameless/menu_visibility", state)
+
+    def update_document_status(self, text: str) -> None:
+        """Show the current image summary in the status bar."""
+        label = getattr(self, "document_status_label", None)
+        if label is not None:
+            label.setText(text)
 
     def _install_operator_chrome(self):
         """Place the operator chip and attribution into the window chrome.

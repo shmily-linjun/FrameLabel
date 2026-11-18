@@ -5399,7 +5399,6 @@ You can download the models again in the new directory.</source>
 
 新しいフォルダーでモデルを再ダウンロードできます。</translation>
     </message>
-    <message><source>Toggle adjustment panel</source><translation>調整パネルの切り替え</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>
