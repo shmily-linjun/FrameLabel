@@ -121,7 +121,7 @@ class FramelessTheme:
             }}
             QMenuBar#FramelessMenuBar::item {{
                 background: transparent;
-                padding: 2px 8px;
+                padding: 6px 8px;
                 border-radius: 4px;
             }}
             QMenuBar#FramelessMenuBar::item:selected {{

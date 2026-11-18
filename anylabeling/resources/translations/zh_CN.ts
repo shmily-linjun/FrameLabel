@@ -5399,6 +5399,7 @@ You can download the models again in the new directory.</source>
 
 您可以在新目录中重新下载模型。</translation>
     </message>
+    <message><source>Toggle adjustment panel</source><translation>切换调整面板</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -11345,6 +11346,7 @@ Response preview:
     <message><source>Exit Full Screen</source><translation>退出全屏</translation></message>
     <message><source>Full Screen</source><translation>全屏</translation></message>
     <message><source>Close</source><translation>关闭</translation></message>
+    <message><source>Menus</source><translation>菜单显示</translation></message>
 </context>
 <context>
     <name>WindowButton</name>

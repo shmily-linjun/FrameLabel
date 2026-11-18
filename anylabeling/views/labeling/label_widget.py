@@ -2763,18 +2763,7 @@ class LabelingWidget(LabelDialog):
         instruction_layout.setContentsMargins(0, 0, 0, 0)
         instruction_layout.setSpacing(2)
         theme = get_theme()
-        self.sidebar_toggle_button = QtWidgets.QToolButton()
-        self.sidebar_toggle_button.setIcon(
-            get_icon("panel-right", theme["text"], theme["primary"])
-        )
-        self.sidebar_toggle_button.setIconSize(QtCore.QSize(18, 18))
-        self.sidebar_toggle_button.setFixedSize(26, 26)
-        self.sidebar_toggle_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.sidebar_toggle_button.setToolTip(self.tr("Toggle right panel"))
-        self.sidebar_toggle_button.setAccessibleName(
-            self.sidebar_toggle_button.toolTip()
-        )
-        self.sidebar_toggle_button.setStyleSheet(f"""
+        toggle_style = f"""
             QToolButton {{
                 background-color: transparent;
                 border: 1px solid transparent;
@@ -2790,8 +2779,36 @@ class LabelingWidget(LabelDialog):
                 background-color: {theme["surface_pressed"]};
                 border-color: {theme["border"]};
             }}
-        """)
+        """
+        self.sidebar_toggle_button = QtWidgets.QToolButton()
+        self._configure_toggle_button(
+            self.sidebar_toggle_button,
+            toggle_style,
+            self.tr("Toggle right panel"),
+        )
+        self.sidebar_toggle_button.setIcon(
+            self._panel_toggle_icon("sidebar", True)
+        )
         self.sidebar_toggle_button.clicked.connect(self.toggle_right_sidebar)
+        self.bottom_panel_toggle_button = QtWidgets.QToolButton()
+        self._configure_toggle_button(
+            self.bottom_panel_toggle_button,
+            toggle_style,
+            self.tr("Toggle adjustment panel"),
+        )
+        self.bottom_panel_toggle_button.setIcon(
+            self._panel_toggle_icon("bottom", True)
+        )
+        self.bottom_panel_toggle_button.clicked.connect(
+            self.toggle_adjustment_panel
+        )
+        self._adjustment_panel_enabled = True
+        # These two buttons live in the title bar in frameless mode and are
+        # re-added to the toolbar in native mode (see MainWindow).
+        self.window_control_buttons = (
+            self.sidebar_toggle_button,
+            self.bottom_panel_toggle_button,
+        )
         self.shortcuts_button = QtWidgets.QToolButton()
         self.shortcuts_button.setIcon(
             get_icon("command", theme["text"], theme["primary"])
@@ -2803,9 +2820,7 @@ class LabelingWidget(LabelDialog):
         self.shortcuts_button.setAccessibleName(
             self.shortcuts_button.toolTip()
         )
-        self.shortcuts_button.setStyleSheet(
-            self.sidebar_toggle_button.styleSheet()
-        )
+        self.shortcuts_button.setStyleSheet(toggle_style)
         self.shortcuts_button.clicked.connect(self.show_shortcuts)
         self.update_button = QtWidgets.QToolButton()
         self.update_button.setIcon(
@@ -2816,17 +2831,11 @@ class LabelingWidget(LabelDialog):
         self.update_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.update_button.setToolTip(self.tr("Update available"))
         self.update_button.setAccessibleName(self.tr("Update available"))
-        self.update_button.setStyleSheet(
-            self.sidebar_toggle_button.styleSheet()
-        )
+        self.update_button.setStyleSheet(toggle_style)
         self.update_button.hide()
         instruction_layout.addWidget(self.update_button)
         utility_actions = []
-        for button in (
-            self.settings_button,
-            self.shortcuts_button,
-            self.sidebar_toggle_button,
-        ):
+        for button in (self.settings_button, self.shortcuts_button):
             button.setStyleSheet("")
             widget_action = QtWidgets.QWidgetAction(self)
             widget_action.setDefaultWidget(button)
@@ -2857,9 +2866,8 @@ class LabelingWidget(LabelDialog):
             None,
             *display_actions,
             None,
-            *utility_actions[:2],
+            *utility_actions,
             show_image_tags,
-            *utility_actions[2:],
         )
         central_layout.addLayout(instruction_layout)
         self.operator_bar = OperatorBar(self.operator_service, self)
@@ -3197,6 +3205,69 @@ class LabelingWidget(LabelDialog):
             )
         ShortcutsDialog(groups, self).exec()
 
+    def _configure_toggle_button(self, button, style, tooltip):
+        button.setIconSize(QtCore.QSize(18, 18))
+        button.setFixedSize(26, 26)
+        button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        button.setToolTip(tooltip)
+        button.setAccessibleName(tooltip)
+        button.setStyleSheet(style)
+
+    def _panel_toggle_icon(self, kind, visible):
+        """Draw a panel icon: ``sidebar`` or ``bottom`` (horizontal).
+
+        The filled part indicates that the panel is visible, so the two title
+        bar toggles read the same way as the right-panel toggle did before.
+        """
+        theme = get_theme()
+        color = QtGui.QColor(
+            theme["text"] if visible else theme["text_secondary"]
+        )
+        size = 18
+        pixmap = QtGui.QPixmap(size, size)
+        pixmap.fill(QtCore.Qt.GlobalColor.transparent)
+        painter = QtGui.QPainter(pixmap)
+        painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
+        pen = QtGui.QPen(color)
+        pen.setWidthF(1.4)
+        painter.setPen(pen)
+        painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
+        frame = QtCore.QRectF(2.5, 4.5, 13.0, 11.0)
+        painter.drawRoundedRect(frame, 2.0, 2.0)
+        if visible:
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+            painter.setBrush(color)
+            if kind == "sidebar":
+                fill = QtCore.QRectF(11.0, 5.5, 3.0, 9.0)
+            else:
+                fill = QtCore.QRectF(3.5, 11.5, 11.0, 3.0)
+            painter.drawRoundedRect(fill, 1.0, 1.0)
+        painter.end()
+        return QtGui.QIcon(pixmap)
+
+    def _sync_panel_toggle_icons(self):
+        if hasattr(self, "sidebar_toggle_button"):
+            self.sidebar_toggle_button.setIcon(
+                self._panel_toggle_icon(
+                    "sidebar", not self.right_sidebar.isHidden()
+                )
+            )
+        if hasattr(self, "bottom_panel_toggle_button"):
+            self.bottom_panel_toggle_button.setIcon(
+                self._panel_toggle_icon(
+                    "bottom", not self.canvas_adjustment.isHidden()
+                )
+            )
+
+    def toggle_adjustment_panel(self):
+        visible = self.canvas_adjustment.isHidden()
+        self._adjustment_panel_enabled = visible
+        self.canvas_adjustment.setVisible(visible)
+        if visible:
+            self._position_canvas_adjustment()
+            self.canvas_adjustment.raise_()
+        self._sync_panel_toggle_icons()
+
     def toggle_right_sidebar(self):
         show = self.right_sidebar.isHidden()
         if not show:
@@ -3213,14 +3284,7 @@ class LabelingWidget(LabelDialog):
                     self._right_sidebar_width,
                 ]
             )
-        theme = get_theme()
-        self.sidebar_toggle_button.setIcon(
-            get_icon(
-                "panel-right" if show else "panel-left",
-                theme["text"],
-                theme["primary"],
-            )
-        )
+        self._sync_panel_toggle_icons()
 
     def restore_navigator_state(self) -> None:
         try:
@@ -7859,9 +7923,12 @@ class LabelingWidget(LabelDialog):
         self._sync_annotation_checked_state()
         self.update_thumbnail_display()
 
-        # Reveal the adjustment panel now that an image is loaded.
-        self.canvas_adjustment.show()
-        self._position_canvas_adjustment()
+        # Reveal the adjustment panel now that an image is loaded, unless the
+        # operator switched it off from the title bar toggle.
+        if getattr(self, "_adjustment_panel_enabled", True):
+            self.canvas_adjustment.show()
+            self._position_canvas_adjustment()
+        self._sync_panel_toggle_icons()
 
         if self.compare_view_manager.is_active():
             self.compare_view_manager.load_compare_for_file(self.filename)

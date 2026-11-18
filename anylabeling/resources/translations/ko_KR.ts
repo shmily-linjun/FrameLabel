@@ -5401,6 +5401,7 @@ You can download the models again in the new directory.</source>
 
 새 폴더에서 모델을 다시 다운로드할 수 있습니다.</translation>
     </message>
+    <message><source>Toggle adjustment panel</source><translation>조정 패널 전환</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -11347,6 +11348,7 @@ Response preview:
     <message><source>Exit Full Screen</source><translation>전체 화면 종료</translation></message>
     <message><source>Full Screen</source><translation>전체 화면</translation></message>
     <message><source>Close</source><translation>닫기</translation></message>
+    <message><source>Menus</source><translation>메뉴 표시</translation></message>
 </context>
 <context>
     <name>WindowButton</name>

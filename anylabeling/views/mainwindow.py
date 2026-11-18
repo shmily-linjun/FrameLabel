@@ -147,6 +147,14 @@ class MainWindow(FramelessWindow):
         if attribution is not None:
             self.statusBar().addPermanentWidget(attribution)
             attribution.show()
+        controls = getattr(view, "window_control_buttons", ())
+        for index, button in enumerate(controls):
+            if self.frameless:
+                self.add_title_widget(button, key=f"window-control-{index}")
+            else:
+                action = QtWidgets.QWidgetAction(self)
+                action.setDefaultWidget(button)
+                self._toolbar.addAction(action)
 
     # -- toolbar docking ---------------------------------------------------
     def _install_toolbar(self):

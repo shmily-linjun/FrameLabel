@@ -5399,6 +5399,7 @@ You can download the models again in the new directory.</source>
 
 新しいフォルダーでモデルを再ダウンロードできます。</translation>
     </message>
+    <message><source>Toggle adjustment panel</source><translation>調整パネルの切り替え</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -11345,6 +11346,7 @@ Response preview:
     <message><source>Exit Full Screen</source><translation>全画面を終了</translation></message>
     <message><source>Full Screen</source><translation>全画面</translation></message>
     <message><source>Close</source><translation>閉じる</translation></message>
+    <message><source>Menus</source><translation>メニュー表示</translation></message>
 </context>
 <context>
     <name>WindowButton</name>

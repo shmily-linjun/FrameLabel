@@ -19,14 +19,20 @@ import sys
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from .hit_test import edges_at, hit_test_code, qt_edges
+from .hit_test import HTCLIENT, edges_at, hit_test_code, qt_edges
 from .menu_bar import FrameMenuBar
 from .theme import FramelessTheme
 from .title_bar import TitleBar, TitleButton
 from . import window_state
 
+_WM_NCCALCSIZE = 0x0083
 _WM_NCHITTEST = 0x0084
 _WM_GETMINMAXINFO = 0x0024
+
+_GWL_STYLE = -16
+_WS_THICKFRAME = 0x00040000
+# NOSIZE | NOMOVE | NOZORDER | NOACTIVATE | FRAMECHANGED
+_SWP_FRAME_FLAGS = 0x0037
 
 
 class _Point(ctypes.Structure):
@@ -217,6 +223,42 @@ class FramelessWindow(QtWidgets.QMainWindow):
         self._fullscreen_action.setChecked(True)
         self.fullscreen_changed.emit(True)
 
+    def showEvent(self, event):  # noqa: N802 - Qt naming
+        super().showEvent(event)
+        if self._frameless and sys.platform == "win32":
+            self._ensure_native_resize_frame()
+
+    def _ensure_native_resize_frame(self) -> None:
+        """Give the frameless window a sizing frame through native styles.
+
+        ``WM_NCHITTEST`` alone is not enough: Windows only starts a sizing
+        operation for windows that carry ``WS_THICKFRAME``.  The style is
+        added after Qt created the window and the resulting non-client area
+        is removed again in ``nativeEvent`` (``WM_NCCALCSIZE``).
+        """
+        try:
+            hwnd = int(self.winId())
+            user32 = ctypes.windll.user32
+            get_style = user32.GetWindowLongPtrW
+            get_style.restype = ctypes.c_ssize_t
+            get_style.argtypes = [ctypes.c_void_p, ctypes.c_int]
+            set_style = user32.SetWindowLongPtrW
+            set_style.restype = ctypes.c_ssize_t
+            set_style.argtypes = [
+                ctypes.c_void_p,
+                ctypes.c_int,
+                ctypes.c_ssize_t,
+            ]
+            style = get_style(hwnd, _GWL_STYLE)
+            if style & _WS_THICKFRAME:
+                return
+            set_style(hwnd, _GWL_STYLE, style | _WS_THICKFRAME)
+            user32.SetWindowPos(
+                hwnd, 0, 0, 0, 0, 0, _SWP_FRAME_FLAGS
+            )
+        except (AttributeError, OSError, TypeError):
+            return
+
     # -- events --------------------------------------------------------------
     def event(self, event):  # noqa: N802 - Qt naming
         event_type = event.type()
@@ -277,12 +319,19 @@ class FramelessWindow(QtWidgets.QMainWindow):
             msg = wintypes.MSG.from_address(int(message))
         except (ImportError, ValueError, TypeError):
             return False, 0
+        if msg.message == _WM_NCCALCSIZE and msg.wParam:
+            # Returning 0 with wParam=TRUE makes the client area cover the
+            # whole window, hiding the sizing frame we added above.
+            return True, 0
         if msg.message == _WM_NCHITTEST:
+            if self.isMaximized() or self.isFullScreen():
+                return True, HTCLIENT
             x = ctypes.c_short(msg.lParam & 0xFFFF).value
             y = ctypes.c_short((msg.lParam >> 16) & 0xFFFF).value
-            local = self.mapFromGlobal(QtCore.QPoint(x, y))
             ratio = self.devicePixelRatioF() or 1.0
-            margin = int(round(self._theme.resize_margin * ratio))
+            point = QtCore.QPoint(round(x / ratio), round(y / ratio))
+            local = self.mapFromGlobal(point)
+            margin = self._theme.resize_margin
             code = hit_test_code(
                 local.x(), local.y(), self.width(), self.height(), margin
             )

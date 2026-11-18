@@ -5401,6 +5401,7 @@ The original files were kept in:
 
 You can download the models again in the new directory.</translation>
     </message>
+    <message><source>Toggle adjustment panel</source><translation>Toggle adjustment panel</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -11347,6 +11348,7 @@ Response preview:
     <message><source>Exit Full Screen</source><translation>Exit Full Screen</translation></message>
     <message><source>Full Screen</source><translation>Full Screen</translation></message>
     <message><source>Close</source><translation>Close</translation></message>
+    <message><source>Menus</source><translation>Menus</translation></message>
 </context>
 <context>
     <name>WindowButton</name>

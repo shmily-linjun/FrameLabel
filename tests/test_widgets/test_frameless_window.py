@@ -175,6 +175,22 @@ class TestFramelessWindow(unittest.TestCase):
         window.restore_menu_visibility({"Edit": True})
         self.assertTrue(window.menu_visibility_state()["Edit"])
 
+    def test_title_bar_context_menu_toggles_menus(self):
+        window = self._make_window(True)
+        menu = window.title_bar.build_context_menu()
+        texts = [action.text() for action in menu.actions()]
+        self.assertIn("Menus", texts)
+        submenu = next(
+            action.menu()
+            for action in menu.actions()
+            if action.menu() is not None
+        )
+        self.assertEqual(
+            len(submenu.actions()), len(window.menu_bar.top_level_menus())
+        )
+        submenu.actions()[1].trigger()
+        self.assertFalse(window.menu_bar.visibility_state()["Edit"])
+
     def test_native_event_never_calls_super(self):
         """Regression for fork.7: calling super() re-enters and crashes."""
         window = self._make_window(True)

@@ -42,6 +42,7 @@ class TitleBar(QtWidgets.QWidget):
         self._title_buttons = {}
         self._active = True
         self._full_title = ""
+        self._menu_bar = None
 
         self.setObjectName("FramelessTitleBar")
         self.setFixedHeight(theme.title_height)
@@ -88,6 +89,7 @@ class TitleBar(QtWidgets.QWidget):
 
     # -- content -------------------------------------------------------------
     def attach_menu_bar(self, menu_bar) -> None:
+        self._menu_bar = menu_bar
         self._menu_slot.addWidget(menu_bar)
 
     def set_title(self, text: str) -> None:
@@ -226,7 +228,8 @@ class TitleBar(QtWidgets.QWidget):
             return
         super().mouseDoubleClickEvent(event)
 
-    def contextMenuEvent(self, event):  # noqa: N802 - Qt naming
+    def build_context_menu(self):
+        """Build the title bar context menu (also used by tests)."""
         host = self._host
         menu = QtWidgets.QMenu(self)
         if host.isMaximized() or host.isFullScreen():
@@ -244,8 +247,28 @@ class TitleBar(QtWidgets.QWidget):
             else self.tr("Full Screen")
         )
         fullscreen.triggered.connect(host.toggle_fullscreen)
+        if self._menu_bar is not None:
+            menus = self._menu_bar.top_level_menus()
+            if menus:
+                menu.addSeparator()
+                visibility = menu.addMenu(self.tr("Menus"))
+                for top in menus:
+                    top_action = top.menuAction()
+                    title = top.title()
+                    toggle = visibility.addAction(title)
+                    toggle.setCheckable(True)
+                    toggle.setChecked(top_action.isVisible())
+                    toggle.triggered.connect(
+                        lambda checked, name=title: (
+                            self._menu_bar.set_menu_visible(name, checked)
+                        )
+                    )
         menu.addSeparator()
         close = menu.addAction(self.tr("Close"))
         close.triggered.connect(host.close)
+        return menu
+
+    def contextMenuEvent(self, event):  # noqa: N802 - Qt naming
+        menu = self.build_context_menu()
         menu.exec(event.globalPos())
         event.accept()

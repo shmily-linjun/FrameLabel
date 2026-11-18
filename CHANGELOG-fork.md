@@ -8,6 +8,67 @@
 
 ---
 
+## 4.3.2+fork.9 — 2026-11-18
+
+### 1. 背景与原因
+
+fork.8 可正常启动后，用户在真实桌面上验证无边框窗口，反馈四项问题：边缘无法拖动缩放；右侧边栏/底部调整面板的开关不在标题栏；菜单文字顶到标题栏上沿；标题栏右键菜单没有菜单显隐项。
+
+### 2. 修复与关键细节
+
+#### 2.1 窗口边缘缩放
+
+- 根因：无边框窗口的样式里没有 `WS_THICKFRAME`（实测样式 `0x860b0000`）。`WM_NCHITTEST` 虽然返回 `HTLEFT/HTTOP…`，但 Windows 只为带 sizing frame 的窗口启动缩放循环。
+- 修复：`FramelessWindow.showEvent()` 中为无边框窗口补 `WS_THICKFRAME` 并 `SetWindowPos(FRAMECHANGED)`；`nativeEvent()` 增加 `WM_NCCALCSIZE` 处理（`wParam=TRUE` 时返回 0），让客户区重新覆盖整窗，避免出现原生边框。
+- 同时修正高 DPI：`WM_NCHITTEST` 的屏幕坐标按 `devicePixelRatio` 换算到逻辑坐标后再 `mapFromGlobal`；最大化/全屏时返回 `HTCLIENT`，避免在边缘误触缩放。
+
+#### 2.2 侧栏与底部面板开关
+
+- 标题栏最小化按钮左侧新增两个自绘图标按钮：右侧边栏开关、底部调整面板开关。图标用 `QPainter` 绘制（面板框 + 填充），无需新增资源，填充表示面板当前可见。
+- 侧栏按钮不再放进工具栏的 `QWidgetAction`；原生窗口模式仍会自动回落到工具栏，避免功能丢失。
+- 底部面板开关新增偏好 `_adjustment_panel_enabled`：关闭后加载新图片不再自动弹出调整面板，重新开启后恢复。
+
+#### 2.3 菜单垂直对齐
+
+- 菜单项 QSS 垂直内边距 `2px → 6px`，菜单项高度由 20px 增至 28px，在 30px 标题栏内与软件名、窗口按钮同一水平线；标题栏高度不变。
+
+#### 2.4 标题栏右键菜单的菜单显隐
+
+- 标题栏右键菜单新增“菜单显示”子菜单，逐项勾选顶层菜单的显示/隐藏，与“右键菜单栏空白处”的能力一致；隐藏后快捷键仍有效。
+- 右键菜单构建抽成 `build_context_menu()`，便于单测。
+
+### 3. 涉及模块与文件
+
+- `anylabeling/widgets/frameless/window.py`（缩放样式与 NCCALCSIZE、DPI）；
+- `anylabeling/widgets/frameless/theme.py`（菜单项内边距）；
+- `anylabeling/widgets/frameless/title_bar.py`（“菜单显示”子菜单、`build_context_menu()`）；
+- `anylabeling/views/labeling/label_widget.py`（面板开关、自绘图标、底部面板偏好）；
+- `anylabeling/views/mainwindow.py`（标题栏/工具栏落位）；
+- `anylabeling/resources/translations/*`（新增 “Toggle adjustment panel”“Menus”）；
+- `tests/test_widgets/test_frameless_window.py`、文档若干。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本 `4.3.2+fork.8` → `4.3.2+fork.9`；无配置键、数据格式与门禁规则变化。
+- 用户可观察：窗口四边/四角可拖动缩放；标题栏多两个面板开关；菜单文字与标题垂直居中；标题栏右键可显隐菜单。
+- 原生窗口模式（`frameless: false`）下两个面板开关回到工具栏，其余不变。
+
+### 5. 实际验证内容
+
+- 真实 Windows 平台截图核对：菜单项高度 28px、标题栏 30px；两个开关位于最小化按钮左侧（x≈1208/1236，最小化 1266）；侧栏按钮已从工具栏移除。
+- `MainWindow` 离屏冒烟：无边框模式下两个开关的父控件为标题栏，原生模式下为工具栏；点击可切换侧栏与调整面板可见性；菜单 11 项正常。
+- `tests/test_widgets/test_frameless_window.py`：**15 passed**（新增“标题栏右键菜单含菜单显隐子菜单”用例）。
+- 新增中英日韩四个翻译条目并重建资源。
+- **未验证**：真实鼠标拖拽缩放。当前会话无法把窗口置前台（`GetForegroundWindow` 不匹配），合成的鼠标拖拽不会命中窗口；需用户在实机确认。
+
+### 6. 已知限制与后续事项
+
+- 缩放方案依赖 `WS_THICKFRAME`；若个别 Windows 主题下仍不可拖拽，可用 `frameless: false` 回退。
+- 全屏/最大化时禁用边缘缩放；Win11 Snap Layouts 悬停提示仍按 v0.4 决策退化。
+- 标题栏右键的系统菜单仍为简化版（无“移动/大小”）。
+
+---
+
 ## 4.3.2+fork.8 — 2026-11-18
 
 ### 1. 背景与原因
