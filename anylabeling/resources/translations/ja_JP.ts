@@ -5399,6 +5399,15 @@ You can download the models again in the new directory.</source>
 
 新しいフォルダーでモデルを再ダウンロードできます。</translation>
     </message>
+    <message><source>L: %.2f px</source><translation>L: %.2f px</translation></message>
+    <message><source>L: %.2f px | Total: %.2f px</source><translation>L: %.2f px | 合計: %.2f px</translation></message>
+    <message><source>R: %.2f px | C: %.2f px</source><translation>R: %.2f px | 円周: %.2f px</translation></message>
+    <message><source>H: %d, W: %d</source><translation>H: %d, W: %d</translation></message>
+    <message><source>Import</source><translation>インポート</translation></message>
+    <message><source>Import Files</source><translation>ファイルをインポート</translation></message>
+    <message><source>Import Folder</source><translation>フォルダーをインポート</translation></message>
+    <message><source>%s - Import Files</source><translation>%s - ファイルをインポート</translation></message>
+    <message><source>Image files (%s)</source><translation>画像ファイル（%s）</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>

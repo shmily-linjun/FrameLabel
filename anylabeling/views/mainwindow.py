@@ -59,6 +59,13 @@ class DocumentStatusBar(QStatusBar):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.message_label = QtWidgets.QLabel("")
+        self.message_label.setTextInteractionFlags(
+            QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
+        )
+        self.message_label.hide()
+        self.addWidget(self.message_label, 0)
+
         self.document_label = QtWidgets.QLabel("")
         self.document_label.setTextInteractionFlags(
             QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
@@ -69,13 +76,6 @@ class DocumentStatusBar(QStatusBar):
         )
         self.document_label.setMinimumWidth(0)
         self.addWidget(self.document_label, 1)
-
-        self.message_label = QtWidgets.QLabel("")
-        self.message_label.setTextInteractionFlags(
-            QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
-        )
-        self.message_label.hide()
-        self.addWidget(self.message_label, 0)
 
         self._message = ""
         self._message_timer = QtCore.QTimer(self)
@@ -282,9 +282,18 @@ class MainWindow(FramelessWindow):
         self.set_toolbar_visible(self._load_toolbar_visibility())
 
     def _load_toolbar_area(self):
-        saved = self.settings.value("window/toolbar_area", "top")
+        # One-time migration: the toolbar used to default to the top area.
+        # Users who never chose an area get the new left default; an explicit
+        # later choice is persisted and respected.
+        scheme = self.settings.value("window/toolbar_area_scheme", 1, type=int)
+        if scheme < 2:
+            self.settings.setValue("window/toolbar_area_scheme", 2)
+            self.settings.setValue("window/toolbar_area", "left")
+            self.settings.sync()
+            return _TOOLBAR_AREA_NAMES["left"]
+        saved = self.settings.value("window/toolbar_area", "left")
         return _TOOLBAR_AREA_NAMES.get(
-            str(saved), QtCore.Qt.ToolBarArea.TopToolBarArea
+            str(saved), QtCore.Qt.ToolBarArea.LeftToolBarArea
         )
 
     def _save_toolbar_area(self):

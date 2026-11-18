@@ -61,10 +61,10 @@ class ToolBar(QtWidgets.QToolBar):
             QToolBar QToolButton {{
                 border: none;
                 background: transparent;
-                padding: 0px;
+                padding: 2px 4px;
                 margin: 0px;
-                width: {self._button_size}px;
-                height: {self._button_size}px;
+                min-width: {self._button_size}px;
+                min-height: {self._button_size + 16}px;
             }}
             QToolBar QToolButton:hover {{
                 border: 1px solid {t["border_light"]};

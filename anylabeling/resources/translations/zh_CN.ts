@@ -5399,6 +5399,15 @@ You can download the models again in the new directory.</source>
 
 您可以在新目录中重新下载模型。</translation>
     </message>
+    <message><source>L: %.2f px</source><translation>L: %.2f px</translation></message>
+    <message><source>L: %.2f px | Total: %.2f px</source><translation>L: %.2f px | 总计: %.2f px</translation></message>
+    <message><source>R: %.2f px | C: %.2f px</source><translation>R: %.2f px | 周长: %.2f px</translation></message>
+    <message><source>H: %d, W: %d</source><translation>H: %d, W: %d</translation></message>
+    <message><source>Import</source><translation>导入</translation></message>
+    <message><source>Import Files</source><translation>单文件导入</translation></message>
+    <message><source>Import Folder</source><translation>文件夹导入</translation></message>
+    <message><source>%s - Import Files</source><translation>%s - 单文件导入</translation></message>
+    <message><source>Image files (%s)</source><translation>图片文件（%s）</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>

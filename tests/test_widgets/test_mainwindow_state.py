@@ -161,7 +161,7 @@ def test_legacy_floating_state_is_discarded(window_factory):
     assert not toolbar.isFloating()
     assert (
         window.toolBarArea(toolbar)
-        == QtCore.Qt.ToolBarArea.TopToolBarArea
+        == QtCore.Qt.ToolBarArea.LeftToolBarArea
     )
     assert not window.settings.contains("window/state")
 
@@ -193,7 +193,7 @@ def test_close_does_not_save_window_state(window_factory):
     app.processEvents()
     window_factory.close(window)
     assert not window.settings.contains("window/state")
-    assert window.settings.value("window/toolbar_area") == "top"
+    assert window.settings.value("window/toolbar_area") == "left"
 
 
 def test_toolbar_visibility_is_persisted(window_factory):

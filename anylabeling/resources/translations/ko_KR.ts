@@ -5401,6 +5401,15 @@ You can download the models again in the new directory.</source>
 
 새 폴더에서 모델을 다시 다운로드할 수 있습니다.</translation>
     </message>
+    <message><source>L: %.2f px</source><translation>L: %.2f px</translation></message>
+    <message><source>L: %.2f px | Total: %.2f px</source><translation>L: %.2f px | 합계: %.2f px</translation></message>
+    <message><source>R: %.2f px | C: %.2f px</source><translation>R: %.2f px | 둘레: %.2f px</translation></message>
+    <message><source>H: %d, W: %d</source><translation>H: %d, W: %d</translation></message>
+    <message><source>Import</source><translation>가져오기</translation></message>
+    <message><source>Import Files</source><translation>파일 가져오기</translation></message>
+    <message><source>Import Folder</source><translation>폴더 가져오기</translation></message>
+    <message><source>%s - Import Files</source><translation>%s - 파일 가져오기</translation></message>
+    <message><source>Image files (%s)</source><translation>이미지 파일(%s)</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>

@@ -2634,8 +2634,6 @@ class LabelingWidget(LabelDialog):
         self.tools = self.toolbar("Tools")
         # Menu buttons on Left
         self.actions.tool = (
-            # open_,
-            opendir,
             jump_next_images,
             open_next_image,
             open_prev_image,
@@ -3020,7 +3018,35 @@ class LabelingWidget(LabelDialog):
             }}
         """)
         self.file_search.setTextMargins(4, 0, 4, 0)
-        files_panel_layout.addWidget(self.file_search)
+        self.import_button = QtWidgets.QToolButton(self)
+        self.import_button.setObjectName("ImportFilesButton")
+        self.import_button.setFixedSize(26, 26)
+        self.import_button.setCursor(
+            QtCore.Qt.CursorShape.PointingHandCursor
+        )
+        self.import_button.setToolTip(self.tr("Import"))
+        self.import_button.setIcon(
+            utils.new_icon("circle-plus", "svg")
+        )
+        self.import_button.setIconSize(QtCore.QSize(16, 16))
+        self.import_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.import_button.setPopupMode(
+            QtWidgets.QToolButton.ToolButtonPopupMode.InstantPopup
+        )
+        self.import_menu = QtWidgets.QMenu(self.import_button)
+        self.import_menu.addAction(
+            self.tr("Import Files"), self.import_files_dialog
+        )
+        self.import_menu.addAction(
+            self.tr("Import Folder"), self.open_folder_dialog
+        )
+        self.import_button.setMenu(self.import_menu)
+        search_row = QtWidgets.QHBoxLayout()
+        search_row.setContentsMargins(0, 0, 2, 0)
+        search_row.setSpacing(2)
+        search_row.addWidget(self.file_search, 1)
+        search_row.addWidget(self.import_button)
+        files_panel_layout.addLayout(search_row)
         files_panel_layout.addWidget(self.file_list_widget, 1)
 
         # Tab panel and file table are vertically adjustable by the user.
@@ -3502,11 +3528,33 @@ class LabelingWidget(LabelDialog):
         toolbar = ToolBar(title, parent=self)
         toolbar.setObjectName(f"{title}ToolBar")
         toolbar.setOrientation(Qt.Orientation.Horizontal)
-        toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
+        toolbar.setToolButtonStyle(
+            Qt.ToolButtonStyle.ToolButtonTextUnderIcon
+        )
         toolbar.setIconSize(QtCore.QSize(18, 18))
         if actions:
             utils.add_actions(toolbar, actions)
         return toolbar
+
+    @staticmethod
+    def _short_tool_label(text):
+        """Return a compact label (at most four characters for CJK text)."""
+        text = text.replace("&", "").strip()
+        if not text:
+            return text
+        if len(text) <= 4:
+            return text
+        if all(ord(char) < 128 for char in text):
+            return text.split()[0]
+        return text[:4]
+
+    def _apply_toolbar_short_labels(self, toolbar):
+        for action in toolbar.actions():
+            if action is None or action.isSeparator():
+                continue
+            label = self._short_tool_label(action.text())
+            if label:
+                action.setIconText(label)
 
     def toolbar_scroll_area(self, toolbar):
         scroll_area = ToolBarScrollArea()
@@ -3545,6 +3593,7 @@ class LabelingWidget(LabelDialog):
         menu = self.actions.menu
         self.tools.clear()
         utils.add_actions(self.tools, tool)
+        self._apply_toolbar_short_labels(self.tools)
 
         self.canvas.menus[0].clear()
         utils.add_actions(self.canvas.menus[0], menu)
@@ -5282,51 +5331,75 @@ class LabelingWidget(LabelDialog):
 
     def pop_file_list_menu(self, point):
         item = self.file_list_widget.itemAt(point)
-        if item is None:
-            return
-        row = item.row()
-        file_path = self._file_path_at(row)
-        label_file = self._file_label_file(file_path)
-
         menu = QtWidgets.QMenu(self.file_list_widget)
-        copy_name_action = menu.addAction(
-            utils.new_icon("copy", "svg"), self.tr("Copy File Name")
+        import_files_action = menu.addAction(
+            utils.new_icon("import-export", "svg"),
+            self.tr("Import Files"),
         )
-        copy_path_action = menu.addAction(
-            utils.new_icon("copy", "svg"), self.tr("Copy File Path")
+        import_folder_action = menu.addAction(
+            utils.new_icon("folder-open", "svg"),
+            self.tr("Import Folder"),
         )
-        menu.addSeparator()
-        split_menu = menu.addMenu(self.tr("Split"))
-        split_group = QtGui.QActionGroup(split_menu)
-        split_group.setExclusive(True)
-        split_actions = {}
-        current_split = read_file_meta(file_path, label_file).split
-        if current_split not in SPLIT_KEYS:
-            current_split = SPLIT_NONE
-        for split_key in ("train", "val", "test", SPLIT_NONE):
-            split_action = split_menu.addAction(
-                self._split_text(split_key)
-            )
-            split_action.setCheckable(True)
-            split_action.setChecked(split_key == current_split)
-            split_action.setData(split_key)
-            split_group.addAction(split_action)
-            split_actions[split_action] = split_key
 
-        menu.addSeparator()
-        thumbnail_action = menu.addAction(
-            self.tr("Hide Thumbnails")
-            if self._show_thumbnails
-            else self.tr("Show Thumbnails")
-        )
-        remove_action = menu.addAction(self.tr("Remove from List"))
+        row = None
+        file_path = None
+        split_actions = {}
+        copy_name_action = None
+        copy_path_action = None
+        thumbnail_action = None
+        remove_action = None
+        if item is not None:
+            row = item.row()
+            file_path = self._file_path_at(row)
+            label_file = self._file_label_file(file_path)
+            menu.addSeparator()
+            copy_name_action = menu.addAction(
+                utils.new_icon("copy", "svg"),
+                self.tr("Copy File Name"),
+            )
+            copy_path_action = menu.addAction(
+                utils.new_icon("copy", "svg"),
+                self.tr("Copy File Path"),
+            )
+            menu.addSeparator()
+            split_menu = menu.addMenu(self.tr("Split"))
+            split_group = QtGui.QActionGroup(split_menu)
+            split_group.setExclusive(True)
+            current_split = read_file_meta(file_path, label_file).split
+            if current_split not in SPLIT_KEYS:
+                current_split = SPLIT_NONE
+            for split_key in ("train", "val", "test", SPLIT_NONE):
+                split_action = split_menu.addAction(
+                    self._split_text(split_key)
+                )
+                split_action.setCheckable(True)
+                split_action.setChecked(split_key == current_split)
+                split_action.setData(split_key)
+                split_group.addAction(split_action)
+                split_actions[split_action] = split_key
+
+            menu.addSeparator()
+            thumbnail_action = menu.addAction(
+                self.tr("Hide Thumbnails")
+                if self._show_thumbnails
+                else self.tr("Show Thumbnails")
+            )
+            remove_action = menu.addAction(self.tr("Remove from List"))
 
         chosen = menu.exec(self.file_list_widget.viewport().mapToGlobal(point))
         if chosen is None:
             return
-        if chosen == copy_name_action:
+        if chosen is import_files_action:
+            self.import_files_dialog()
+            return
+        if chosen is import_folder_action:
+            self.open_folder_dialog()
+            return
+        if row is None:
+            return
+        if chosen is copy_name_action:
             self.copy_file_path(osp.basename(file_path))
-        elif chosen == copy_path_action:
+        elif chosen is copy_path_action:
             self.copy_file_path(file_path)
         elif chosen is thumbnail_action:
             self.set_file_thumbnails_visible(not self._show_thumbnails)
@@ -7175,59 +7248,29 @@ class LabelingWidget(LabelDialog):
                 for i in range(1, len(points))
             )
             self.status(
-                self.tr("X: %d, Y: %d | L: %.2f px | Total: %.2f px")
-                % (int(pos.x()), int(pos.y()), length, total_length)
+                self.tr("L: %.2f px | Total: %.2f px")
+                % (length, total_length)
             )
             return
-        self.status(
-            self.tr("X: %d, Y: %d | L: %.2f px")
-            % (int(pos.x()), int(pos.y()), length)
-        )
+        self.status(self.tr("L: %.2f px") % length)
 
     def show_circle_radius(self, radius, pos):
         self.status(
-            self.tr("X: %d, Y: %d | R: %.2f px | C: %.2f px")
-            % (int(pos.x()), int(pos.y()), radius, 2 * math.pi * radius)
+            self.tr("R: %.2f px | C: %.2f px")
+            % (radius, 2 * math.pi * radius)
         )
 
     def show_shape(self, shape_height, shape_width, pos):
         """Display annotation width and height while hovering inside.
 
-        Parameters:
-        - shape_height (float): The height of the shape.
-        - shape_width (float): The width of the shape.
-        - pos (QPointF): The current mouse coordinates inside the shape.
+        Coordinates are shown by the status bar's ``[x,y|path]`` label, so
+        this hint only reports the shape size.
         """
-        num_images = len(self.image_list)
         if shape_height > 0 and shape_width > 0:
-            if num_images and self.filename in self.image_list:
-                self.status(
-                    str(self.tr("X: %d, Y: %d | H: %d, W: %d"))
-                    % (
-                        int(pos.x()),
-                        int(pos.y()),
-                        shape_height,
-                        shape_width,
-                    )
-                )
-            else:
-                self.status(
-                    str(self.tr("X: %d, Y: %d | H: %d, W: %d"))
-                    % (int(pos.x()), int(pos.y()), shape_height, shape_width)
-                )
-        elif self.image_path:
-            if num_images and self.filename in self.image_list:
-                self.status(
-                    str(self.tr("X: %d, Y: %d"))
-                    % (
-                        int(pos.x()),
-                        int(pos.y()),
-                    )
-                )
-            else:
-                self.status(
-                    str(self.tr("X: %d, Y: %d")) % (int(pos.x()), int(pos.y()))
-                )
+            self.status(
+                str(self.tr("H: %d, W: %d"))
+                % (shape_height, shape_width)
+            )
 
     def on_navigator_request(self, x_ratio, y_ratio):
         """Handle navigation request from navigator widget."""
@@ -8626,6 +8669,27 @@ class LabelingWidget(LabelDialog):
     def move_shape(self):
         self.canvas.end_move(copy=False)
         self.set_dirty()
+
+    def import_files_dialog(self):
+        if not self.may_continue():
+            return
+        default_dir = self.last_open_dir
+        if not default_dir:
+            default_dir = (
+                osp.dirname(str(self.filename)) if self.filename else "."
+            )
+        formats = [
+            f"*{ext}" for ext in utils.get_supported_image_extensions()
+        ]
+        files, _selected_filter = QtWidgets.QFileDialog.getOpenFileNames(
+            self,
+            self.tr("%s - Import Files") % __appname__,
+            default_dir,
+            self.tr("Image files (%s)") % " ".join(formats),
+        )
+        files = [str(file) for file in files if file]
+        if files:
+            self.import_dropped_image_files(files)
 
     def open_folder_dialog(self, _value=False, dirpath=None):
         if not self.may_continue():

@@ -5401,6 +5401,15 @@ The original files were kept in:
 
 You can download the models again in the new directory.</translation>
     </message>
+    <message><source>L: %.2f px</source><translation>L: %.2f px</translation></message>
+    <message><source>L: %.2f px | Total: %.2f px</source><translation>L: %.2f px | Total: %.2f px</translation></message>
+    <message><source>R: %.2f px | C: %.2f px</source><translation>R: %.2f px | C: %.2f px</translation></message>
+    <message><source>H: %d, W: %d</source><translation>H: %d, W: %d</translation></message>
+    <message><source>Import</source><translation>Import</translation></message>
+    <message><source>Import Files</source><translation>Import Files</translation></message>
+    <message><source>Import Folder</source><translation>Import Folder</translation></message>
+    <message><source>%s - Import Files</source><translation>%s - Import Files</translation></message>
+    <message><source>Image files (%s)</source><translation>Image files (%s)</translation></message>
 </context><context>
     <name>MainWindow</name>
     <message>

@@ -1,7 +1,7 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-18（Asia/Shanghai）
-> 对应版本：4.3.2+fork.12
+> 对应版本：4.3.2+fork.13
 > 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批运行了与操作员身份、归属字段和标注持久化相关的定向 pytest，未运行全量测试。
 > 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4 已改变的结构以本文当前版本说明为准。
 > 行号锚点：`label_widget.py` 在 fork.4 中新增了身份/门禁相关代码，早前记录的行号会整体后移；定位时优先使用类名和方法名，行号仅作参考。
@@ -12,7 +12,7 @@
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
 | Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；本批随后形成 fork.4 提交，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.12，见 [app_info.py](../../anylabeling/app_info.py) |
+| 版本 | 4.3.2+fork.13，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
@@ -194,6 +194,19 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 - 主题：`MainWindow.apply_theme(get_theme())` 生成标题栏/菜单栏 QSS，浅色模式不再依赖系统调色板；窗口激活/失活由 `FramelessWindow.event()` 切换标题颜色。
 - 状态栏：`DocumentStatusBar` 左侧常驻 `[x,y|绝对路径]`；临时消息写入独立标签，应用层过滤器拦截 `QStatusTipEvent`，因此状态提示不会隐藏文档信息。
 - Windows 原生能力：`nativeEvent()` 处理 `WM_NCHITTEST`（缩放）与 `WM_GETMINMAXINFO`（最大化贴合工作区）；其他平台用 `QWindow.startSystemResize()` 兜底。
+
+### 5.8 工具栏、导入入口与状态提示（fork.13）
+
+```text
+工具栏：ToolBar(QToolBar) → MainWindow.addToolBar(左侧) → 按钮 iconText（≤4 字）
+导入：文件列表右键 / 搜索框“+” → 单文件导入（追加）或文件夹导入（重建列表）
+状态：画布 mouse_position_changed → [x,y|路径]；形状尺寸/长度提示不再带坐标
+```
+
+- 工具栏默认停靠左侧；`window/toolbar_area_scheme` 做一次性迁移，之后用户选择优先。
+- 按钮短标签由 `LabelingWidget._short_tool_label()` 生成并写入 `QAction.iconText`；`ToolBar` QSS 使用 `min-width/min-height` 让按钮随文字自适应。
+- 导入入口复用 `import_files_dialog()`（追加）与 `open_folder_dialog()`（重建），右键菜单允许空列表使用。
+- 状态栏消息标签位于文档标签之前，临时提示不会把文档信息推到右侧或隐藏。
 
 ## 6. 模块依赖图
 
