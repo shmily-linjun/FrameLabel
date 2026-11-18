@@ -8,6 +8,75 @@
 
 ---
 
+## 4.3.2+fork.11 — 2026-11-18
+
+### 1. 背景与原因
+
+fork.10 后用户反馈：状态栏的坐标/文件名重叠且有时文件名消失；标题栏左上角没有软件图标；并提醒这些修复应落在可复用无边框窗口模块内，而不是只在主程序里打补丁。
+
+### 2. 修改与关键细节
+
+#### 2.1 状态栏改为 `[x,y|filename]`
+
+- 画布新增 `mouse_position_changed(x, y)` 信号（鼠标离开时发 `-1,-1`）；`LabelingWidget` 记录光标位置并刷新状态。
+- 状态栏右侧改为**常驻控件**（`addPermanentWidget`），不再被 `showMessage` 的临时提示隐藏，解决“有时文件名消失”；左侧提示区保持原样，互不重叠。
+- 文本格式固定为 `[x,y|文件名]`（未移动鼠标时为 `[-,-|文件名]`）；去掉验收状态、图片尺寸与序号（序号已在文件列表中）。
+
+#### 2.2 标题栏软件图标
+
+- `FramelessWindow` 初始化时读取 `QApplication.windowIcon()`，非空则同步到标题栏左侧图标位；宿主只需按常规设置应用图标。
+- 实测截图：图标位于软件名左侧（16×16，垂直居中）。
+
+#### 2.3 模块边界复核（用户第 1 点）
+
+逐项确认 fork.7–fork.10 的无边框相关修复均在 `anylabeling/widgets/frameless/` 内，宿主代码只做参数与内容装配：
+
+| 能力 | 位置 |
+|---|---|
+| `nativeEvent` 不调用 super（启动崩溃） | `frameless/window.py` |
+| `WS_THICKFRAME` + `WM_NCCALCSIZE` 边缘缩放、DPI 换算 | `frameless/window.py` |
+| 菜单项垂直内边距（标题栏对齐） | `frameless/theme.py` |
+| 标题栏右键“菜单显示”子菜单 | `frameless/title_bar.py` |
+| 自绘标题与系统标题分离（`set_display_title`） | `frameless/window.py` |
+| 默认沿用应用图标 | `frameless/window.py` |
+| 标题栏按钮槽位 / `add_title_widget` | `frameless/window.py`、`title_bar.py` |
+
+宿主侧仅保留与业务相关、本就不属于窗口 chrome 的部分：状态栏内容、侧栏/图片标签开关、菜单项创建。新增 2 个模块级回归用例（显示标题独立于系统标题、默认应用图标生效），模块单测 17 passed。
+
+#### 2.4 关于“验收状态”
+
+核对 `docs/开始.md`、设计书、数据库讨论稿与用户手册：**没有文档要求移除验收状态**，用户手册第 6 章仍把它作为功能记录。因此本次只把验收状态从状态栏文本中去除，功能本身（画布左下角面板与快捷键）保留；如需彻底下线，应作为独立需求走文档与数据契约变更流程。
+
+### 3. 涉及模块与文件
+
+- `anylabeling/widgets/frameless/window.py`（默认图标、显示标题）；
+- `anylabeling/views/labeling/widgets/canvas.py`（鼠标位置信号）；
+- `anylabeling/views/labeling/label_widget.py`（状态文本、坐标跟踪）；
+- `anylabeling/views/mainwindow.py`（常驻状态标签、初始提示）；
+- `tests/test_widgets/test_frameless_window.py`、`examples/frameless_demo.py`；
+- 文档与结构报告。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本 `4.3.2+fork.10` → `4.3.2+fork.11`；无配置键、数据格式与门禁规则变化。
+- 用户可观察：状态栏显示 `[x,y|文件名]`，不再被提示文字覆盖；标题栏左上角出现软件图标。
+- 画布新增 `mouse_position_changed` 信号，属新增 API，不影响既有连接。
+
+### 5. 实际验证内容
+
+- 真实 Windows 截图：标题栏图标 16×16 显示在软件名左侧；菜单项高度 28px。
+- `MainWindow` 离屏冒烟：状态文本在假文件下为 `[-,-|a.tif]`，模拟鼠标移动后为 `[12,35|a.tif]`；`showMessage` 后状态标签仍可见；标题栏图标未被隐藏。
+- 模块单测 **17 passed**（新增显示标题独立、默认图标两例）。
+- 未执行：真实桌面交互与全量测试。
+
+### 6. 已知限制与后续事项
+
+- 状态栏文件名只显示基名（不含目录），目录信息仍在任务栏标题与文件列表中；如需完整路径可在后续按需调整。
+- x/y 为图像坐标，画布缩放/平移时随之换算；未做节流，高频移动时每秒多次刷新 QLabel。
+- fork.9 的边缘缩放仍未经真实鼠标拖拽验证。
+
+---
+
 ## 4.3.2+fork.10 — 2026-11-18
 
 ### 1. 背景与原因

@@ -705,6 +705,10 @@ class LabelingWidget(LabelDialog):
         self.canvas.zoom_request.connect(self.zoom_request)
         self.canvas.pan_request.connect(self.pan_canvas)
         self.canvas.interaction_started.connect(self._zoom_animation.stop)
+        self._cursor_position = None
+        self.canvas.mouse_position_changed.connect(
+            self._on_canvas_mouse_moved
+        )
 
         # Compare view support
         self.compare_view_manager = CompareViewManager(self.canvas, self)
@@ -3742,20 +3746,26 @@ class LabelingWidget(LabelDialog):
         return QtGui.QColor.fromHsv(hue, saturation, value).getRgb()[:3]
 
     def _document_status_text(self):
-        """Image path, review status, size and index for the status bar."""
+        """Cursor position and current filename for the status bar."""
         if self.filename is None:
-            return f"{__appname__} v{__version__}"
-        current_index, total_count = self.get_image_progress_info()
-        file_path = osp.abspath(str(self.filename))
-        dirty_marker = "*" if self.dirty else ""
-        checked_status = self._annotation_checked_text()
-        image_size = ""
-        if hasattr(self, "image") and not self.image.isNull():
-            image_size = f" [{self.image.width()}x{self.image.height()}]"
-        return (
-            f"{file_path}{dirty_marker} [{checked_status}]"
-            f"{image_size} [{current_index}/{total_count}]"
+            return ""
+        position = getattr(self, "_cursor_position", None)
+        if position is None:
+            coords = "-,-"
+        else:
+            coords = f"{position[0]},{position[1]}"
+        return f"[{coords}|{osp.basename(str(self.filename))}]"
+
+    def _refresh_document_status(self):
+        updater = getattr(self.parent.parent, "update_document_status", None)
+        if updater is not None:
+            updater(self._document_status_text())
+
+    def _on_canvas_mouse_moved(self, x, y):
+        self._cursor_position = (
+            None if x < 0 or y < 0 else (int(round(x)), int(round(y)))
         )
+        self._refresh_document_status()
 
     def _window_title(self):
         if self.filename is None:
@@ -3764,9 +3774,7 @@ class LabelingWidget(LabelDialog):
 
     def update_progress_title(self):
         self.parent.parent.setWindowTitle(self._window_title())
-        updater = getattr(self.parent.parent, "update_document_status", None)
-        if updater is not None:
-            updater(self._document_status_text())
+        self._refresh_document_status()
 
     def set_clean(self):
         self.dirty = False
@@ -7668,6 +7676,8 @@ class LabelingWidget(LabelDialog):
 
     def load_file(self, filename=None):  # noqa: C901
         """Load the specified file, or the last opened file if None."""
+
+        self._cursor_position = None
 
         # NOTE(jack): Does we need to save the config here?
         # save_config(self._config)

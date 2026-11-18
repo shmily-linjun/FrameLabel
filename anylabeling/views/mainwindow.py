@@ -97,13 +97,14 @@ class MainWindow(FramelessWindow):
             self.settings.sync()
 
         status_bar = QStatusBar()
-        self.document_status_label = QtWidgets.QLabel(
+        status_bar.showMessage(
             f"{__appname__} v{__version__} - {__appdescription__}"
         )
+        self.document_status_label = QtWidgets.QLabel("")
         self.document_status_label.setTextInteractionFlags(
             QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
         )
-        status_bar.addWidget(self.document_status_label, 1)
+        status_bar.addPermanentWidget(self.document_status_label)
         self.setStatusBar(status_bar)
         self._install_operator_chrome()
         self._restore_menu_visibility()

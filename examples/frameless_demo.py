@@ -43,6 +43,7 @@ class DemoWindow(FramelessWindow):
     def __init__(self, frameless=True):
         super().__init__(frameless=frameless)
         self.set_app_title("Frameless Window Demo")
+        self.set_display_title(self.tr("Frameless Window Demo"))
         self.apply_theme(FramelessTheme.from_mapping(LIGHT))
 
         file_menu = self.add_menu(self.tr("File"))

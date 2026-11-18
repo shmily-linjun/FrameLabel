@@ -70,6 +70,7 @@ class Canvas(
     show_shape = QtCore.pyqtSignal(int, int, QtCore.QPointF)
     show_line_length = QtCore.pyqtSignal(float, QtCore.QPointF)
     show_circle_radius = QtCore.pyqtSignal(float, QtCore.QPointF)
+    mouse_position_changed = QtCore.pyqtSignal(float, float)
     selection_changed = QtCore.pyqtSignal(list)
     shape_moved = QtCore.pyqtSignal()
     shape_rotated = QtCore.pyqtSignal()
@@ -650,6 +651,7 @@ class Canvas(
         self.un_highlight()
         self._hovered_group_id = None
         self.restore_cursor()
+        self.mouse_position_changed.emit(-1.0, -1.0)
         self.shape_hover_changed.emit()
 
     def focusOutEvent(self, _):
@@ -2139,6 +2141,7 @@ class Canvas(
             pos = self.transform_pos(ev.position())
         except AttributeError:
             return
+        self.mouse_position_changed.emit(pos.x(), pos.y())
 
         if self._space_panning:
             if ev.buttons() & self._pan_button:

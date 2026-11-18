@@ -8,7 +8,7 @@ import unittest
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 try:
-    from PyQt6 import QtCore, QtWidgets
+    from PyQt6 import QtCore, QtGui, QtWidgets
 
     from anylabeling.widgets.frameless import (
         FramelessTheme,
@@ -190,6 +190,25 @@ class TestFramelessWindow(unittest.TestCase):
         )
         submenu.actions()[1].trigger()
         self.assertFalse(window.menu_bar.visibility_state()["Edit"])
+
+    def test_display_title_is_independent_from_window_title(self):
+        window = self._make_window(True)
+        window.set_display_title("Host App")
+        window.setWindowTitle("Host App - C:/data/a.png [1/2]")
+        self.assertEqual(
+            window.title_bar.title_label.toolTip(), "Host App"
+        )
+
+    def test_default_application_icon_is_used(self):
+        previous = self.app.windowIcon()
+        pixmap = QtGui.QPixmap(16, 16)
+        pixmap.fill(QtGui.QColor("#336699"))
+        self.app.setWindowIcon(QtGui.QIcon(pixmap))
+        try:
+            window = self._make_window(True)
+            self.assertFalse(window.title_bar.icon_label.isHidden())
+        finally:
+            self.app.setWindowIcon(previous)
 
     def test_native_event_never_calls_super(self):
         """Regression for fork.7: calling super() re-enters and crashes."""

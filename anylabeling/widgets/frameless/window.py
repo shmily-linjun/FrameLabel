@@ -93,6 +93,9 @@ class FramelessWindow(QtWidgets.QMainWindow):
         self._menu_bar.menu_visibility_changed.connect(
             self.menu_visibility_changed.emit
         )
+        app_icon = QtWidgets.QApplication.windowIcon()
+        if not app_icon.isNull():
+            self.setWindowIcon(app_icon)
         self.apply_theme(self._theme)
 
     # -- public accessors ----------------------------------------------------
