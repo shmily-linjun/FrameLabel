@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from ..app_info import __appdescription__, __appname__, __version__
+from ..app_info import __appname__
 from ..widgets.frameless import FramelessWindow, window_state
 from .labeling.label_wrapper import LabelingWrapper
 from .labeling.utils.theme import get_theme
@@ -21,6 +21,83 @@ _TOOLBAR_AREA_NAMES = {
     "top": QtCore.Qt.ToolBarArea.TopToolBarArea,
     "left": QtCore.Qt.ToolBarArea.LeftToolBarArea,
 }
+
+
+class _StatusTipFilter(QtCore.QObject):
+    """Route Qt status tips to the custom status bar.
+
+    ``QMainWindow`` handles ``QStatusTipEvent`` in C++ and calls the native
+    ``QStatusBar::showMessage()``, which would hide the document label.  The
+    filter consumes the event and shows the tip in the custom message label
+    instead, keeping ``[x,y|path]`` visible.
+    """
+
+    def __init__(self, status_bar, parent=None):
+        super().__init__(parent)
+        self._status_bar = status_bar
+
+    def eventFilter(self, obj, event):  # noqa: N802 - Qt naming
+        if event.type() == QtCore.QEvent.Type.StatusTip:
+            tip = event.tip() if hasattr(event, "tip") else ""
+            if tip:
+                self._status_bar.showMessage(tip, 3000)
+            else:
+                self._status_bar.clearMessage()
+            return True
+        return False
+
+
+class DocumentStatusBar(QStatusBar):
+    """Status bar that keeps the document label and transient messages apart.
+
+    ``QStatusBar.showMessage()`` normally hides widgets added with
+    ``addWidget()``.  This subclass routes messages to a dedicated label and
+    keeps the document label (``[x,y|path]``) visible on the left at all
+    times, while ``showMessage`` / ``clearMessage`` / ``currentMessage`` keep
+    their usual semantics for callers.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.document_label = QtWidgets.QLabel("")
+        self.document_label.setTextInteractionFlags(
+            QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
+        )
+        self.document_label.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Ignored,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
+        self.document_label.setMinimumWidth(0)
+        self.addWidget(self.document_label, 1)
+
+        self.message_label = QtWidgets.QLabel("")
+        self.message_label.setTextInteractionFlags(
+            QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
+        )
+        self.message_label.hide()
+        self.addWidget(self.message_label, 0)
+
+        self._message = ""
+        self._message_timer = QtCore.QTimer(self)
+        self._message_timer.setSingleShot(True)
+        self._message_timer.timeout.connect(self.clearMessage)
+
+    def showMessage(self, message, timeout=0):  # noqa: N802 - Qt naming
+        self._message = message or ""
+        self.message_label.setText(self._message)
+        self.message_label.setVisible(bool(self._message))
+        self._message_timer.stop()
+        if timeout and timeout > 0:
+            self._message_timer.start(int(timeout))
+
+    def clearMessage(self):  # noqa: N802 - Qt naming
+        self._message = ""
+        self.message_label.clear()
+        self.message_label.hide()
+        self._message_timer.stop()
+
+    def currentMessage(self):  # noqa: N802 - Qt naming
+        return self._message
 
 
 def _is_wsl_environment() -> bool:
@@ -96,16 +173,13 @@ class MainWindow(FramelessWindow):
             self.settings.remove("window/state")
             self.settings.sync()
 
-        status_bar = QStatusBar()
-        status_bar.showMessage(
-            f"{__appname__} v{__version__} - {__appdescription__}"
-        )
-        self.document_status_label = QtWidgets.QLabel("")
-        self.document_status_label.setTextInteractionFlags(
-            QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
-        )
-        status_bar.addPermanentWidget(self.document_status_label)
+        status_bar = DocumentStatusBar()
+        self.document_status_label = status_bar.document_label
         self.setStatusBar(status_bar)
+        self._status_tip_filter = _StatusTipFilter(status_bar, self)
+        app_instance = QtWidgets.QApplication.instance()
+        if app_instance is not None:
+            app_instance.installEventFilter(self._status_tip_filter)
         self._install_operator_chrome()
         self._restore_menu_visibility()
         self._restore_window_geometry()

@@ -3754,7 +3754,7 @@ class LabelingWidget(LabelDialog):
             coords = "-,-"
         else:
             coords = f"{position[0]},{position[1]}"
-        return f"[{coords}|{osp.basename(str(self.filename))}]"
+        return f"[{coords}|{osp.abspath(str(self.filename))}]"
 
     def _refresh_document_status(self):
         updater = getattr(self.parent.parent, "update_document_status", None)
