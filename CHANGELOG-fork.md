@@ -8,6 +8,42 @@
 
 ---
 
+## 4.3.2+fork.8 — 2026-11-18
+
+### 1. 背景与原因
+
+fork.7 推送后，实际启动即闪退（终端只打印到 `config:get_config`，无 Python 回溯）。复现确认崩溃点为 `FramelessWindow.nativeEvent()`：在 PyQt6（6.12）+ Windows 上，从覆写中调用 `super().nativeEvent(event_type, message)` 会重入该虚函数并导致进程在 `show()` 时崩溃（Windows 退出码 `0xC000041D` / `0xC0000409`，faulthandler 显示 access violation）。
+
+### 2. 修复与关键细节
+
+- `nativeEvent()` 不再调用 `super()`；所有“未处理”路径统一返回 `(False, 0)`（Qt 文档定义的“未处理”结果，等价于 `QWidget::nativeEvent` 默认行为）。
+- 同时把 `hasattr(ctypes, "wintypes")` 的前置判断改为函数内 `from ctypes import wintypes`，避免首次调用时因模块尚未导入而跳过原生处理、后续行为不一致。
+- 其余逻辑（`WM_NCHITTEST`/`WM_GETMINMAXINFO`、非 Windows 的 `startSystemResize`、菜单/全屏/主题）不变。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/widgets/frameless/window.py`、`anylabeling/app_info.py`、`tests/test_widgets/test_frameless_window.py`（新增“nativeEvent 不得调用 super”的回归用例）；
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/无边框窗口模块-讨论稿.md`、`docs/开始.md`。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本 `4.3.2+fork.7` → `4.3.2+fork.8`；无接口/配置/数据契约变化。
+- 修复效果：软件可正常启动；无边框与原生两种模式均可显示窗口。
+
+### 5. 实际验证内容
+
+- 复现脚本（真实 Windows 平台插件）：修复前 `window.show()` 即崩溃；修复后无边框、原生两种模式均完成 `show → showMaximized → 事件循环 → 正常关闭`。
+- 直接运行 `python anylabeling/app.py --no-auto-update-check`：进程保持运行（不再是启动即退出），随后手动终止。
+- `tests/test_widgets`：加入回归用例后 70 passed（含既有 69 项），2 subtests。
+- 未执行：真实桌面上的拖动/缩放/贴边/最大化工区/多屏 DPI 实测（仍需用户验证）；macOS/Wayland；全量测试。
+
+### 6. 已知限制与后续事项
+
+- 本次只修复启动崩溃；fork.7 记录中的平台限制仍然有效。
+- 若后续再覆写其他 Qt 虚函数，需避免在 `nativeEvent` 中调用 `super()`；该约束已写入讨论稿 §11。
+
+---
+
 ## 4.3.2+fork.7 — 2026-11-18
 
 ### 1. 背景与原因

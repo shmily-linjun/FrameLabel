@@ -1,7 +1,7 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-18（Asia/Shanghai）
-> 对应版本：4.3.2+fork.7
+> 对应版本：4.3.2+fork.8
 > 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批运行了与操作员身份、归属字段和标注持久化相关的定向 pytest，未运行全量测试。
 > 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4 已改变的结构以本文当前版本说明为准。
 > 行号锚点：`label_widget.py` 在 fork.4 中新增了身份/门禁相关代码，早前记录的行号会整体后移；定位时优先使用类名和方法名，行号仅作参考。
@@ -12,7 +12,7 @@
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
 | Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；本批随后形成 fork.4 提交，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.7，见 [app_info.py](../../anylabeling/app_info.py) |
+| 版本 | 4.3.2+fork.8，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
@@ -598,6 +598,7 @@ model_manager.py:14
 - 标题栏/菜单栏与 Qt 内建 overflow 按钮的样式可能不完全一致；`QMenuBar` 内建 extension 的配色未单独定制。
 - 菜单显隐状态存于 QSettings；若用户换了工作目录或配置，菜单显示状态可能与预期不同，属于按应用保存而非按项目保存。
 - 标题栏宿主按钮（登录芯片）沿用原控件，键盘焦点/可访问性未专门调整。
+- **`nativeEvent` 不得调用 `super().nativeEvent()`**：fork.7 曾因此在 Windows 上启动即崩溃（PyQt6 重入虚函数），fork.8 改为返回 `(False, 0)`；后续再覆写 Qt 原生事件时需沿用该写法。
 
 ## 14. 支撑设施与外围补充
 

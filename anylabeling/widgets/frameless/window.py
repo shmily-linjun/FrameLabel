@@ -266,18 +266,17 @@ class FramelessWindow(QtWidgets.QMainWindow):
 
     # -- Windows native behaviour -------------------------------------------
     def nativeEvent(self, event_type, message):  # noqa: N802 - Qt naming
-        if (
-            not self._frameless
-            or sys.platform != "win32"
-            or not hasattr(ctypes, "wintypes")
-        ):
-            return super().nativeEvent(event_type, message)
+        # Never call ``super().nativeEvent()`` here: on PyQt6/Windows that
+        # re-enters this override and crashes the process at show time.
+        # Returning ``(False, 0)`` is the documented "not handled" result.
+        if not self._frameless or sys.platform != "win32":
+            return False, 0
         try:
             from ctypes import wintypes
 
             msg = wintypes.MSG.from_address(int(message))
-        except (ValueError, TypeError):
-            return super().nativeEvent(event_type, message)
+        except (ImportError, ValueError, TypeError):
+            return False, 0
         if msg.message == _WM_NCHITTEST:
             x = ctypes.c_short(msg.lParam & 0xFFFF).value
             y = ctypes.c_short((msg.lParam >> 16) & 0xFFFF).value
@@ -291,7 +290,7 @@ class FramelessWindow(QtWidgets.QMainWindow):
         if msg.message == _WM_GETMINMAXINFO:
             self._apply_minmax_info(msg.lParam)
             return True, 0
-        return super().nativeEvent(event_type, message)
+        return False, 0
 
     def _apply_minmax_info(self, lparam: int) -> None:
         screen = self.screen() or QtWidgets.QApplication.primaryScreen()

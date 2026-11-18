@@ -1,6 +1,8 @@
 """Tests for the reusable frameless window module (M1/M2)."""
 
+import ctypes
 import os
+import sys
 import unittest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -172,6 +174,29 @@ class TestFramelessWindow(unittest.TestCase):
         self.assertEqual(seen[-1]["Edit"], False)
         window.restore_menu_visibility({"Edit": True})
         self.assertTrue(window.menu_visibility_state()["Edit"])
+
+    def test_native_event_never_calls_super(self):
+        """Regression for fork.7: calling super() re-enters and crashes."""
+        window = self._make_window(True)
+        original = QtWidgets.QMainWindow.nativeEvent
+
+        def explode(_self, *_args):
+            raise AssertionError("nativeEvent must not call super()")
+
+        QtWidgets.QMainWindow.nativeEvent = explode
+        try:
+            if sys.platform == "win32":
+                from ctypes import wintypes
+
+                message = wintypes.MSG()
+                result = window.nativeEvent(
+                    b"windows_generic_MSG", ctypes.addressof(message)
+                )
+            else:
+                result = window.nativeEvent(b"windows_generic_MSG", 0)
+        finally:
+            QtWidgets.QMainWindow.nativeEvent = original
+        self.assertEqual(result, (False, 0))
 
     def test_fullscreen_toggle_restores_window(self):
         window = self._make_window(True)
