@@ -37,6 +37,7 @@ from .auto_labeling_handoff import AutoLabelingHandoff
 from .constants import LABEL_OPACITY
 from .file_list import FileListController
 from .file_list.constants import FILE_COL_NAME
+from .object_editor import ObjectEditor
 from .operator import (  # noqa: F401
     OPERATOR_MODE_ACTIONS,
     OPERATOR_REQUIRED_ACTIONS,
@@ -66,6 +67,7 @@ from .utils.qt import new_icon_path
 from .utils.theme import get_theme
 from .pointcloud.icons import get_icon
 from .widgets.attributes_panel import AttributesPanel
+from .widgets.label_list_widget import set_item_locked
 from .widgets.description_editor import DescriptionEditor
 from .widgets.relation_dialog import (
     RelationDialog,
@@ -110,8 +112,7 @@ LABEL_COLORMAP = utils.label_colormap()
 CHECKED_FIELD_PATTERN = re.compile(r'"checked"\s*:\s*(true|false|"failed")')
 
 
-def _set_label_list_item_lock(item, locked):
-    item.set_locked(locked)
+_set_label_list_item_lock = set_item_locked
 
 
 def _find_next_label_loop_shape(shapes, start_index, canvas_shapes):
@@ -925,38 +926,13 @@ class LabelingWidget(LabelDialog):
 
     @staticmethod
     def _shape_lock_key(shape):
-        return (
-            shape.label,
-            shape.shape_type,
-            shape.group_id,
-            tuple((point.x(), point.y()) for point in shape.points),
-        )
+        return ObjectEditor._shape_lock_key(shape)
 
     def _remember_shape_locks(self):
-        if not self.image_path:
-            return
-        states = {}
-        for shape in self.canvas.shapes:
-            states.setdefault(self._shape_lock_key(shape), []).append(
-                shape.locked
-            )
-        self._session_shape_locks[osp.abspath(self.image_path)] = states
+        return ObjectEditor(self)._remember_shape_locks()
 
     def _restore_shape_locks(self):
-        states = self._session_shape_locks.get(
-            osp.abspath(self.image_path), {}
-        )
-        offsets = {}
-        for shape in self.canvas.shapes:
-            key = self._shape_lock_key(shape)
-            index = offsets.get(key, 0)
-            offsets[key] = index + 1
-            if key in states and index < len(states[key]):
-                shape.locked = states[key][index]
-                item = self.label_list.find_item_by_shape(shape)
-                if item is not None:
-                    item.set_locked(shape.locked)
-        self.refresh_panel_controls()
+        return ObjectEditor(self)._restore_shape_locks()
 
     def reset_state(self):
         self._remember_shape_locks()
@@ -988,65 +964,19 @@ class LabelingWidget(LabelDialog):
         self._update_select_toggle_button_tooltip()
 
     def toggle_select_all(self):
-        if self.select_toggle_action is None:
-            return
-        if self._has_active_shape_filter():
-            self._update_select_toggle_button_tooltip()
-            return
-        if not self.canvas.shapes:
-            self._update_select_toggle_button_tooltip()
-            return
-
-        all_visible = self._are_all_shapes_visible()
-        self._set_all_objects_visibility(not all_visible)
-        self._update_select_toggle_button_tooltip()
+        return ObjectEditor(self).toggle_select_all()
 
     def _has_active_shape_filter(self):
-        current_label = self.label_filter_combobox.text_box.currentText()
-        current_gid = self.gid_filter_combobox.gid_box.currentText()
-        return bool(current_label) or current_gid not in ["", "-1"]
+        return ObjectEditor(self)._has_active_shape_filter()
 
     def _update_select_toggle_button_tooltip(self):
-        self.refresh_panel_controls()
-        if self.select_toggle_action is None:
-            return
-        if self._has_active_shape_filter():
-            tooltip = self.tr(
-                "Toggle shapes visibility is unavailable while a label or group filter is active"
-            )
-            self.select_toggle_action.setEnabled(False)
-            self.select_toggle_action.setToolTip(tooltip)
-            self.select_toggle_action.setStatusTip(tooltip)
-            return
-        self.select_toggle_action.setEnabled(bool(self.canvas.shapes))
-        if self._are_all_shapes_visible():
-            tooltip = self.tr("Hide all shapes")
-            icon = utils.new_icon("eye")
-        else:
-            tooltip = self.tr("Show all shapes")
-            icon = utils.new_icon("eye-off")
-        self.select_toggle_action.setIcon(icon)
-        self.select_toggle_action.setToolTip(tooltip)
-        self.select_toggle_action.setStatusTip(tooltip)
+        return ObjectEditor(self)._update_select_toggle_button_tooltip()
 
     def _are_all_shapes_visible(self):
-        if len(self.label_list) == 0:
-            return True
-        for item in self.label_list:
-            if item.checkState() != Qt.CheckState.Checked:
-                return False
-            shape = item.shape()
-            if shape is not None and not shape.visible:
-                return False
-        return True
+        return ObjectEditor(self)._are_all_shapes_visible()
 
     def _set_all_objects_visibility(self, visible):
-        """Set all Objects panel checkboxes and shape visibility to visible (True/False)."""
-        for item in self.label_list:
-            label = item.shape().label
-            if label in self.label_info:
-                self.label_info[label]["visible"] = visible
-        self._sync_label_list_visibility(lambda _item: visible)
+        return ObjectEditor(self)._set_all_objects_visibility(visible)
 
     def reset_attribute(self, text, shape):
         return AttributesPanel(self).reset_attribute(text, shape)
@@ -1778,167 +1708,37 @@ class LabelingWidget(LabelDialog):
             menu.addAction(action)
 
     def refresh_shape_lock_action(self):
-        self.refresh_panel_controls()
-        items = self.label_list.selected_items()
-        shapes = [item.shape() for item in items if item.shape() is not None]
-        action = self.actions.toggle_shape_lock
-        action.setEnabled(bool(shapes))
-        with QtCore.QSignalBlocker(action):
-            action.setChecked(bool(shapes) and all(s.locked for s in shapes))
+        return ObjectEditor(self).refresh_shape_lock_action()
 
     def toggle_label_items_lock(self, items):
-        shapes = [item.shape() for item in items if item.shape() is not None]
-        if not shapes:
-            return
-        for shape in shapes:
-            shape.locked = not shape.locked
-        self._update_shapes_lock(shapes)
+        return ObjectEditor(self).toggle_label_items_lock(items)
 
     def refresh_panel_controls(self):
-        if not hasattr(self, "shapes_visibility_button"):
-            return
-        theme = get_theme()
-        items = [
-            self.unique_label_list.item(row)
-            for row in range(self.unique_label_list.count())
-        ]
-        labels = [item.data(Qt.ItemDataRole.UserRole) for item in items]
-        for button, visible in (
-            (
-                self.labels_visibility_button,
-                any(
-                    self.label_info.get(label, {}).get("visible", True)
-                    for label in labels
-                ),
-            ),
-            (
-                self.shapes_visibility_button,
-                any(s.visible for s in self.canvas.shapes),
-            ),
-        ):
-            button.setIcon(
-                get_icon(
-                    "eye" if visible else "eye-off",
-                    theme["text"],
-                    theme["primary"],
-                )
-            )
-        self.labels_lock_button.setChecked(
-            any(
-                self.unique_label_list.lock_states.get(label, False)
-                for label in labels
-            )
-        )
-        self.shapes_lock_button.setChecked(
-            any(shape.locked for shape in self.canvas.shapes)
-        )
-
-        for button in (self.labels_lock_button, self.shapes_lock_button):
-            button.setIcon(
-                get_icon(
-                    "lock" if button.isChecked() else "unlock",
-                    theme["text"],
-                    theme["primary"],
-                )
-            )
+        return ObjectEditor(self).refresh_panel_controls()
 
     def toggle_all_labels_visibility(self):
-        labels = [
-            self.unique_label_list.item(row).data(Qt.ItemDataRole.UserRole)
-            for row in range(self.unique_label_list.count())
-        ]
-        visible = not any(
-            self.label_info.get(label, {}).get("visible", True)
-            for label in labels
-        )
-        for label in labels:
-            if label not in self.label_info:
-                self.label_info[label] = dict(
-                    delete=False,
-                    value=None,
-                    color=list(self._get_rgb_by_label(label)),
-                    opacity=LABEL_OPACITY,
-                    visible=visible,
-                )
-            else:
-                self.label_info[label]["visible"] = visible
-        self._refresh_shape_filters()
+        return ObjectEditor(self).toggle_all_labels_visibility()
 
     def toggle_all_shapes_visibility(self):
-        self._set_all_objects_visibility(
-            not any(s.visible for s in self.canvas.shapes)
-        )
+        return ObjectEditor(self).toggle_all_shapes_visibility()
 
     def toggle_all_labels_lock(self):
-        items = [
-            self.unique_label_list.item(row)
-            for row in range(self.unique_label_list.count())
-        ]
-        states = self.unique_label_list.lock_states
-        locked = not any(
-            states.get(item.data(Qt.ItemDataRole.UserRole), False)
-            for item in items
-        )
-        self.toggle_unique_label_items_lock(items, locked=locked)
+        return ObjectEditor(self).toggle_all_labels_lock()
 
     def toggle_all_shapes_lock(self):
-        shapes = self.canvas.shapes
-        if not shapes:
-            return
-        locked = not any(shape.locked for shape in shapes)
-        labels = {shape.label for shape in shapes}
-        for label in labels:
-            self.unique_label_list.lock_states.pop(label, None)
-            for item in self.unique_label_list.find_items_by_label(label):
-                self.unique_label_list.set_item_locked(item, False)
-        self._set_shapes_locked(shapes, locked)
+        return ObjectEditor(self).toggle_all_shapes_lock()
 
     def toggle_unique_label_items_lock(self, items, locked=None):
-        states = self.unique_label_list.lock_states
-        labels = set()
-        for item in items:
-            label = item.data(Qt.ItemDataRole.UserRole)
-            states[label] = (
-                not states.get(label, False) if locked is None else locked
-            )
-            labels.add(label)
-            self.unique_label_list.set_item_locked(item, states[label])
-        for states_by_shape in self._session_shape_locks.values():
-            for key in list(states_by_shape):
-                if key[0] in labels:
-                    del states_by_shape[key]
-        shapes = [s for s in self.canvas.shapes if s.label in labels]
-        for shape in shapes:
-            shape.locked = states[shape.label]
-        if shapes:
-            self._update_shapes_lock(shapes)
-        self.refresh_panel_controls()
+        return ObjectEditor(self).toggle_unique_label_items_lock(items, locked)
 
     def toggle_selected_shapes_lock(self, locked):
-        items = self.label_list.selected_items()
-        shapes = [item.shape() for item in items if item.shape() is not None]
-        if not shapes:
-            shapes = list(self.canvas.selected_shapes)
-        if not shapes:
-            return
-        self._set_shapes_locked(shapes, locked)
+        return ObjectEditor(self).toggle_selected_shapes_lock(locked)
 
     def _set_shapes_locked(self, shapes, locked):
-        for shape in shapes:
-            shape.locked = locked
-        self._update_shapes_lock(shapes)
+        return ObjectEditor(self)._set_shapes_locked(shapes, locked)
 
     def _update_shapes_lock(self, shapes):
-        for shape in shapes:
-            item = self.label_list.find_item_by_shape(shape)
-            if item is not None:
-                _set_label_list_item_lock(item, shape.locked)
-        self.canvas.store_shapes()
-        self.canvas.update()
-        if self.canvas.editing():
-            self.shape_selection_changed(self.canvas.selected_shapes)
-        else:
-            self.refresh_shape_lock_action()
+        return ObjectEditor(self)._update_shapes_lock(shapes)
 
     # ------------------------------------------------------------------
     # File table helpers
@@ -2319,198 +2119,13 @@ class LabelingWidget(LabelDialog):
             del blocker
 
     def validate_label(self, label):
-        # no validation
-        if self._config["validate_label"] is None:
-            return True
-
-        for i in range(self.unique_label_list.count()):
-            label_i = self.unique_label_list.item(i).data(
-                Qt.ItemDataRole.UserRole
-            )
-            if self._config["validate_label"] in ["exact"]:
-                if label_i == label:
-                    return True
-        return False
+        return ObjectEditor(self).validate_label(label)
 
     def batch_edit_labels(self, shapes):
-        if not self._batch_edit_warning_shown:
-            reply = QtWidgets.QMessageBox.question(
-                self,
-                self.tr("Batch Edit"),
-                self.tr(
-                    "You are about to edit multiple shapes in batch mode. "
-                    "This operation cannot be undone.\n\n"
-                    "This warning will only be shown once. Do you want to continue?"
-                ),
-                QtWidgets.QMessageBox.StandardButton.Yes
-                | QtWidgets.QMessageBox.StandardButton.No,
-                QtWidgets.QMessageBox.StandardButton.No,
-            )
-
-            if reply != QtWidgets.QMessageBox.StandardButton.Yes:
-                return
-
-            self._batch_edit_warning_shown = True
-
-        first_shape = shapes[0]
-        result = self.label_dialog.pop_up(
-            text=first_shape.label,
-            flags=first_shape.flags,
-            group_id=first_shape.group_id,
-            description=first_shape.description,
-            difficult=first_shape.difficult,
-            kie_linking=first_shape.kie_linking,
-            review_status=first_shape.other_data.get(
-                "review_status", "pending"
-            ),
-            move_mode="center",
-        )
-
-        if result[0] is None:
-            return
-
-        text, flags, group_id, description, difficult, kie_linking = result
-
-        if not self.validate_label(text):
-            self.error_message(
-                self.tr("Invalid label"),
-                self.tr("Invalid label '{}' with validation type '{}'").format(
-                    text, self._config["validate_label"]
-                ),
-            )
-            return
-
-        for shape in shapes:
-            if self.attributes and text and text != shape.label:
-                text = self.reset_attribute(text, shape)
-
-            shape.label = text
-            shape.flags = flags
-            shape.group_id = group_id
-            shape.description = description
-            shape.difficult = difficult
-            shape.kie_linking = kie_linking
-            shape.other_data["review_status"] = (
-                self.label_dialog.get_review_status()
-            )
-
-            self._update_shape_color(shape)
-
-            item = self.label_list.find_item_by_shape(shape)
-            if item is not None:
-                if shape.group_id is None:
-                    color = self._get_rgb_by_label(shape.label)
-                    item.setText(
-                        _format_label_list_text(shape.label, shape.group_id)
-                    )
-                    item.setBackground(QtGui.QColor(*color, LABEL_OPACITY))
-                else:
-                    item.setText(
-                        _format_label_list_text(shape.label, shape.group_id)
-                    )
-
-        self.label_dialog.add_label_history(text)
-
-        if not self.unique_label_list.find_items_by_label(text):
-            unique_label_item = self.unique_label_list.create_item_from_label(
-                text
-            )
-            self.unique_label_list.addItem(unique_label_item)
-            rgb = self._get_rgb_by_label(text)
-            self.unique_label_list.set_item_label(
-                unique_label_item, text, rgb, LABEL_OPACITY
-            )
-
-        self.set_dirty()
-        self._refresh_shape_filters()
+        return ObjectEditor(self).batch_edit_labels(shapes)
 
     def edit_label(self, item=None):
-        if item and not isinstance(item, LabelListWidgetItem):
-            raise TypeError("item must be LabelListWidgetItem type")
-
-        if not self.canvas.editing():
-            return
-
-        selected_shapes = self.canvas.selected_shapes
-        if not selected_shapes:
-            return
-
-        if len(selected_shapes) > 1:
-            return self.batch_edit_labels(selected_shapes)
-
-        if not item:
-            item = self.current_item()
-        if item is None:
-            return
-        shape = item.shape()
-        if shape is None:
-            return
-        (
-            text,
-            flags,
-            group_id,
-            description,
-            difficult,
-            kie_linking,
-        ) = self.label_dialog.pop_up(
-            text=shape.label,
-            flags=shape.flags,
-            group_id=shape.group_id,
-            description=shape.description,
-            difficult=shape.difficult,
-            kie_linking=shape.kie_linking,
-            review_status=shape.other_data.get("review_status", "pending"),
-            move_mode=self._config.get("move_mode", "auto"),
-        )
-        if text is None:
-            return
-        if not self.validate_label(text):
-            self.error_message(
-                self.tr("Invalid label"),
-                self.tr("Invalid label '{}' with validation type '{}'").format(
-                    text, self._config["validate_label"]
-                ),
-            )
-            return
-        if self.attributes and text and text != shape.label:
-            text = self.reset_attribute(text, shape)
-        shape.label = text
-        shape.flags = flags
-        shape.group_id = group_id
-        shape.description = description
-        shape.difficult = difficult
-        shape.kie_linking = kie_linking
-        shape.other_data["review_status"] = (
-            self.label_dialog.get_review_status()
-        )
-
-        # Add to label history
-        self.label_dialog.add_label_history(shape.label)
-
-        # Update last group_id
-        if group_id is not None:
-            self.label_dialog._last_gid = group_id
-
-        # Update unique label list
-        if not self.unique_label_list.find_items_by_label(shape.label):
-            unique_label_item = self.unique_label_list.create_item_from_label(
-                shape.label
-            )
-            self.unique_label_list.addItem(unique_label_item)
-            rgb = self._get_rgb_by_label(shape.label)
-            self.unique_label_list.set_item_label(
-                unique_label_item, shape.label, rgb, LABEL_OPACITY
-            )
-
-        self._update_shape_color(shape)
-        if shape.group_id is None:
-            color = self._get_rgb_by_label(shape.label)
-            item.setText(_format_label_list_text(shape.label, shape.group_id))
-            item.setBackground(QtGui.QColor(*color, LABEL_OPACITY))
-        else:
-            item.setText(_format_label_list_text(shape.label, shape.group_id))
-        self.set_dirty()
-        self._refresh_shape_filters()
+        return ObjectEditor(self).edit_label(item)
 
     def file_search_changed(self):
         search_text = self.file_search.text()
@@ -2556,67 +2171,7 @@ class LabelingWidget(LabelDialog):
 
     # React to canvas signals.
     def shape_selection_changed(self, selected_shapes):
-        if selected_shapes and self.canvas.selected_relation is not None:
-            self.canvas.selected_relation = None
-            self.canvas.update()
-        if self.canvas.is_brush_mode:
-            target = self.canvas._brush_target_shape
-            if selected_shapes != [target]:
-                self._no_selection_slot = True
-                self.label_list.clearSelection()
-                item = self.label_list.find_item_by_shape(target)
-                if item is not None:
-                    self.label_list.select_item(item)
-                    self.label_list.scroll_to_item(item)
-                self._no_selection_slot = False
-                return
-        self._no_selection_slot = True
-        for shape in self.canvas.selected_shapes:
-            shape.selected = False
-        self.label_list.clearSelection()
-        self.canvas.selected_shapes = selected_shapes
-        allow_merge_shape_type = {"rectangle": 0, "polygon": 0}
-        for shape in self.canvas.selected_shapes:
-            shape.selected = True
-            if shape.shape_type in ["rectangle", "polygon"]:
-                allow_merge_shape_type[shape.shape_type] += 1
-            item = self.label_list.find_item_by_shape(shape)
-            # NOTE: Handle the case when the shape is not found
-            if item is not None:
-                self.label_list.select_item(item)
-                self.label_list.scroll_to_item(item)
-        self._no_selection_slot = False
-        n_selected = len(selected_shapes)
-        self.actions.create_relation.setEnabled(n_selected == 2)
-        same_type = (
-            len(set(shape.shape_type for shape in selected_shapes)) <= 1
-        )
-        has_locked = any(shape.locked for shape in selected_shapes)
-        has_unlocked = any(not shape.locked for shape in selected_shapes)
-        group_shapes = self.canvas._active_group_shapes()
-        self.actions.delete.setEnabled(
-            has_unlocked and not (group_shapes and has_locked)
-        )
-        self.actions.duplicate.setEnabled(n_selected)
-        self.actions.copy.setEnabled(n_selected)
-        self.actions.edit.setEnabled(n_selected >= 1 and same_type)
-        self.actions.copy_coordinates.setEnabled(n_selected == 1)
-        can_brush_edit = (
-            n_selected == 1
-            and selected_shapes[0].shape_type == "polygon"
-            and not selected_shapes[0].locked
-        )
-        self.actions.edit_brush_mode.setEnabled(can_brush_edit)
-        self.actions.union_selection.setEnabled(
-            not has_locked
-            and not all(value > 0 for value in allow_merge_shape_type.values())
-            and (
-                allow_merge_shape_type["rectangle"] > 1
-                or allow_merge_shape_type["polygon"] > 1
-            )
-        )
-        self.refresh_shape_lock_action()
-        self.set_text_editing(True)
+        return ObjectEditor(self).shape_selection_changed(selected_shapes)
 
     def add_label(self, shape, update_last_label=True, refresh_filters=True):
         if shape.label in self.unique_label_list.lock_states:
@@ -3168,31 +2723,10 @@ class LabelingWidget(LabelDialog):
         )
 
     def label_selection_changed(self):
-        if self._no_selection_slot:
-            return
-        if self.canvas.is_brush_mode:
-            return
-        if self.canvas.editing():
-            selected_shapes = []
-            for item in self.label_list.selected_items():
-                selected_shapes.append(item.shape())
-            if selected_shapes:
-                self.canvas.select_shapes(selected_shapes)
-            else:
-                self.canvas.deselect_shape()
+        return ObjectEditor(self).label_selection_changed()
 
     def label_item_changed(self, item):
-        shape = item.shape()
-        shape.visible = item.checkState() == Qt.CheckState.Checked
-        self.canvas.set_shape_visible(
-            shape, item.checkState() == Qt.CheckState.Checked
-        )
-        self._update_select_toggle_button_tooltip()
-        if (
-            hasattr(self, "navigator_dialog")
-            and self.navigator_dialog.isVisible()
-        ):
-            self.update_navigator_shapes()
+        return ObjectEditor(self).label_item_changed(item)
 
     # Callback functions:
     def new_shape(self):

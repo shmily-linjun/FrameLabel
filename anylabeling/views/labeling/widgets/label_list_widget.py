@@ -18,6 +18,16 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 LOCKED_ROLE = QtCore.Qt.ItemDataRole.UserRole.value + 1
 
 
+def set_item_locked(item, locked):
+    """Apply the label-manager lock state to a list item.
+
+    The state is kept as item data only; the plain list does not paint a lock
+    icon any more.  It is a function (not a method) so the object-editing
+    rules and the labeling widget can share it without importing each other.
+    """
+    item.set_locked(locked)
+
+
 class LabelListWidgetItem(QtWidgets.QListWidgetItem):
     """Plain list item that carries the :class:`Shape` it represents."""
 
