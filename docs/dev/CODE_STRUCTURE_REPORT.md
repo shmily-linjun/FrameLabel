@@ -1,9 +1,9 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-19（Asia/Shanghai）
-> 对应版本：4.3.2+fork.20（fork.19 的 T8 拆分未升版；fork.20 为 SAM 编码器 CPU 串行化修复）
-> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；T8 分两阶段把 `label_widget.py` 拆成 28 个模块（`actions/`、`file_list/`、`operator/`、`widgets/workspace.py`、`annotation_editor.py`、`file_session.py`、`object_editor.py`、`canvas_navigation.py`、`status.py` 等），并用“基线工作树 vs 重构后”的 pytest 对比、离屏真实 `MainWindow` 冒烟与窗口结构/样式快照逐项比对验证等价性；各测试包的具体结果见 §16。
-> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8)/fork.20(SAM 编码锁) 已改变的结构以本文当前版本说明为准。
+> 对应版本：4.3.2+fork.21（fork.19 的 T8 拆分未升版；fork.20 为 SAM 编码器 CPU 串行化与编码输出复制；fork.21 为无边框模块多屏最小化/最大化还原修复）
+> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；fork.21 在真实 Windows 双屏（主屏 100% + 副屏 200%）上用原生消息探测与真实 `MainWindow` 复核窗口行为，其余结论沿用 T8 阶段“基线工作树 vs 重构后”的 pytest 对比与离屏冒烟；各测试包的具体结果见 §16。
+> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8)/fork.20(SAM 编码锁)/fork.21(无边框多屏) 已改变的结构以本文当前版本说明为准。
 > 行号锚点：T8 把 `label_widget.py` 从 9507 行降到 1782 行、`LabelingWidget.__init__` 从 2816 行降到 238 行，几乎所有历史行号都已失效；本报告中 `label_widget.py` 的行号均为 T8 第二阶段之后的当前值，定位时优先使用类名和方法名（实现多数已移入 §5.11 的模块）。
 > 规模口径：本报告的行数一律按 `str.splitlines()` 统计（与 `Get-Content | Measure-Object -Line` 的口径不同，后者会少算），早期章节里的 8949/8768 等数字属于旧口径，已在 §1.1 与 §8 更新。
 
@@ -12,14 +12,14 @@
 | 项目 | 结论 |
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
-| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.20 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，fork.20 的 SAM 编码锁见 §5.3，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.20，见 [app_info.py](../../anylabeling/app_info.py) |
+| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.21 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，fork.20 的 SAM 编码锁见 §5.3，fork.21 的无边框多屏修复见 §5.7，实际提交哈希以 Git 记录为准 |
+| 版本 | 4.3.2+fork.21，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
 | 主入口 | `xanylabeling = anylabeling.app:main`；亦支持 `python -m anylabeling.app` |
 | 包构建 | `python -m build --no-isolation`，见 [build_and_publish_pypi.sh](../../scripts/build_and_publish_pypi.sh) |
-| 最近核对日期 | 2026-11-19（T8 两阶段拆分 + fork.20 SAM 编码锁） |
+| 最近核对日期 | 2026-11-19（T8 两阶段拆分 + fork.20 SAM 编码锁 + fork.21 无边框多屏修复） |
 
 ### 1.1 规模与统计口径
 
@@ -201,7 +201,9 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 - 窗口状态：`window/size`、`window/position` 恢复时用 `window_state.clamp_geometry()` 做多屏可见性校正；新增 `window/maximized` 持久化。
 - 主题：`MainWindow.apply_theme(get_theme())` 生成标题栏/菜单栏 QSS，浅色模式不再依赖系统调色板；窗口激活/失活由 `FramelessWindow.event()` 切换标题颜色。
 - 状态栏：`DocumentStatusBar` 左侧常驻 `[x,y|绝对路径]`；临时消息写入独立标签，应用层过滤器拦截 `QStatusTipEvent`，因此状态提示不会隐藏文档信息。
-- Windows 原生能力：`nativeEvent()` 处理 `WM_NCHITTEST`（缩放）与 `WM_GETMINMAXINFO`（最大化贴合工作区）；其他平台用 `QWindow.startSystemResize()` 兜底。
+- Windows 原生能力（fork.21 更新）：`nativeEvent()` 只处理 `WM_NCCALCSIZE`（收回客户区）与 `WM_NCHITTEST`（缩放/命中）；其他平台用 `QWindow.startSystemResize()` 兜底。
+  - `WM_NCHITTEST`：`lParam` 是物理屏幕坐标，先用 `ScreenToClient()` 转成本窗口客户区物理坐标，再与 `GetClientRect()` 的物理尺寸、`round(resize_margin * dpr)` 比较后返回 `HT*`；**不得**把全局物理坐标除以 `devicePixelRatio`——混合 DPI 副屏的逻辑原点不等于物理原点除以缩放，会把窗口中心误判成边框（fork.20 及以前的实现正是如此，fork.21 修复）。
+  - **不再覆写 `WM_GETMINMAXINFO`**：实测 Qt/Windows 对 `WS_THICKFRAME` + `WM_NCCALCSIZE=0` 的无边框窗口已能最大化到工作区（主屏 1920×1032、200% 副屏 1536×912）；自写 `ptMaxSize`/`ptMaxPosition` 会让 200% 副屏上的窗口最大化到主屏，并污染还原 geometry。回归用例 `test_getminmaxinfo_is_not_overridden` 守门。
 
 ### 5.8 工具栏、导入入口与状态提示（fork.13，fork.17 更新）
 
@@ -793,6 +795,7 @@ model_manager.py:14
 - fork.18 的浏览模式（画布只读、模式工具可点并引导登录、状态浮层）、主题禁用态与图标禁用变体、画布右键菜单精简；
 - fork.19 的自动标注占位对象清理与取行兜底、工具栏“设置/快捷键”按钮显隐；
 - fork.20 的 SAM 编码器 CPU 串行锁（`encoder_lock.py` + 5 个适配器接入）与对应的内存实测、并发回归用例；
+- fork.21 的无边框多屏修复（`WM_NCHITTEST` 改 `ScreenToClient` 物理坐标、移除 `WM_GETMINMAXINFO` 覆写）与真实双屏验证；
 - **T8（fork.19 内不升版）的 `label_widget.py` 拆分（两阶段）**：第一阶段 `actions/`（动作表 + 菜单 + 工具栏策略）、`file_list/`（表格 + 控制器）、`operator/gate.py`、`auto_labeling_handoff.py`、`widgets/workspace.py`、`widgets/splitters.py`、`utils/label_text.py`、`constants.py`；第二阶段 `annotation_editor.py`、`file_session.py`、`object_editor.py`、`canvas_navigation.py`、`widgets/attributes_panel.py`、`status.py`、`appearance.py`、`label_filters.py`、`shape_commands.py`、`draw_modes.py`、`special_workspaces.py`、`label_loop.py`、`relations.py`、`right_sidebar.py`；`label_widget.py` 9507 → 1782 行，`__init__` 2816 → 238 行；
 - 模块和核心类关系、跨线程/进程/网络边界、引用统计、维护路径、已知问题和风险；
 - 核心类表共 28 类：18 类进入总览图，fork.4 的 2 个身份类与 fork.7 的 2 个窗口类见 §5.6/§5.7，T8 的主要拆分类（`LabelingWidget`/`FileListController`/`OperatorGate`/`AutoLabelingHandoff`/`AnnotationEditor`/`FileSession`/其余控制器）见 §5.11/§8；
@@ -830,4 +833,4 @@ model_manager.py:14
 
 ---
 
-**文档自检：**核心类表在 fork.3 的 22 类基础上新增 T8 的拆分类（`FileListController`/`OperatorGate`/`AutoLabelingHandoff`/`AnnotationEditor`/`FileSession` 以及其余控制器，完整清单见 §5.11）；总览图与 SVG/JPG 资源未重绘，新增关系以 §6 Mermaid 与 §9.1 Mermaid 说明为准；所引项目文件均确认存在；T8 两阶段的规模、行号、模块表和验证结果按实际代码与本机实测更新；未把未执行的真实桌面/打包验证写成已通过；上帝类口径按用户 2026-11-19 说明收敛为仅 `Canvas`。`docs/开始.md` T8 已标记完成。
+**文档自检：**核心类表在 fork.3 的 22 类基础上新增 T8 的拆分类（`FileListController`/`OperatorGate`/`AutoLabelingHandoff`/`AnnotationEditor`/`FileSession` 以及其余控制器，完整清单见 §5.11）；总览图与 SVG/JPG 资源未重绘，新增关系以 §6 Mermaid 与 §9.1 Mermaid 说明为准；所引项目文件均确认存在；T8 两阶段的规模、行号、模块表和验证结果按实际代码与本机实测更新；fork.21 的窗口原生行为按真实双屏实测更新（§5.7），并新增 `WM_GETMINMAXINFO` 守门用例；未把未执行的真实桌面/打包验证写成已通过；上帝类口径按用户 2026-11-19 说明收敛为仅 `Canvas`。`docs/开始.md` T8 已标记完成。

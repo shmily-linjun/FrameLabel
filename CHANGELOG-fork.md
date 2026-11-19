@@ -73,6 +73,72 @@
 
 ---
 
+## 4.3.2+fork.21 — 2026-11-19
+
+### 1. 背景与原因
+
+用户报告（Win11 双显示器，主屏 1920×1080@100%、副屏 1536×960@200%）：
+
+- 点击最小化后再次打开窗口，窗口跳到**另一台显示器**；最大化/还原按钮同样；
+- 恢复后鼠标变成调整窗口大小的“<->”状态。
+
+在本机（同为主屏 100% + 副屏 200%）用真实 Windows 平台实测复现：
+
+- 窗口放在副屏 `(-2704,-680,800,600)`，`showMaximized()` 后落到**主屏** `(0,0,1920,1032)`；
+- `WM_NCHITTEST` 中心点被判成 `HTTOPLEFT`/`HTLEFT`（即 Windows 认为光标在边框上，所以显示缩放箭头）；
+- 还原后 geometry 变成 `(-2704,-680,1536,960)`（尺寸被污染成整屏工作区，而不是原来的 800×600）。
+
+差分实验定位到两处模块代码：
+
+| 实验 | 最大化结果 | 结论 |
+|---|---|---|
+| 模块现状 | 主屏，错误 | 复现用户问题 |
+| 禁用 `WM_GETMINMAXINFO` 覆写 | 副屏工作区，正确 | **覆写是位置错误的根因** |
+| 去掉 `WS_THICKFRAME` | 副屏工作区，正确 | 样式不是根因 |
+| 纯 Qt 无边框窗口 | 副屏工作区，正确 | Qt 原生行为已满足 |
+| 纯 Qt + `WS_THICKFRAME` | 副屏工作区，正确 | 同上 |
+
+进一步测试 `WM_GETMINMAXINFO` 各字段的坐标语义（副屏 200%）：“只写 `ptMaxSize`（逻辑值）”正确；“写物理值”跳主屏；“只写 `ptMaxTrackSize`”把最大化尺寸减半成 768×480。说明该消息在不同 DPI 上下文下语义不一致、不可靠，而 **Qt/Windows 默认实现已经能最大化到工作区且不盖任务栏**。
+
+### 2. 修改与关键细节
+
+- **移除 `WM_GETMINMAXINFO` 覆写**：删除 `_WM_GETMINMAXINFO` 分支、`_apply_minmax_info()`、`_monitor_rects()`、`_MinMaxInfo`/`_Rect`/`_MonitorInfo` 结构与 `_last_monitor` 跟踪代码；`nativeEvent` 增加注释说明“不要再加回来”及原因。最大化/还原/最小化还原交回 Qt/Windows。
+- **`WM_NCHITTEST` 改用物理坐标换算**：新增 `_native_hit_test()`，用 `ScreenToClient` 把 `lParam` 的物理屏幕坐标转成**本窗口客户区物理坐标**，与 `GetClientRect()` 的物理尺寸及 `round(resize_margin * dpr)` 比较；不再把全局物理坐标除以 `devicePixelRatio`（混合 DPI 副屏逻辑原点 ≠ 物理原点/缩放，会把窗口中心算成负坐标）。非 Windows、无原生句柄时返回 `None` 并回落 `(False, 0)`。
+- **回归用例**：新增 `test_getminmaxinfo_is_not_overridden`（Windows 下断言 `WM_GETMINMAXINFO` 不被处理，防止以后再加回来）与 `test_native_hit_test_returns_none_without_a_native_handle`（无句柄时不抛异常）。
+- **文档**：`docs/dev/无边框窗口模块-讨论稿.md` 升至 v1.6，§6/§11 从“需处理 `WM_GETMINMAXINFO`”改为“不要覆写”，并补充 `ScreenToClient` 换算约束与实测数据。
+- **版本**：`4.3.2+fork.20` → `4.3.2+fork.21`。
+
+### 3. 涉及模块与文件
+
+- `anylabeling/widgets/frameless/window.py`（唯一的运行时代码改动，属于可复用模块，宿主持久受益）；
+- `tests/test_widgets/test_frameless_window.py`；
+- `CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/无边框窗口模块-讨论稿.md`、版本号。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本 `4.3.2+fork.20` → `4.3.2+fork.21`；无 QSettings 键、数据格式、CLI 或公共 API 变化（`_apply_minmax_info`/`_monitor_rects` 为私有方法，删除不影响宿主）。
+- 用户可观察：最小化→还原、最大化→还原都留在原来那台显示器，尺寸回到原值；光标不再无故变成缩放箭头；最大化仍贴合工作区、不覆盖任务栏（主屏与 200% 副屏均验证）。
+- 其他调用本模块的项目：只要使用 `FramelessWindow`，同样获得修复；不依赖宿主的 `MainWindow` 逻辑。
+
+### 5. 实际验证内容
+
+- 真实 Windows 桌面（本机双屏），`temporary/verify-frameless-multimon/probe.py`：模块窗口在主屏与 200% 副屏分别测试，全部 PASS——
+  - 最大化：留在自身屏幕，几何等于该屏 `availableGeometry`（主屏 `(0,0,1920,1032)`、副屏 `(-3072,-836,1536,912)`）；
+  - 还原：几何与还原前完全一致（800×600）；
+  - 最小化→还原：屏幕与几何均不变；
+  - `WM_NCHITTEST`：窗口中心 `HTCLIENT`、左边缘 `HTLEFT`（两屏、两种 DPR 均正确）。
+- `temporary/verify-frameless-multimon/app_probe.py`：真实 `MainWindow`（frameless）在 200% 副屏用 `toggle_maximize()`/`minimize()` 走完整链路，PASS（最大化回副屏工作区、还原与最小化还原均回到 `(-2804,-730,1000,700)`、中心 `HTCLIENT`）。
+- `python -m unittest tests.test_widgets.test_frameless_window -v`：**19 tests OK**（含两个新增用例）。
+- 未执行：Win11 Snap Layouts（`Win+←/→/↑`）实机按键验证；高 DPI 拖动过程中的实时光标跟随（只验证了静态命中结果）；pytest 全量（沙箱仍受限）。
+
+### 6. 已知限制与后续事项
+
+- 移除覆写后，最大化行为完全依赖 Qt/Windows 默认实现；已在主屏 100% 与副屏 200% 实测贴合工作区，其他 DPI 组合建议再抽验一次。
+- Win11 Snap Layouts 悬停提示仍按设计稿决策退化（本模块未实现自绘 Snap 面板）。
+- 后续若有人重新加入 `WM_GETMINMAXINFO` 覆写，`test_getminmaxinfo_is_not_overridden` 会失败；该用例是本次问题的守门测试。
+
+---
+
 ## 4.3.2+fork.19 — 2026-11-19
 
 ### 1. 背景与原因

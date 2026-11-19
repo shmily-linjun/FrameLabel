@@ -27,26 +27,11 @@ from . import window_state
 
 _WM_NCCALCSIZE = 0x0083
 _WM_NCHITTEST = 0x0084
-_WM_GETMINMAXINFO = 0x0024
 
 _GWL_STYLE = -16
 _WS_THICKFRAME = 0x00040000
 # NOSIZE | NOMOVE | NOZORDER | NOACTIVATE | FRAMECHANGED
 _SWP_FRAME_FLAGS = 0x0037
-
-
-class _Point(ctypes.Structure):
-    _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
-
-
-class _MinMaxInfo(ctypes.Structure):
-    _fields_ = [
-        ("ptReserved", _Point),
-        ("ptMaxSize", _Point),
-        ("ptMaxPosition", _Point),
-        ("ptMinTrackSize", _Point),
-        ("ptMaxTrackSize", _Point),
-    ]
 
 
 class FramelessWindow(QtWidgets.QMainWindow):
@@ -322,6 +307,13 @@ class FramelessWindow(QtWidgets.QMainWindow):
         # Never call ``super().nativeEvent()`` here: on PyQt6/Windows that
         # re-enters this override and crashes the process at show time.
         # Returning ``(False, 0)`` is the documented "not handled" result.
+        #
+        # ``WM_GETMINMAXINFO`` is deliberately *not* handled.  Qt/Windows
+        # already maximize a ``WS_THICKFRAME`` window to the work area (the
+        # taskbar is respected), and overriding ``ptMaxSize``/``ptMaxPosition``
+        # is what made a window on a 200% secondary monitor maximize onto the
+        # primary one and kept a wrong restore geometry.  See the fork.21
+        # changelog entry before adding it back.
         if not self._frameless or sys.platform != "win32":
             return False, 0
         try:
@@ -337,32 +329,54 @@ class FramelessWindow(QtWidgets.QMainWindow):
         if msg.message == _WM_NCHITTEST:
             if self.isMaximized() or self.isFullScreen():
                 return True, HTCLIENT
-            x = ctypes.c_short(msg.lParam & 0xFFFF).value
-            y = ctypes.c_short((msg.lParam >> 16) & 0xFFFF).value
-            ratio = self.devicePixelRatioF() or 1.0
-            point = QtCore.QPoint(round(x / ratio), round(y / ratio))
-            local = self.mapFromGlobal(point)
-            margin = self._theme.resize_margin
-            code = hit_test_code(
-                local.x(), local.y(), self.width(), self.height(), margin
-            )
+            code = self._native_hit_test(msg.lParam)
+            if code is None:
+                return False, 0
             return True, code
-        if msg.message == _WM_GETMINMAXINFO:
-            self._apply_minmax_info(msg.lParam)
-            return True, 0
         return False, 0
 
-    def _apply_minmax_info(self, lparam: int) -> None:
-        screen = self.screen() or QtWidgets.QApplication.primaryScreen()
-        if screen is None:
-            return
-        ratio = screen.devicePixelRatio() or 1.0
-        work = screen.availableGeometry()
-        full = screen.geometry()
-        info = _MinMaxInfo.from_address(lparam)
-        info.ptMaxPosition.x = int(round(work.x() * ratio))
-        info.ptMaxPosition.y = int(round(work.y() * ratio))
-        info.ptMaxSize.x = int(round(work.width() * ratio))
-        info.ptMaxSize.y = int(round(work.height() * ratio))
-        info.ptMaxTrackSize.x = int(round(full.width() * ratio))
-        info.ptMaxTrackSize.y = int(round(full.height() * ratio))
+    def _native_hit_test(self, lparam: int):
+        """Return the ``HT*`` code for a ``WM_NCHITTEST`` message.
+
+        ``lParam`` carries *physical* screen coordinates, while Qt geometry is
+        logical.  Dividing the global point by the window DPI ratio (the
+        previous implementation) is only correct for a single 100% monitor: on
+        a mixed-DPI desktop the logical origin of a secondary screen is not
+        its physical origin divided by its scale, so the computed local point
+        landed on the border and Windows switched the cursor to the resize
+        arrows.  Converting with ``ScreenToClient`` and comparing in physical
+        pixels keeps the result correct for every monitor layout.
+        """
+        try:
+            from ctypes import wintypes
+
+            user32 = ctypes.windll.user32
+            hwnd = ctypes.c_void_p(int(self.winId()))
+            point = wintypes.POINT(
+                ctypes.c_short(lparam & 0xFFFF).value,
+                ctypes.c_short((lparam >> 16) & 0xFFFF).value,
+            )
+            user32.ScreenToClient.argtypes = [
+                ctypes.c_void_p,
+                ctypes.POINTER(wintypes.POINT),
+            ]
+            user32.GetClientRect.argtypes = [
+                ctypes.c_void_p,
+                ctypes.POINTER(wintypes.RECT),
+            ]
+            if not user32.ScreenToClient(hwnd, ctypes.byref(point)):
+                return None
+            client = wintypes.RECT()
+            if not user32.GetClientRect(hwnd, ctypes.byref(client)):
+                return None
+        except (AttributeError, OSError, TypeError, ValueError):
+            return None
+        ratio = self.devicePixelRatioF() or 1.0
+        margin = round(self._theme.resize_margin * ratio)
+        return hit_test_code(
+            point.x,
+            point.y,
+            client.right - client.left,
+            client.bottom - client.top,
+            margin,
+        )

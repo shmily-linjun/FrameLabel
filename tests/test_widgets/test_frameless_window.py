@@ -233,6 +233,35 @@ class TestFramelessWindow(unittest.TestCase):
             QtWidgets.QMainWindow.nativeEvent = original
         self.assertEqual(result, (False, 0))
 
+    def test_getminmaxinfo_is_not_overridden(self):
+        """Regression for fork.21: do not touch ``WM_GETMINMAXINFO``.
+
+        Overriding ``ptMaxSize``/``ptMaxPosition`` made a window on a 200%
+        secondary monitor maximize onto the primary screen and left a wrong
+        restore geometry; Qt/Windows already maximize to the work area.
+        """
+        if sys.platform != "win32":
+            self.skipTest("Windows-only native message")
+        from ctypes import wintypes
+
+        window = self._make_window(True)
+        message = wintypes.MSG()
+        message.message = 0x0024  # WM_GETMINMAXINFO
+        result = window.nativeEvent(
+            b"windows_generic_MSG", ctypes.addressof(message)
+        )
+        self.assertEqual(result, (False, 0))
+
+    def test_native_hit_test_returns_none_without_a_native_handle(self):
+        """The physical-coordinate hit test must fail safe, never crash."""
+        window = self._make_window(True)
+        try:
+            result = window._native_hit_test(0)
+        except Exception as error:  # noqa: BLE001 - must not raise
+            self.fail(f"_native_hit_test raised {type(error).__name__}")
+        if sys.platform == "win32":
+            self.assertIn(result, (None, 1, 10, 11, 12, 13, 14, 15, 16, 17))
+
     def test_fullscreen_toggle_restores_window(self):
         window = self._make_window(True)
         window.show()
