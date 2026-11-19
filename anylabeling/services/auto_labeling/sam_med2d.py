@@ -19,6 +19,7 @@ from anylabeling.views.labeling.utils.opencv import (
 )
 from anylabeling.services.auto_labeling.utils import calculate_rotation_theta
 
+from .encoder_lock import cpu_encoder_lock
 from .lru_cache import LRUCache
 from .model import Model
 from .types import AutoLabelingResult
@@ -38,6 +39,7 @@ class SegmentAnythingONNX:
         # TODO: Add back when TensorRT backend is stable
         providers = [p for p in providers if p != "TensorrtExecutionProvider"]
 
+        self.providers = providers
         self.encoder_session = ort.InferenceSession(
             encoder_model_path, providers=providers
         )
@@ -51,7 +53,8 @@ class SegmentAnythingONNX:
 
     def run_encoder(self, encoder_inputs):
         """Run encoder"""
-        output = self.encoder_session.run(None, encoder_inputs)
+        with cpu_encoder_lock(self.providers):
+            output = self.encoder_session.run(None, encoder_inputs)
         image_embedding = output[0]
         return image_embedding
 

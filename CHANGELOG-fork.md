@@ -6,6 +6,55 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.20 — 2026-11-19
+
+### 1. 背景与原因
+
+用户报告运行时有两条报错：
+
+- **报错 1：`ModuleNotFoundError: No module named 'anylabeling'`**（`label_widget.py` 第一处包内绝对导入）。复现确认这是**启动方式问题**，不是代码缺陷：`label_widget.py` 是包内模块而非入口，直接 `python label_widget.py`（或 IDE 对当前文件按 Run）时 Python 把该文件所在目录而非仓库根加入 `sys.path`，包导入必然失败；在重构前的基线工作树上直接运行同一文件报同样错误（基线行为见 `temporary/sam-diag` 下的验证记录）。正确启动方式是 `python -m anylabeling.app`（仓库根执行）或 VS Code 的 `.vscode/launch.json` → “Debug Python Module”。
+- **报错 2：SAM 编码器 ONNX Runtime 内存分配失败**（`BFCArena ... Failed to allocate memory for requested buffer of size 1073741824`）。该 1 GiB 缓冲是 SAM ViT 全局注意力矩阵（4096×4096×16 heads×4B）的一次性连续分配；模型级实测：单次编码峰值 ViT-L float **5.31 GB**、ViT-L quant 4.42 GB、ViT-H quant 4.95 GB；编码结束关闭 session 后内存可完整归还（5.31 → 0.07 GB，无泄漏）。真正的放大器是：`segment_anything` 在 `_ON_NEXT_FILES_CHANGED_MODELS` 中，模型加载后**后台线程预加载后续图片**，而用户又可随时触发交互编码，两个编码器会话并发时实测峰值 **10.55 GB**；用户机器 31.3 GB 内存、其它程序已占约 14 GB、页面文件仅约 1 GB，因此在 1 GiB 连续分配时失败。
+
+### 2. 修改与关键细节
+
+- **新增 `anylabeling/services/auto_labeling/encoder_lock.py`**：`cpu_encoder_lock(providers)` 在 provider 列表**全部**为 `CPUExecutionProvider`/`AzureExecutionProvider` 时返回进程级共享锁（`threading.Lock`，可作为上下文管理器），否则返回 `contextlib.nullcontext()`。锁是进程级而非实例级，因此预加载线程与交互编码、以及不同 SAM 适配器实例之间都会互斥。
+- **直接创建 ORT 会话的 SAM 适配器接入锁**：
+  - `sam_onnx.py`（`segment_anything` 使用）：`run_encoder()` 的懒加载 + `session.run` + `release_after` 释放整体套锁；
+  - `sam_hq.py`：同样的懒加载/运行/释放套锁；
+  - `grounding_sam.py`、`sam_med2d.py`、`__base__/sam.py`（EdgeSAM）：在 `__init__` 保存 `self.providers`，并在 `encoder_session.run(...)` 外套锁。
+- 预加载机制本身不改：锁只让第二个编码等待，而不是丢弃预加载结果；GPU/加速 provider 行为保持原样（可继续并行预加载）。
+- **版本**：`4.3.2+fork.19` → `4.3.2+fork.20`（用户可观察的资源行为变化 + 缺陷修复，按 `docs/开始.md` §八.3 升版）。
+
+### 3. 涉及模块与文件
+
+- 新增：`anylabeling/services/auto_labeling/encoder_lock.py`；
+- 修改：`anylabeling/services/auto_labeling/sam_onnx.py`、`sam_hq.py`、`grounding_sam.py`、`sam_med2d.py`、`__base__/sam.py`；
+- 测试：新增 `tests/test_models/test_sam_encoder_lock.py`（CPU 共享锁、加速 provider 不串行、并发不重叠、编码后释放 session）；
+- 文档：`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`anylabeling/app_info.py`。
+
+### 4. 行为、接口与兼容性影响
+
+- 用户可观察：CPU 上 SAM 类模型编码改为串行执行；当后台预加载正在编码时，交互标注可能等待一张编码完成（本机 ViT-L 约 10–20 秒），但峰值内存从约 10.5 GB 降到约 5.3 GB，避免 `Failed to allocate memory`；GPU/加速 provider 无变化。
+- 代码接口：新增 `cpu_encoder_lock`；`sam_onnx.py`/`sam_hq.py`/`grounding_sam.py`/`sam_med2d.py`/`__base__/sam.py` 的 `SegmentAnythingONNX`/`EdgeSAMONNX` 新增 `providers` 属性（内部使用）；无配置键、QSettings、数据格式、CLI 或模型契约变化。
+- 报错 1 不涉及代码改动；正确启动命令见上（`python -m anylabeling.app`），并用 `.vscode/launch.json` 的 “Debug Python Module” 配置。
+
+### 5. 实际验证内容
+
+- 模型级实测（`temporary/sam-diag/`，使用用户机器上 `E:\segment_anything_vit_l-r20230810` 的真实模型）：
+  - 旧行为两路并发：10.55 GB 峰值、两路均成功；
+  - 加锁后两路并发：**5.42 GB 峰值**，两路串行完成（10.5s + 11.6s = 22.3s），两路均返回 `(1,256,64,64)` 嵌入；
+  - session 释放：单次编码后销毁 session，RSS 5.31 GB → 0.07 GB（重复 3 次结果一致，无泄漏）。
+- 新增单测 `tests/test_models/test_sam_encoder_lock.py`：4 passed（CPU 共享锁、加速 provider 不串行、两个并发 `run_encoder` 最大并发为 1、`release_after` 后 `encoder_session is None`）。
+- `tests/test_models` + `tests/test_auto_labeling`：236 passed；4 failed 均为**基线同样存在**的环境限制用例（Windows 符号链接权限 `WinError 1314`、沙箱 `PermissionError`），已在基线工作树复跑确认相同。
+- 离屏 `MainWindow` 冒烟通过；`python -m anylabeling.app version` 输出 `4.3.2+fork.20`。
+- **未执行**：真实桌面 GUI 交互、GPU 环境、打包/发布；`black`/`flake8`/`pre-commit` 未安装未执行。
+
+### 6. 已知限制与后续事项
+
+- 本次只覆盖直接创建 ONNX Runtime 会话的 SAM 适配器；`_ON_NEXT_FILES_CHANGED_MODELS` 中其余重编码器（`segment_anything_2`、`grounding_sam2`、`yolov8_sam2`、`efficientvit_sam`、`geco`、`yolov5_sam` 的基类会话等）仍可能并发预加载，如遇到同类 OOM 应按同样方式接入 `cpu_encoder_lock`。
+- 页面文件仍只有约 1 GB，属系统设置；代码加锁只把峰值减半，不能替代足够的内存/页面文件。
+- 报错 1 属于使用方式问题，文档已说明；如后续希望降低误用，可考虑增加一个显式的开发启动脚本（本次未改）。
+
 ---
 
 ## 4.3.2+fork.19 — 2026-11-19

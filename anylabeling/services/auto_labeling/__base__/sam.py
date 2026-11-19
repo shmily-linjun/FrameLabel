@@ -5,6 +5,8 @@ import onnxruntime as ort
 from typing import Tuple
 from copy import deepcopy
 
+from ..encoder_lock import cpu_encoder_lock
+
 
 class SegmentAnythingONNX:
     """Segmentation model using SegmentAnything"""
@@ -245,6 +247,7 @@ class EdgeSAMONNX(object):
         # TODO: Add back when TensorRT backend is stable
         providers = [p for p in providers if p != "TensorrtExecutionProvider"]
 
+        self.providers = providers
         self.encoder_session = ort.InferenceSession(
             encoder_model_path, providers=providers
         )
@@ -257,7 +260,8 @@ class EdgeSAMONNX(object):
 
     def run_encoder(self, encoder_inputs):
         """Run encoder"""
-        image_embeddings = self.encoder_session.run(None, encoder_inputs)
+        with cpu_encoder_lock(self.providers):
+            image_embeddings = self.encoder_session.run(None, encoder_inputs)
         return image_embeddings[0]
 
     @staticmethod

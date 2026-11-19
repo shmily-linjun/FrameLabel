@@ -20,6 +20,7 @@ from anylabeling.views.labeling.utils.opencv import (
 )
 from anylabeling.services.auto_labeling.utils import calculate_rotation_theta
 
+from .encoder_lock import cpu_encoder_lock
 from .lru_cache import LRUCache
 from .model import Model
 from .types import AutoLabelingResult
@@ -90,26 +91,29 @@ class SegmentAnythingONNX:
         Returns:
             Tuple[np.ndarray, np.ndarray]: Image embeddings and stacked intermediate embeddings.
         """
-        # Lazy initialization
-        if self.encoder_session is None:
-            self.encoder_session = onnxruntime.InferenceSession(
-                self.encoder_model_path, providers=self.providers
-            )
-            self.encoder_input_name = self.encoder_session.get_inputs()[0].name
+        with cpu_encoder_lock(self.providers):
+            # Lazy initialization
+            if self.encoder_session is None:
+                self.encoder_session = onnxruntime.InferenceSession(
+                    self.encoder_model_path, providers=self.providers
+                )
+                self.encoder_input_name = (
+                    self.encoder_session.get_inputs()[0].name
+                )
 
-        features = None
-        try:
-            features = self.encoder_session.run(None, encoder_inputs)
-            image_embeddings = features[0]
-            interm_embeddings = np.stack(features[1:])
-            return image_embeddings, interm_embeddings
+            features = None
+            try:
+                features = self.encoder_session.run(None, encoder_inputs)
+                image_embeddings = features[0]
+                interm_embeddings = np.stack(features[1:])
+                return image_embeddings, interm_embeddings
 
-        finally:
-            if release_after:
-                if features is not None:
-                    del features
-                gc.collect()
-                self.encoder_session = None
+            finally:
+                if release_after:
+                    if features is not None:
+                        del features
+                    gc.collect()
+                    self.encoder_session = None
 
     @staticmethod
     def get_preprocess_shape(oldh: int, oldw: int, long_side_length: int):

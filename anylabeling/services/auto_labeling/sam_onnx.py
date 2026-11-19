@@ -5,6 +5,8 @@ import cv2
 import numpy as np
 import onnxruntime
 
+from .encoder_lock import cpu_encoder_lock
+
 
 class SegmentAnythingONNX:
     """Segmentation model using SegmentAnything"""
@@ -64,25 +66,28 @@ class SegmentAnythingONNX:
         Returns:
             np.ndarray: Image embedding output.
         """
-        # Lazy initialization
-        if self.encoder_session is None:
-            self.encoder_session = onnxruntime.InferenceSession(
-                self.encoder_model_path, providers=self.providers
-            )
-            self.encoder_input_name = self.encoder_session.get_inputs()[0].name
+        with cpu_encoder_lock(self.providers):
+            # Lazy initialization
+            if self.encoder_session is None:
+                self.encoder_session = onnxruntime.InferenceSession(
+                    self.encoder_model_path, providers=self.providers
+                )
+                self.encoder_input_name = (
+                    self.encoder_session.get_inputs()[0].name
+                )
 
-        output = None
-        try:
-            output = self.encoder_session.run(None, encoder_inputs)
-            image_embedding = output[0]
-            return image_embedding
+            output = None
+            try:
+                output = self.encoder_session.run(None, encoder_inputs)
+                image_embedding = output[0]
+                return image_embedding
 
-        finally:
-            if release_after:
-                if output is not None:
-                    del output
-                gc.collect()
-                self.encoder_session = None
+            finally:
+                if release_after:
+                    if output is not None:
+                        del output
+                    gc.collect()
+                    self.encoder_session = None
 
     @staticmethod
     def get_preprocess_shape(oldh: int, oldw: int, long_side_length: int):

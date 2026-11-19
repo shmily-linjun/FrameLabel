@@ -1,9 +1,9 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-19（Asia/Shanghai）
-> 对应版本：4.3.2+fork.19（T8 重构未升版：纯内部结构变化，无用户可观察行为、配置键、数据格式或接口契约变化）
+> 对应版本：4.3.2+fork.20（fork.19 的 T8 拆分未升版；fork.20 为 SAM 编码器 CPU 串行化修复）
 > 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；T8 分两阶段把 `label_widget.py` 拆成 28 个模块（`actions/`、`file_list/`、`operator/`、`widgets/workspace.py`、`annotation_editor.py`、`file_session.py`、`object_editor.py`、`canvas_navigation.py`、`status.py` 等），并用“基线工作树 vs 重构后”的 pytest 对比、离屏真实 `MainWindow` 冒烟与窗口结构/样式快照逐项比对验证等价性；各测试包的具体结果见 §16。
-> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8) 已改变的结构以本文当前版本说明为准。
+> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8)/fork.20(SAM 编码锁) 已改变的结构以本文当前版本说明为准。
 > 行号锚点：T8 把 `label_widget.py` 从 9507 行降到 1782 行、`LabelingWidget.__init__` 从 2816 行降到 238 行，几乎所有历史行号都已失效；本报告中 `label_widget.py` 的行号均为 T8 第二阶段之后的当前值，定位时优先使用类名和方法名（实现多数已移入 §5.11 的模块）。
 > 规模口径：本报告的行数一律按 `str.splitlines()` 统计（与 `Get-Content | Measure-Object -Line` 的口径不同，后者会少算），早期章节里的 8949/8768 等数字属于旧口径，已在 §1.1 与 §8 更新。
 
@@ -12,14 +12,14 @@
 | 项目 | 结论 |
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
-| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.19 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.19，见 [app_info.py](../../anylabeling/app_info.py) |
+| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.20 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，fork.20 的 SAM 编码锁见 §5.3，实际提交哈希以 Git 记录为准 |
+| 版本 | 4.3.2+fork.20，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
 | 主入口 | `xanylabeling = anylabeling.app:main`；亦支持 `python -m anylabeling.app` |
 | 包构建 | `python -m build --no-isolation`，见 [build_and_publish_pypi.sh](../../scripts/build_and_publish_pypi.sh) |
-| 最近核对日期 | 2026-11-19（T8 重构后） |
+| 最近核对日期 | 2026-11-19（T8 两阶段拆分 + fork.20 SAM 编码锁） |
 
 ### 1.1 规模与统计口径
 
@@ -145,6 +145,8 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 模型列表来自 [models.yaml](../../anylabeling/configs/models.yaml) 和用户自定义模型配置；`ModelManager` 按 `type` 延迟导入适配器。加载和推理均可放入 **QThread**，结果通过 Qt 信号返回标注状态，见 [model_manager.py:1122-1207](../../anylabeling/services/auto_labeling/model_manager.py#L1122-L1207)。
 
 模型权重通过 HTTPS 下载，远程服务通过 HTTP 请求，均构成网络边界；已存在的 `.onnx/.pth/.pt` 缓存还可经 **multiprocessing.spawn 子进程**校验。
+
+**SAM 内存与编码串行化（fork.20）：**SAM ViT 编码器的全局注意力需要一次性分配约 1 GiB，单次编码峰值约 5 GB；`segment_anything` 属于 `_ON_NEXT_FILES_CHANGED_MODELS`，后台预加载与交互编码并发时峰值约 10.5 GB。[encoder_lock.py](../../anylabeling/services/auto_labeling/encoder_lock.py) 的 `cpu_encoder_lock(providers)` 在 CPU-only 环境返回进程级共享锁，`sam_onnx.py`/`sam_hq.py`/`grounding_sam.py`/`sam_med2d.py`/`__base__/sam.py` 的 `run_encoder` 已接入，峰值降为单次编码水平；GPU/加速 provider 不加锁以保留预加载并行。新增 SAM 适配器时应沿用该锁，否则并发预加载仍可能 OOM。
 
 ### 5.4 自动训练与导出
 
@@ -748,6 +750,7 @@ model_manager.py:14
 - **拆分模块的宿主契约是隐式接口（T8）**：`FileListController`、`OperatorGate`、`AutoLabelingHandoff` 与 `workspace`/`actions` 构建函数都通过 `host` 属性表回调 `LabelingWidget`；重命名或删除宿主属性不会在 import 期报错，只会在运行时以 `AttributeError`/静默 `getattr` 回退暴露。改宿主属性时必须同步对应模块 docstring 并跑定向测试。
 - **T8 两阶段后 `label_widget.py` 已降到 1782 行**（`LabelingWidget` 1703 行，其中约 150 个为一行委托）；剩余实现是窗口外壳/Qt 事件/缩略图/UI 密度，继续拆的收益递减，且需要处理 `eventFilter`、`resizeEvent`、`closeEvent` 与 UI 密度的联动。
 - **全项目按用户口径只剩 `Canvas` 一个上帝类**（6269 行/216 方法）；1000–2000 行级类（PPOCR 编辑器、PointCloud/Video/Ultralytics 对话框等）按用户 2026-11-19 口径不登记为上帝类，只按普通维护风险对待。
+- **SAM 类模型在 CPU 上仍是内存大户**：单次编码约 5 GB 峰值（ViT-L float 实测 5.31 GB），fork.20 的串行锁只消除并发双份峰值；页面文件不足或其它程序占用过多时仍可能 OOM。`_ON_NEXT_FILES_CHANGED_MODELS` 中尚未接入锁的适配器（`segment_anything_2`、`grounding_sam2`、`yolov8_sam2`、`efficientvit_sam`、`geco` 等）遇到同类报错时按 §5.3 方式处理。
 - **本机 pytest 环境限制（T8 记录）**：DSH Windows 沙箱下 pytest 以 `mode=0o700` 创建临时目录会让受限进程无法列举（`WinError 5`）；部分测试文件在解释器退出阶段以 `0xC0000409` 结束（基线与重构后一致，与本任务无关）。本地验证需注入放宽 `os.mkdir` mode 的 `sitecustomize.py`（只在 `temporary/`），并按测试包分批执行。
 
 ## 14. 支撑设施与外围补充
@@ -787,6 +790,7 @@ model_manager.py:14
 - fork.17 的工具栏滚动窗格（`ToolsDock` + `ToolBarScrollArea`）、停靠方向与滚动条策略、分隔符移除与几何刷新；
 - fork.18 的浏览模式（画布只读、模式工具可点并引导登录、状态浮层）、主题禁用态与图标禁用变体、画布右键菜单精简；
 - fork.19 的自动标注占位对象清理与取行兜底、工具栏“设置/快捷键”按钮显隐；
+- fork.20 的 SAM 编码器 CPU 串行锁（`encoder_lock.py` + 5 个适配器接入）与对应的内存实测、并发回归用例；
 - **T8（fork.19 内不升版）的 `label_widget.py` 拆分（两阶段）**：第一阶段 `actions/`（动作表 + 菜单 + 工具栏策略）、`file_list/`（表格 + 控制器）、`operator/gate.py`、`auto_labeling_handoff.py`、`widgets/workspace.py`、`widgets/splitters.py`、`utils/label_text.py`、`constants.py`；第二阶段 `annotation_editor.py`、`file_session.py`、`object_editor.py`、`canvas_navigation.py`、`widgets/attributes_panel.py`、`status.py`、`appearance.py`、`label_filters.py`、`shape_commands.py`、`draw_modes.py`、`special_workspaces.py`、`label_loop.py`、`relations.py`、`right_sidebar.py`；`label_widget.py` 9507 → 1782 行，`__init__` 2816 → 238 行；
 - 模块和核心类关系、跨线程/进程/网络边界、引用统计、维护路径、已知问题和风险；
 - 核心类表共 28 类：18 类进入总览图，fork.4 的 2 个身份类与 fork.7 的 2 个窗口类见 §5.6/§5.7，T8 的主要拆分类（`LabelingWidget`/`FileListController`/`OperatorGate`/`AutoLabelingHandoff`/`AnnotationEditor`/`FileSession`/其余控制器）见 §5.11/§8；
@@ -817,6 +821,7 @@ model_manager.py:14
 - 动态注册、条件导入和实际导入顺序可能不完整；本批复核了 T8 涉及的模块及其直接依赖，没有重新执行全项目逐行分析；
 - 核心类/引用排名沿用 fork.3 时期的 AST 统计，T8 只刷新了文件规模、行号和受影响的描述，未重跑全项目排名；
 - `black`/`flake8`/`pre-commit` 在本机环境未安装（按协作规则未自行安装），**格式与 lint 未执行**；提交前只做了等价性自检（`symtable` 未定义名/未使用导入检查、`compileall`、离屏冒烟、结构快照）；
+- fork.20 的 SAM 编码锁验证：真实 ViT-L 模型两路并发峰值由 10.55 GB 降到 5.42 GB（串行 22.3s），新增 `tests/test_models/test_sam_encoder_lock.py` 4 passed；`tests/test_models`+`tests/test_auto_labeling` 的 4 个失败（符号链接权限/沙箱权限）在基线工作树同样存在。
 - README 和全部注释未逐项核对。
 
 本批同时建立了后续文档维护规则：每次代码变化按差异更新本报告，而不是把本报告当作一次性静态快照。
