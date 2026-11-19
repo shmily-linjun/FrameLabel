@@ -10,6 +10,7 @@ from PyQt6 import QtGui
 
 from anylabeling.services.auto_labeling.types import AutoLabelingResult
 from anylabeling.views.labeling.label_file import LabelFile
+from anylabeling.views.labeling.auto_labeling_handoff import AutoLabelingHandoff
 from anylabeling.views.labeling.label_widget import LabelingWidget
 from anylabeling.views.labeling.utils.batch import save_auto_labeling_result
 from anylabeling.views.labeling.utils.image_tags import (
@@ -138,7 +139,7 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
         widget = self.make_widget()
         result = AutoLabelingResult([], replace=False, tags=[" person "])
 
-        LabelingWidget.new_shapes_from_auto_labeling(widget, result)
+        AutoLabelingHandoff(widget).new_shapes_from_auto_labeling(result)
 
         self.assertEqual(widget.other_data["tags"], ["person"])
         widget.image_tags_widget.set_tags.assert_called_once_with(["person"])
@@ -156,7 +157,7 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
                 )
                 result = AutoLabelingResult([object()], replace=replace)
 
-                LabelingWidget.new_shapes_from_auto_labeling(widget, result)
+                AutoLabelingHandoff(widget).new_shapes_from_auto_labeling(result)
 
                 self.assertFalse(widget.other_data["checked"])
                 widget._sync_annotation_checked_state.assert_called_once_with()
@@ -166,8 +167,8 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
         widget = self.make_widget()
         widget.canvas.shapes = [SimpleNamespace(locked=False, other_data={})]
 
-        LabelingWidget.new_shapes_from_auto_labeling(
-            widget, AutoLabelingResult([], replace=True)
+        AutoLabelingHandoff(widget).new_shapes_from_auto_labeling(
+            AutoLabelingResult([], replace=True)
         )
 
         self.assertFalse(widget.other_data["checked"])
@@ -261,7 +262,7 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
         widget = self.make_widget(tags_marker=False)
         result = AutoLabelingResult([], replace=False, tags=[])
 
-        LabelingWidget.new_shapes_from_auto_labeling(widget, result)
+        AutoLabelingHandoff(widget).new_shapes_from_auto_labeling(result)
 
         self.assertEqual(widget.other_data["tags"], [])
         self.assertEqual(widget.other_data["description"], "keep")
@@ -273,7 +274,7 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
         widget = self.make_widget()
         result = AutoLabelingResult([], replace=False)
 
-        LabelingWidget.new_shapes_from_auto_labeling(widget, result)
+        AutoLabelingHandoff(widget).new_shapes_from_auto_labeling(result)
 
         self.assertEqual(widget.other_data["tags"], ["person"])
         widget.image_tags_widget.set_tags.assert_not_called()
@@ -290,7 +291,7 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
             tags=["street"],
         )
 
-        LabelingWidget.new_shapes_from_auto_labeling(widget, result)
+        AutoLabelingHandoff(widget).new_shapes_from_auto_labeling(result)
 
         self.assertEqual(widget.other_data["tags"], ["person"])
         widget.image_tags_widget.set_tags.assert_not_called()

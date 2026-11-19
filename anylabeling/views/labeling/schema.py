@@ -15,6 +15,9 @@ XLABEL_BASIC_FIELDS = [
 
 IMAGE_TAGS_FIELD = "tags"
 
+#: Review status of an image: ``True``/``False`` or the string ``"failed"``.
+CHECKED_FIELD = "checked"
+
 
 def create_xlabel_template(
     version: str = __version__,

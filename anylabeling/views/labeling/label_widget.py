@@ -34,12 +34,7 @@ from PyQt6.QtWidgets import (
 
 from anylabeling.services.auto_labeling.types import AutoLabelingMode
 from anylabeling.services.auto_labeling import _THUMBNAIL_RENDER_MODELS
-from anylabeling.services.identity import (
-    content_signature,
-    get_operator_service,
-    read_attribution,
-    stamp_attribution,
-)
+from anylabeling.services.identity import get_operator_service
 from anylabeling.views.training import UltralyticsDialog
 
 from ...app_info import (
@@ -58,8 +53,14 @@ from .utils.style import (
 )
 from ...config import get_config, save_config
 from .actions.builder import build_actions
+from .auto_labeling_handoff import AutoLabelingHandoff
 from .actions.menus import build_menus
 from .constants import LABEL_OPACITY
+from .operator import (
+    OPERATOR_MODE_ACTIONS,
+    OPERATOR_REQUIRED_ACTIONS,
+    OperatorGate,
+)
 from .file_list import FileListController
 from .file_list.constants import (
     FILE_COL_NAME,
@@ -68,7 +69,7 @@ from .file_list.constants import (
 )
 from .label_file import LabelFile, LabelFileError
 from .logger import logger
-from .schema import IMAGE_TAGS_FIELD
+from .schema import CHECKED_FIELD, IMAGE_TAGS_FIELD
 from .settings import SettingsController, SettingsDialog
 from .settings.runtime_applier import SettingsRuntimeApplier
 from .settings.schema import (
@@ -81,6 +82,10 @@ from .utils.file_search import (
     escape_query_value,
     filter_image_files,
     parse_search_query,
+)
+from .utils.label_text import (
+    format_label_list_text as _format_label_list_text,
+    measure_text_width as _measure_text_width,
 )
 from .utils.qt import new_icon_path
 from .utils.theme import get_theme
@@ -120,7 +125,6 @@ from .widgets import (
     GroupIDModifyDialog,
     AttributionLabel,
     OperatorBar,
-    OperatorDialog,
     OverviewDialog,
     Popup,
     SearchBar,
@@ -138,19 +142,6 @@ FILE_UNCHECKED_COLOR = "#8C98A4"
 CHECKED_FIELD_PATTERN = re.compile(r'"checked"\s*:\s*(true|false|"failed")')
 
 
-def _measure_text_width(font_metrics, text):
-    if hasattr(font_metrics, "horizontalAdvance"):
-        return font_metrics.horizontalAdvance(text)
-    return font_metrics.width(text)
-
-
-def _format_label_list_text(label, group_id):
-    text = html.escape(label)
-    if group_id is None:
-        return text
-    return f"{text} ({group_id})"
-
-
 def _set_label_list_item_lock(item, locked):
     item.set_locked(locked)
 
@@ -164,47 +155,7 @@ def _find_next_label_loop_shape(shapes, start_index, canvas_shapes):
     return len(shapes), None
 
 
-#: Actions that switch the drawing/editing tool.  They stay clickable while
-#: nobody is logged in so a click can explain itself with a login prompt
-#: (the entry itself is guarded in ``toggle_draw_mode``/``toggle_brush_mode``);
-#: disabling them silently made browse mode look like a broken toolbar.
-OPERATOR_MODE_ACTIONS = (
-    "create_mode",
-    "create_brush_polygon_mode",
-    "create_magic_wand_mode",
-    "create_rectangle_mode",
-    "create_cuboid_mode",
-    "create_rotation_mode",
-    "create_quadrilateral_mode",
-    "create_circle_mode",
-    "create_line_mode",
-    "create_point_mode",
-    "create_line_strip_mode",
-    "edit_mode",
-    "edit_brush_mode",
-)
 
-#: Actions that change annotation content or image tags and therefore need a
-#: logged-in operator.  Register new editing actions here, otherwise the
-#: write-time guard would be the only thing catching them.
-OPERATOR_REQUIRED_ACTIONS = (
-    "edit",
-    "delete",
-    "duplicate",
-    "paste",
-    "undo",
-    "undo_last_point",
-    "remove_point",
-    "union_selection",
-    "create_relation",
-    "manage_relations",
-    "group_selected_shapes",
-    "ungroup_selected_shapes",
-    "label_manager",
-    "gid_manager",
-    "shape_manager",
-    "run_all_images",
-)
 
 
 class LabelingWidget(LabelDialog):
@@ -274,9 +225,8 @@ class LabelingWidget(LabelDialog):
             if operator_service is not None
             else get_operator_service()
         )
-        self._author_baseline = None
-        self._applying_operator_gate = False
-        self._suppress_attribution = False
+        self.operator_gate = OperatorGate(self, self.operator_service)
+        self.auto_labeling_handoff = AutoLabelingHandoff(self)
 
         # set default shape colors
         Shape.line_color = QtGui.QColor(*self._config["shape"]["line_color"])
@@ -1698,135 +1648,38 @@ class LabelingWidget(LabelDialog):
         self.set_dirty()
 
     # -- operator identity ---------------------------------------------------
+    # The browse-mode policy and the attribution baseline live in
+    # ``labeling/operator/gate.py``; these thin wrappers keep the widget the
+    # entry point for its own code and for the batch auto-labeling helper.
     def _operator_edit_allowed(self):
-        return self.operator_service.session.is_logged_in
+        return self.operator_gate.logged_in()
 
-    def _on_operator_session_changed(self, _session=None):
-        self._apply_operator_gate()
-        self._refresh_attribution_display()
+    def _on_operator_session_changed(self, session=None):
+        self.operator_gate.on_session_changed(session)
 
     def _apply_operator_gate(self):
-        """Apply browse mode (no operator) to the tools, canvas and chip.
-
-        Browse mode is a real read-only state: the command actions are
-        disabled, the canvas ignores editing gestures, and the mode tools stay
-        clickable so a click can ask for the login it needs.  Silently
-        disabling everything made the application look broken.
-        """
-        if self._applying_operator_gate:
-            return
-        self._applying_operator_gate = True
-        try:
-            allowed = self._operator_edit_allowed()
-            for name in OPERATOR_MODE_ACTIONS:
-                action = getattr(self.actions, name, None)
-                if action is not None:
-                    action.setEnabled(True)
-            for name in OPERATOR_REQUIRED_ACTIONS:
-                action = getattr(self.actions, name, None)
-                if action is not None:
-                    action.setEnabled(bool(allowed and self.filename))
-            canvas = getattr(self, "canvas", None)
-            if canvas is not None:
-                canvas.set_read_only(not allowed)
-            tags_widget = getattr(self, "image_tags_widget", None)
-            if tags_widget is not None:
-                tags_widget.set_interactions_enabled(
-                    bool(allowed and self.image_path)
-                )
-            self._refresh_browse_mode_badge()
-        finally:
-            self._applying_operator_gate = False
+        self.operator_gate.apply()
 
     def open_operator_login(self):
-        """Ask for an operator and log in; returns True when logged in."""
-        if self.operator_service.session.is_logged_in:
-            return True
-        dialog = OperatorDialog(self.operator_service, self)
-        return dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted
+        return self.operator_gate.open_login()
 
     def logout_operator(self):
-        if not self.operator_service.session.is_logged_in:
-            return
-        if self.dirty and self.image_path:
-            label_file = osp.splitext(self.image_path)[0] + ".json"
-            if self.output_dir:
-                label_file = osp.join(
-                    self.output_dir, osp.basename(label_file)
-                )
-            self.save_labels(label_file)
-        self.toggle_draw_mode(True)
-        self.operator_service.logout()
+        self.operator_gate.logout()
 
     def _ensure_operator(self):
-        """Require an operator before content is written; prompts if needed."""
-        if self._operator_edit_allowed():
-            return True
-        return self.open_operator_login()
+        return self.operator_gate.ensure_operator()
 
     def _ensure_operator_for_edit(self):
-        """Ask for a login before entering a tool that edits annotations.
-
-        Returns ``True`` when the action may continue.  A cancelled login
-        leaves everything untouched and says why in the status bar, so the
-        click is never silently swallowed.
-        """
-        if self._operator_edit_allowed():
-            return True
-        if self.open_operator_login():
-            return True
-        self._apply_operator_gate()
-        self.status(
-            self.tr("Browse mode - editing annotations requires login")
-        )
-        return False
+        return self.operator_gate.ensure_for_edit()
 
     def _prepare_attribution(self, shapes, flags):
-        """Stamp the author when the content really changed.
-
-        Returns ``(signature, allowed)``; ``allowed`` is ``False`` when the
-        content changed but no operator is available, in which case the caller
-        must not write the file.
-        """
-        signature = content_signature(shapes, flags, self.other_data)
-        if self._suppress_attribution or signature == self._author_baseline:
-            return signature, True
-        operator_name = self.operator_service.session.operator_name
-        if not operator_name:
-            if not self._ensure_operator():
-                return signature, False
-            operator_name = self.operator_service.session.operator_name
-            if not operator_name:
-                return signature, False
-        stamp_attribution(self.other_data, operator_name)
-        return signature, True
+        return self.operator_gate.prepare_attribution(shapes, flags)
 
     def _content_signature_now(self):
-        shapes = [
-            item.shape().to_dict()
-            for item in self.label_list
-            if item.shape().label
-            not in [
-                AutoLabelingMode.OBJECT,
-                AutoLabelingMode.ADD,
-                AutoLabelingMode.REMOVE,
-            ]
-        ]
-        flags = {}
-        for i in range(self.flag_widget.count()):
-            item = self.flag_widget.item(i)
-            flags[item.text()] = item.checkState() == Qt.CheckState.Checked
-        return content_signature(shapes, flags, self.other_data)
+        return self.operator_gate.content_signature_now()
 
     def _refresh_attribution_display(self):
-        label = getattr(self, "attribution_label", None)
-        if label is None:
-            return
-        if not self.image_path:
-            label.clear_attribution()
-            return
-        author, modified_at = read_attribution(self.other_data)
-        label.set_attribution(author, modified_at)
+        self.operator_gate.refresh_display()
 
     def toggle_image_tags_visibility(self, checked):
         self._image_tags_visibility = (
@@ -4089,7 +3942,7 @@ class LabelingWidget(LabelDialog):
                 flags=flags,
             )
             self.label_file = label_file
-            self._author_baseline = signature
+            self.operator_gate.baseline = signature
             self.actions.save.setIcon(utils.new_icon("save-check"))
             self._update_file_row_after_save(len(shapes))
             # disable allows next and previous image to proceed
@@ -4621,7 +4474,7 @@ class LabelingWidget(LabelDialog):
                 flags=flags,
             )
             self.label_file = label_file
-            self._author_baseline = signature
+            self.operator_gate.baseline = signature
             self.actions.save.setIcon(utils.new_icon("save-check"))
             self._update_file_row_after_save(len(shapes))
             # disable allows next and previous image to proceed
@@ -5455,7 +5308,7 @@ class LabelingWidget(LabelDialog):
         self.shape_text_label.setText(self.tr("Image Description"))
         self.shape_text_edit.setDisabled(False)
         self.canvas.relations = self.other_data.get("relations", [])
-        self._author_baseline = None
+        self.operator_gate.baseline = None
 
         # TODO(jack): icc profile issue warning
         # - qt.gui.icc: fromIccProfile: failed minimal tag size sanity
@@ -5529,17 +5382,17 @@ class LabelingWidget(LabelDialog):
         if self._config["keep_prev"] and self.no_shape():
             # Carrying shapes over from the previous image is not an operator
             # edit: keep the attribution of the loaded file untouched.
-            self._suppress_attribution = True
+            self.operator_gate.suppress = True
             try:
                 self.load_shapes(
                     prev_shapes, replace=False, update_last_label=False
                 )
                 self.set_dirty()
             finally:
-                self._suppress_attribution = False
+                self.operator_gate.suppress = False
         else:
             self.set_clean()
-        self._author_baseline = self._content_signature_now()
+        self.operator_gate.baseline = self._content_signature_now()
         self._refresh_attribution_display()
         self.canvas.setEnabled(True)
 
@@ -6453,401 +6306,31 @@ class LabelingWidget(LabelDialog):
             self.async_exif_scanner.start_scan(image_files)
         self._refresh_statistics_if_visible()
 
+    # -- auto labeling handoff -------------------------------------------
+    # The merge/finish rules live in ``auto_labeling_handoff.py``; the widget
+    # stays the signal target and delegates the work.
     def toggle_auto_labeling_widget(self):
-        """Toggle auto labeling widget visibility."""
-        if self.auto_labeling_widget.isVisible():
-            self.auto_labeling_widget.hide()
-            self.actions.run_all_images.setEnabled(False)
-        else:
-            self.auto_labeling_widget.show()
-            self.actions.run_all_images.setEnabled(True)
-        self.update_thumbnail_display()
+        return self.auto_labeling_handoff.toggle_auto_labeling_widget()
 
-    @pyqtSlot()
     def new_shapes_from_auto_labeling(self, auto_labeling_result):
-        """Apply auto labeling results to the current image."""
-        if not self.image or not self.image_path:
-            return
-
-        result_image_path = getattr(auto_labeling_result, "image_path", None)
-        if result_image_path and self.filename:
-            current_filename = osp.normpath(osp.abspath(self.filename))
-            result_filename = osp.normpath(osp.abspath(result_image_path))
-            if result_filename != current_filename:
-                logger.warning(
-                    "Ignore stale auto labeling result for "
-                    f"{result_filename}; current file is {current_filename}"
-                )
-                return
-
-        result_tags = getattr(auto_labeling_result, "tags", None)
-        result_flags = getattr(auto_labeling_result, "flags", None)
-        tags_only_result = (
-            result_tags is not None
-            and result_flags is None
-            and not auto_labeling_result.shapes
-            and auto_labeling_result.replace is False
-            and not auto_labeling_result.description
+        return self.auto_labeling_handoff.new_shapes_from_auto_labeling(
+            auto_labeling_result
         )
-        annotations_changed = bool(auto_labeling_result.shapes)
-
-        # Clear existing shapes
-        if auto_labeling_result.replace:
-            locked_shapes = [
-                shape for shape in self.canvas.shapes if shape.locked
-            ]
-            annotations_changed |= len(locked_shapes) != len(
-                self.canvas.shapes
-            )
-            self.label_list.clear()
-            self.load_shapes(
-                locked_shapes + auto_labeling_result.shapes, replace=True
-            )
-        else:  # Just update existing shapes
-            # Remove stale placeholder objects (label AUTOLABEL_OBJECT) from
-            # both the object list and the canvas.  Only the list row used to
-            # be removed, so the canvas kept an orphan placeholder without a
-            # row, and the later "finish object" step crashed on the missing
-            # row (AttributeError: 'NoneType' object has no attribute
-            # 'setText').
-            stale_objects = [
-                shape
-                for shape in self.canvas.shapes
-                if shape.label == AutoLabelingMode.OBJECT
-            ]
-            if stale_objects:
-                stale_ids = {id(shape) for shape in stale_objects}
-                for shape in stale_objects:
-                    item = self.label_list.find_item_by_shape(shape)
-                    if item is not None:
-                        self.label_list.remove_item(item)
-                self.canvas.shapes = [
-                    shape
-                    for shape in self.canvas.shapes
-                    if id(shape) not in stale_ids
-                ]
-            self.load_shapes(auto_labeling_result.shapes, replace=False)
-
-        incoming_relations = getattr(auto_labeling_result, "relations", None)
-        if auto_labeling_result.replace or incoming_relations is not None:
-            shape_ids = {
-                s.other_data.get("shape_id") for s in self.canvas.shapes
-            }
-            relations = [
-                relation
-                for relation in self.canvas.relations
-                if relation.get("subject_id") in shape_ids
-                and relation.get("object_id") in shape_ids
-            ]
-            if incoming_relations is not None:
-                relations.extend(
-                    relation
-                    for relation in incoming_relations
-                    if relation.get("subject_id") in shape_ids
-                    and relation.get("object_id") in shape_ids
-                )
-            if (
-                relations != self.canvas.relations
-                or incoming_relations is not None
-            ):
-                self.canvas.relations = relations
-                self.other_data["relations"] = relations
-                annotations_changed = True
-                self.canvas.update()
-
-        # Set image description
-        if auto_labeling_result.description:
-            description = auto_labeling_result.description
-            annotations_changed |= description != self.other_data.get(
-                "description", ""
-            )
-            self.shape_text_label.setText(self.tr("Image Description"))
-            with QtCore.QSignalBlocker(self.shape_text_edit):
-                self.shape_text_edit.setPlainText(description)
-            self.other_data["description"] = description
-            self.shape_text_edit.setDisabled(False)
-
-        if result_flags is not None:
-            flags = {
-                self.flag_widget.item(i).text(): (
-                    self.flag_widget.item(i).checkState()
-                    == Qt.CheckState.Checked
-                )
-                for i in range(self.flag_widget.count())
-            }
-            annotations_changed |= any(
-                key not in flags or flags[key] != value
-                for key, value in result_flags.items()
-            )
-            flags.update(result_flags)
-            with QtCore.QSignalBlocker(self.flag_widget):
-                self.load_flags(flags)
-
-        tags_changed = False
-        if result_tags is not None:
-            tags = utils.normalize_image_tags(
-                result_tags, "auto labeling result"
-            )
-            tags_changed = (
-                IMAGE_TAGS_FIELD not in self.other_data
-                or self.other_data[IMAGE_TAGS_FIELD] != tags
-            )
-            if tags_changed:
-                self.other_data[IMAGE_TAGS_FIELD] = tags
-            self.image_tags_widget.set_tags(tags)
-            self._auto_show_image_tags()
-
-        if annotations_changed or tags_changed:
-            self.other_data[CHECKED_FIELD] = False
-            self._sync_annotation_checked_state()
-
-        if tags_changed or not tags_only_result:
-            self.set_dirty()
 
     def clear_auto_labeling_marks(self):
-        """Clear auto labeling marks from the current image."""
-        # Clean up label list
-        for shape in self.canvas.shapes:
-            if shape.label in [
-                AutoLabelingMode.OBJECT,
-                AutoLabelingMode.ADD,
-                AutoLabelingMode.REMOVE,
-            ]:
-                item = self.label_list.find_item_by_shape(shape)
-                if item is not None:
-                    self.label_list.remove_item(item)
-
-        # Clean up unique label list
-        for shape_label in [
-            AutoLabelingMode.OBJECT,
-            AutoLabelingMode.ADD,
-            AutoLabelingMode.REMOVE,
-        ]:
-            for item in self.unique_label_list.find_items_by_label(
-                shape_label
-            ):
-                self.unique_label_list.takeItem(
-                    self.unique_label_list.row(item)
-                )
-
-        # Remove shapes from the canvas
-        self.canvas.shapes = [
-            shape
-            for shape in self.canvas.shapes
-            if shape.label
-            not in [
-                AutoLabelingMode.OBJECT,
-                AutoLabelingMode.ADD,
-                AutoLabelingMode.REMOVE,
-            ]
-        ]
-        self.canvas.update()
+        return self.auto_labeling_handoff.clear_auto_labeling_marks()
 
     def find_last_label(self):
-        """
-        Find the last label in the label list.
-        Exclude labels for auto labeling.
-        """
-
-        # Get from dialog history
-        last_label = self.label_dialog.get_last_label()
-        if last_label:
-            return last_label
-
-        # Get selected label from the label list
-        items = self.label_list.selected_items()
-        if items:
-            shape = items[0].data(Qt.ItemDataRole.UserRole)
-            return shape.label
-
-        # Get the last label from the label list
-        for item in reversed(self.label_list):
-            shape = item.data(Qt.ItemDataRole.UserRole)
-            if shape.label not in [
-                AutoLabelingMode.OBJECT,
-                AutoLabelingMode.ADD,
-                AutoLabelingMode.REMOVE,
-            ]:
-                return shape.label
-
-        # No label is found
-        return ""
+        return self.auto_labeling_handoff.find_last_label()
 
     def find_last_gid(self):
-        last_gid = self.label_dialog.get_last_gid()
-        if last_gid is not None:
-            return last_gid
-
-        for item in reversed(self.label_list):
-            shape = item.data(Qt.ItemDataRole.UserRole)
-            if (
-                shape.label
-                not in [
-                    AutoLabelingMode.OBJECT,
-                    AutoLabelingMode.ADD,
-                    AutoLabelingMode.REMOVE,
-                ]
-                and shape.group_id is not None
-            ):
-                return shape.group_id
-        return None
+        return self.auto_labeling_handoff.find_last_gid()
 
     def set_cache_auto_label(self):
-        self.auto_labeling_widget.on_cache_auto_label_changed(
-            self.cache_auto_label, self.cache_auto_label_group_id
-        )
+        return self.auto_labeling_handoff.set_cache_auto_label()
 
     def finish_auto_labeling_object(self):
-        """Finish auto labeling object."""
-        has_object, cache_label = False, None
-        for shape in self.canvas.shapes:
-            if shape.label == AutoLabelingMode.OBJECT:
-                cache_label = shape.cache_label
-                cache_description = shape.cache_description
-                has_object = True
-                break
-
-        # If there is no object, do nothing
-        if not has_object:
-            return
-
-        # Ask a label for the object
-        review_status = "pending"
-        text, flags, group_id, description, difficult, kie_linking = (
-            "",
-            {},
-            None,
-            None,
-            False,
-            [],
-        )
-        last_label = self.find_last_label()
-        last_gid = (
-            self.find_last_gid() if self._config["auto_use_last_gid"] else None
-        )
-        if self._config["auto_use_last_label"] and last_label:
-            text = last_label
-            if last_gid is not None:
-                group_id = last_gid
-        elif cache_label is not None:
-            text = cache_label
-            description = cache_description
-        else:
-            previous_text = self.label_dialog.edit.text()
-            (
-                text,
-                flags,
-                group_id,
-                description,
-                difficult,
-                kie_linking,
-            ) = self.label_dialog.pop_up(
-                text=self.find_last_label(),
-                flags={},
-                group_id=last_gid,
-                description=None,
-                difficult=False,
-                kie_linking=[],
-                move_mode=self._config.get("move_mode", "auto"),
-            )
-            review_status = self.label_dialog.get_review_status()
-            if not text:
-                self.label_dialog.edit.setText(previous_text)
-                return
-
-        self.cache_auto_label = text
-        self.cache_auto_label_group_id = group_id
-        if not self.validate_label(text):
-            self.error_message(
-                self.tr("Invalid label"),
-                self.tr("Invalid label '{}' with validation type '{}'").format(
-                    text, self._config["validate_label"]
-                ),
-            )
-            return
-
-        if self.attributes and text:
-            text = self.reset_attribute(text, shape)
-
-        # Add to label history
-        self.label_dialog.add_label_history(text)
-
-        # Update label for the object
-        updated_shapes = False
-        for shape in self.canvas.shapes:
-            if shape.label == AutoLabelingMode.OBJECT:
-                updated_shapes = True
-                shape.label = text
-                shape.flags = flags
-                shape.group_id = group_id
-                shape.description = description
-                shape.difficult = difficult
-                shape.kie_linking = kie_linking
-                shape.other_data["review_status"] = review_status
-                # Update unique label list
-                if not self.unique_label_list.find_items_by_label(shape.label):
-                    unique_label_item = (
-                        self.unique_label_list.create_item_from_label(
-                            shape.label
-                        )
-                    )
-                    self.unique_label_list.addItem(unique_label_item)
-                    rgb = self._get_rgb_by_label(shape.label)
-                    self.unique_label_list.set_item_label(
-                        unique_label_item, shape.label, rgb, LABEL_OPACITY
-                    )
-
-                # Update label list
-                self._update_shape_color(shape)
-                item = self._auto_labeling_list_item(shape)
-                if item is None:
-                    continue
-                if shape.group_id is None:
-                    color = self._get_rgb_by_label(shape.label)
-                    item.setText(
-                        '{} <font color="#{:02x}{:02x}{:02x}">●</font>'.format(
-                            html.escape(shape.label), *color
-                        )
-                    )
-                else:
-                    item.setText(
-                        _format_label_list_text(shape.label, shape.group_id)
-                    )
-
-        # Clean up auto labeling objects
-        self.clear_auto_labeling_marks()
-
-        # Update shape colors
-        for shape in self.canvas.shapes:
-            self._update_shape_color(shape)
-            color = self._get_rgb_by_label(shape.label)
-            item = self._auto_labeling_list_item(shape)
-            if item is None:
-                continue
-            item.setText(_format_label_list_text(shape.label, shape.group_id))
-            item.setBackground(QtGui.QColor(*color, LABEL_OPACITY))
-            self.unique_label_list.update_item_color(
-                shape.label, color, LABEL_OPACITY
-            )
-
-        if updated_shapes:
-            self.set_dirty()
-
-    def _auto_labeling_list_item(self, shape):
-        """Return the object-list row for ``shape``, creating it if needed.
-
-        Auto-labeling can leave a shape on the canvas that has no row (for
-        example after an interrupted marking session).  The "finish object"
-        step must not crash on that, so the row is created on demand and
-        ``None`` is returned only when it cannot be added at all.
-        """
-        item = self.label_list.find_item_by_shape(shape)
-        if item is not None:
-            return item
-        self.add_label(
-            shape, update_last_label=False, refresh_filters=False
-        )
-        return self.label_list.find_item_by_shape(shape)
+        return self.auto_labeling_handoff.finish_auto_labeling_object()
 
     def shape_text_changed(self):
         description = self.shape_text_edit.toPlainText()

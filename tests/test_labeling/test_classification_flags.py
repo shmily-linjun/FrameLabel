@@ -20,6 +20,7 @@ from anylabeling.views.labeling.classifier.utils import (
     get_first_true_flag,
     load_flags_from_json,
 )
+from anylabeling.views.labeling.auto_labeling_handoff import AutoLabelingHandoff
 from anylabeling.views.labeling.label_widget import LabelingWidget
 from anylabeling.views.labeling.utils.batch import save_auto_labeling_result
 from anylabeling.views.labeling.widgets.classifier_dialog import (
@@ -95,8 +96,7 @@ class ClassificationFlagsTest(unittest.TestCase):
             widget.other_data["checked"]
         )
 
-        LabelingWidget.new_shapes_from_auto_labeling(
-            widget,
+        AutoLabelingHandoff(widget).new_shapes_from_auto_labeling(
             AutoLabelingResult(
                 [], replace=False, flags={"cat": False, "dog": True}
             ),
