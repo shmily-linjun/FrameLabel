@@ -5,7 +5,6 @@ import math
 import os
 import os.path as osp
 import re
-import shutil
 import zlib
 from typing import Optional
 from uuid import uuid4
@@ -43,6 +42,7 @@ from .operator import (  # noqa: F401
     OPERATOR_REQUIRED_ACTIONS,
     OperatorGate,
 )
+from .file_session import FileSession
 from .label_file import LabelFile, LabelFileError
 from .logger import logger
 from .schema import CHECKED_FIELD, IMAGE_TAGS_FIELD
@@ -54,18 +54,13 @@ from .settings.schema import (
     load_template_config,
 )
 from .shape import Shape
-from .utils.file_search import (
-    escape_query_value,
-    filter_image_files,
-    parse_search_query,
-)
+from .utils.file_search import escape_query_value
 from .utils.label_text import (
     format_label_list_text as _format_label_list_text,
     measure_text_width as _measure_text_width,
 )
 from .utils.qt import new_icon_path
 from .utils.theme import get_theme
-from .pointcloud.icons import get_icon
 from .widgets.attributes_panel import AttributesPanel
 from .widgets.label_list_widget import set_item_locked
 from .widgets.description_editor import DescriptionEditor
@@ -87,7 +82,6 @@ from .widgets import (
     ChatbotDialog,
     ClassifierDialog,
     VQADialog,
-    FileDialogPreview,
     PPOCRDialog,
     VideoClassifierDialog,
     ShapeModifyDialog,
@@ -3355,258 +3349,8 @@ class LabelingWidget(LabelDialog):
         if next_files:
             self.next_files_changed.emit(next_files)
 
-    def load_file(self, filename=None):  # noqa: C901
-        """Load the specified file, or the last opened file if None."""
-
-        self._cursor_position = None
-
-        # NOTE(jack): Does we need to save the config here?
-        # save_config(self._config)
-
-        # For auto labeling, clear the previous marks
-        # and inform the next files to be annotated
-        # NOTE(jack): this is not needed for now
-        # self.clear_auto_labeling_marks()
-        # self.inform_next_files(filename)
-
-        # Changing file_list_widget loads file
-        if str(filename) in self.fn_to_index and (
-            self.file_list_widget.currentRow()
-            != self.fn_to_index[str(filename)]
-        ):
-            self.file_list_widget.setCurrentRow(
-                self.fn_to_index[str(filename)]
-            )
-            self.file_list_widget.update()
-            return False
-
-        self.reset_state()
-        self.canvas.setEnabled(False)
-
-        if filename is None:
-            filename = self.settings.value("filename", "")
-        filename = str(filename)
-        if not QtCore.QFile.exists(filename):
-            self.error_message(
-                self.tr("Error opening file"),
-                self.tr("No such file: <b>%s</b>") % filename,
-            )
-            return False
-
-        # assumes same name, but json extension
-        label_file = osp.splitext(filename)[0] + ".json"
-        image_dir = None
-        if self.output_dir:
-            image_dir = osp.dirname(filename)
-            label_file_without_path = osp.basename(label_file)
-            label_file = self.output_dir + "/" + label_file_without_path
-
-        if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
-            label_file
-        ):
-            try:
-                self.label_file = LabelFile(
-                    label_file,
-                    image_dir,
-                    image_path=(
-                        None if LabelFile.is_label_file(filename) else filename
-                    ),
-                )
-            except LabelFileError as e:
-                self.error_message(
-                    self.tr("Error opening file"),
-                    self.tr(
-                        "<p><b>%s</b></p>"
-                        "<p>Make sure <i>%s</i> is a valid label file."
-                    )
-                    % (e, label_file),
-                )
-                self.status(self.tr("Error reading %s") % label_file)
-                return False
-            self.image_data = self.label_file.image_data
-            self.image_path = self.label_file.resolved_image_path
-            self.other_data = self.label_file.other_data
-            self.other_data[CHECKED_FIELD] = self._annotation_checked()
-            with QtCore.QSignalBlocker(self.shape_text_edit):
-                self.shape_text_edit.setPlainText(
-                    self.other_data.get("description", "")
-                )
-        else:
-            self.image_data = LabelFile.load_image_file(filename)
-            if self.image_data:
-                self.image_path = filename
-            self.label_file = None
-            self.other_data = {CHECKED_FIELD: False}
-            with QtCore.QSignalBlocker(self.shape_text_edit):
-                self.shape_text_edit.setPlainText("")
-        self.shape_text_label.setText(self.tr("Image Description"))
-        self.shape_text_edit.setDisabled(False)
-        self.canvas.relations = self.other_data.get("relations", [])
-        self.operator_gate.baseline = None
-
-        # TODO(jack): icc profile issue warning
-        # - qt.gui.icc: fromIccProfile: failed minimal tag size sanity
-        # - qt.gui.icc: fromIccProfile: invalid tag offset alignment
-        image = utils.img_data_to_qimage(self.image_data, filename)
-
-        if image.isNull():
-            formats = [
-                f"*{ext}" for ext in utils.get_supported_image_extensions()
-            ]
-            self.error_message(
-                self.tr("Error opening file"),
-                self.tr(
-                    "<p>Make sure <i>{0}</i> is a valid image file.<br/>"
-                    "Supported image formats: {1}</p>"
-                ).format(filename, ",".join(formats)),
-            )
-            self.status(self.tr("Error reading %s") % filename)
-            return False
-        self.image = image
-        self.filename = filename
-        has_image_tags = IMAGE_TAGS_FIELD in self.other_data
-        self.image_tags_widget.set_tags(
-            self.other_data.get(IMAGE_TAGS_FIELD, [])
-        )
-        self.image_tags_widget.set_interactions_enabled(
-            self._operator_edit_allowed()
-        )
-        if has_image_tags:
-            self._auto_show_image_tags()
-
-        if (
-            hasattr(self, "navigator_dialog")
-            and self.navigator_dialog.isVisible()
-        ):
-            self.navigator_dialog.set_image(QtGui.QPixmap.fromImage(image))
-            self.update_navigator_shapes()
-        if (
-            hasattr(self, "_should_restore_navigator")
-            and self._should_restore_navigator
-        ):
-            self._should_restore_navigator = False
-            if self.navigator_dialog.isVisible():
-                self.update_navigator_viewport()
-        if self._config["keep_prev"]:
-            prev_shapes = self.canvas.shapes
-        self.canvas.load_pixmap(QtGui.QPixmap.fromImage(image))
-
-        # load label flags
-        flags = {k: False for k in self.image_flags or []}
-        if self.label_file:
-            for shape in self.label_file.shapes:
-                default_flags = {}
-                if self._config["label_flags"]:
-                    for pattern, keys in self._config["label_flags"].items():
-                        if re.match(pattern, shape.label):
-                            for key in keys:
-                                default_flags[key] = False
-                    shape.flags = {
-                        **default_flags,
-                        **shape.flags,
-                    }
-            self.load_shapes(self.label_file.shapes, update_last_label=False)
-            self._restore_shape_locks()
-            self.image_tags_widget.refresh_colors()
-            if self.label_file.flags is not None:
-                flags.update(self.label_file.flags)
-        self.load_flags(flags)
-
-        # load shapes
-        if self._config["keep_prev"] and self.no_shape():
-            # Carrying shapes over from the previous image is not an operator
-            # edit: keep the attribution of the loaded file untouched.
-            self.operator_gate.suppress = True
-            try:
-                self.load_shapes(
-                    prev_shapes, replace=False, update_last_label=False
-                )
-                self.set_dirty()
-            finally:
-                self.operator_gate.suppress = False
-        else:
-            self.set_clean()
-        self.operator_gate.baseline = self._content_signature_now()
-        self._refresh_attribution_display()
-        self.canvas.setEnabled(True)
-
-        saved_pan = QtCore.QPointF(
-            self.pan_values.get(self.filename, QtCore.QPointF())
-        )
-        saved_scroll = {
-            orientation: values[self.filename]
-            for orientation, values in self.scroll_values.items()
-            if self.filename in values
-        }
-        # set zoom values
-        is_initial_load = not self.zoom_values
-        if self.filename in self.zoom_values:
-            self.zoom_mode = self.zoom_values[self.filename][0]
-            self.set_zoom(self.zoom_values[self.filename][1])
-        elif is_initial_load or not self._config["keep_prev_scale"]:
-            self.adjust_scale(initial=True)
-        # set scroll values
-        for orientation, value in saved_scroll.items():
-            self.set_scroll(orientation, value)
-        self.canvas.pan_offset = saved_pan
-        self.pan_values[self.filename] = QtCore.QPointF(saved_pan)
-        self.constrain_canvas_pan()
-
-        if (
-            not self.canvas_adjustment.opacity_pin.isChecked()
-            and self.recent_files
-            and self.recent_files[0] != self.filename
-        ):
-            self.canvas_adjustment.opacity_slider.setValue(
-                self.canvas_adjustment.OPACITY_DEFAULT
-            )
-
-        # set brightness contrast values
-        brightness, contrast = self.brightness_contrast_values.get(
-            self.filename, (None, None)
-        )
-        if self._config["keep_prev_brightness"] and self.recent_files:
-            brightness, _ = self.brightness_contrast_values.get(
-                self.recent_files[0], (None, None)
-            )
-        if self._config["keep_prev_contrast"] and self.recent_files:
-            _, contrast = self.brightness_contrast_values.get(
-                self.recent_files[0], (None, None)
-            )
-        self.brightness_contrast_values[self.filename] = (brightness, contrast)
-        # Always refresh the source image used by the inline adjustment panel.
-        self.brightness_contrast_processor.update_image(
-            utils.img_data_to_pil(self.image_data)
-        )
-        if brightness is not None or contrast is not None:
-            qimage = self.brightness_contrast_processor.adjust(
-                brightness if brightness is not None else 50,
-                contrast if contrast is not None else 50,
-            )
-            self.canvas.load_pixmap(
-                QtGui.QPixmap.fromImage(qimage), clear_shapes=False
-            )
-        # Sync the inline adjustment sliders (50 is the neutral value).
-        self.canvas_adjustment.set_brightness_contrast(
-            brightness if brightness is not None else 50,
-            contrast if contrast is not None else 50,
-        )
-
-        self.paint_canvas()
-        self.add_recent_file(self.filename)
-        self.toggle_actions(True)
-        self.canvas.setFocus()
-        self._sync_annotation_checked_state()
-        self.update_thumbnail_display()
-
-        # Reveal the adjustment panel now that an image is loaded.
-        self.canvas_adjustment.show()
-        self._position_canvas_adjustment()
-
-        if self.compare_view_manager.is_active():
-            self.compare_view_manager.load_compare_for_file(self.filename)
-
-        return True
+    def load_file(self, filename=None):
+        return FileSession(self).load_file(filename)
 
     # QT Overload
     def keyPressEvent(self, event):
@@ -3821,206 +3565,44 @@ class LabelingWidget(LabelDialog):
         self.import_dropped_image_files(items)
 
     def load_recent(self, filename):
-        if self.may_continue():
-            self.load_file(filename)
+        return FileSession(self).load_recent(filename)
 
     def load_recent_dir(self, dirpath):
-        self.import_image_folder(dirpath)
+        return FileSession(self).load_recent_dir(dirpath)
 
     def open_prev_unchecked_image(self):
-        if (
-            not self.may_continue()
-            or len(self.image_list) <= 0
-            or self.filename is None
-        ):
-            return
-
-        current_index = self.fn_to_index[str(self.filename)]
-        for i in range(current_index - 1, -1, -1):
-            if not self._file_item_annotation_checked(
-                self.file_list_widget.item(i)
-            ):
-                filename = self.image_list[i]
-                if filename:
-                    self.load_file(filename)
-                break
+        return FileSession(self).open_prev_unchecked_image()
 
     def open_next_unchecked_image(self, _value=False):
-        if (
-            not self.may_continue()
-            or len(self.image_list) <= 0
-            or self.filename is None
-        ):
-            return
-
-        current_index = self.fn_to_index[str(self.filename)]
-        for i in range(current_index + 1, len(self.image_list)):
-            if not self._file_item_annotation_checked(
-                self.file_list_widget.item(i)
-            ):
-                filename = self.image_list[i]
-                if filename:
-                    self.load_file(filename)
-                break
+        return FileSession(self).open_next_unchecked_image(_value)
 
     def open_prev_image(self, _value=False):
-        if not self.may_continue():
-            return
-        if self.file_list_widget.count() <= 0:
-            return
-        if self.filename is None:
-            return
-        current_index = self.fn_to_index[str(self.filename)]
-        if current_index - 1 >= 0:
-            filename = self._file_path_at(current_index - 1)
-            if filename:
-                self.load_file(filename)
+        return FileSession(self).open_prev_image(_value)
 
     def open_next_image(self, _value=False, load=True):
-        if not self.may_continue():
-            return
-        count = self.file_list_widget.count()
-        if count <= 0:
-            return
-        filename = None
-        if self.filename is None:
-            filename = self._file_path_at(0)
-        else:
-            current_index = self.fn_to_index[str(self.filename)]
-            if current_index + 1 < count:
-                filename = self._file_path_at(current_index + 1)
-            else:
-                filename = self._file_path_at(count - 1)
-        self.filename = filename
-        if self.filename and load:
-            self.load_file(self.filename)
+        return FileSession(self).open_next_image(_value, load)
 
     # File
     def open_file(self, _value=False):
-        if not self.may_continue():
-            return
-        path = osp.dirname(str(self.filename)) if self.filename else "."
-        formats = [f"*{ext}" for ext in utils.get_supported_image_extensions()]
-        filters = self.tr("Image & Label files (%s)") % " ".join(
-            formats + [f"*{LabelFile.suffix}"]
-        )
-        file_dialog = FileDialogPreview(self)
-        file_dialog.setFileMode(QtWidgets.QFileDialog.FileMode.ExistingFile)
-        file_dialog.setNameFilter(filters)
-        file_dialog.setWindowTitle(
-            self.tr("%s - Choose Image or Label file") % __appname__,
-        )
-        file_dialog.setWindowFilePath(path)
-        file_dialog.setViewMode(QtWidgets.QFileDialog.ViewMode.Detail)
-        if file_dialog.exec():
-            filename = file_dialog.selectedFiles()[0]
-            if filename:
-                self._clear_file_list()
-                self.load_file(filename)
+        return FileSession(self).open_file(_value)
 
     def change_output_dir_dialog(self, _value=False):
-        default_output_dir = self.output_dir
-        if default_output_dir is None and self.filename:
-            default_output_dir = osp.dirname(self.filename)
-        if default_output_dir is None:
-            default_output_dir = self.current_path()
-
-        output_dir = QtWidgets.QFileDialog.getExistingDirectory(
-            self,
-            self.tr("%s - Save/Load Annotations in Directory") % __appname__,
-            default_output_dir,
-            QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
-        )
-        output_dir = str(output_dir)
-
-        if not output_dir:
-            return
-
-        self.output_dir = output_dir
-
-        self.statusBar().showMessage(
-            self.tr("%s . Annotations will be saved/loaded in %s")
-            % ("Change Annotations Dir", self.output_dir)
-        )
-        self.statusBar().show()
-
-        current_filename = self.filename
-        self.import_image_folder(self.last_open_dir, load=False)
-
-        if current_filename in self.image_list:
-            # retain currently selected file
-            self.file_list_widget.setCurrentRow(
-                self.fn_to_index[str(current_filename)]
-            )
-            self.file_list_widget.repaint()
+        return FileSession(self).change_output_dir_dialog(_value)
 
     def save_file(self, _value=False):
-        assert not self.image.isNull(), "cannot save empty image"
-        if self.label_file:
-            # DL20180323 - overwrite when in directory
-            self._save_file(self.label_file.filename)
-        elif self.output_file:
-            self._save_file(self.output_file)
-            self.close()
-        else:
-            self._save_file(self.save_file_dialog())
+        return FileSession(self).save_file(_value)
 
     def save_file_as(self, _value=False):
-        assert not self.image.isNull(), "cannot save empty image"
-        self._save_file(self.save_file_dialog())
+        return FileSession(self).save_file_as(_value)
 
     def save_file_dialog(self):
-        caption = self.tr("%s - Choose File") % __appname__
-        filters = self.tr("Label files (*%s)") % LabelFile.suffix
-        if self.output_dir:
-            file_dialog = QtWidgets.QFileDialog(
-                self, caption, self.output_dir, filters
-            )
-        else:
-            file_dialog = QtWidgets.QFileDialog(
-                self, caption, self.current_path(), filters
-            )
-        file_dialog.setDefaultSuffix(LabelFile.suffix[1:])
-        file_dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave)
-        file_dialog.setOption(
-            QtWidgets.QFileDialog.Option.DontConfirmOverwrite, False
-        )
-        file_dialog.setOption(
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog, False
-        )
-        basename = osp.basename(osp.splitext(self.filename)[0])
-        if self.output_dir:
-            default_labelfile_name = osp.join(
-                self.output_dir, basename + LabelFile.suffix
-            )
-        else:
-            default_labelfile_name = osp.join(
-                self.current_path(), basename + LabelFile.suffix
-            )
-        filename = file_dialog.getSaveFileName(
-            self,
-            self.tr("Choose File"),
-            default_labelfile_name,
-            self.tr("Label files (*%s)") % LabelFile.suffix,
-        )
-        if isinstance(filename, tuple):
-            filename, _ = filename
-        return filename
+        return FileSession(self).save_file_dialog()
 
     def _save_file(self, filename):
-        if filename and self.save_labels(filename):
-            self.add_recent_file(filename)
-            self.set_clean()
+        return FileSession(self)._save_file(filename)
 
     def close_file(self, _value=False):
-        if not self.may_continue():
-            return
-        self.reset_state()
-        self.set_clean()
-        self.toggle_actions(False)
-        self.canvas.setEnabled(False)
-        self.actions.save_as.setEnabled(False)
+        return FileSession(self).close_file(_value)
 
     def toggle_compare_view(self):
         """Toggle the compare view on or off."""
@@ -4066,182 +3648,32 @@ class LabelingWidget(LabelDialog):
         self.compare_view_slider.hide_slider()
 
     def get_label_file(self):
-        if self.label_file:
-            return self.label_file.filename
-        base = self.image_path if self.image_path else self.filename
-        if base.lower().endswith(".json"):
-            return base
-        lf = osp.splitext(base)[0] + ".json"
-        if self.output_dir:
-            lf = osp.join(self.output_dir, osp.basename(lf))
-        return lf
+        return FileSession(self).get_label_file()
 
     def get_image_file(self):
-        if not self.filename.lower().endswith(".json"):
-            image_file = self.filename
-        else:
-            image_file = self.image_path
-
-        return image_file
+        return FileSession(self).get_image_file()
 
     def delete_file(self):
-        mb = QtWidgets.QMessageBox
-        if self._config.get("keep_prev", False):
-            mb.warning(
-                self,
-                self.tr("Attention"),
-                self.tr(
-                    "Please disable 'Keep Previous Annotation' before deleting the label file."
-                ),
-                mb.StandardButton.Ok,
-            )
-            return
-
-        msg = self.tr(
-            "You are about to permanently delete this label file, "
-            "proceed anyway?"
-        )
-        answer = mb.warning(
-            self,
-            self.tr("Attention"),
-            msg,
-            mb.StandardButton.Yes | mb.StandardButton.No,
-        )
-        if answer != mb.StandardButton.Yes:
-            return
-
-        label_file = self.get_label_file()
-        if osp.exists(label_file):
-            os.remove(label_file)
-            logger.info(f"Label file is removed: {label_file}")
-
-            item = self.file_list_widget.currentItem()
-            item.setCheckState(Qt.CheckState.Unchecked)
-            self._set_file_item_checked(item, False)
-
-            filename = self.filename
-            self.reset_state()
-            self.filename = filename
-            if self.filename:
-                self.load_file(self.filename)
+        return FileSession(self).delete_file()
 
     def delete_image_file(self):
-        if len(self.image_list) < 2:
-            return
-
-        mb = QtWidgets.QMessageBox
-        if self._config.get("keep_prev", False):
-            mb.warning(
-                self,
-                self.tr("Attention"),
-                self.tr(
-                    "Please disable 'Keep Previous Annotation' before deleting the image file."
-                ),
-                mb.StandardButton.Ok,
-            )
-            return
-
-        msg = self.tr(
-            "You are about to permanently delete this image file, "
-            "proceed anyway?"
-        )
-        answer = mb.warning(
-            self,
-            self.tr("Attention"),
-            msg,
-            mb.StandardButton.Yes | mb.StandardButton.No,
-        )
-        if answer != mb.StandardButton.Yes:
-            return
-
-        image_file = self.get_image_file()
-        if osp.exists(image_file):
-            image_path, image_name = osp.split(image_file)
-            save_path = osp.join(image_path, "..", "_delete_")
-            os.makedirs(save_path, exist_ok=True)
-            save_file = osp.join(save_path, image_name)
-            shutil.move(image_file, save_file)
-            logger.info(f"Image file is moved to: {osp.realpath(save_file)}")
-
-            label_dir_path = osp.dirname(self.filename)
-            if self.output_dir:
-                label_dir_path = self.output_dir
-            label_name = osp.splitext(image_name)[0] + ".json"
-            label_file = osp.join(label_dir_path, label_name)
-            if not osp.exists(label_file):
-                label_file = osp.join(osp.dirname(image_file), label_name)
-            if osp.exists(label_file):
-                os.remove(label_file)
-                logger.info(f"Label file is removed: {image_file}")
-
-            filename = None
-            if self.filename is None:
-                filename = self.image_list[0]
-            else:
-                current_index = self.fn_to_index[str(self.filename)]
-                if current_index + 1 < len(self.image_list):
-                    filename = self.image_list[current_index + 1]
-                else:
-                    filename = self.image_list[0]
-
-            self.reset_state()
-            if osp.isfile(image_path):
-                image_path = osp.dirname(image_path)
-            self.import_image_folder(image_path)
-
-            self.filename = filename
-            if self.filename:
-                self.load_file(self.filename)
+        return FileSession(self).delete_image_file()
 
     # Message Dialogs. #
     def has_labels(self):
-        if self.no_shape():
-            self.error_message(
-                "No objects labeled",
-                "You must label at least one object to save the file.",
-            )
-            return False
-        return True
+        return FileSession(self).has_labels()
 
     def has_label_file(self):
-        if self.filename is None:
-            return False
-
-        label_file = self.get_label_file()
-        return osp.exists(label_file)
+        return FileSession(self).has_label_file()
 
     def may_continue(self):
-        self.image_tags_widget.finish_for_image_change()
-        if not self.dirty:
-            return True
-        mb = QtWidgets.QMessageBox
-        msg = self.tr(
-            f'Save annotations to "{self.filename!r}" before closing?'
-        )
-        answer = mb.question(
-            self,
-            self.tr("Save annotations?"),
-            msg,
-            mb.StandardButton.Save
-            | mb.StandardButton.Discard
-            | mb.StandardButton.Cancel,
-            mb.StandardButton.Save,
-        )
-        if answer == mb.StandardButton.Discard:
-            return True
-        if answer == mb.StandardButton.Save:
-            self.save_file()
-            return not self.dirty
-        # answer == mb.Cancel
-        return False
+        return FileSession(self).may_continue()
 
     def error_message(self, title, message):
-        return QtWidgets.QMessageBox.critical(
-            self, title, f"<p><b>{title}</b></p>{message}"
-        )
+        return FileSession(self).error_message(title, message)
 
     def current_path(self):
-        return osp.dirname(str(self.filename)) if self.filename else "."
+        return FileSession(self).current_path()
 
     def toggle_visibility_shapes(self, value):
         for index, item in enumerate(self.label_list):
@@ -4310,135 +3742,24 @@ class LabelingWidget(LabelDialog):
         self.set_dirty()
 
     def import_files_dialog(self):
-        if not self.may_continue():
-            return
-        default_dir = self.last_open_dir
-        if not default_dir:
-            default_dir = (
-                osp.dirname(str(self.filename)) if self.filename else "."
-            )
-        formats = [
-            f"*{ext}" for ext in utils.get_supported_image_extensions()
-        ]
-        files, _selected_filter = QtWidgets.QFileDialog.getOpenFileNames(
-            self,
-            self.tr("%s - Import Files") % __appname__,
-            default_dir,
-            self.tr("Image files (%s)") % " ".join(formats),
-        )
-        files = [str(file) for file in files if file]
-        if files:
-            self.import_dropped_image_files(files)
+        return FileSession(self).import_files_dialog()
 
     def open_folder_dialog(self, _value=False, dirpath=None):
-        if not self.may_continue():
-            return
-
-        default_open_dir_path = dirpath if dirpath else "."
-        if self.last_open_dir and osp.exists(self.last_open_dir):
-            default_open_dir_path = self.last_open_dir
-        else:
-            default_open_dir_path = (
-                osp.dirname(self.filename) if self.filename else "."
-            )
-
-        target_dir_path = str(
-            QtWidgets.QFileDialog.getExistingDirectory(
-                self,
-                self.tr("%s - Open Directory") % __appname__,
-                default_open_dir_path,
-                QtWidgets.QFileDialog.Option.ShowDirsOnly
-                | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
-            )
-        )
-        self.import_image_folder(target_dir_path)
+        return FileSession(self).open_folder_dialog(_value, dirpath)
 
     @property
     def image_list(self):
-        return [
-            self._file_path_at(row)
-            for row in range(self.file_list_widget.rowCount())
-        ]
+        return FileSession(self).image_list
 
     def _clear_file_list(self):
         self.files.clear()
 
 
     def import_dropped_image_files(self, image_files):
-        extensions = utils.get_supported_image_extensions()
-
-        self.filename = None
-        valid_files = []
-        rows = []
-        for file in image_files:
-            if file in self.image_list or not file.lower().endswith(
-                tuple(extensions)
-            ):
-                continue
-            valid_files.append(file)
-            label_file = osp.splitext(file)[0] + ".json"
-            if self.output_dir:
-                label_file_without_path = osp.basename(label_file)
-                label_file = self.output_dir + "/" + label_file_without_path
-            rows.append((file, label_file))
-
-        self.files.update_import_times(valid_files)
-        for file, label_file in rows:
-            self.files.append_row(file, label_file)
-        self.file_list_widget.fill_name_column()
-
-        if len(self.image_list) > 1:
-            self.actions.open_next_image.setEnabled(True)
-            self.actions.open_prev_image.setEnabled(True)
-            self.actions.open_next_unchecked_image.setEnabled(True)
-            self.actions.open_prev_unchecked_image.setEnabled(True)
-
-        self.toggle_actions(True)
-        self.open_next_image()
-
-        if valid_files and self._config.get("exif_scan_enabled", True):
-            self.async_exif_scanner.start_scan(valid_files)
+        return FileSession(self).import_dropped_image_files(image_files)
 
     def import_image_folder(self, dirpath, pattern=None, load=True):
-        if not self.may_continue() or not dirpath:
-            return
-
-        if self.compare_view_manager.is_active():
-            self.close_compare_view(confirm=False)
-
-        self.last_open_dir = dirpath
-        self.filename = None
-        self.update_browse_actions()
-        self._clear_file_list()
-
-        files_on_disk = list(utils.scan_all_images(dirpath))
-        if pattern:
-            query = parse_search_query(pattern)
-            image_files = filter_image_files(
-                files_on_disk, query, self.output_dir
-            )
-        else:
-            image_files = files_on_disk
-
-        self.files.update_import_times(image_files)
-        for filename in image_files:
-            label_file = osp.splitext(filename)[0] + ".json"
-            if self.output_dir:
-                label_file_without_path = osp.basename(label_file)
-                label_file = self.output_dir + "/" + label_file_without_path
-            self.files.append_row(filename, label_file)
-        self.file_list_widget.fill_name_column()
-
-        self.actions.open_next_image.setEnabled(True)
-        self.actions.open_prev_image.setEnabled(True)
-        self.actions.open_next_unchecked_image.setEnabled(True)
-        self.actions.open_prev_unchecked_image.setEnabled(True)
-        self.toggle_actions(True)
-        self.open_next_image(load=load)
-
-        if image_files and self._config.get("exif_scan_enabled", True):
-            self.async_exif_scanner.start_scan(image_files)
-        self._refresh_statistics_if_visible()
+        return FileSession(self).import_image_folder(dirpath, pattern, load)
 
     # -- auto labeling handoff -------------------------------------------
     # The merge/finish rules live in ``auto_labeling_handoff.py``; the widget
