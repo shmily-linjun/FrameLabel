@@ -19,9 +19,14 @@ from anylabeling.services.identity.attribution import (
 from anylabeling.views.labeling.utils.style import (
     get_compact_button_style,
 )
+from anylabeling.views.labeling.utils.theme import get_theme
 
-_STATE_STYLE = "font-size: 12px; color: #6b6b6b; padding: 0px 4px;"
 _ATTRIBUTION_STYLE = "font-size: 12px; color: #8a8a8a; padding-right: 8px;"
+
+
+def _state_style(color, bold=False):
+    weight = "font-weight: 600;" if bold else ""
+    return f"font-size: 12px; color: {color}; padding: 0px 4px; {weight}"
 
 
 class OperatorBar(QWidget):
@@ -41,7 +46,6 @@ class OperatorBar(QWidget):
         layout.setSpacing(6)
 
         self.state_label = QLabel("")
-        self.state_label.setStyleSheet(_STATE_STYLE)
         layout.addWidget(self.state_label)
 
         self.login_button = QPushButton(self.tr("Login"))
@@ -69,16 +73,29 @@ class OperatorBar(QWidget):
         self.refresh()
 
     def refresh(self):
+        theme = get_theme()
         operator = self.service.session.operator
         if operator is None:
+            # Browse mode must be visible at a glance: the previous fixed gray
+            # was unreadable in the dark theme and users mistook the disabled
+            # tools for a bug.  Reuse the existing translated wording so no
+            # translation rebuild is needed for this fix.
             self.state_label.setText(self.tr("Not logged in"))
+            self.state_label.setStyleSheet(
+                _state_style(theme["warning_text"], bold=True)
+            )
             self.login_button.show()
             self.logout_button.hide()
             self.setToolTip(
                 self.tr("Browse mode - editing annotations requires login")
             )
         else:
-            self.state_label.setText(operator.name)
+            self.state_label.setText(
+                self.tr("Annotation mode: %s") % operator.name
+            )
+            self.state_label.setStyleSheet(
+                _state_style(theme["text_secondary"])
+            )
             self.login_button.hide()
             self.logout_button.show()
             self.setToolTip(self.tr("Annotation mode: %s") % operator.name)
@@ -96,7 +113,11 @@ class AttributionLabel(QLabel):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setStyleSheet(_ATTRIBUTION_STYLE)
+        self.setStyleSheet(
+            _ATTRIBUTION_STYLE.replace(
+                "#8a8a8a", get_theme()["text_secondary"]
+            )
+        )
         self.clear_attribution()
 
     def clear_attribution(self):

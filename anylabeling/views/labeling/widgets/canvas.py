@@ -198,6 +198,11 @@ class Canvas(
         self.snapping = True
         self.h_shape_is_selected = False
         self.h_shape_is_hovered = None
+        # Browse mode (no logged-in operator): selection and navigation stay
+        # available, but every gesture that would change annotation content is
+        # ignored here as well, so the canvas cannot be edited behind the
+        # disabled toolbar actions.
+        self._read_only = False
         self._selected_group_id = None
         self._hovered_group_id = None
         self.allowed_oop_shape_types = ["rotation", "quadrilateral", "cuboid"]
@@ -1658,6 +1663,27 @@ class Canvas(
         else:
             return self.tr("Unknown")
 
+    def set_read_only(self, enabled):
+        """Enable or disable annotation editing on the canvas.
+
+        Read-only keeps panning, zooming and selection (so objects can still be
+        inspected) while every gesture and helper that would modify a shape
+        returns early.  It is the canvas-level half of browse mode; the login
+        gate lives in :class:`LabelingWidget`.
+        """
+        self._read_only = bool(enabled)
+        if self._read_only:
+            self.is_move_editing = False
+            self.rotating_shape = False
+            self._rotation_drag_shape = None
+            self._vertex_erasing = False
+            self.cancel_drawing()
+            self.set_editing(True)
+        self.update()
+
+    def is_read_only(self):
+        return self._read_only
+
     def set_editing(self, value=True):
         """Set editing mode. Editing is set to False, user is drawing"""
         self.mode = self.EDIT if value else self.CREATE
@@ -1975,6 +2001,8 @@ class Canvas(
         self.grabMouse()
 
     def _update_rotation_handle_drag(self, pos, modifiers):
+        if self._read_only:
+            return
         shape = self._rotation_drag_shape
         if shape is None or shape.locked:
             return
@@ -2685,6 +2713,8 @@ class Canvas(
 
     def add_point_to_edge(self):
         """Add a point to current shape"""
+        if self._read_only:
+            return
         shape = self.prev_h_shape
         index = self.prev_h_edge
         point = self.prev_move_point
@@ -3382,6 +3412,11 @@ class Canvas(
     def mouseDoubleClickEvent(self, ev):  # noqa: C901
         """Mouse double click event"""
         if self.is_loading:
+            return
+        if self._read_only and ev.button() == QtCore.Qt.MouseButton.LeftButton:
+            # Double click is used for inserting/removing vertices and for
+            # editing labels and relations; all of them change content.
+            ev.accept()
             return
         if (
             self.editing()
@@ -4085,6 +4120,8 @@ class Canvas(
             self.adjust_cuboid_back_edge_center(shape, index, pos)
 
     def move_cuboid_face_by(self, shape, face_name, offset):
+        if self._read_only:
+            return
         if (
             shape.locked
             or shape.shape_type != "cuboid"
@@ -4152,6 +4189,8 @@ class Canvas(
 
     def bounded_move_vertex(self, pos):
         """Move a vertex. Adjust position to be bounded by pixmap border"""
+        if self._read_only:
+            return
         index, shape = self.h_vertex, self.h_shape
         if shape.locked:
             return
@@ -4205,6 +4244,8 @@ class Canvas(
 
     def bounded_move_shapes(self, shapes, pos):
         """Move shapes. Adjust position to be bounded by pixmap border"""
+        if self._read_only:
+            return False
         shapes = [shape for shape in shapes if not shape.locked]
         if not shapes:
             return False

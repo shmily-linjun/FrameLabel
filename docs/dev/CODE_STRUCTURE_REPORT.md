@@ -1,8 +1,8 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
-> 最近核对日期：2026-11-18（Asia/Shanghai）
-> 对应版本：4.3.2+fork.17
-> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批运行了主窗口工具栏停靠/滚动、文件表格与设置相关的定向 pytest，未运行全量测试。
+> 最近核对日期：2026-11-19（Asia/Shanghai）
+> 对应版本：4.3.2+fork.18
+> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批以离屏脚本验证浏览模式/右键菜单/主题禁用态（沙箱拒绝 pytest 临时目录提权，未跑成 pytest，详见 §16）。
 > 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4 已改变的结构以本文当前版本说明为准。
 > 行号锚点：`label_widget.py` 在 fork.4 中新增了身份/门禁相关代码，早前记录的行号会整体后移；定位时优先使用类名和方法名，行号仅作参考。
 
@@ -12,7 +12,7 @@
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
 | Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.17 的结构变化见 §5/§16，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.17，见 [app_info.py](../../anylabeling/app_info.py) |
+| 版本 | 4.3.2+fork.18，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
@@ -213,6 +213,25 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 - 设置窗口新增“工具栏”页（`SETTINGS_PRIMARY_ORDER` 中的 `Toolbar`）：显示/隐藏标签、全选、逐项显隐；写入 `toolbar/show_labels`、`toolbar/hidden_actions`，`populate_mode_actions()` 按索引过滤。
 - 导入入口复用 `import_files_dialog()`（追加）与 `open_folder_dialog()`（重建），右键菜单允许空列表使用。
 - 状态栏消息标签位于文档标签之前，临时提示不会把文档信息推到右侧或隐藏。
+
+### 5.9 浏览模式与登录守卫（fork.18）
+
+```text
+登录态：OperatorSession.is_logged_in
+        ├─ True  标注模式：tools 可用、画布可编辑、chip 显示操作员名
+        └─ False 浏览模式：13 个模式工具可点（点击弹登录）
+                          16 个内容修改动作禁用
+                          Canvas.set_read_only(True)：可缩放/平移/选中，不可改
+                          画布左上角 browse_mode_badge + 标题栏琥珀色 chip
+写保护：保存时 _prepare_attribution() → _ensure_operator() 仍会要求登录
+```
+
+- 动作集合拆分：`OPERATOR_MODE_ACTIONS`（`create_*`、`edit_mode`、`edit_brush_mode`）在浏览模式下保持可用，点击后由入口守卫弹出登录；`OPERATOR_REQUIRED_ACTIONS`（编辑标签、删除、复制/粘贴、撤销、关系、分组、管理器、批量运行）在浏览模式下禁用。
+- 入口守卫：`LabelingWidget._ensure_operator_for_edit()` 被 `toggle_draw_mode()`（创建类唯一入口，含数字快捷键、画笔、魔棒与自动标注交接）、`toggle_brush_mode()`、`_enter_edit_mode_from_toolbar()` 调用；取消登录时回退状态并在状态栏提示，不再静默失败。
+- 画布只读：`Canvas.set_read_only()` 置位后在 `bounded_move_shapes()`、`bounded_move_vertex()`、`move_cuboid_face_by()`、`_update_rotation_handle_drag()`、`add_point_to_edge()` 与 `mouseDoubleClickEvent()` 早退；缩放、平移、选中不受影响。
+- 状态提示：`OperatorBar` 未登录用 `warning` 色加粗显示；`LabelingWidget.browse_mode_badge`（视口左上角浮层，点击登录）在登录后隐藏，位置由 `_position_browse_mode_badge()` 跟随视口尺寸。
+- 主题禁用态：`DARK/LIGHT` 的 `text_disabled`（`#6e6e73` / `#a1a1a6`）用于 palette Disabled 组、`QMenu::item:disabled` 与 `QToolButton:disabled`；`warning_text`（`#FF9F0A` / `#8A5300`）用于浏览模式 chip 与画布浮层文字（浅色下琥珀色对比度不足，故分主题取值）；`utils.qt.with_disabled_variant()` 为图标生成 32% 不透明度的 Disabled 位图，`new_action()` 统一套用。
+- 画布右键菜单：`actions.canvas_menu`（16 项：筛选×2、检查状态、编辑标签、关系×2、锁定、复制坐标、合并、复制/粘贴/删除/撤销/撤销上一点/删点）取代原 29 项 `actions.menu`；工具模式项只保留在工具栏与“编辑”菜单。
 
 ## 6. 模块依赖图
 
@@ -644,7 +663,7 @@ model_manager.py:14
 | PPOCR | 项目中的 PaddleOCR 文档解析工作区，含自建服务和官方 API 两类路径 | [pipeline.py](../../anylabeling/views/labeling/ppocr/pipeline.py) |
 | `author` | XLABEL JSON 顶层归属字段，记录最后一次内容修改的操作员名；缺省与 `"none"` 都表示未记录 | [attribution.py](../../anylabeling/services/identity/attribution.py) |
 | `modified_at` | 与 `author` 配套的本机 ISO 8601 时间戳（含 UTC 偏移），不是可信时间源 | 同上 |
-| 浏览模式 / 标注模式 | 未登录/已登录两种会话状态；前者只读可训练评估，后者可编辑标注 | [operator_bar.py](../../anylabeling/views/labeling/widgets/operator_bar.py) |
+| 浏览模式 / 标注模式 | 未登录/已登录两种会话状态；前者画布只读（可缩放平移选中、不可改），后者可编辑标注 | [operator_bar.py](../../anylabeling/views/labeling/widgets/operator_bar.py)、[canvas.py](../../anylabeling/views/labeling/widgets/canvas.py) |
 
 ## 16. 覆盖声明
 
@@ -655,13 +674,14 @@ model_manager.py:14
 - fork.4 的本地操作员账号、会话与门禁、XLABEL `author`/`modified_at` 归属、批量自动标注盖章、四个语言的界面翻译；
 - fork.7 的无边框窗口模块（标题栏/菜单嵌入/窗口按钮/全屏/命中测试/主题）与主窗口接入、菜单显隐与全屏、`frameless` 启动配置与原生回退；
 - fork.17 的工具栏滚动窗格（`ToolsDock` + `ToolBarScrollArea`）、停靠方向与滚动条策略、分隔符移除与几何刷新；
+- fork.18 的浏览模式（画布只读、模式工具可点并引导登录、状态浮层）、主题禁用态与图标禁用变体、画布右键菜单精简；
 - 模块和核心类关系、跨线程/进程/网络边界、引用统计、维护路径、已知问题和风险；
 - 核心类表共 22 类：18 类进入总览图，fork.4 的 2 个身份类与 fork.7 的 2 个窗口类见 §5.6/§5.7；
 - 最终统计排除生成文件，依赖循环及扇入/扇出已按同一范围复核。
 
 ### 未覆盖及原因
 
-- 未运行应用、模型、训练、导出、更新或打包；本批在获授权的一次性环境中运行了工具栏停靠/滚动、主窗口状态、文件表格与设置相关的定向 pytest，未运行全量测试，不提供全量通过率、性能或实机结论；
+- 未运行应用、模型、训练、导出、更新或打包；本批以离屏脚本验证了浏览模式、登录守卫、右键菜单与主题禁用态，**未跑成 pytest**（沙箱拒绝 pytest 临时目录提权），不提供全量通过率、性能或实机结论；
 - 未逐行阅读全部模型算法、OpenGL/相机投影、PPOCR 富文本编辑器及第三方库，按计划只覆盖公共接口；
 - 动态注册、条件导入和实际导入顺序可能不完整；本批只复核受 fork 改动影响的模块，没有重新执行全项目逐行分析；
 - 本批发现主窗口描述、文件规模、核心类排名和链接位置已过时并已修正；README 和全部注释未逐项核对。
@@ -670,4 +690,4 @@ model_manager.py:14
 
 ---
 
-**文档自检：**核心类表 20 类中 18 类入图，fork.4 新增 2 类以 §5.6 链路说明代替重绘；各 Mermaid 图未改动并保持既有节点上限；所引项目文件均确认存在；未将低置信度推测写入事实段。本批改变了主窗口工具栏的承载与滚动方式（`ToolsDock` + `ToolBarScrollArea`），结构、行为、验证与风险章节已按实际代码更新。
+**文档自检：**核心类表 20 类中 18 类入图，fork.4 新增 2 类以 §5.6 链路说明代替重绘；各 Mermaid 图未改动并保持既有节点上限；所引项目文件均确认存在；未将低置信度推测写入事实段。本批改变了浏览模式语义（画布只读、模式工具可点并引导登录）、主题禁用态与画布右键菜单，§5.9、行为、验证与风险章节已按实际代码更新；pytest 未执行的原因已写入 §16。

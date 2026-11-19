@@ -82,6 +82,30 @@ def new_icon_path(icon, ext="png"):
     return f":/images/images/{icon}.{ext}"
 
 
+def with_disabled_variant(icon, opacity=0.32):
+    """Return ``icon`` carrying an explicitly dimmed Disabled pixmap.
+
+    Qt's own "grayed out" rendering is style dependent and, in the dark theme,
+    left toolbar icons almost as bright as the enabled ones.  Drawing the
+    disabled variant ourselves keeps icons and labels dimming together, which
+    is what tells the user that a tool is unavailable.
+    """
+    if icon is None or icon.isNull():
+        return icon
+    source = icon.pixmap(64, 64)
+    if source.isNull():
+        return icon
+    dimmed = QtGui.QPixmap(source.size())
+    dimmed.fill(Qt.GlobalColor.transparent)
+    painter = QtGui.QPainter(dimmed)
+    painter.setOpacity(opacity)
+    painter.drawPixmap(0, 0, source)
+    painter.end()
+    result = QtGui.QIcon(icon)
+    result.addPixmap(dimmed, QtGui.QIcon.Mode.Disabled)
+    return result
+
+
 def new_provider_icon(icon, ext="png", size=24):
     scale = 2
     pixmap = QtGui.QPixmap(size * scale, size * scale)
@@ -134,7 +158,7 @@ def new_action(
     action = QtGui.QAction(text, parent)
     if icon is not None:
         action.setIconText(text.replace(" ", "\n"))
-        action.setIcon(new_icon(icon))
+        action.setIcon(with_disabled_variant(new_icon(icon)))
     if shortcut is not None:
         if isinstance(shortcut, (list, tuple)):
             action.setShortcuts(shortcut)

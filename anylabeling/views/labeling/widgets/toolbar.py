@@ -130,6 +130,11 @@ class ToolBar(QtWidgets.QToolBar):
                 min-width: {min_width}px;
                 min-height: {min_height}px;
             }}
+            QToolBar QToolButton:disabled {{
+                color: {t["text_disabled"]};
+                background: transparent;
+                border: none;
+            }}
             QToolBar QToolButton:hover {{
                 border: 1px solid {t["border_light"]};
                 border-radius: 6px;

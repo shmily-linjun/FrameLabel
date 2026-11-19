@@ -23,11 +23,13 @@ LIGHT: Dict[str, str] = {
     "border_light": "#d2d2d7",
     "text": "#1d1d1f",
     "text_secondary": "#86868b",
+    "text_disabled": "#a1a1a6",
     "text_placeholder": "#718096",
     "highlight": "#60A5FA",
     "highlight_text": "#2196F3",
     "success": "#30D158",
     "warning": "#FF9F0A",
+    "warning_text": "#8A5300",
     "error": "#FF453A",
     "scrollbar": "#c1c1c1",
     "scrollbar_hover": "#a8a8a8",
@@ -53,11 +55,13 @@ DARK: Dict[str, str] = {
     "border_light": "#48484a",
     "text": "#f5f5f7",
     "text_secondary": "#aeaeb2",
+    "text_disabled": "#6e6e73",
     "text_placeholder": "#8e8e93",
     "highlight": "#409CFF",
     "highlight_text": "#409CFF",
     "success": "#30D158",
     "warning": "#FF9F0A",
+    "warning_text": "#FF9F0A",
     "error": "#FF453A",
     "scrollbar": "#48484a",
     "scrollbar_hover": "#636366",
@@ -294,7 +298,7 @@ def get_app_stylesheet() -> str:
             image: url(:/images/images/checkmark.svg);
         }}
         QMenu::item:disabled {{
-            color: {t["text_secondary"]};
+            color: {t["text_disabled"]};
         }}
         QMenu::separator {{
             height: 1px;
@@ -317,6 +321,9 @@ def get_app_stylesheet() -> str:
             background-color: transparent;
             border: none;
             border-radius: 4px;
+        }}
+        QToolButton:disabled {{
+            color: {t["text_disabled"]};
         }}
         QToolButton:hover {{
             background-color: {t["surface_hover"]};
@@ -684,7 +691,6 @@ def get_dark_palette() -> Optional[QPalette]:
     bg = QColor(t["background"])
     bg2 = QColor(t["background_secondary"])
     text = QColor(t["text"])
-    text2 = QColor(t["text_secondary"])
     surface = QColor(t["surface"])
     highlight = QColor(t["selection"])
     highlight_text = QColor(t["selection_text"])
@@ -718,12 +724,15 @@ def get_dark_palette() -> Optional[QPalette]:
         palette.setColor(group, QPalette.ColorRole.Dark, bg)
         palette.setColor(group, QPalette.ColorRole.Shadow, bg)
 
-    # Dim text in disabled state while keeping dark backgrounds
+    # Dim text in disabled state while keeping dark backgrounds.  This must be
+    # clearly fainter than normal text: ``text_secondary`` stays readable and
+    # made disabled tools look enabled in the dark theme.
+    disabled_text = QColor(t["text_disabled"])
     for role in (
         QPalette.ColorRole.WindowText,
         QPalette.ColorRole.Text,
         QPalette.ColorRole.ButtonText,
     ):
-        palette.setColor(QPalette.ColorGroup.Disabled, role, text2)
+        palette.setColor(QPalette.ColorGroup.Disabled, role, disabled_text)
 
     return palette

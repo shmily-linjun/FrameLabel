@@ -8,6 +8,69 @@
 
 ---
 
+## 4.3.2+fork.18 — 2026-11-19
+
+### 1. 背景与原因
+
+fork.17 后实测确认三个问题：
+
+- **暗色主题下可用/不可用工具几乎分不清**：禁用态文字用 `text_secondary`（`#aeaeb2`），与背景对比度 7.69:1，仍属"可读正文"；实测同一按钮只有 280/5671 像素不同，图标只从 `#f6f6f6` 淡到 `#d0d0d2`。反过来，提示"未登录"的 chip 用硬编码 `#6b6b6b`（对比度 3.19:1），几乎看不见——该暗的没暗、该亮的没亮。
+- **未登录时点击创建/编辑工具毫无反馈**：`setEnabled(False)` 让 Qt 不触发 `triggered`，快捷键同时失效，无提示、无 tooltip 说明。
+- **"浏览模式"名不副实**：`_apply_operator_gate()` 只锁按钮，画布仍可编辑。实测未登录时 `canvas.editing()` 为 `True`，`bounded_move_shapes()` 直接把矩形从 `(20,20),(120,120)` 移到 `(80,80),(180,180)`；真正的拦截点只有保存时弹登录，反馈错位。
+- **画布右键菜单 29 项中有 13 项是工具模式切换**（11 创建 + 编辑对象 + 编辑笔刷），与工具栏完全重复，占菜单 45% 篇幅。
+
+### 2. 修改与关键细节
+
+- **主题禁用态**：`LIGHT/DARK` 新增 `text_disabled`（`#a1a1a6` / `#6e6e73`，暗色对比度 3.36:1）；`get_dark_palette()` 的 Disabled 文字角色改用该色；应用 QSS 增加 `QToolButton:disabled`，`QMenu::item:disabled` 改为该色；`ToolBar._apply_style()` 增加 `QToolBar QToolButton:disabled`（悬停/背景不再出现）。
+- **图标禁用变体**：`utils/qt.py` 新增 `with_disabled_variant()`，按 32% 不透明度生成 `QIcon::Mode.Disabled` 位图，`new_action()` 统一套用；不再依赖 Qt 各平台差异很大的自动灰化。实测按钮文字由 `#f5f5f7` 变为 `#6e6e73`，平均墨色亮度 199.5 → 90.4。
+- **登录 chip 可读**：新增主题色 `warning_text`（浅色 `#8A5300`、深色 `#FF9F0A`）——琥珀色在浅色背景上做文字对比度不足；`OperatorBar` 状态文字改为主题色、未登录用 `warning_text` 加粗（原来固定 `#6b6b6b`）；沿用已翻译文案（`Not logged in` / `Annotation mode: %s`），无需重建翻译资源。
+- **浏览模式真正只读**：`Canvas` 新增 `set_read_only()/is_read_only()`，只读时拦截拖拽移动、顶点/边拖动、旋转手柄、长方体面拖动、双击加点/改标签、编辑笔刷；保留缩放、平移与选中，便于查看。`_apply_operator_gate()` 按登录状态切换。
+- **工具可点并引导登录**：`OPERATOR_REQUIRED_ACTIONS` 拆分为 `OPERATOR_MODE_ACTIONS`（13 个模式类，浏览模式下保持可用）与 `OPERATOR_REQUIRED_ACTIONS`（16 个内容修改类，浏览模式下禁用）。入口统一在 `toggle_draw_mode()`（覆盖工具栏/菜单/数字快捷键/自动标注交接）、`toggle_brush_mode()`、`_enter_edit_mode_from_toolbar()` 用 `_ensure_operator_for_edit()` 拦截：未登录弹登录框，登录成功自动继续，取消则回退并提示 `浏览模式 — 编辑标注需要先登录`。
+- **画布内常驻提示**：新增 `browse_mode_badge`（画布视口左上角浮层，警示色描边，可点击登录，登录后隐藏），不再只靠标题栏小字。
+- **右键菜单精简**：`actions.menu` 改为 `actions.canvas_menu`，从 29 项减到 16 项——删除 13 个工具模式项，保留筛选×2、检查状态、编辑标签、关系×2、锁定对象、复制坐标、合并选择、复制/粘贴/删除/撤销/撤销上一点/删点，并用分隔线分组。
+- **版本**：`4.3.2+fork.17` → `4.3.2+fork.18`。
+
+### 3. 涉及模块与文件
+
+- `anylabeling/views/labeling/utils/theme.py`（`text_disabled`、`warning_text`、Disabled 调色板、菜单/按钮禁用 QSS）；
+- `anylabeling/views/labeling/utils/qt.py`（`with_disabled_variant`，`new_action` 套用）；
+- `anylabeling/views/labeling/widgets/toolbar.py`（禁用态 QSS）；
+- `anylabeling/views/labeling/widgets/operator_bar.py`（主题化状态色）；
+- `anylabeling/views/labeling/widgets/canvas.py`（只读状态与手势拦截）；
+- `anylabeling/views/labeling/label_widget.py`（动作分组、登录守卫、浏览提示浮层、右键菜单）；
+- `tests/test_labeling/test_browse_mode.py`（新增）、`tests/test_labeling/test_operator_gate.py`（更新）；
+- 结构报告、中文用户手册、版本号。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本 `4.3.2+fork.17` → `4.3.2+fork.18`；无 QSettings 键、数据格式和 CLI 变化。
+- 用户可观察：
+  - 暗色下不可用工具明显变暗（文字与图标一起），未登录状态在画布左上角有琥珀色浮层，标题栏 chip 变琥珀色加粗；
+  - 未登录点击创建/编辑工具会弹出登录框，登录后直接进入该工具；取消则保持原状并在状态栏说明；
+  - 浏览模式画布只读：可缩放、平移、选中查看，但拖不动、改不了；
+  - 画布右键菜单从 29 项减为 16 项，不再重复工具栏的工具模式。
+- 代码接口：`Canvas.set_read_only()/is_read_only()` 新增；`LabelingWidget.OPERATOR_MODE_ACTIONS` 新增、`OPERATOR_REQUIRED_ACTIONS` 缩窄；`actions.menu` → `actions.canvas_menu`；`LabelingWidget._ensure_operator_for_edit()` 新增。
+
+### 5. 实际验证内容
+
+- 脚本化验证（`temporary/verify-browse/verify.py`，离屏真实 `MainWindow`）：
+  - 未登录：`canvas.is_read_only()==True`、13 个模式动作 `isEnabled()==True`、`delete` 为 `False`、浮层可见（370×34，左上角 12,12）、chip 文案与警示色正确；
+  - 取消登录：画布保持 `Editing`，状态栏显示"浏览模式 — 编辑标注需要先登录"；
+  - 只读拖拽：`bounded_move_shapes()` 返回 `False`，点位不变；
+  - 登录成功后：画布进入 `Drawing`、`delete` 恢复、浮层隐藏、拖拽生效；
+  - 右键菜单：16 项，13 个模式项全部消失，`Copy Object`/`Paste Object` 保留；
+  - 主题：启用文字 `#f5f5f7`（15.63:1）vs 禁用 `#6e6e73`（3.36:1），渲染墨色 199.5 → 90.4；
+  - `tests/test_labeling/test_browse_mode.py` 中 6 个不依赖 fixture 的用例逐个执行通过。
+- **未执行**：pytest 全量/定向回归——本机沙箱拒绝为 pytest 临时目录提权（命令被拒），因此没有跑成；`tests/test_labeling/test_browse_mode.py` 的 window fixture 用例与其余套件需要在有权限的环境补跑。
+- 未执行：真实 Windows 下目视暗色对比、浮层位置与中文文案（翻译 `.qm` 未重建，新增文案均复用已翻译字符串，故不受影响）。
+
+### 6. 已知限制与后续事项
+
+- 浏览模式下仍允许选中对象（便于查看属性），因此 `复制` 等只读操作可用；内容修改类命令禁用。
+- 浏览模式下自动标注单图推理仍可触发，写入时由保存守卫要求登录；如需完全禁止，应单独收口。
+- 浮层固定在画布左上角，窗口极窄时按视口宽度收窄；与缩放/导航器等浮层同层，未来新增左上角浮层需注意叠放顺序。
+- 未重建 `.qm`/`resources.py`：本次未新增界面文案，全部复用已有翻译。
+
 ## 4.3.2+fork.17 — 2026-11-18
 
 ### 1. 背景与原因

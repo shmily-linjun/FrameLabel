@@ -207,10 +207,11 @@ FILE_ROW_HEIGHT_COMPACT = 20
 FILE_PATH_ROLE = Qt.ItemDataRole.UserRole + 2
 FILE_SORT_ROLE = Qt.ItemDataRole.UserRole + 1
 
-#: Actions that change annotation content or image tags and therefore need a
-#: logged-in operator.  Register new editing actions here, otherwise the
-#: write-time guard would be the only thing catching them.
-OPERATOR_REQUIRED_ACTIONS = (
+#: Actions that switch the drawing/editing tool.  They stay clickable while
+#: nobody is logged in so a click can explain itself with a login prompt
+#: (the entry itself is guarded in ``toggle_draw_mode``/``toggle_brush_mode``);
+#: disabling them silently made browse mode look like a broken toolbar.
+OPERATOR_MODE_ACTIONS = (
     "create_mode",
     "create_brush_polygon_mode",
     "create_magic_wand_mode",
@@ -224,6 +225,12 @@ OPERATOR_REQUIRED_ACTIONS = (
     "create_line_strip_mode",
     "edit_mode",
     "edit_brush_mode",
+)
+
+#: Actions that change annotation content or image tags and therefore need a
+#: logged-in operator.  Register new editing actions here, otherwise the
+#: write-time guard would be the only thing catching them.
+OPERATOR_REQUIRED_ACTIONS = (
     "edit",
     "delete",
     "duplicate",
@@ -762,6 +769,23 @@ class LabelingWidget(LabelDialog):
         )
         # Hidden until an image is loaded (shown at the end of load_file).
         self.canvas_adjustment.hide()
+
+        # Browse-mode badge: a clickable reminder anchored to the canvas
+        # area itself.  Login state is otherwise only visible in window
+        # chrome, which users do not look at while annotating.
+        self.browse_mode_badge = QtWidgets.QPushButton(
+            scroll_area.viewport()
+        )
+        self.browse_mode_badge.setObjectName("BrowseModeBadge")
+        self.browse_mode_badge.setCursor(
+            Qt.CursorShape.PointingHandCursor
+        )
+        self.browse_mode_badge.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.browse_mode_badge.setToolTip(
+            self.tr("Browse mode - editing annotations requires login")
+        )
+        self.browse_mode_badge.clicked.connect(self.open_operator_login)
+        self.browse_mode_badge.hide()
         scroll_area.viewport().installEventFilter(self)
 
         self.scroll_bars = {
@@ -1235,7 +1259,7 @@ class LabelingWidget(LabelDialog):
         )
         edit_mode = action(
             self.tr("Edit Object"),
-            self.set_edit_mode,
+            self._enter_edit_mode_from_toolbar,
             shortcuts["edit_polygon"],
             "edit",
             self.tr("Move and edit the selected polygons"),
@@ -2326,22 +2350,12 @@ class LabelingWidget(LabelDialog):
                 use_system_clipboard,
                 visibility_shapes_mode,
             ),
-            # menu shown at right click
-            menu=(
-                create_mode,
-                create_brush_polygon_mode,
-                create_magic_wand_mode,
-                create_rectangle_mode,
-                create_cuboid_mode,
-                create_rotation_mode,
-                create_quadrilateral_mode,
-                create_circle_mode,
-                create_line_mode,
-                create_point_mode,
-                create_line_strip_mode,
-                None,
-                edit_mode,
-                edit_brush_mode,
+            # Menu shown at right click on the canvas.  Tool modes are not
+            # repeated here: they belong to the toolbar and the Edit menu.
+            # What stays is the contextual work on the object under the cursor
+            # (lock, label, relations, clipboard, undo) plus the view/status
+            # actions that exist only in this menu.
+            canvas_menu=(
                 edit,
                 create_relation,
                 manage_relations,
@@ -2608,7 +2622,7 @@ class LabelingWidget(LabelDialog):
         self.menus.file.aboutToShow.connect(self.update_file_menu)
 
         # Custom context menu for the canvas widget:
-        utils.add_actions(self.canvas.menus[0], self.actions.menu)
+        utils.add_actions(self.canvas.menus[0], self.actions.canvas_menu)
         utils.add_actions(
             self.canvas.menus[1],
             (
@@ -3646,7 +3660,7 @@ class LabelingWidget(LabelDialog):
 
     def populate_mode_actions(self):
         tool = self.actions.tool
-        menu = self.actions.menu
+        menu = self.actions.canvas_menu
         self.tools.clear()
         visible_tool = []
         for index, tool_action in enumerate(tool):
@@ -3742,27 +3756,35 @@ class LabelingWidget(LabelDialog):
         self._refresh_attribution_display()
 
     def _apply_operator_gate(self):
-        """Disable the annotation tools while nobody is logged in."""
+        """Apply browse mode (no operator) to the tools, canvas and chip.
+
+        Browse mode is a real read-only state: the command actions are
+        disabled, the canvas ignores editing gestures, and the mode tools stay
+        clickable so a click can ask for the login it needs.  Silently
+        disabling everything made the application look broken.
+        """
         if self._applying_operator_gate:
             return
         self._applying_operator_gate = True
         try:
             allowed = self._operator_edit_allowed()
-            if allowed and self.filename:
-                for name in OPERATOR_REQUIRED_ACTIONS:
-                    action = getattr(self.actions, name, None)
-                    if action is not None:
-                        action.setEnabled(True)
-            elif not allowed:
-                for name in OPERATOR_REQUIRED_ACTIONS:
-                    action = getattr(self.actions, name, None)
-                    if action is not None:
-                        action.setEnabled(False)
+            for name in OPERATOR_MODE_ACTIONS:
+                action = getattr(self.actions, name, None)
+                if action is not None:
+                    action.setEnabled(True)
+            for name in OPERATOR_REQUIRED_ACTIONS:
+                action = getattr(self.actions, name, None)
+                if action is not None:
+                    action.setEnabled(bool(allowed and self.filename))
+            canvas = getattr(self, "canvas", None)
+            if canvas is not None:
+                canvas.set_read_only(not allowed)
             tags_widget = getattr(self, "image_tags_widget", None)
             if tags_widget is not None:
                 tags_widget.set_interactions_enabled(
                     bool(allowed and self.image_path)
                 )
+            self._refresh_browse_mode_badge()
         finally:
             self._applying_operator_gate = False
 
@@ -3791,6 +3813,23 @@ class LabelingWidget(LabelDialog):
         if self._operator_edit_allowed():
             return True
         return self.open_operator_login()
+
+    def _ensure_operator_for_edit(self):
+        """Ask for a login before entering a tool that edits annotations.
+
+        Returns ``True`` when the action may continue.  A cancelled login
+        leaves everything untouched and says why in the status bar, so the
+        click is never silently swallowed.
+        """
+        if self._operator_edit_allowed():
+            return True
+        if self.open_operator_login():
+            return True
+        self._apply_operator_gate()
+        self.status(
+            self.tr("Browse mode - editing annotations requires login")
+        )
+        return False
 
     def _prepare_attribution(self, shapes, flags):
         """Stamp the author when the content really changed.
@@ -4689,6 +4728,11 @@ class LabelingWidget(LabelDialog):
         disable_auto_labeling=True,
         preserve_brush_mode=False,
     ):
+        if not edit and not self._ensure_operator_for_edit():
+            # Every "create ..." entry point (toolbar, menu, digit shortcut,
+            # auto-labeling hand-off) funnels through here, so a cancelled
+            # login stops before the canvas switches to a drawing mode.
+            return
         if not preserve_brush_mode:
             if getattr(self.canvas, "is_brush_mode", False):
                 self.canvas.cancel_brush_mode()
@@ -4789,13 +4833,18 @@ class LabelingWidget(LabelDialog):
         self.actions.create_magic_wand_mode.setEnabled(False)
 
     def set_edit_mode(self):
-        # Disable auto labeling
         self.clear_auto_labeling_marks()
         self.auto_labeling_widget.set_auto_labeling_mode(None)
 
         self.toggle_draw_mode(True)
         self.set_text_editing(True)
         self.update_labeling_instruction()
+
+    def _enter_edit_mode_from_toolbar(self):
+        """Toolbar/menu entry for "Edit Object": ask for a login first."""
+        if not self._ensure_operator_for_edit():
+            return
+        self.set_edit_mode()
 
     def toggle_brush_mode(self, checked: bool) -> None:
         """Enable or disable brush editing for a polygon.
@@ -4807,6 +4856,9 @@ class LabelingWidget(LabelDialog):
             checked: ``True`` when the toolbar toggle is switched on.
         """
         if checked:
+            if not self._ensure_operator_for_edit():
+                self.actions.edit_brush_mode.setChecked(False)
+                return
             selected_shapes = self.canvas.selected_shapes
             if (
                 len(selected_shapes) != 1
@@ -7701,6 +7753,52 @@ class LabelingWidget(LabelDialog):
             margin, max(0, viewport.height() - height - margin)
         )
         self.canvas_adjustment.raise_()
+        self._position_browse_mode_badge()
+
+    def _position_browse_mode_badge(self):
+        """Keep the browse-mode badge at the viewport's top-left."""
+        badge = getattr(self, "browse_mode_badge", None)
+        if badge is None:
+            return
+        viewport = self._canvas_scroll_area.viewport()
+        badge.adjustSize()
+        badge.move(12, 12)
+        if badge.isVisible():
+            badge.raise_()
+        self._ensure_badge_fits(viewport, badge)
+
+    def _ensure_badge_fits(self, viewport, badge):
+        max_width = max(120, viewport.width() - 24)
+        if badge.width() > max_width:
+            badge.setFixedWidth(max_width)
+
+    def _refresh_browse_mode_badge(self):
+        """Show or hide the browse-mode badge and refresh its wording."""
+        badge = getattr(self, "browse_mode_badge", None)
+        if badge is None:
+            return
+        theme = get_theme()
+        if self._operator_edit_allowed():
+            badge.hide()
+            return
+        badge.setMaximumWidth(16777215)  # QWIDGETSIZE_MAX: let it re-measure
+        badge.setText(self.tr("Login to edit annotations"))
+        badge.setStyleSheet(
+            f"QPushButton#BrowseModeBadge {{"
+            f" background: {theme['background_secondary']};"
+            f" color: {theme['warning_text']};"
+            f" border: 1px solid {theme['warning_text']};"
+            f" border-radius: 12px;"
+            f" padding: 4px 10px;"
+            f" font-size: 12px;"
+            f" font-weight: 600;"
+            f" }}"
+            f"QPushButton#BrowseModeBadge:hover {{"
+            f" background: {theme['surface_hover']};"
+            f" }}"
+        )
+        badge.show()
+        self._position_browse_mode_badge()
 
     def eventFilter(self, obj, event):
         if obj is getattr(

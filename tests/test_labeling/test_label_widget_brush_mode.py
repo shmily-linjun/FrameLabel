@@ -200,6 +200,7 @@ class TestLabelWidgetBrushMode(unittest.TestCase):
             set_text_editing=Mock(),
             hide_attributes_panel=Mock(),
             update_labeling_instruction=Mock(),
+            _ensure_operator_for_edit=Mock(return_value=True),
         )
 
         LabelingWidget.toggle_draw_mode(
