@@ -49,7 +49,66 @@ fork.18 后用户报告两件事：
 
 - 孤儿兜底只覆盖 `AUTOLABEL_OBJECT`；`AUTOLABEL_ADD/REMOVE` 标记仍按自动标注会话生命周期清理。
 - `end_move(copy=True)`（另一处直接改 `canvas.shapes` 的路径）仍假定由调用方补建对象行，本次未改动，已记入结构报告维护提示。
-- `label_widget.py` 上帝类问题登记为 `docs/开始.md` T8，分阶段处理，不在本批执行。
+- `label_widget.py` 上帝类问题登记为 `docs/开始.md` T8，分阶段处理；落地情况见下方第 7 节。
+
+### 7. 重构（不升版）：T8 拆分 `label_widget.py` 上帝类
+
+#### 7.1 背景与原因
+
+`label_widget.py` 已达 9507 行，`LabelingWidget` 单类约 9118 行、321 个方法，其中 `__init__` 一个函数就占 2816 行：窗口装配、约 150 个 QAction 定义、菜单、工具栏、画布视图、右侧栏、文件列表、操作员门禁、自动标注交接全部挤在同一文件里。任何小改动都要在一万行上下文中定位，静态检查、测试隔离和多人协作都被拖慢；`docs/开始.md` 已登记为 T8。
+
+#### 7.2 修改与关键细节
+
+本次按职责拆分，全部为**代码搬移 + 显式依赖**，不改变运行时行为：
+
+- **动作表与菜单** → `labeling/actions/`
+  - `builder.py`：`build_actions(host)` 创建全部 QAction（原 `__init__` 第 855–2157 行的动作定义、`self.actions = utils.Struct(...)`、数字快捷键注册、`actions.tool` 工具条元组），返回动作登记表；菜单专用动作（`about`/`documentation`/`fill_drawing`/`open_settings`/`save_crop`/`select_lang_*`/`shape_converter`/`sponsor`/`ultralytics_train`/`theme_mode_actions`）一并挂到该表，供菜单构建复用。
+  - `menus.py`：`build_menus(host)` 创建顶层菜单与 `utils.add_actions` 装配，使用 `host.actions` 而不是 `__init__` 的局部变量。
+  - `LABEL_OPACITY` 迁到 `labeling/constants.py`（动作 lambda 与 `add_label` 等共用）。
+- **工作区布局装配** → `labeling/widgets/workspace.py`
+  - `build_canvas_view(host)`（画布 + 比较视图 + 滚动区 + 画布调节浮层 + 浏览模式浮层 + 滚动条 + 图像标签条，返回滚动区）、
+  - `build_instruction_bar(host)`（指令标签、自动标注面板及其信号、面板显隐按钮、设置/快捷键/更新按钮、显示模式动作）、
+  - `build_operator_bar(host)`（操作员 chip、归属标签、会话订阅）、
+  - `build_workspace(host, scroll_area, instruction_layout)`（中央布局、右侧标签页/统计/文件面板、两层拆分器与宽度策略）、
+  - `restore_session_state(host, ...)`（应用状态、QSettings 恢复、首个文件排队加载、快捷键映射）。
+- **文件列表** → `labeling/file_list/`
+  - `constants.py`（列号/列宽/行高/排序角色/状态色）、`table.py`（`FileTableWidget`/`FileTableItem`/`FileNameDelegate` + 状态图标）、`controller.py`（`FileListController`：行构建、按列排序、列宽持久化、缩略图、划分设置、右键菜单、选中同步、`fn_to_index`）。
+  - `LabelingWidget` 保留 `fn_to_index` 属性与 `sort_file_list_by_column`/`set_file_column_visible`/`set_file_thumbnails_visible`/`set_file_split`/`remove_file_from_list`/`_clear_file_list` 等薄委托，既有调用方与测试入口不变。
+- **操作员门禁与归属** → `labeling/operator/gate.py`
+  - `OperatorGate`：浏览模式开关（动作启用/禁用、画布只读、标签控件交互、浮层刷新）、登录/登出/编辑前登录守卫、内容签名与 `author`/`modified_at` 盖章判据、`suppress` 与 `baseline` 状态；`OPERATOR_MODE_ACTIONS`/`OPERATOR_REQUIRED_ACTIONS` 随策略迁移，原模块再导出以保留测试与外部引用。
+- **自动标注交接** → `labeling/auto_labeling_handoff.py`
+  - `AutoLabelingHandoff`：过期结果过滤、替换/追加合并、关系/描述/flags/tags 回写、占位对象清理与“完成对象”补行兜底；`LabelingWidget` 保留同名薄委托（`new_shapes_from_auto_labeling` 等仍是信号目标）。
+- **其他搬移**：拆分器 handle → `widgets/splitters.py`；`_measure_text_width`/`_format_label_list_text` → `utils/label_text.py`；`CHECKED_FIELD` → `schema.py`；`LabelingWidget.__init__` 从 2816 行降到 238 行。
+- **版本**：纯内部重构，无用户可观察行为、配置键、数据格式、CLI 或模型契约变化，按 `docs/开始.md` §八.3 不升 fork 版本号，仍为 `4.3.2+fork.19`。
+
+#### 7.3 涉及模块与文件
+
+- 新增：`anylabeling/views/labeling/actions/{__init__,builder,menus}.py`、`file_list/{__init__,constants,table,controller}.py`、`operator/{__init__,gate}.py`、`auto_labeling_handoff.py`、`constants.py`、`widgets/workspace.py`、`widgets/splitters.py`、`utils/label_text.py`；
+- 修改：`anylabeling/views/labeling/label_widget.py`（9507 → 5727 行，`LabelingWidget` 9118 → 5592 行、321 → 299 个方法）、`anylabeling/views/labeling/schema.py`（`CHECKED_FIELD`）；
+- 测试：`tests/test_labeling/test_file_table.py`、`test_label_widget_metrics.py`（改从新模块导入列常量、图标函数）、`test_operator_gate.py`（改为直接驱动 `OperatorGate`）、`test_image_tags.py`、`test_classification_flags.py`（改为直接驱动 `AutoLabelingHandoff`）；
+- 文档：`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`（T8 状态）。
+
+#### 7.4 行为、接口与兼容性影响
+
+- 用户可观察：无变化（菜单/工具栏/文件表/右侧栏/浏览模式/保存归属均保持原样；窗口结构快照逐项比对一致）。
+- 代码接口：`from anylabeling.views.labeling.label_widget import FileTableWidget/FileTableItem/_create_file_status_icon/_measure_text_width/_format_label_list_text/LABEL_OPACITY` 不再可用，应分别从 `file_list`、`utils.label_text`、`constants` 导入；`OPERATOR_MODE_ACTIONS`/`OPERATOR_REQUIRED_ACTIONS` 仍在 `label_widget` 再导出。`LabelingWidget` 的公开/既有测试方法名保持不变。
+- 新增服务类：`FileListController`、`OperatorGate`、`AutoLabelingHandoff`，以及 `actions.builder.build_actions`、`actions.menus.build_menus`、`widgets.workspace.*` 构建函数。
+
+#### 7.5 实际验证内容
+
+- 基线对比：在独立工作树（`git worktree`，HEAD `104ada3`）与重构后分别跑 `tests/test_labeling`，结果均为 **214 passed / 6 failed / 51 subtests passed**，失败集合逐条相同，均为重构前已存在、与本任务无关的用例（详见结构报告 §13）。
+- 定向回归：`tests/test_labeling/test_file_table.py`、`test_browse_mode.py`、`test_operator_gate.py`、`test_image_tags.py`、`test_classification_flags.py`、`test_auto_labeling_finish.py`、`test_relations.py`、`test_label_file_author.py` 全部通过（除上述预存在失败）。
+- 离屏真实 `MainWindow` 冒烟（`temporary/t8-analysis/smoke.py`）：建窗、导入 3 图文件夹、排序、划分写入、加载含 3 个图形的标注、勾选状态、缩略图开关、列显隐、`populate_mode_actions()` 全链路通过。
+- 结构快照对比（`temporary/t8-analysis/snapshot.py`）：对基线树与重构后的窗口各导出一份控件树/动作表/菜单/工具栏/右侧标签/文件表列/拆分器/状态快照，差异仅为 `actions` 上新增的菜单专用动作条目与 canvas 对象地址，其余完全一致。
+- 静态检查：自写 `symtable` 脚本核对各模块“函数引用了但模块内未定义”的全局名，`label_widget.py` 与全部新增模块均为 0 问题。
+- **未执行**：真实桌面实机交互、打包/发布验证、全量 pytest（见下条环境限制）。
+- **环境限制（需记录）**：本机 DSH Windows 沙箱下 pytest 会以 `mode=0o700` 创建 `temporary/runs/...` 临时目录，受限令牌无法列举该目录，表现为 `PermissionError [WinError 5]`/无输出退出（fork.17/18/19 均因此未跑成 pytest）。本次在本地测试运行时通过 `PYTHONPATH` 注入一个仅存在于 `temporary/` 的 `sitecustomize.py`（把 `os.mkdir` 的 mode 放宽为 0o777）绕开该限制，未修改仓库代码与 `tests/conftest.py`；此外部分测试文件在进程退出阶段会让解释器以 `0xC0000409` 结束（基线与重构后同样出现），因此全量套件改为按测试包分批执行并与基线逐包对比。
+
+#### 7.6 已知限制与后续事项
+
+- `LabelingWidget` 仍约 5592 行、299 个方法，剩余职责主要是标注数据编排（`add_label`/`load_shapes`/`save_labels`/`new_shape`）、属性面板（`update_attributes` 348 行）和缩放/导航；这些与画布、列表、标签对话框共享大量状态，本批未强拆，避免把耦合从“类内”变成“跨模块回环”。
+- 其它上帝类（本次仅指出、未处理）：`Canvas`（6269 行/216 方法）、`PPOCRTableBlockEditor`（1418 行/68 方法）、`PointCloudDialog`（3085 行/122 方法）、`VideoClassifierDialog`（2402 行/121 方法）、`UltralyticsDialog`（2473 行/78 方法，`init_train_settings` 393 行）、`PPOCRDialog`（2282 行/101 方法）、`ChatbotDialog`（2567 行、`__init__` 805 行）、`SettingsDialog`（2262 行/87 方法）、`LabelConverter`（2337 行/42 方法）、`ClassifierDialog`（1824 行/63 方法）、`AutoLabelingWidget`（1856 行/75 方法）。
+- 拆分后需要维护的契约：`FileListController`/`OperatorGate`/`AutoLabelingHandoff` 的 host 属性表（各模块 docstring 已列出）；`actions.builder` 新增编辑类动作时必须同步 `OperatorGate` 的 `OPERATOR_REQUIRED_ACTIONS`。
 
 ---
 

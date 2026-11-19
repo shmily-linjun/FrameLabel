@@ -18,18 +18,14 @@ from PyQt6.QtGui import QFontMetrics
 from PyQt6.QtWidgets import (
     QButtonGroup,
     QComboBox,
-    QFrame,
     QGridLayout,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QMessageBox,
-    QPushButton,
     QRadioButton,
-    QScrollArea,
-    QTabWidget,
     QVBoxLayout,
     QWidget,
-    QLineEdit,
 )
 
 from anylabeling.services.auto_labeling.types import AutoLabelingMode
@@ -37,40 +33,30 @@ from anylabeling.services.auto_labeling import _THUMBNAIL_RENDER_MODELS
 from anylabeling.services.identity import get_operator_service
 from anylabeling.views.training import UltralyticsDialog
 
-from ...app_info import (
-    __appname__,
-    __version__,
-    __preferred_device__,
-)
+from ...app_info import __appname__
 from . import utils
 from .utils.qt import apply_application_font
 from .utils.style import (
     get_cancel_btn_style,
     get_dialog_style,
     get_ok_btn_style,
-    get_scrollbar_style,
-    get_tab_widget_style,
 )
 from ...config import get_config, save_config
 from .actions.builder import build_actions
-from .auto_labeling_handoff import AutoLabelingHandoff
 from .actions.menus import build_menus
+from .auto_labeling_handoff import AutoLabelingHandoff
 from .constants import LABEL_OPACITY
-from .operator import (
+from .file_list import FileListController
+from .file_list.constants import FILE_COL_NAME
+from .operator import (  # noqa: F401
     OPERATOR_MODE_ACTIONS,
     OPERATOR_REQUIRED_ACTIONS,
     OperatorGate,
 )
-from .file_list import FileListController
-from .file_list.constants import (
-    FILE_COL_NAME,
-    FILE_COL_NAME_WIDTH,
-    FILE_COLUMN_WIDTHS,
-)
 from .label_file import LabelFile, LabelFileError
 from .logger import logger
 from .schema import CHECKED_FIELD, IMAGE_TAGS_FIELD
-from .settings import SettingsController, SettingsDialog
+from .settings import SettingsDialog
 from .settings.runtime_applier import SettingsRuntimeApplier
 from .settings.schema import (
     SETTINGS_SHORTCUT_SECTIONS,
@@ -91,14 +77,11 @@ from .utils.qt import new_icon_path
 from .utils.theme import get_theme
 from .pointcloud.icons import get_icon
 from .widgets.description_editor import DescriptionEditor
-from .widgets.splitters import RightSplitter, SidebarSplitter
 from .widgets.relation_dialog import (
     RelationDialog,
     RelationManagerDialog,
     show_relation_message,
 )
-from .widgets.panel import HoverScrollBars, RoundedPanel
-from .widgets.statistics_table import StatisticsTable
 from .widgets.workspace import (
     build_canvas_view,
     build_instruction_bar,
@@ -108,21 +91,15 @@ from .widgets.workspace import (
 )
 from .widgets import (
     AboutDialog,
-    AutoLabelingWidget,
     BrightnessContrastProcessor,
-    Canvas,
-    CanvasAdjustmentWidget,
     ChatbotDialog,
     ClassifierDialog,
-    CompareViewManager,
-    CompareViewSlider,
     VQADialog,
     FileDialogPreview,
     PPOCRDialog,
     VideoClassifierDialog,
     ShapeModifyDialog,
     GroupIDFilterComboBox,
-    ImageTagsWidget,
     LabelDialog,
     LabelFilterComboBox,
     LabelListWidget,
@@ -130,8 +107,6 @@ from .widgets import (
     DigitShortcutDialog,
     LabelModifyDialog,
     GroupIDModifyDialog,
-    AttributionLabel,
-    OperatorBar,
     OverviewDialog,
     Popup,
     SearchBar,
@@ -142,10 +117,6 @@ from .widgets import (
 )
 
 LABEL_COLORMAP = utils.label_colormap()
-CHECKED_FIELD = "checked"
-FILE_CHECKED_COLOR = "#22A06B"
-FILE_FAILED_COLOR = "#DE350B"
-FILE_UNCHECKED_COLOR = "#8C98A4"
 CHECKED_FIELD_PATTERN = re.compile(r'"checked"\s*:\s*(true|false|"failed")')
 
 
@@ -160,9 +131,6 @@ def _find_next_label_loop_shape(shapes, start_index, canvas_shapes):
         if id(shape) in canvas_shape_ids:
             return index, shape
     return len(shapes), None
-
-
-
 
 
 class LabelingWidget(LabelDialog):

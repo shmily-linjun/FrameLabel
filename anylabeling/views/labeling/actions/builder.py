@@ -21,7 +21,7 @@ from ..pointcloud.icons import get_icon
 from ..utils.theme import get_theme
 
 
-def build_actions(host):
+def build_actions(host):  # noqa: C901
     """Create and return the action registry of the labeling window."""
     action = functools.partial(utils.new_action, host)
     shortcuts = host._config["shortcuts"]

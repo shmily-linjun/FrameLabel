@@ -20,7 +20,6 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QScrollArea,
-    QSplitter,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -42,7 +41,6 @@ from ..widgets import (
     CompareViewSlider,
     ImageTagsWidget,
     OperatorBar,
-    SearchBar,
 )
 from ..widgets.panel import HoverScrollBars, RoundedPanel
 from ..widgets.statistics_table import StatisticsTable
@@ -312,21 +310,21 @@ def build_instruction_bar(host):
     instruction_layout.setSpacing(2)
     theme = get_theme()
     toggle_style = f"""
-        QToolButton {{
-            background-color: transparent;
-            border: 1px solid transparent;
-            color: {theme["text"]};
-            padding: 3px;
-            border-radius: 4px;
-        }}
-        QToolButton:hover:enabled {{
-            background-color: {theme["surface_hover"]};
-            border-color: {theme["border"]};
-        }}
-        QToolButton:pressed:enabled {{
-            background-color: {theme["surface_pressed"]};
-            border-color: {theme["border"]};
-        }}
+            QToolButton {{
+                background-color: transparent;
+                border: 1px solid transparent;
+                color: {theme["text"]};
+                padding: 3px;
+                border-radius: 4px;
+            }}
+            QToolButton:hover:enabled {{
+                background-color: {theme["surface_hover"]};
+                border-color: {theme["border"]};
+            }}
+            QToolButton:pressed:enabled {{
+                background-color: {theme["surface_pressed"]};
+                border-color: {theme["border"]};
+            }}
     """
     host.sidebar_toggle_button = QtWidgets.QToolButton()
     host._configure_toggle_button(
@@ -579,16 +577,16 @@ def build_workspace(host, scroll_area, instruction_layout):
     files_panel_layout.setContentsMargins(0, 0, 0, 0)
     files_panel_layout.setSpacing(0)
     host.file_search.setStyleSheet(host.file_search.styleSheet() + f"""
-        QLineEdit {{
-            background-color: {theme["surface"]};
-            border: none;
-            border-bottom: 1px solid {theme["border"]};
-            border-radius: 0;
-        }}
-        QLineEdit:focus {{
-            border: none;
-            border-bottom: 1px solid {theme["border"]};
-        }}
+            QLineEdit {{
+                background-color: {theme["surface"]};
+                border: none;
+                border-bottom: 1px solid {theme["border"]};
+                border-radius: 0;
+            }}
+            QLineEdit:focus {{
+                border: none;
+                border-bottom: 1px solid {theme["border"]};
+            }}
     """)
     host.file_search.setTextMargins(4, 0, 4, 0)
     host.import_button = QtWidgets.QToolButton(host)
