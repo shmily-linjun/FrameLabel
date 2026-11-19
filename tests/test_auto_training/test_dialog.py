@@ -166,7 +166,7 @@ def test_training_window_is_modeless_and_reused(monkeypatch):
             actions.append("activated")
 
     monkeypatch.setattr(
-        "anylabeling.views.labeling.label_widget.UltralyticsDialog",
+        "anylabeling.views.labeling.special_workspaces.UltralyticsDialog",
         TrainingDialog,
     )
     widget = SimpleNamespace(

@@ -58,7 +58,7 @@ class ClassifierWindowLifecycleTest(unittest.TestCase):
 
     def test_constructor_failure_keeps_main_window_visible(self):
         with mock.patch(
-            "anylabeling.views.labeling.label_widget.ClassifierDialog",
+            "anylabeling.views.labeling.special_workspaces.ClassifierDialog",
             side_effect=RuntimeError("initialization failed"),
         ):
             with self.assertRaisesRegex(RuntimeError, "initialization failed"):

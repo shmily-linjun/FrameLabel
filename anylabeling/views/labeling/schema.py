@@ -1,3 +1,4 @@
+import re
 from typing import Any, Dict, List, Optional, Union
 
 from anylabeling.app_info import __version__
@@ -17,6 +18,11 @@ IMAGE_TAGS_FIELD = "tags"
 
 #: Review status of an image: ``True``/``False`` or the string ``"failed"``.
 CHECKED_FIELD = "checked"
+
+#: Cheap JSON scan for the checked field (used before full parsing).
+CHECKED_FIELD_PATTERN = re.compile(
+    r'"checked"\s*:\s*(true|false|"failed")'
+)
 
 
 def create_xlabel_template(

@@ -1,75 +1,72 @@
 import functools
-import html
-import json
 import math
 import os
 import os.path as osp
-import re
-import zlib
 from typing import Optional
-from uuid import uuid4
 
-import cv2
-import numpy as np
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, pyqtSlot
-from PyQt6.QtWidgets import QLabel, QLineEdit, QMessageBox
+from PyQt6.QtWidgets import QLabel, QLineEdit
 
 from anylabeling.services.auto_labeling.types import AutoLabelingMode
 from anylabeling.services.auto_labeling import _THUMBNAIL_RENDER_MODELS
 from anylabeling.services.identity import get_operator_service
-from anylabeling.views.training import UltralyticsDialog
 
-from ...app_info import __appname__
-from . import utils
-from .utils.qt import apply_application_font
-from .utils.style import (
-    get_cancel_btn_style,
-    get_dialog_style,
-    get_ok_btn_style,
-)
 from ...config import get_config, save_config
+from . import utils
 from .actions.builder import build_actions
 from .actions.menus import build_menus
 from .actions.toolbar import ToolbarPolicy
+from .appearance import AppearanceController
 from .auto_labeling_handoff import AutoLabelingHandoff
 from .canvas_navigation import CanvasNavigation
 from .constants import LABEL_OPACITY
+from .draw_modes import DrawModeController
 from .file_list import FileListController
-from .file_list.constants import FILE_COL_NAME
+from .file_session import FileSession
+from .label_filters import LabelFilterController
+from .label_file import LabelFile, LabelFileError
+from .label_loop import LabelLoop
+from .label_loop import _find_next_label_loop_shape  # noqa: F401 (re-export)
+from .logger import logger
 from .object_editor import ObjectEditor
-from .operator import (  # noqa: F401
+from .operator import OperatorGate
+from .operator import (  # noqa: F401 (re-exported gate contract)
     OPERATOR_MODE_ACTIONS,
     OPERATOR_REQUIRED_ACTIONS,
-    OperatorGate,
 )
-from .file_session import FileSession
-from .label_file import LabelFile, LabelFileError
-from .logger import logger
+from .relations import RelationController
+from .right_sidebar import RightSidebarTabs
 from .schema import CHECKED_FIELD, IMAGE_TAGS_FIELD
-from .settings import SettingsDialog
 from .settings.runtime_applier import SettingsRuntimeApplier
-from .settings.schema import (
-    SETTINGS_SHORTCUT_SECTIONS,
-    fields_for_page,
-    load_template_config,
-)
+from .settings.schema import load_template_config
 from .shape import Shape
-from .utils.file_search import escape_query_value
+from .shape_commands import ShapeCommands
+from .special_workspaces import SpecialWorkspaces
+from .status import DocumentStatus
 from .utils.label_text import (
     format_label_list_text as _format_label_list_text,
-    measure_text_width as _measure_text_width,
+    measure_text_width as _measure_text_width,  # noqa: F401 (re-export)
 )
-from .utils.qt import new_icon_path
+from .utils.qt import apply_application_font, new_icon_path
 from .utils.theme import get_theme
-from .widgets.attributes_panel import AttributesPanel
-from .widgets.label_list_widget import set_item_locked
-from .widgets.description_editor import DescriptionEditor
-from .widgets.relation_dialog import (
-    RelationDialog,
-    RelationManagerDialog,
-    show_relation_message,
+from .widgets import (
+    BrightnessContrastProcessor,
+    GroupIDFilterComboBox,
+    LabelDialog,
+    LabelFilterComboBox,
+    LabelListWidget,
+    LabelListWidgetItem,
+    NavigatorDialog,
+    Popup,
+    SearchBar,
+    ToolBar,
+    UniqueLabelQListWidget,
+    ZoomWidget,
 )
+from .widgets.attributes_panel import AttributesPanel
+from .widgets.description_editor import DescriptionEditor
+from .widgets.label_list_widget import set_item_locked
 from .widgets.workspace import (
     build_canvas_view,
     build_instruction_bar,
@@ -77,46 +74,14 @@ from .widgets.workspace import (
     build_workspace,
     restore_session_state,
 )
-from .widgets import (
-    AboutDialog,
-    BrightnessContrastProcessor,
-    ChatbotDialog,
-    ClassifierDialog,
-    VQADialog,
-    PPOCRDialog,
-    VideoClassifierDialog,
-    ShapeModifyDialog,
-    GroupIDFilterComboBox,
-    LabelDialog,
-    LabelFilterComboBox,
-    LabelListWidget,
-    LabelListWidgetItem,
-    DigitShortcutDialog,
-    LabelModifyDialog,
-    GroupIDModifyDialog,
-    OverviewDialog,
-    Popup,
-    SearchBar,
-    ToolBar,
-    UniqueLabelQListWidget,
-    ZoomWidget,
-    NavigatorDialog,
-)
 
 LABEL_COLORMAP = utils.label_colormap()
-CHECKED_FIELD_PATTERN = re.compile(r'"checked"\s*:\s*(true|false|"failed")')
 
 
+# Backwards-compatible alias for the label manager / tests.
 _set_label_list_item_lock = set_item_locked
 
 
-def _find_next_label_loop_shape(shapes, start_index, canvas_shapes):
-    canvas_shape_ids = {id(shape) for shape in canvas_shapes}
-    for index in range(start_index, len(shapes)):
-        shape = shapes[index]
-        if id(shape) in canvas_shape_ids:
-            return index, shape
-    return len(shapes), None
 
 
 class LabelingWidget(LabelDialog):
@@ -365,50 +330,7 @@ class LabelingWidget(LabelDialog):
         )
 
     def show_shortcuts(self):
-        from .pointcloud.controls import ShortcutsDialog
-
-        shortcuts = self._config["shortcuts"]
-        groups = []
-        for section in SETTINGS_SHORTCUT_SECTIONS:
-            entries = []
-            for field in fields_for_page("Shortcuts", section):
-                value = shortcuts.get(field.key.removeprefix("shortcuts."))
-                values = value if isinstance(value, (list, tuple)) else [value]
-                keys = [
-                    QtGui.QKeySequence(key).toString(
-                        QtGui.QKeySequence.SequenceFormat.NativeText
-                    )
-                    for key in values
-                    if key
-                ]
-                if keys:
-                    entries.append(
-                        (
-                            QtCore.QCoreApplication.translate(
-                                "SettingsDialog", field.label
-                            ),
-                            keys,
-                        )
-                    )
-            if section == "Shape":
-                entries.extend(
-                    (
-                        getattr(
-                            self.actions, f"digit_shortcut_{digit}"
-                        ).text(),
-                        [str(digit)],
-                    )
-                    for digit in range(10)
-                )
-            groups.append(
-                (
-                    QtCore.QCoreApplication.translate(
-                        "SettingsDialog", section
-                    ),
-                    entries,
-                )
-            )
-        ShortcutsDialog(groups, self).exec()
+        return AppearanceController(self).show_shortcuts()
 
     def _configure_toggle_button(self, button, style, tooltip):
         return ToolbarPolicy(self)._configure_toggle_button(button, style, tooltip)
@@ -429,150 +351,28 @@ class LabelingWidget(LabelDialog):
         return CanvasNavigation(self)._navigator_close_event(event)
 
     def set_language(self, language):
-        if self._config["language"] == language:
-            return
-        self._config["language"] = language
-
-        # Show dialog to restart application
-        msg_box = QMessageBox()
-        msg_box.setText(
-            self.tr("Please restart the application to apply changes.")
-        )
-        msg_box.exec()
-        self.parent.parent.close()
+        return AppearanceController(self).set_language(language)
 
     def _on_theme_changed(self, mode: str) -> None:
-        """Handle Theme menu selection (System / Light / Dark)."""
-        prev_mode = self._config.get("theme", "auto")
-        if prev_mode == mode:
-            return
-
-        dialog = QtWidgets.QDialog(self)
-        dialog.setWindowTitle(self.tr("Theme"))
-        dialog.setFixedWidth(360)
-        dialog.setWindowFlags(
-            dialog.windowFlags()
-            & ~QtCore.Qt.WindowType.WindowContextHelpButtonHint
-        )
-        dialog.setStyleSheet(get_dialog_style())
-
-        layout = QtWidgets.QVBoxLayout(dialog)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(16)
-
-        label = QLabel(
-            self.tr(
-                "The new theme will take effect after restarting the application. Apply this setting now?"
-            )
-        )
-        label.setWordWrap(True)
-        layout.addWidget(label)
-
-        btn_layout = QtWidgets.QHBoxLayout()
-        btn_layout.setSpacing(8)
-        cancel_btn = QtWidgets.QPushButton(self.tr("Cancel"))
-        cancel_btn.setFixedWidth(100)
-        cancel_btn.setStyleSheet(get_cancel_btn_style())
-        cancel_btn.clicked.connect(dialog.reject)
-        ok_btn = QtWidgets.QPushButton(self.tr("OK"))
-        ok_btn.setFixedWidth(100)
-        ok_btn.setStyleSheet(get_ok_btn_style())
-        ok_btn.clicked.connect(dialog.accept)
-        btn_layout.addStretch()
-        btn_layout.addWidget(cancel_btn)
-        btn_layout.addWidget(ok_btn)
-        layout.addLayout(btn_layout)
-
-        if dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted:
-            self._config["theme"] = mode
-            save_config(self._config)
-            popup = Popup(
-                text=self.tr(
-                    "Please restart the application to apply changes."
-                ),
-                parent=self,
-            )
-            popup.show_popup(self, position="center")
-        else:
-            # Revert the checkmark to the previously active mode
-            prev_act = self._theme_actions.get(prev_mode)
-            if prev_act:
-                prev_act.setChecked(True)
+        return AppearanceController(self)._on_theme_changed(mode)
 
     def get_labeling_instruction(self):
-        text_mode = self.tr("Mode:")
-        text_shortcuts = self.tr("Shortcuts:")
-        text_settings = self.tr("Settings")
-        text_previous = self.tr("Previous")
-        text_next = self.tr("Next")
-        text_rectangle = self.tr("Rectangle")
-        text_polygon = self.tr("Polygon")
-        text_rotation = self.tr("Rotation")
-        text_quadrilateral = self.tr("Quadrilateral")
-        shortcuts = self._config.get("shortcuts", {})
-        return (
-            f"<b>{text_mode}</b> {self.canvas.get_mode()} | "
-            f"<b>{text_shortcuts}</b>"
-            f" {text_previous}({self._format_instruction_shortcut(shortcuts.get('open_prev'))}),"
-            f" {text_next}({self._format_instruction_shortcut(shortcuts.get('open_next'))}),"
-            f" {text_rectangle}({self._format_instruction_shortcut(shortcuts.get('create_rectangle'))}),"
-            f" {text_polygon}({self._format_instruction_shortcut(shortcuts.get('create_polygon'))}),"
-            f" {text_rotation}({self._format_instruction_shortcut(shortcuts.get('create_rotation'))}),"
-            f" {text_quadrilateral}({self._format_instruction_shortcut(shortcuts.get('create_quadrilateral'))}),"
-            f" {text_settings}({self._format_instruction_shortcut(shortcuts.get('open_settings'))})"
-        )
+        return AppearanceController(self).get_labeling_instruction()
 
     def _should_show_space_pan_tip(self):
-        if not self.canvas.drawing() or self.canvas.current is None:
-            return False
-        return any(
-            scroll_bar.maximum() > 0
-            for scroll_bar in self.scroll_bars.values()
-        )
+        return AppearanceController(self)._should_show_space_pan_tip()
 
     def _space_pan_tip_message(self):
-        return self.tr(
-            "Tip: Hold Alt and drag with the left mouse button, or drag with the middle mouse button, to pan the canvas while drawing."
-        )
+        return AppearanceController(self)._space_pan_tip_message()
 
     def update_space_pan_tip(self):
-        message = self._space_pan_tip_message()
-        status_bar = self.statusBar()
-        if self._should_show_space_pan_tip():
-            status_bar.showMessage(message)
-        elif status_bar.currentMessage() == message:
-            status_bar.clearMessage()
+        return AppearanceController(self).update_space_pan_tip()
 
     def update_labeling_instruction(self):
-        if not hasattr(self, "label_instruction"):
-            return
-        self.label_instruction.setText(self.get_labeling_instruction())
-        self.update_space_pan_tip()
+        return AppearanceController(self).update_labeling_instruction()
 
     def _format_instruction_shortcut(self, value):
-        text = self._settings_runtime_applier.shortcut_value_to_text(
-            value
-        ).strip()
-        if not text:
-            return "<b>-</b>"
-        sequences = [
-            chunk.strip() for chunk in text.split(",") if chunk.strip()
-        ]
-        if not sequences:
-            return "<b>-</b>"
-        formatted = []
-        for sequence in sequences:
-            keys = [
-                part.strip() for part in sequence.split("+") if part.strip()
-            ]
-            if not keys:
-                continue
-            formatted.append(
-                "+".join(f"<b>{html.escape(key)}</b>" for key in keys)
-            )
-        if not formatted:
-            return "<b>-</b>"
-        return ", ".join(formatted)
+        return AppearanceController(self)._format_instruction_shortcut(value)
 
     @pyqtSlot()
     def on_auto_segmentation_requested(self):
@@ -648,36 +448,7 @@ class LabelingWidget(LabelDialog):
         return ToolbarPolicy(self).populate_mode_actions()
 
     def set_dirty(self):
-        self.actions.save.setIcon(utils.new_icon("save"))
-        # Even if we autosave the file, we keep the ability to undo
-        self.actions.undo.setEnabled(self.canvas.is_shape_restorable)
-
-        if self._config["auto_save"]:
-            label_file = osp.splitext(self.image_path)[0] + ".json"
-            if self.output_dir:
-                label_file_without_path = osp.basename(label_file)
-                label_file = self.output_dir + "/" + label_file_without_path
-            if not self.save_labels(label_file):
-                # The save was refused (no operator yet): keep the content
-                # marked as unsaved so it is not silently lost.
-                self.dirty = True
-                self.actions.save.setEnabled(True)
-                self.update_progress_title()
-                return
-            if (
-                hasattr(self, "navigator_dialog")
-                and self.navigator_dialog.isVisible()
-            ):
-                self.update_navigator_shapes()
-            return
-        self.dirty = True
-        self.actions.save.setEnabled(True)
-        if (
-            hasattr(self, "navigator_dialog")
-            and self.navigator_dialog.isVisible()
-        ):
-            self.update_navigator_shapes()
-        self.update_progress_title()
+        return DocumentStatus(self).set_dirty()
 
     def _on_image_tags_changed(self, tags):
         if not self.image_path:
@@ -720,147 +491,40 @@ class LabelingWidget(LabelDialog):
         self.operator_gate.refresh_display()
 
     def toggle_image_tags_visibility(self, checked):
-        self._image_tags_visibility = (
-            "explicit_visible" if checked else "explicit_hidden"
-        )
-        self.image_tags_widget.setVisible(checked)
+        return AppearanceController(self).toggle_image_tags_visibility(checked)
 
     def _auto_show_image_tags(self):
-        if self._image_tags_visibility != "auto":
-            return
-        with QtCore.QSignalBlocker(self.actions.show_image_tags):
-            self.actions.show_image_tags.setChecked(True)
-        self.image_tags_widget.show()
+        return AppearanceController(self)._auto_show_image_tags()
 
     def _get_rgb_by_image_tag(self, label):
-        for shape in self.canvas.shapes:
-            if shape.label == label:
-                return shape.line_color.getRgb()[:3]
-        label_colors = self._config.get("label_colors") or {}
-        if label in label_colors:
-            return tuple(label_colors[label])
-        label_id = zlib.crc32(label.encode("utf-8"))
-        hue = label_id % 360
-        saturation = 110 + ((label_id >> 9) % 66)
-        value = 225 + ((label_id >> 16) % 26)
-        return QtGui.QColor.fromHsv(hue, saturation, value).getRgb()[:3]
+        return AppearanceController(self)._get_rgb_by_image_tag(label)
 
     def _document_status_text(self):
-        """Cursor position and current filename for the status bar."""
-        if self.filename is None:
-            return ""
-        position = getattr(self, "_cursor_position", None)
-        if position is None:
-            coords = "-,-"
-        else:
-            coords = f"{position[0]},{position[1]}"
-        return f"[{coords}|{osp.abspath(str(self.filename))}]"
+        return DocumentStatus(self)._document_status_text()
 
     def _refresh_document_status(self):
-        updater = getattr(self.parent.parent, "update_document_status", None)
-        if updater is not None:
-            updater(self._document_status_text())
+        return DocumentStatus(self)._refresh_document_status()
 
     def _on_canvas_mouse_moved(self, x, y):
-        self._cursor_position = (
-            None if x < 0 or y < 0 else (int(round(x)), int(round(y)))
-        )
-        self._refresh_document_status()
+        return DocumentStatus(self)._on_canvas_mouse_moved(x, y)
 
     def _window_title(self):
-        if self.filename is None:
-            return __appname__
-        return f"{__appname__} - {self._document_status_text()}"
+        return DocumentStatus(self)._window_title()
 
     def update_progress_title(self):
-        self.parent.parent.setWindowTitle(self._window_title())
-        self._refresh_document_status()
+        return DocumentStatus(self).update_progress_title()
 
     def set_clean(self):
-        self.dirty = False
-        self.actions.save.setEnabled(False)
-        self.actions.save.setIcon(
-            utils.new_icon("save-check" if self.label_file else "save")
-        )
-        self.actions.union_selection.setEnabled(False)
-        self.actions.create_mode.setEnabled(True)
-        self.actions.create_brush_polygon_mode.setEnabled(True)
-        self.actions.create_magic_wand_mode.setEnabled(True)
-        self.actions.create_rectangle_mode.setEnabled(True)
-        self.actions.create_cuboid_mode.setEnabled(True)
-        self.actions.create_rotation_mode.setEnabled(True)
-        self.actions.create_quadrilateral_mode.setEnabled(True)
-        self.actions.create_circle_mode.setEnabled(True)
-        self.actions.create_line_mode.setEnabled(True)
-        self.actions.create_point_mode.setEnabled(True)
-        self.actions.create_line_strip_mode.setEnabled(True)
-        self.actions.digit_shortcut_0.setEnabled(True)
-        self.actions.digit_shortcut_1.setEnabled(True)
-        self.actions.digit_shortcut_2.setEnabled(True)
-        self.actions.digit_shortcut_3.setEnabled(True)
-        self.actions.digit_shortcut_4.setEnabled(True)
-        self.actions.digit_shortcut_5.setEnabled(True)
-        self.actions.digit_shortcut_6.setEnabled(True)
-        self.actions.digit_shortcut_7.setEnabled(True)
-        self.actions.digit_shortcut_8.setEnabled(True)
-        self.actions.digit_shortcut_9.setEnabled(True)
-
-        self.update_progress_title()
-
-        if self.has_label_file():
-            self.actions.delete_file.setEnabled(True)
-        else:
-            self.actions.delete_file.setEnabled(False)
-        self._apply_operator_gate()
+        return DocumentStatus(self).set_clean()
 
     def get_image_progress_info(self):
-        if self.filename and self.filename in self.fn_to_index:
-            current_index = self.fn_to_index[str(self.filename)]
-            total_count = self.file_list_widget.count()
-            return current_index + 1, total_count
-        return 1, 1
+        return DocumentStatus(self).get_image_progress_info()
 
     def toggle_actions(self, value=True):
-        """Enable/Disable widgets which depend on an opened image."""
-        for action in self.actions.zoom_actions:
-            action.setEnabled(value)
-        for action in self.actions.on_load_active:
-            action.setEnabled(value)
-        if not value:
-            self.actions.edit_brush_mode.setEnabled(False)
-
-        if value and self.file_list_widget.count() > 0:
-            self.actions.shape_manager.setEnabled(True)
-        else:
-            self.actions.shape_manager.setEnabled(False)
-        self.update_browse_actions()
-        self._apply_operator_gate()
+        return DocumentStatus(self).toggle_actions(value)
 
     def update_browse_actions(self):
-        index = self.fn_to_index.get(str(self.filename), -1)
-        count = self.file_list_widget.count()
-        valid = 0 <= index < count
-        step = self._config["image_jump_step"]
-        self.actions.jump_next_images.setEnabled(
-            valid and index + step < count
-        )
-        self.actions.jump_prev_images.setEnabled(valid and index >= step)
-        for action, text, tip in (
-            (
-                self.actions.jump_next_images,
-                self.tr("Forward %s Images"),
-                self.tr("Move forward by %s images"),
-            ),
-            (
-                self.actions.jump_prev_images,
-                self.tr("Back %s Images"),
-                self.tr("Move back by %s images"),
-            ),
-        ):
-            action.setText(text % step)
-            action.setIconText((text % step).replace(" ", "\n"))
-            action.setToolTip(tip % step)
-            action.setStatusTip(tip % step)
+        return DocumentStatus(self).update_browse_actions()
 
     def jump_images(self, offset):
         if not self.may_continue():
@@ -871,10 +535,10 @@ class LabelingWidget(LabelDialog):
             self.load_file(self.file_list_widget.item(target).text())
 
     def queue_event(self, function):
-        QtCore.QTimer.singleShot(0, function)
+        return DocumentStatus(self).queue_event(function)
 
     def status(self, message, delay=5000):
-        self.statusBar().showMessage(message, delay)
+        return DocumentStatus(self).status(message, delay)
 
     @staticmethod
     def _shape_lock_key(shape):
@@ -948,17 +612,7 @@ class LabelingWidget(LabelDialog):
 
     # Callbacks
     def undo_shape_edit(self):
-        # In brush-edit mode, undo reverts the last brush stroke instead of
-        # the global shape history.
-        if getattr(self.canvas, "is_brush_mode", False):
-            self.canvas.brush_undo()
-            self.actions.undo.setEnabled(self.canvas.brush_can_undo())
-            return
-        self.canvas.restore_shape()
-        self.label_list.clear()
-        self.load_shapes(self.canvas.shapes, update_last_label=False)
-        self.actions.undo.setEnabled(self.canvas.is_shape_restorable)
-        self.set_dirty()
+        return ShapeCommands(self).undo_shape_edit()
 
     def get_label_file_list(self):
         label_file_list = []
@@ -985,646 +639,110 @@ class LabelingWidget(LabelDialog):
         return label_file_list
 
     def copy_shape_coordinates(self):
-        item = self.current_item()
-        if item is None:
-            return
-        shape = item.shape()
-        if shape is None:
-            return
-
-        points = shape.points
-        if shape.shape_type == "rectangle":
-            if len(points) >= 2:
-                x1, y1 = points[0].x(), points[0].y()
-                x2, y2 = points[2].x(), points[2].y()
-                coordinates = [x1, y1, x2, y2]
-                coordinates = list(map(int, coordinates))
-            else:
-                return
-        else:
-            coordinates = []
-            for point in points:
-                coordinates.extend([point.x(), point.y()])
-
-        coordinates_str = str(coordinates)
-        clipboard = QtWidgets.QApplication.clipboard()
-        clipboard.setText(coordinates_str)
+        return ShapeCommands(self).copy_shape_coordinates()
 
     def union_selection(self):
-        if any(shape.locked for shape in self.canvas.selected_shapes):
-            return
-        rectangle_shapes, polygon_shapes = [], []
-        for shape in self.canvas.selected_shapes:
-            points = shape.points
-            if shape.shape_type == "rectangle":
-                xmin, ymin = (points[0].x(), points[0].y())
-                xmax, ymax = (points[2].x(), points[2].y())
-                rectangle_shapes.append([xmin, ymin, xmax, ymax])
-            else:
-                polygon_shapes.append([(p.x(), p.y()) for p in points])
-
-        union_shape = shape.copy()
-        union_shape.other_data.pop("shape_id", None)
-        union_shape._relation_identity = uuid4().hex
-
-        if len(rectangle_shapes) > 0:
-            min_x = min([bbox[0] for bbox in rectangle_shapes])
-            min_y = min([bbox[1] for bbox in rectangle_shapes])
-            max_x = max([bbox[2] for bbox in rectangle_shapes])
-            max_y = max([bbox[3] for bbox in rectangle_shapes])
-
-            union_shape.points[0].setX(min_x)
-            union_shape.points[0].setY(min_y)
-            union_shape.points[1].setX(max_x)
-            union_shape.points[1].setY(min_y)
-            union_shape.points[2].setX(max_x)
-            union_shape.points[2].setY(max_y)
-            union_shape.points[3].setX(min_x)
-            union_shape.points[3].setY(max_y)
-        else:
-            # Create a blank mask
-            min_x = min([min(p[0] for p in poly) for poly in polygon_shapes])
-            min_y = min([min(p[1] for p in poly) for poly in polygon_shapes])
-            max_x = max([max(p[0] for p in poly) for poly in polygon_shapes])
-            max_y = max([max(p[1] for p in poly) for poly in polygon_shapes])
-
-            width = int(max_x - min_x + 10)
-            height = int(max_y - min_y + 10)
-            mask = np.zeros((height, width), dtype=np.uint8)
-
-            # Draw all polygons on the mask
-            for polygon in polygon_shapes:
-                contour = np.array(polygon, dtype=np.int32)
-                shifted_contour = contour - np.array(
-                    [min_x - 5, min_y - 5], dtype=np.int32
-                )
-                shifted_contour = shifted_contour.reshape((-1, 1, 2))
-                cv2.fillPoly(mask, [shifted_contour], 255)
-
-            # Find contours of the merged shape
-            merged_contours, _ = cv2.findContours(
-                mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-            )
-            if merged_contours:
-                largest_contour = max(merged_contours, key=cv2.contourArea)
-                epsilon = 0.001 * cv2.arcLength(largest_contour, True)
-                approx_contour = cv2.approxPolyDP(
-                    largest_contour, epsilon, True
-                )
-                approx_contour = approx_contour.reshape(-1, 2) + np.array(
-                    [min_x - 5, min_y - 5], dtype=np.int32
-                )
-                union_shape.points = [
-                    QtCore.QPointF(float(x), float(y))
-                    for x, y in approx_contour
-                ]
-
-        # Append merged shape and remove selected shapes
-        self.add_label(union_shape)
-        self.remove_labels(self.canvas.delete_selected())
-        self.set_dirty()
-
-        # Update UI state
-        if self.no_shape():
-            for action in self.actions.on_shapes_present:
-                action.setEnabled(False)
+        return ShapeCommands(self).union_selection()
 
     # Trainer
     def start_training(self, mode):
-        if mode != "ultralytics":
-            return
-
-        try:
-            if self.training_dialog is None:
-                self.training_dialog = UltralyticsDialog(self)
-                self.training_dialog.destroyed.connect(
-                    self.on_training_dialog_destroyed
-                )
-            self.training_dialog.showNormal()
-            self.training_dialog.raise_()
-            self.training_dialog.activateWindow()
-        except Exception as e:
-            self.error_message(
-                "Start Error", f"Failed to start training dialog: {str(e)}"
-            )
+        return SpecialWorkspaces(self).start_training(mode)
 
     def on_training_dialog_destroyed(self, _dialog=None):
-        self.training_dialog = None
+        return SpecialWorkspaces(self).on_training_dialog_destroyed(_dialog)
 
     # Tools
     def overview(self):
-        if self.filename:
-            OverviewDialog(parent=self)
+        return SpecialWorkspaces(self).overview()
 
     def digit_shortcut_manager(self):
-        digit_shortcut_dialog = DigitShortcutDialog(parent=self)
-        result = digit_shortcut_dialog.exec()
-        if result == QtWidgets.QDialog.DialogCode.Accepted:
-            self._config["digit_shortcuts"] = self.drawing_digit_shortcuts
-            save_config(self._config)
+        return SpecialWorkspaces(self).digit_shortcut_manager()
 
     def label_manager(self):
-        modify_label_dialog = LabelModifyDialog(
-            parent=self, opacity=LABEL_OPACITY
-        )
-        result = modify_label_dialog.exec()
-        if result == QtWidgets.QDialog.DialogCode.Accepted:
-            if self.filename and modify_label_dialog.annotations_changed:
-                self.load_file(self.filename)
+        return SpecialWorkspaces(self).label_manager()
 
     def gid_manager(self):
-        modify_gid_dialog = GroupIDModifyDialog(parent=self)
-        result = modify_gid_dialog.exec()
-        if result == QtWidgets.QDialog.DialogCode.Accepted:
-            self.load_file(self.filename)
+        return SpecialWorkspaces(self).gid_manager()
 
     def shape_manager(self):
-        modify_shape_dialog = ShapeModifyDialog(parent=self)
-        result = modify_shape_dialog.exec()
-        if result == QtWidgets.QDialog.DialogCode.Accepted:
-            if modify_shape_dialog.need_reload and self.filename:
-                self.load_file(self.filename)
+        return SpecialWorkspaces(self).shape_manager()
 
     def open_chatbot(self):
-        dialog = ChatbotDialog(self)
-        _ = dialog.exec()
+        return SpecialWorkspaces(self).open_chatbot()
 
     def open_vqa(self):
-        if not self.image_list:
-            self.error_message(
-                self.tr("No images loaded"),
-                self.tr(
-                    "Please load an image folder before opening the VQA dialog."
-                ),
-            )
-            return
-
-        if not hasattr(self, "vqa_window") or self.vqa_window is None:
-            self.vqa_window = VQADialog(self)
-            self.vqa_window.setAttribute(
-                Qt.WidgetAttribute.WA_DeleteOnClose, False
-            )
-        if self.vqa_window.isVisible():
-            self.vqa_window.raise_()
-            self.vqa_window.activateWindow()
-        else:
-            self.vqa_window.show()
+        return SpecialWorkspaces(self).open_vqa()
 
     def open_pointcloud(self):
-        if self.pointcloud_window is None:
-            try:
-                from .widgets.pointcloud_dialog import PointCloudDialog
-
-                window = PointCloudDialog(self)
-            except (ImportError, OSError, RuntimeError) as error:
-                logger.error(f"Failed to open point cloud workspace: {error}")
-                self.error_message(
-                    self.tr("Point cloud unavailable"),
-                    self.tr("Unable to open the point cloud workspace: %s")
-                    % html.escape(str(error)),
-                )
-                return
-            window.destroyed.connect(self.on_pointcloud_window_destroyed)
-            self.pointcloud_window = window
-        if self.pointcloud_window.isMinimized():
-            self.pointcloud_window.showNormal()
-        else:
-            self.pointcloud_window.show()
-        self.pointcloud_window.raise_()
-        self.pointcloud_window.activateWindow()
+        return SpecialWorkspaces(self).open_pointcloud()
 
     def on_pointcloud_window_destroyed(self, _window=None):
-        self.pointcloud_window = None
+        return SpecialWorkspaces(self).on_pointcloud_window_destroyed(_window)
 
     def open_paddleocr(self):
-        if not hasattr(self, "ppocr_window") or self.ppocr_window is None:
-            self.ppocr_window = PPOCRDialog(self)
-            self.ppocr_window.setAttribute(
-                Qt.WidgetAttribute.WA_DeleteOnClose, False
-            )
-        if self.ppocr_window.isVisible():
-            self.ppocr_window.raise_()
-            self.ppocr_window.activateWindow()
-        else:
-            self.ppocr_window.show()
+        return SpecialWorkspaces(self).open_paddleocr()
 
     def open_video_classifier(self):
-        if VideoClassifierDialog is None:
-            popup = Popup(
-                text=self.tr(
-                    "Video Classifier requires QtMultimedia, which this "
-                    "Qt build does not provide."
-                ),
-                parent=self,
-            )
-            popup.show_popup(self, position="center")
-            return
-        if (
-            not hasattr(self, "video_classifier_window")
-            or self.video_classifier_window is None
-        ):
-            self.video_classifier_window = VideoClassifierDialog(self)
-            self.video_classifier_window.setAttribute(
-                Qt.WidgetAttribute.WA_DeleteOnClose, True
-            )
-            self.video_classifier_window.destroyed.connect(
-                lambda _obj=None: setattr(
-                    self, "video_classifier_window", None
-                )
-            )
-        if self.video_classifier_window.isVisible():
-            self.video_classifier_window.raise_()
-            self.video_classifier_window.activateWindow()
-        else:
-            self.video_classifier_window.showMaximized()
+        return SpecialWorkspaces(self).open_video_classifier()
 
     def open_image_classifier(self):
-        if not self.image_list:
-            self.error_message(
-                self.tr("No images loaded"),
-                self.tr(
-                    "Please load an image folder before opening the Classification dialog."
-                ),
-            )
-            return
-
-        if (
-            not hasattr(self, "image_classifier_window")
-            or self.image_classifier_window is None
-        ):
-            self.image_classifier_window = ClassifierDialog(self)
-            self.image_classifier_window.setAttribute(
-                Qt.WidgetAttribute.WA_DeleteOnClose, False
-            )
-        if self.image_classifier_window.isVisible():
-            self.image_classifier_window.raise_()
-            self.image_classifier_window.activateWindow()
-        else:
-            self.image_classifier_window.show()
+        return SpecialWorkspaces(self).open_image_classifier()
 
     def open_classifier(self):
-        return self.open_image_classifier()
+        return SpecialWorkspaces(self).open_classifier()
 
     # Help
     def documentation(self):
-        locale = "/zh-Hans" if self._config["language"] == "zh_CN" else ""
-        url = (
-            f"https://xanylabeling.com{locale}/docs/"
-            "x-anylabeling/get_started"
-        )
-        utils.general.open_url(url)
+        return SpecialWorkspaces(self).documentation()
 
     def sponsor(self):
-        utils.general.open_url("https://xanylabeling.com/sponsor")
+        return SpecialWorkspaces(self).sponsor()
 
     def about(self):
-        about_dialog = AboutDialog(self)
-        _ = about_dialog.exec()
+        return SpecialWorkspaces(self).about()
 
     def _reset_label_loop(self):
-        self.label_loop_count = -1
-        self.label_loop_shapes = None
-        if self.label_loop_popup is not None:
-            self.label_loop_popup.close()
+        return LabelLoop(self)._reset_label_loop()
 
     def _show_label_loop_popup(self, text):
-        if self.label_loop_popup is None:
-            self.label_loop_popup = Popup(
-                text,
-                parent=self,
-                msec=1800,
-                icon=new_icon_path("copy-green", "svg"),
-            )
-            self.label_loop_popup.label.setTextFormat(Qt.TextFormat.PlainText)
-            self.label_loop_popup.setAttribute(
-                Qt.WidgetAttribute.WA_ShowWithoutActivating
-            )
-            self.label_loop_popup.setWindowFlag(
-                Qt.WindowType.WindowDoesNotAcceptFocus, True
-            )
-            self.label_loop_popup.setWindowFlag(
-                Qt.WindowType.WindowTransparentForInput, True
-            )
-        else:
-            self.label_loop_popup.set_text(text)
-        self.label_loop_popup.show_popup(
-            self.central_widget().viewport(), top_offset=24
-        )
+        return LabelLoop(self)._show_label_loop_popup(text)
 
     def loop_thru_labels(self):
-        is_new_loop = self.label_loop_shapes is None
-        if is_new_loop:
-            self.label_loop_shapes = list(self.canvas.shapes)
-
-        self.label_loop_count, shape = _find_next_label_loop_shape(
-            self.label_loop_shapes,
-            self.label_loop_count + 1,
-            self.canvas.shapes,
-        )
-        if shape is None:
-            message = (
-                self.tr("No objects to review")
-                if is_new_loop
-                else self.tr("Review complete")
-            )
-            self._reset_label_loop()
-            if not is_new_loop:
-                self.canvas.deselect_shape()
-                self.set_fit_window()
-            self._show_label_loop_popup(message)
-            return
-
-        width = self.central_widget().width() - 2.0
-        height = self.central_widget().height() - 2.0
-
-        im_width = self.canvas.pixmap.width()
-        im_height = self.canvas.pixmap.height()
-
-        zoom_scale = 4
-
-        xs = []
-        ys = []
-        # loop through all points on this label
-        for point in shape.points:
-            xs.append(point.x())
-            ys.append(point.y())
-
-        # Set minimum label width to 30px this should handle point
-        # lables and very tiny labels gracefully
-        label_width = max(int(max(xs) - min(xs)), 30)
-        x = (max(xs) + min(xs)) / 2
-        y = (max(ys) + min(ys)) / 2
-
-        zoom = int(100 * width / (zoom_scale * label_width))
-        # Don't go past the max zoom which is 1000
-        zoom = min(1000, zoom)
-
-        self.set_zoom(zoom)
-        self.canvas.pan_offset = QtCore.QPointF()
-        self.pan_values[self.filename] = QtCore.QPointF()
-
-        x_range = self.scroll_bars[Qt.Orientation.Horizontal].maximum()
-        x_step = self.scroll_bars[Qt.Orientation.Horizontal].pageStep()
-
-        y_range = self.scroll_bars[Qt.Orientation.Vertical].maximum()
-        # QT docs says Document length = maximum() - minimum() + pageStep().
-        # so there's a weird pageStep thing we gotta add
-        y_step = self.scroll_bars[Qt.Orientation.Vertical].pageStep()
-        screen_width = width / (zoom / 100)
-        # add half a screen to this
-        x_scroll = int((x - screen_width / 2) / im_width * (x_range + x_step))
-        x_scroll = min(max(0, x_scroll), x_range)
-
-        screen_height = height / (zoom / 100)
-
-        y_scroll = int(
-            (y - screen_height / 2) / (im_height) * (y_range + y_step)
-        )
-        y_scroll = min(max(0, y_scroll), y_range)
-
-        self.set_scroll(Qt.Orientation.Horizontal, x_scroll)
-        self.set_scroll(Qt.Orientation.Vertical, y_scroll)
-        self.canvas.prev_h_shape = self.canvas.h_shape = shape
-        self.canvas.select_shapes([shape])
-
-        progress = self.tr("Reviewing {current} / {total}").format(
-            current=self.label_loop_count + 1,
-            total=len(self.label_loop_shapes),
-        )
-        font_metrics = self.fontMetrics()
-        label_width = min(
-            240,
-            max(
-                0,
-                self.central_widget().viewport().width()
-                - _measure_text_width(font_metrics, progress)
-                - 56,
-            ),
-        )
-        label = font_metrics.elidedText(
-            str(shape.label or ""), Qt.TextElideMode.ElideRight, label_width
-        )
-        if label:
-            progress = f"{progress} - {label}"
-        self._show_label_loop_popup(progress)
+        return LabelLoop(self).loop_thru_labels()
 
     def loop_select_labels(self):
-        self.select_loop_count += 1
-        if len(self.label_list) == 0 or self.select_loop_count >= len(
-            self.label_list
-        ):
-            self.select_loop_count = -1
-            self.canvas.deselect_shape()
-            return
-
-        item = self.label_list[self.select_loop_count]
-        shape = item.shape()
-        self.canvas.select_shapes([shape])
+        return LabelLoop(self).loop_select_labels()
 
     def copy_to_clipboard(self, text):
-        clipboard = QtWidgets.QApplication.clipboard()
-        clipboard.setText(text)
-        QMessageBox.information(
-            self,
-            self.tr("Copied"),
-            self.tr("The information has been copied to the clipboard."),
-        )
+        return LabelLoop(self).copy_to_clipboard(text)
 
     # General
     def toggle_drawing_sensitive(self, drawing=True):
-        """Toggle drawing sensitive.
-
-        In the middle of drawing, toggling between modes should be disabled.
-        """
-        self.actions.edit_mode.setEnabled(not drawing)
-        self.actions.undo_last_point.setEnabled(drawing)
-        self.actions.undo.setEnabled(not drawing)
-        self.actions.delete.setEnabled(not drawing)
-        self.actions.union_selection.setEnabled(not drawing)
-        self.update_labeling_instruction()
+        return DrawModeController(self).toggle_drawing_sensitive(drawing)
 
     def create_digit_mode(self, digit_num):
-        if self.drawing_digit_shortcuts is None:
-            return
+        return DrawModeController(self).create_digit_mode(digit_num)
 
-        data = self.drawing_digit_shortcuts.get(digit_num, None)
-        if not data:
-            return
-
-        label = data.get("label", "object")
-        create_mode = data.get("mode", None)
-
-        if create_mode not in Shape.get_supported_shape():
-            return
-
-        self.digit_to_label = label
-        self.toggle_draw_mode(edit=False, create_mode=create_mode)
-
-    def toggle_draw_mode(
-        self,
-        edit=True,
-        create_mode="rectangle",
-        disable_auto_labeling=True,
-        preserve_brush_mode=False,
-    ):
-        if not edit and not self._ensure_operator_for_edit():
-            # Every "create ..." entry point (toolbar, menu, digit shortcut,
-            # auto-labeling hand-off) funnels through here, so a cancelled
-            # login stops before the canvas switches to a drawing mode.
-            return
-        if not preserve_brush_mode:
-            if getattr(self.canvas, "is_brush_mode", False):
-                self.canvas.cancel_brush_mode()
-            elif self.actions.edit_brush_mode.isChecked():
-                self.actions.edit_brush_mode.setChecked(False)
-        self.canvas.set_magic_wand_mode(False)
-        # Disable auto labeling if needed
-        if (
-            disable_auto_labeling
-            and self.auto_labeling_widget.auto_labeling_mode
-            != AutoLabelingMode.NONE
-        ):
-            self.clear_auto_labeling_marks()
-            self.auto_labeling_widget.set_auto_labeling_mode(None)
-
-        if not edit:
-            self.set_text_editing(False)
-
-        self.canvas.set_editing(edit)
-        self.canvas.create_mode = create_mode
-        self.canvas._brush_drawing = False
-        if edit:
-            self.actions.create_mode.setEnabled(True)
-            self.actions.create_brush_polygon_mode.setEnabled(True)
-            self.actions.create_magic_wand_mode.setEnabled(True)
-            self.actions.create_rectangle_mode.setEnabled(True)
-            self.actions.create_cuboid_mode.setEnabled(True)
-            self.actions.create_rotation_mode.setEnabled(True)
-            self.actions.create_quadrilateral_mode.setEnabled(True)
-            self.actions.create_circle_mode.setEnabled(True)
-            self.actions.create_line_mode.setEnabled(True)
-            self.actions.create_point_mode.setEnabled(True)
-            self.actions.create_line_strip_mode.setEnabled(True)
-            self.actions.digit_shortcut_0.setEnabled(True)
-            self.actions.digit_shortcut_1.setEnabled(True)
-            self.actions.digit_shortcut_2.setEnabled(True)
-            self.actions.digit_shortcut_3.setEnabled(True)
-            self.actions.digit_shortcut_4.setEnabled(True)
-            self.actions.digit_shortcut_5.setEnabled(True)
-            self.actions.digit_shortcut_6.setEnabled(True)
-            self.actions.digit_shortcut_7.setEnabled(True)
-            self.actions.digit_shortcut_8.setEnabled(True)
-            self.actions.digit_shortcut_9.setEnabled(True)
-        else:
-            self.hide_attributes_panel()
-            self.actions.union_selection.setEnabled(False)
-            create_actions = {
-                "polygon": self.actions.create_mode,
-                "rectangle": self.actions.create_rectangle_mode,
-                "cuboid": self.actions.create_cuboid_mode,
-                "line": self.actions.create_line_mode,
-                "point": self.actions.create_point_mode,
-                "circle": self.actions.create_circle_mode,
-                "linestrip": self.actions.create_line_strip_mode,
-                "rotation": self.actions.create_rotation_mode,
-                "quadrilateral": self.actions.create_quadrilateral_mode,
-            }
-            if create_mode not in create_actions:
-                raise ValueError(f"Unsupported create_mode: {create_mode}")
-            self.actions.create_mode.setEnabled(True)
-            self.actions.create_brush_polygon_mode.setEnabled(True)
-            self.actions.create_magic_wand_mode.setEnabled(True)
-            self.actions.create_rectangle_mode.setEnabled(True)
-            self.actions.create_cuboid_mode.setEnabled(True)
-            self.actions.create_rotation_mode.setEnabled(True)
-            self.actions.create_quadrilateral_mode.setEnabled(True)
-            self.actions.create_circle_mode.setEnabled(True)
-            self.actions.create_line_mode.setEnabled(True)
-            self.actions.create_point_mode.setEnabled(True)
-            self.actions.create_line_strip_mode.setEnabled(True)
-            create_actions[create_mode].setEnabled(False)
-        self.actions.edit_mode.setEnabled(not edit)
-        self.update_labeling_instruction()
-        self._apply_operator_gate()
+    def toggle_draw_mode(self, edit=True, create_mode='rectangle', disable_auto_labeling=True, preserve_brush_mode=False):
+        return DrawModeController(self).toggle_draw_mode(edit, create_mode, disable_auto_labeling, preserve_brush_mode)
 
     def toggle_brush_polygon_mode(self):
-        """Toggle brush drawing mode for polygons."""
-        if (
-            self.canvas.drawing()
-            and self.canvas.create_mode == "polygon"
-            and self.canvas._brush_drawing
-        ):
-            self.toggle_draw_mode(True)
-            return
-        self.toggle_draw_mode(False, create_mode="polygon")
-        self.canvas._brush_drawing = True
-        self.actions.create_mode.setEnabled(True)
-        self.actions.create_brush_polygon_mode.setEnabled(False)
+        return DrawModeController(self).toggle_brush_polygon_mode()
 
     def toggle_magic_wand_mode(self):
-        """Toggle thresholded flood selection for polygon creation."""
-        if self.canvas.drawing() and self.canvas.is_magic_wand_mode:
-            self.toggle_draw_mode(True)
-            return
-        self.toggle_draw_mode(False, create_mode="polygon")
-        self.canvas.set_magic_wand_mode(True)
-        self.actions.create_mode.setEnabled(True)
-        self.actions.create_magic_wand_mode.setEnabled(False)
+        return DrawModeController(self).toggle_magic_wand_mode()
 
     def set_edit_mode(self):
-        self.clear_auto_labeling_marks()
-        self.auto_labeling_widget.set_auto_labeling_mode(None)
-
-        self.toggle_draw_mode(True)
-        self.set_text_editing(True)
-        self.update_labeling_instruction()
+        return DrawModeController(self).set_edit_mode()
 
     def _enter_edit_mode_from_toolbar(self):
-        """Toolbar/menu entry for "Edit Object": ask for a login first."""
-        if not self._ensure_operator_for_edit():
-            return
-        self.set_edit_mode()
+        return DrawModeController(self)._enter_edit_mode_from_toolbar()
 
     def toggle_brush_mode(self, checked: bool) -> None:
-        """Enable or disable brush editing for a polygon.
-
-        Enabling requires exactly one selected polygon and switches the
-        canvas to edit mode before brush editing starts.
-
-        Args:
-            checked: ``True`` when the toolbar toggle is switched on.
-        """
-        if checked:
-            if not self._ensure_operator_for_edit():
-                self.actions.edit_brush_mode.setChecked(False)
-                return
-            selected_shapes = self.canvas.selected_shapes
-            if (
-                len(selected_shapes) != 1
-                or selected_shapes[0].shape_type != "polygon"
-                or selected_shapes[0].locked
-            ):
-                self.actions.edit_brush_mode.setChecked(False)
-                return
-            if self.canvas.current is not None:
-                self.canvas.current = None
-                self.canvas.set_hiding(False)
-                self.canvas.drawing_polygon.emit(False)
-                self.canvas.update()
-            self.toggle_draw_mode(True, preserve_brush_mode=True)
-            self.set_text_editing(True)
-            self.canvas.set_brush_mode(True)
-            self.update_labeling_instruction()
-            return
-
-        if getattr(self.canvas, "is_brush_mode", False):
-            self.canvas.set_brush_mode(False)
-        self.update_labeling_instruction()
+        return DrawModeController(self).toggle_brush_mode(checked)
 
     def on_brush_mode_changed(self, enabled: bool) -> None:
-        """Synchronize brush action and lock the active shape selection."""
-        self.actions.edit_brush_mode.setChecked(enabled)
-        self.label_list.setEnabled(not enabled)
+        return DrawModeController(self).on_brush_mode_changed(enabled)
 
     def update_file_menu(self):
         current = self.filename
@@ -1731,132 +849,37 @@ class LabelingWidget(LabelDialog):
     # Right side tab helpers
     # ------------------------------------------------------------------
     def _tab_key_for_page(self, page):
-        for key, _title, candidate in self._tab_pages:
-            if candidate is page:
-                return key
-        return None
+        return RightSidebarTabs(self)._tab_key_for_page(page)
 
     def _rebuild_right_tabs(self):
-        tabs = getattr(self, "right_tabs", None)
-        if tabs is None:
-            return
-        pages = getattr(self, "_tab_pages", ())
-        current_page = tabs.currentWidget()
-        tabs.blockSignals(True)
-        try:
-            while tabs.count():
-                tabs.removeTab(0)
-            for key, title, page in pages:
-                if key in self._hidden_tabs:
-                    continue
-                page.setParent(tabs)
-                tabs.addTab(page, title)
-            if current_page is not None and tabs.indexOf(current_page) >= 0:
-                tabs.setCurrentWidget(current_page)
-        finally:
-            tabs.blockSignals(False)
+        return RightSidebarTabs(self)._rebuild_right_tabs()
 
     def _apply_right_tabs_config(self):
-        pages = getattr(self, "_tab_pages", ())
-        valid_keys = {key for key, _title, _page in pages}
-        section = self._config.get("right_tabs")
-        hidden = section.get("hidden") if isinstance(section, dict) else None
-        hidden_keys = []
-        if isinstance(hidden, (list, tuple)):
-            hidden_keys = [
-                str(item) for item in hidden if str(item) in valid_keys
-            ]
-        elif isinstance(hidden, str):
-            hidden_keys = [hidden] if hidden in valid_keys else []
-        hidden_keys = [key for key in hidden_keys if key in valid_keys]
-        if len(hidden_keys) >= len(valid_keys) and valid_keys:
-            hidden_keys = sorted(valid_keys - {pages[0][0]})
-        self._hidden_tabs = set(hidden_keys)
-        self._rebuild_right_tabs()
+        return RightSidebarTabs(self)._apply_right_tabs_config()
 
     def set_right_tab_visible(self, key, visible):
-        pages = getattr(self, "_tab_pages", ())
-        valid_keys = {page_key for page_key, _title, _page in pages}
-        if key not in valid_keys:
-            return
-        hidden = set(self._hidden_tabs)
-        if visible:
-            hidden.discard(key)
-        else:
-            if len(valid_keys) - len(hidden) <= 1:
-                self.status(self.tr("At least one panel must stay visible"))
-                return
-            hidden.add(key)
-        self._hidden_tabs = hidden
-        self._rebuild_right_tabs()
-        section = self._config.setdefault("right_tabs", {})
-        if isinstance(section, dict):
-            section["hidden"] = sorted(self._hidden_tabs)
+        return RightSidebarTabs(self).set_right_tab_visible(key, visible)
 
     def show_right_tab(self, key):
-        if key in self._hidden_tabs:
-            self.set_right_tab_visible(key, True)
-        pages = getattr(self, "_tab_pages", ())
-        for page_key, _title, page in pages:
-            if page_key != key:
-                continue
-            index = self.right_tabs.indexOf(page)
-            if index >= 0:
-                self.right_tabs.setCurrentIndex(index)
-            return
+        return RightSidebarTabs(self).show_right_tab(key)
 
     def pop_right_tabs_menu(self, point):
-        if not hasattr(self, "right_tabs"):
-            return
-        menu = QtWidgets.QMenu(self.right_tabs)
-        for key, title, _page in self._tab_pages:
-            action = menu.addAction(title)
-            action.setCheckable(True)
-            action.setChecked(key not in self._hidden_tabs)
-            action.setData(key)
-        chosen = menu.exec(self.right_tabs.tabBar().mapToGlobal(point))
-        if chosen is None:
-            return
-        self.set_right_tab_visible(chosen.data(), chosen.isChecked())
+        return RightSidebarTabs(self).pop_right_tabs_menu(point)
 
     def show_flags_page(self):
-        self.show_right_tab("flags")
+        return RightSidebarTabs(self).show_flags_page()
 
     def _on_right_tab_changed(self, _index):
-        page = self.right_tabs.currentWidget()
-        if page is getattr(self, "statistics_table", None):
-            self._refresh_statistics()
+        return RightSidebarTabs(self)._on_right_tab_changed(_index)
 
     def _refresh_statistics(self):
-        table = getattr(self, "statistics_table", None)
-        if table is None:
-            return
-        try:
-            table.refresh(self.image_list, self.output_dir)
-        except Exception:  # noqa: BLE001
-            logger.warning("Failed to refresh statistics table", exc_info=True)
+        return RightSidebarTabs(self)._refresh_statistics()
 
     def _refresh_statistics_if_visible(self):
-        table = getattr(self, "statistics_table", None)
-        if table is None or self.right_tabs.currentWidget() is not table:
-            return
-        self._refresh_statistics()
+        return RightSidebarTabs(self)._refresh_statistics_if_visible()
 
     def _on_statistics_filter_requested(self, statistics_filter):
-        """Turn a statistics-table click into a search query."""
-        parts = []
-        if statistics_filter.objectless:
-            parts.append("shape::0")
-        elif statistics_filter.label:
-            parts.append(
-                "label::" + escape_query_value(statistics_filter.label)
-            )
-        if statistics_filter.split:
-            parts.append("split::" + statistics_filter.split)
-        if not parts:
-            return
-        self.file_search.setText(",".join(parts))
-        self.file_search_changed()
+        return RightSidebarTabs(self)._on_statistics_filter_requested(statistics_filter)
 
     def copy_file_path(self, file_path):
         popup = Popup(
@@ -1867,208 +890,58 @@ class LabelingWidget(LabelDialog):
         popup.show_popup(self, copy_msg=file_path, position="default")
 
     def _label_file_checked(self, label_file):
-        if not QtCore.QFile.exists(label_file):
-            return False
-        try:
-            buffer = ""
-            with open(label_file, "r", encoding="utf-8") as f:
-                while True:
-                    chunk = f.read(8192)
-                    if not chunk:
-                        break
-                    buffer = buffer[-32:] + chunk
-                    match = CHECKED_FIELD_PATTERN.search(buffer)
-                    if match:
-                        return (
-                            "failed"
-                            if match.group(1) == '"failed"'
-                            else match.group(1) == "true"
-                        )
-        except Exception:
-            return False
-        return False
+        return DocumentStatus(self)._label_file_checked(label_file)
 
     def _set_file_item_checked(self, item, checked, shape_count=None):
-        if item is None:
-            return
-        if (
-            item.data(Qt.ItemDataRole.UserRole) == checked
-            and shape_count is None
-        ):
-            return
-        item.setData(Qt.ItemDataRole.UserRole, checked)
-        item.setToolTip(
-            f"{item.text()}\n{self._annotation_checked_text(checked)}"
-        )
-        row = self.files.row_of(item.text())
-        if row is not None:
-            self.files.apply_row_state(row, checked, shape_count)
+        return DocumentStatus(self)._set_file_item_checked(item, checked, shape_count)
 
     def _file_item_annotation_checked(self, item):
-        return item.data(Qt.ItemDataRole.UserRole) in (True, "failed")
+        return DocumentStatus(self)._file_item_annotation_checked(item)
 
     def _create_file_list_item(self, file, label_file=None):
-        if label_file is None:
-            label_file = self.files.label_file_for(file)
-        return self.files.build_row_cells(file, label_file)[FILE_COL_NAME]
+        return DocumentStatus(self)._create_file_list_item(file, label_file)
 
     def _current_file_item(self):
-        if str(self.filename) not in self.fn_to_index:
-            return None
-        return self.file_list_widget.item(self.fn_to_index[str(self.filename)])
+        return DocumentStatus(self)._current_file_item()
 
     def _annotation_checked(self):
-        checked = self.other_data.get(CHECKED_FIELD, False)
-        return "failed" if checked == "failed" else checked is True
+        return DocumentStatus(self)._annotation_checked()
 
     def _annotation_checked_text(self, checked=None):
-        if checked is None:
-            checked = self._annotation_checked()
-        return {
-            False: self.tr("Unchecked"),
-            True: self.tr("Check Passed"),
-            "failed": self.tr("Check Failed"),
-        }[checked]
+        return DocumentStatus(self)._annotation_checked_text(checked)
 
     def _update_annotation_checked_action(self):
-        if not hasattr(self, "actions"):
-            return
-        checked = self._annotation_checked()
-        for action, status in (
-            (self.actions.clear_annotation_checked, False),
-            (self.actions.toggle_annotation_checked, True),
-            (self.actions.fail_annotation_checked, "failed"),
-        ):
-            action.setChecked(checked == status)
+        return DocumentStatus(self)._update_annotation_checked_action()
 
     def _update_file_row_after_save(self, shape_count):
-        path = str(self.image_path)
-        item = self.files.item_by_path(path)
-        if item is None:
-            return
-        item.setCheckState(Qt.CheckState.Checked)
-        self._set_file_item_checked(
-            item, self._annotation_checked(), shape_count
-        )
+        return DocumentStatus(self)._update_file_row_after_save(shape_count)
 
     def _update_current_file_checked_item(self):
-        item = self._current_file_item()
-        if item is not None:
-            self._set_file_item_checked(
-                item, self._annotation_checked(), len(self.canvas.shapes)
-            )
+        return DocumentStatus(self)._update_current_file_checked_item()
 
     def _sync_annotation_checked_state(self):
-        self.canvas_adjustment.set_status(self._annotation_checked())
-        self._update_annotation_checked_action()
-        self._update_current_file_checked_item()
-        self.update_progress_title()
+        return DocumentStatus(self)._sync_annotation_checked_state()
 
     def set_annotation_checked(self, checked):
-        if self.filename is None or self.image.isNull():
-            return
-        self.other_data[CHECKED_FIELD] = (
-            "failed" if checked == "failed" else bool(checked)
-        )
-        self._sync_annotation_checked_state()
-        label_file = self.get_label_file()
-        if self.save_labels(label_file):
-            self.set_clean()
+        return DocumentStatus(self).set_annotation_checked(checked)
 
-    def _append_filter_submenus(
-        self, parent_menu, prepend=False, after_filter_actions=None
-    ):
-        label_menu = QtWidgets.QMenu(self.tr("Filter by Label"), parent_menu)
-        gid_menu = QtWidgets.QMenu(self.tr("Filter by Group ID"), parent_menu)
-        if prepend and parent_menu.actions():
-            first_action = parent_menu.actions()[0]
-            parent_menu.insertMenu(first_action, label_menu)
-            parent_menu.insertMenu(first_action, gid_menu)
-            parent_menu.insertSeparator(first_action)
-            if after_filter_actions:
-                for action in after_filter_actions:
-                    parent_menu.insertAction(first_action, action)
-                parent_menu.insertSeparator(first_action)
-        else:
-            parent_menu.addSeparator()
-            parent_menu.addMenu(label_menu)
-            parent_menu.addMenu(gid_menu)
-            if after_filter_actions:
-                parent_menu.addSeparator()
-                utils.add_actions(parent_menu, after_filter_actions)
-        return label_menu, gid_menu
+    def _append_filter_submenus(self, parent_menu, prepend=False, after_filter_actions=None):
+        return LabelFilterController(self)._append_filter_submenus(parent_menu, prepend, after_filter_actions)
 
     def _populate_label_filter_menu(self, menu):
-        menu.clear()
-        action_group = QtGui.QActionGroup(menu)
-        action_group.setExclusive(True)
-        current_label = self.label_filter_combobox.text_box.currentText()
-        for label in self.label_filter_combobox.items:
-            text = self.tr("All Labels") if label == "" else label
-            action = menu.addAction(text)
-            action.setCheckable(True)
-            action.setChecked(label == current_label)
-            action.triggered.connect(
-                functools.partial(self.set_label_filter_value, label)
-            )
-            action_group.addAction(action)
+        return LabelFilterController(self)._populate_label_filter_menu(menu)
 
     def _populate_gid_filter_menu(self, menu):
-        menu.clear()
-        action_group = QtGui.QActionGroup(menu)
-        action_group.setExclusive(True)
-        current_gid = self.gid_filter_combobox.gid_box.currentText()
-        for gid in self.gid_filter_combobox.items:
-            text = self.tr("All Group IDs") if gid == "-1" else gid
-            action = menu.addAction(text)
-            action.setCheckable(True)
-            action.setChecked(gid == current_gid)
-            action.triggered.connect(
-                functools.partial(self.set_gid_filter_value, gid)
-            )
-            action_group.addAction(action)
+        return LabelFilterController(self)._populate_gid_filter_menu(menu)
 
     def refresh_filter_menus(self):
-        self.update_combo_box(block_signal=True)
-        self.update_gid_box(block_signal=True)
+        return LabelFilterController(self).refresh_filter_menus()
 
-        menus = [
-            (self.canvas_label_filter_menu_0, self.canvas_gid_filter_menu_0),
-            (self.canvas_label_filter_menu_1, self.canvas_gid_filter_menu_1),
-        ]
-        for label_menu, gid_menu in menus:
-            if label_menu is not None:
-                self._populate_label_filter_menu(label_menu)
-            if gid_menu is not None:
-                self._populate_gid_filter_menu(gid_menu)
-
-    def set_label_filter_value(
-        self, label, _checked=False, block_signal=False
-    ):
-        index = self.label_filter_combobox.text_box.findText(str(label))
-        if index < 0:
-            index = self.label_filter_combobox.text_box.findText("")
-        if index >= 0:
-            blocker = None
-            if block_signal:
-                blocker = QtCore.QSignalBlocker(
-                    self.label_filter_combobox.text_box
-                )
-            self.label_filter_combobox.text_box.setCurrentIndex(index)
-            del blocker
+    def set_label_filter_value(self, label, _checked=False, block_signal=False):
+        return LabelFilterController(self).set_label_filter_value(label, _checked, block_signal)
 
     def set_gid_filter_value(self, gid, _checked=False, block_signal=False):
-        index = self.gid_filter_combobox.gid_box.findText(str(gid))
-        if index < 0:
-            index = self.gid_filter_combobox.gid_box.findText("-1")
-        if index >= 0:
-            blocker = None
-            if block_signal:
-                blocker = QtCore.QSignalBlocker(
-                    self.gid_filter_combobox.gid_box
-                )
-            self.gid_filter_combobox.gid_box.setCurrentIndex(index)
-            del blocker
+        return LabelFilterController(self).set_gid_filter_value(gid, _checked, block_signal)
 
     def validate_label(self, label):
         return ObjectEditor(self).validate_label(label)
@@ -2250,139 +1123,28 @@ class LabelingWidget(LabelDialog):
         self._refresh_shape_filters()
 
     def _relation_data_for_shapes(self, shapes):
-        other_data = dict(self.other_data)
-        if "relations" in other_data:
-            ids = {shape.get("shape_id") for shape in shapes}
-            other_data["relations"] = [
-                relation
-                for relation in self.canvas.relations
-                if relation.get("subject_id") in ids
-                and relation.get("object_id") in ids
-            ]
-        return other_data
+        return RelationController(self)._relation_data_for_shapes(shapes)
 
     def create_relation(self, _checked=False):
-        if len(self.canvas.selected_shapes) == 2:
-            self._relation_dialog()
+        return RelationController(self).create_relation(_checked)
 
     def edit_relation(self, index):
-        if 0 <= index < len(self.canvas.relations):
-            self._relation_dialog(index)
+        return RelationController(self).edit_relation(index)
 
     def delete_selected_relation(self):
-        selected = self.canvas.selected_relation
-        for index, relation in enumerate(self.canvas.relations):
-            if relation is selected:
-                del self.canvas.relations[index]
-                self.canvas.selected_relation = None
-                self.other_data["relations"] = self.canvas.relations
-                self.other_data[CHECKED_FIELD] = False
-                self._sync_annotation_checked_state()
-                self.canvas.update()
-                self.set_dirty()
-                return
+        return RelationController(self).delete_selected_relation()
 
     def manage_relations(self, _checked=False):
-        dialog = RelationManagerDialog(self)
+        return RelationController(self).manage_relations(_checked)
 
-        def preview_selected(index):
-            self.canvas.preview_relation = (
-                self.canvas.relations[index]
-                if index is not None
-                and 0 <= index < len(self.canvas.relations)
-                else None
-            )
-            self.canvas.update()
-
-        def edit_selected(index):
-            self.edit_relation(index)
-            dialog.refresh(self.canvas.shapes, self.canvas.relations)
-
-        dialog.preview_requested.connect(preview_selected)
-        dialog.edit_requested.connect(edit_selected)
-        dialog.refresh(self.canvas.shapes, self.canvas.relations)
-        try:
-            dialog.exec()
-        finally:
-            self.canvas.preview_relation = None
-            self.canvas.update()
-
-    def _relation_dialog(self, index=None):  # noqa: C901
-        shapes = [shape for shape in self.canvas.shapes if shape.points]
-        if len(shapes) < 2:
-            self._show_relation_message(
-                QtWidgets.QMessageBox.Icon.Information,
-                self.tr("At least two shapes are required."),
-            )
-            return
-        relation = self.canvas.relations[index] if index is not None else None
-        dialog = RelationDialog(
-            shapes, self.canvas.selected_shapes, relation, parent=self
-        )
-        while True:
-            result = dialog.exec()
-            if result == 2:
-                del self.canvas.relations[index]
-                if self.canvas.selected_relation is relation:
-                    self.canvas.selected_relation = None
-                break
-            if result != QtWidgets.QDialog.DialogCode.Accepted:
-                return
-            subject_shape, object_shape, text = dialog.values()
-            if subject_shape is object_shape or not text:
-                self._show_relation_message(
-                    QtWidgets.QMessageBox.Icon.Warning,
-                    self.tr(
-                        "Choose two different shapes and enter a relation label."
-                    ),
-                    dialog,
-                )
-                continue
-            for shape in (subject_shape, object_shape):
-                if not shape.other_data.get("shape_id"):
-                    shape.other_data["shape_id"] = uuid4().hex
-                    for backup in self.canvas.shapes_backups:
-                        for previous in backup:
-                            if (
-                                previous._relation_identity
-                                == shape._relation_identity
-                            ):
-                                previous.other_data["shape_id"] = (
-                                    shape.other_data["shape_id"]
-                                )
-            updated = {
-                "subject_id": subject_shape.other_data["shape_id"],
-                "object_id": object_shape.other_data["shape_id"],
-                "label": text,
-                "score": None,
-            }
-            if relation is not None:
-                if all(
-                    updated[key] == relation.get(key)
-                    for key in ("subject_id", "object_id", "label")
-                ):
-                    return
-                self.canvas.relations[index] = updated
-                if self.canvas.selected_relation is relation:
-                    self.canvas.selected_relation = updated
-            else:
-                self.canvas.relations.append(updated)
-            break
-        self.other_data["relations"] = self.canvas.relations
-        self.other_data[CHECKED_FIELD] = False
-        self._sync_annotation_checked_state()
-        self.canvas.update()
-        self.set_dirty()
+    def _relation_dialog(self, index=None):
+        return RelationController(self)._relation_dialog(index)
 
     def _show_relation_message(self, icon, text, parent=None):
-        show_relation_message(icon, text, parent or self)
+        return RelationController(self)._show_relation_message(icon, text, parent)
 
     def on_canvas_shapes_deleted(self, shapes):
-        self.remove_labels(shapes)
-        self.set_dirty()
-        if self.no_shape():
-            for action in self.actions.on_shapes_present:
-                action.setEnabled(False)
+        return RelationController(self).on_canvas_shapes_deleted(shapes)
 
     def load_shapes(self, shapes, replace=True, update_last_label=True):
         self._no_selection_slot = True
@@ -2412,131 +1174,22 @@ class LabelingWidget(LabelDialog):
             self.flag_widget.addItem(item)
 
     def _sync_label_list_visibility(self, get_visible):
-        with QtCore.QSignalBlocker(self.unique_label_list):
-            for row in range(self.unique_label_list.count()):
-                item = self.unique_label_list.item(row)
-                visible = self.label_info.get(
-                    item.data(Qt.ItemDataRole.UserRole), {}
-                ).get("visible", True)
-                item.setCheckState(
-                    Qt.CheckState.Checked
-                    if visible
-                    else Qt.CheckState.Unchecked
-                )
-        model = self.label_list.model()
-        blocker = QtCore.QSignalBlocker(model)
-        self.label_list.setUpdatesEnabled(False)
-        try:
-            for item in self.label_list:
-                is_visible = bool(get_visible(item))
-                check_state = (
-                    Qt.CheckState.Checked
-                    if is_visible
-                    else Qt.CheckState.Unchecked
-                )
-                if item.checkState() != check_state:
-                    item.setCheckState(check_state)
-                shape = item.shape()
-                shape.visible = is_visible
-                self.canvas.visible[shape] = is_visible
-        finally:
-            self.label_list.setUpdatesEnabled(True)
-            del blocker
-        self.canvas.update()
-        self._update_select_toggle_button_tooltip()
-        if (
-            hasattr(self, "navigator_dialog")
-            and self.navigator_dialog.isVisible()
-        ):
-            self.update_navigator_shapes()
+        return LabelFilterController(self)._sync_label_list_visibility(get_visible)
 
     def _refresh_shape_filters(self):
-        self.update_combo_box(block_signal=True)
-        self.update_gid_box(block_signal=True)
-        current_gid = self.gid_filter_combobox.gid_box.currentText()
-        if current_gid and current_gid != "-1":
-            self.gid_selection_changed(
-                self.gid_filter_combobox.gid_box.currentIndex()
-            )
-            return
-        current_label = self.label_filter_combobox.text_box.currentText()
-        if current_label:
-            self.text_selection_changed(
-                self.label_filter_combobox.text_box.currentIndex()
-            )
-            return
-        self.apply_label_visibility()
+        return LabelFilterController(self)._refresh_shape_filters()
 
     def set_label_visibility(self, label, visible):
-        if label not in self.label_info:
-            self.label_info[label] = dict(
-                delete=False,
-                value=None,
-                color=list(self._get_rgb_by_label(label)),
-                opacity=LABEL_OPACITY,
-                visible=visible,
-            )
-        else:
-            self.label_info[label]["visible"] = visible
-        self._refresh_shape_filters()
+        return LabelFilterController(self).set_label_visibility(label, visible)
 
     def apply_label_visibility(self):
-        self._sync_label_list_visibility(
-            lambda item: self.label_info.get(item.shape().label, {}).get(
-                "visible", True
-            )
-        )
+        return LabelFilterController(self).apply_label_visibility()
 
     def update_combo_box(self, block_signal=False):
-        current_label = self.label_filter_combobox.text_box.currentText()
-
-        # Get the unique labels and add them to the Combobox.
-        labels_list = []
-        for item in self.label_list:
-            label = item.shape().label
-            labels_list.append(str(label))
-        unique_labels_list = list(set(labels_list))
-
-        # Add a null row for showing all the labels
-        unique_labels_list.append("")
-        unique_labels_list.sort()
-        blocker = None
-        if block_signal:
-            blocker = QtCore.QSignalBlocker(
-                self.label_filter_combobox.text_box
-            )
-        self.label_filter_combobox.update_items(unique_labels_list)
-        if current_label in unique_labels_list:
-            self.set_label_filter_value(
-                current_label, block_signal=block_signal
-            )
-        else:
-            self.set_label_filter_value("", block_signal=block_signal)
-        del blocker
+        return LabelFilterController(self).update_combo_box(block_signal)
 
     def update_gid_box(self, block_signal=False):
-        current_gid = self.gid_filter_combobox.gid_box.currentText()
-
-        # Get the unique group ids and add them to the Combobox.
-        gid_list = []
-        for item in self.label_list:
-            gid = item.shape().group_id
-            if gid is not None:
-                gid_list.append(str(gid))
-        unique_gid_list = list(set(gid_list))
-
-        # Add a null row for showing all the labels
-        unique_gid_list.append("-1")
-        unique_gid_list.sort()
-        blocker = None
-        if block_signal:
-            blocker = QtCore.QSignalBlocker(self.gid_filter_combobox.gid_box)
-        self.gid_filter_combobox.update_items(unique_gid_list)
-        if current_gid in unique_gid_list:
-            self.set_gid_filter_value(current_gid, block_signal=block_signal)
-        else:
-            self.set_gid_filter_value("-1", block_signal=block_signal)
-        del blocker
+        return LabelFilterController(self).update_gid_box(block_signal)
 
     def save_labels(self, filename):
         label_file = LabelFile()
@@ -2594,40 +1247,10 @@ class LabelingWidget(LabelDialog):
             return False
 
     def duplicate_selected_shape(self):
-        added_shapes = self.canvas.duplicate_selected_shapes()
-        self.label_list.clearSelection()
-        self.label_list.setUpdatesEnabled(False)
-        try:
-            for shape in added_shapes:
-                self.add_label(shape, refresh_filters=False)
-        finally:
-            self.label_list.setUpdatesEnabled(True)
-        if added_shapes:
-            self._refresh_shape_filters()
-        self.set_dirty()
+        return ShapeCommands(self).duplicate_selected_shape()
 
     def paste_selected_shape(self):
-        if self._config["system_clipboard"]:
-            clipboard = QtWidgets.QApplication.clipboard()
-            json_str = clipboard.text()
-            shapes = []
-            try:
-                shapeDicts = json.loads(json_str)
-                for shapeDict in shapeDicts:
-                    shapes.append(Shape().load_from_dict(shapeDict))
-            except json.JSONDecodeError as e:
-                self.error_message(
-                    self.tr("Error pasting shapes"),
-                    self.tr("Error decoding shapes: %s") % str(e),
-                )
-                return
-        else:
-            shapes = self._copied_shapes
-        shapes = self.canvas.prepare_pasted_shapes(
-            shapes, self._copied_group_id
-        )
-        self.load_shapes(shapes, replace=False)
-        self.set_dirty()
+        return ShapeCommands(self).paste_selected_shape()
 
     def toggle_system_clipboard(self, system_clipboard):
         self._config["system_clipboard"] = system_clipboard
@@ -2636,20 +1259,7 @@ class LabelingWidget(LabelDialog):
         )
 
     def copy_selected_shape(self):
-        group_shapes = self.canvas._active_group_shapes()
-        self._copied_group_id = (
-            self.canvas._selected_group_id if group_shapes else None
-        )
-        if self._config["system_clipboard"]:
-            clipboard = QtWidgets.QApplication.clipboard()
-            clipboard.setText(
-                json.dumps([s.to_dict() for s in self.canvas.selected_shapes])
-            )
-        else:
-            self._copied_shapes = [
-                s.copy() for s in self.canvas.selected_shapes
-            ]
-            self.actions.paste.setEnabled(len(self._copied_shapes) > 0)
+        return ShapeCommands(self).copy_selected_shape()
 
     def text_selection_changed(self, index):
         label = self.label_filter_combobox.text_box.itemText(index)
@@ -2874,17 +1484,7 @@ class LabelingWidget(LabelDialog):
         return CanvasNavigation(self).set_canvas_params(key, value)
 
     def open_settings_dialog(self, _checked=False, field_key=None):
-        if self._settings_controller is None:
-            return
-        if self._settings_dialog is None:
-            self._settings_dialog = SettingsDialog(
-                self, self._settings_controller
-            )
-        if field_key is not None:
-            self._settings_dialog.show_field(field_key)
-        self._settings_dialog.show()
-        self._settings_dialog.raise_()
-        self._settings_dialog.activateWindow()
+        return AppearanceController(self).open_settings_dialog(_checked, field_key)
 
     def add_point_to_edge(self):
         shape = self.canvas.prev_h_shape
@@ -3007,38 +1607,10 @@ class LabelingWidget(LabelDialog):
         return super().eventFilter(obj, event)
 
     def hide_selected_polygons(self):
-        shapes_to_hide = []
-        for item in self.label_list:
-            if item.shape().selected:
-                item.setCheckState(Qt.CheckState.Unchecked)
-                item.shape().visible = False
-                shapes_to_hide.append(item.shape())
-
-        self.selected_polygon_stack.extend(shapes_to_hide)
-        self.canvas.update()
-        if (
-            hasattr(self, "navigator_dialog")
-            and self.navigator_dialog.isVisible()
-        ):
-            self.update_navigator_shapes()
+        return ShapeCommands(self).hide_selected_polygons()
 
     def show_hidden_polygons(self):
-        if self.selected_polygon_stack:
-            shape_to_show = self.selected_polygon_stack.pop()
-            item = self.label_list.find_item_by_shape(shape_to_show)
-            if item:
-                item.setCheckState(Qt.CheckState.Checked)
-                shape_to_show.visible = True
-                self.canvas.update()
-                if (
-                    hasattr(self, "navigator_dialog")
-                    and self.navigator_dialog.isVisible()
-                ):
-                    self.update_navigator_shapes()
-            else:
-                logger.warning(
-                    f"Shape associated with the hidden item was not found in label list, could not show."
-                )
+        return ShapeCommands(self).show_hidden_polygons()
 
     def get_next_files(self, filename, num_files):
         """Get the next files in the list."""
@@ -3356,53 +1928,13 @@ class LabelingWidget(LabelDialog):
         return FileSession(self).current_path()
 
     def toggle_visibility_shapes(self, value):
-        for index, item in enumerate(self.label_list):
-            item.setCheckState(
-                Qt.CheckState.Checked if value else Qt.CheckState.Unchecked
-            )
-            self.label_list[index].shape().visible = True if value else False
-        self._config["show_shapes"] = value
-        self._update_select_toggle_button_tooltip()
-        if (
-            hasattr(self, "navigator_dialog")
-            and self.navigator_dialog.isVisible()
-        ):
-            self.update_navigator_shapes()
+        return ShapeCommands(self).toggle_visibility_shapes(value)
 
     def remove_selected_point(self):
-        self.canvas.remove_selected_point()
-        self.canvas.update()
-        if self.canvas.h_shape is not None and not self.canvas.h_shape.points:
-            self.canvas.delete_shape(self.canvas.h_shape)
-            self.remove_labels([self.canvas.h_shape])
-            self.set_dirty()
-            if self.no_shape():
-                for action in self.actions.on_shapes_present:
-                    action.setEnabled(False)
+        return ShapeCommands(self).remove_selected_point()
 
     def delete_selected_shape(self):
-        group_shapes = self.canvas._active_group_shapes()
-        if group_shapes:
-            answer = QtWidgets.QMessageBox.warning(
-                self,
-                self.tr("Delete Group"),
-                self.tr(
-                    "Deleting this group will remove %d shapes. "
-                    "This action cannot be undone. Do you want to continue?"
-                )
-                % len(group_shapes),
-                QtWidgets.QMessageBox.StandardButton.Yes
-                | QtWidgets.QMessageBox.StandardButton.No,
-                QtWidgets.QMessageBox.StandardButton.No,
-            )
-            if answer != QtWidgets.QMessageBox.StandardButton.Yes:
-                return
-        self.remove_labels(self.canvas.delete_selected())
-        self.shape_selection_changed(self.canvas.selected_shapes)
-        self.set_dirty()
-        if self.no_shape():
-            for action in self.actions.on_shapes_present:
-                action.setEnabled(False)
+        return ShapeCommands(self).delete_selected_shape()
 
     def copy_shape(self):
         self.canvas.end_move(copy=True)
@@ -3468,47 +2000,16 @@ class LabelingWidget(LabelDialog):
         return self.auto_labeling_handoff.finish_auto_labeling_object()
 
     def shape_text_changed(self):
-        description = self.shape_text_edit.toPlainText()
-        if self.canvas.current is not None:
-            self.canvas.current.description = description
-        elif self.canvas.editing() and len(self.canvas.selected_shapes) == 1:
-            self.canvas.selected_shapes[0].description = description
-        else:
-            self.other_data["description"] = description
-        self.set_dirty()
+        return ShapeCommands(self).shape_text_changed()
 
     def set_text_editing(self, enable):
-        """Set text editing."""
-        if enable:
-            # Enable text editing and set shape text from selected shape
-            if len(self.canvas.selected_shapes) == 1:
-                self.shape_text_label.setText(self.tr("Object Description"))
-                with QtCore.QSignalBlocker(self.shape_text_edit):
-                    self.shape_text_edit.setPlainText(
-                        self.canvas.selected_shapes[0].description or ""
-                    )
-            else:
-                self.shape_text_label.setText(self.tr("Image Description"))
-                with QtCore.QSignalBlocker(self.shape_text_edit):
-                    self.shape_text_edit.setPlainText(
-                        self.other_data.get("description", "")
-                    )
-            self.shape_text_edit.setDisabled(False)
-        else:
-            self.shape_text_edit.setDisabled(True)
-            self.shape_text_label.setText(self.tr("Description"))
-            with QtCore.QSignalBlocker(self.shape_text_edit):
-                self.shape_text_edit.setPlainText("")
+        return ShapeCommands(self).set_text_editing(enable)
 
     def group_selected_shapes(self):
-        self.canvas.group_selected_shapes()
-        self.set_dirty()
-        self.load_file(self.filename)
+        return ShapeCommands(self).group_selected_shapes()
 
     def ungroup_selected_shapes(self):
-        self.canvas.ungroup_selected_shapes()
-        self.set_dirty()
-        self.load_file(self.filename)
+        return ShapeCommands(self).ungroup_selected_shapes()
 
     def update_thumbnail_pixmap(self):
         if self.thumbnail_pixmap and not self.thumbnail_pixmap.isNull():
