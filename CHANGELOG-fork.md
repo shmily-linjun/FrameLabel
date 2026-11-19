@@ -106,9 +106,64 @@ fork.18 后用户报告两件事：
 
 #### 7.6 已知限制与后续事项
 
-- `LabelingWidget` 仍约 5592 行、299 个方法，剩余职责主要是标注数据编排（`add_label`/`load_shapes`/`save_labels`/`new_shape`）、属性面板（`update_attributes` 348 行）和缩放/导航；这些与画布、列表、标签对话框共享大量状态，本批未强拆，避免把耦合从“类内”变成“跨模块回环”。
-- 其它上帝类（本次仅指出、未处理）：`Canvas`（6269 行/216 方法）、`PPOCRTableBlockEditor`（1418 行/68 方法）、`PointCloudDialog`（3085 行/122 方法）、`VideoClassifierDialog`（2402 行/121 方法）、`UltralyticsDialog`（2473 行/78 方法，`init_train_settings` 393 行）、`PPOCRDialog`（2282 行/101 方法）、`ChatbotDialog`（2567 行、`__init__` 805 行）、`SettingsDialog`（2262 行/87 方法）、`LabelConverter`（2337 行/42 方法）、`ClassifierDialog`（1824 行/63 方法）、`AutoLabelingWidget`（1856 行/75 方法）。
+- `LabelingWidget` 仍约 5592 行、299 个方法，剩余职责主要是标注数据编排（`add_label`/`load_shapes`/`save_labels`/`new_shape`）、属性面板（`update_attributes` 348 行）和缩放/导航；这些与画布、列表、标签对话框共享大量状态，本批未强拆，避免把耦合从“类内”变成“跨模块回环”。（第二阶段已继续拆分，见第 8 节。）
+- 上帝类判定口径（用户 2026-11-19 明确）：**只有 `Canvas` 这类数千行、上百方法的类才算上帝类；1000–2000 行级类不算**。按此口径，本批未处理项只剩 `Canvas`（6269 行/216 方法）；此前列出的 `PPOCRTableBlockEditor`/`PointCloudDialog`/`VideoClassifierDialog`/`UltralyticsDialog`/`PPOCRDialog`/`ChatbotDialog`/`SettingsDialog`/`LabelConverter`/`ClassifierDialog`/`AutoLabelingWidget` 等 1000–3000 行级类不再按“上帝类”登记，只按普通维护风险对待。
 - 拆分后需要维护的契约：`FileListController`/`OperatorGate`/`AutoLabelingHandoff` 的 host 属性表（各模块 docstring 已列出）；`actions.builder` 新增编辑类动作时必须同步 `OperatorGate` 的 `OPERATOR_REQUIRED_ACTIONS`。
+
+### 8. 重构（不升版，T8 第二阶段）：继续拆分 `label_widget.py`
+
+#### 8.1 背景与原因
+
+第 7 节第一阶段把 `label_widget.py` 从 9507 行降到 5727 行，但 `LabelingWidget` 仍有约 5592 行、299 个方法：工具栏策略、属性面板、对象列表编辑、文件生命周期、缩放/导航、外观/状态、关系/过滤、绘制模式、专项窗口入口、引导标注循环、标注数据操作都还在同一个类里。用户 2026-11-19 要求继续拆分，并明确上帝类判定口径（见 7.6）。
+
+#### 8.2 修改与关键细节
+
+沿用第一阶段的“无状态控制器 + 宿主契约 + 同名一行委托”方式，本阶段新增 15 个模块：
+
+| 模块 | 职责 | 行数 |
+|---|---|---|
+| `labeling/annotation_editor.py` | `new_shape`/`add_label`/`load_labels`/`load_shapes`/`load_flags`/`save_labels`/`remove_labels`/颜色映射 | 344 |
+| `labeling/file_session.py` | 打开/上下一张/最近文件/另存/关闭/删除/导入与 `load_file` 加载流程 | 792 |
+| `labeling/object_editor.py` | 对象选择、标签重命名/批量编辑、锁定/显隐、全选与过滤提示 | 576 |
+| `labeling/canvas_navigation.py` | 缩放/平移状态、滚动条同步、fit、navigator | 421 |
+| `labeling/actions/toolbar.py` | 工具栏短标签、显隐偏好、几何刷新、`populate_mode_actions`、右侧栏开关 | 256 |
+| `labeling/widgets/attributes_panel.py` | 属性控件构建、取值、保存 | 554 |
+| `labeling/status.py` | 标题/状态栏/脏标记/审核状态 | 291 |
+| `labeling/appearance.py` | 主题/语言/快捷键/画布提示 | 264 |
+| `labeling/label_filters.py` | 类别与分组过滤、显隐 | 243 |
+| `labeling/shape_commands.py` | 剪贴板、删除、显隐、分组、合并 | 321 |
+| `labeling/draw_modes.py` | 绘制/编辑模式状态机与登录门禁 | 212 |
+| `labeling/special_workspaces.py` | 点云/PPOCR/VQA/分类/训练/管理器窗口入口 | 228 |
+| `labeling/label_loop.py` | 引导标注循环（含 `_find_next_label_loop_shape` 迁入） | 184 |
+| `labeling/relations.py` | 关系列表编辑与关系对话框 | 160 |
+| `labeling/right_sidebar.py` | 右侧 tab 显隐与统计点击反筛 | 150 |
+
+同时：`LABEL_COLORMAP` 移入 `labeling/constants.py`；`set_item_locked()` 移到 `widgets/label_list_widget.py`（`label_widget` 保留旧私有名别名）；`CHECKED_FIELD_PATTERN` 移入 `schema.py`。委托保持原签名（含 `set_zoom(value, *, pos=None)` 的关键字参数语义），服务在每次调用时以一行构造（无状态），因此既有的 fake 宿主测试无需改写。
+
+#### 8.3 涉及模块与文件
+
+- 新增：上表 15 个模块（其中 `actions/toolbar.py`、`widgets/attributes_panel.py` 为第一阶段目录的补充）；
+- 修改：`anylabeling/views/labeling/label_widget.py`（5727 → 1782 行，`LabelingWidget` 5592 → 1703 行）、`constants.py`、`schema.py`、`widgets/label_list_widget.py`；
+- 测试：`test_auto_training/test_dialog.py`、`test_labeling/test_classifier_window_lifecycle.py`、`test_labeling/test_label_widget_attributes.py` 的 `patch()` 目标改到新模块；其余测试未改（委托保持方法名与签名）。
+
+#### 8.4 行为、接口与兼容性影响
+
+- 用户可观察：无变化。窗口结构快照（控件树/动作表/菜单/工具栏/文件表/拆分器）与第一阶段后完全一致，仅 `actions` 上仍多出第一阶段引入的 12 个菜单专用动作属性。
+- 代码接口：`label_widget` 仍可导入 `LabelingWidget` 与各委托方法；`_find_next_label_loop_shape`、`_measure_text_width`、`_format_label_list_text`、`OPERATOR_*_ACTIONS`、`_set_label_list_item_lock` 仍在原模块再导出（测试与旧调用可用）。新增 15 个类，宿主契约见各模块 docstring。
+- 版本：仍为 `4.3.2+fork.19`，纯内部重构不升版。
+
+#### 8.5 实际验证内容
+
+- 基线工作树（HEAD `104ada3`）与重构后逐包 pytest 对比：失败集合一致（详见结构报告 §16；`tests/test_labeling` 仍为 214 passed / 6 failed，失败均为重构前已存在的测试债）。
+- 离屏 `MainWindow` 冒烟脚本全链路通过；窗口结构快照与样式快照比对无新增差异。
+- 静态检查：`compileall` 通过；自写 `symtable` 脚本确认各模块无“引用了但未定义/未导入”的全局名，`check_unused` 仅剩有意再导出项。
+- **未执行**：真实桌面交互、打包、`black`/`flake8`（环境未安装，按规则未自行安装）。
+
+#### 8.6 已知限制与后续事项
+
+- `label_widget.py` 剩余 1782 行中约 150 个是 2 行委托；真实实现集中在 `__init__`（238 行）、`new_shape`（102）、`closeEvent`（66）、`update_thumbnail_display`（47）、`_update_ui_density`（36）、`update_file_menu`（32）等窗口外壳/事件/缩略图逻辑，继续拆需要处理 Qt 事件覆盖与 UI 密度联动，收益递减。
+- 全项目按用户口径仅剩 `Canvas`（6269 行/216 方法）一个上帝类，未在本次处理。
+- `black`/`flake8` 未运行，格式与 lint 需在装有 dev 依赖的环境执行 `pre-commit run --all-files`。
 
 ---
 
