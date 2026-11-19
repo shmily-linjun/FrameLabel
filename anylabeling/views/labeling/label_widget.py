@@ -8,7 +8,6 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtWidgets import QLabel, QLineEdit
 
-from anylabeling.services.auto_labeling.types import AutoLabelingMode
 from anylabeling.services.auto_labeling import _THUMBNAIL_RENDER_MODELS
 from anylabeling.services.identity import get_operator_service
 
@@ -17,15 +16,14 @@ from . import utils
 from .actions.builder import build_actions
 from .actions.menus import build_menus
 from .actions.toolbar import ToolbarPolicy
+from .annotation_editor import AnnotationEditor
 from .appearance import AppearanceController
 from .auto_labeling_handoff import AutoLabelingHandoff
 from .canvas_navigation import CanvasNavigation
-from .constants import LABEL_OPACITY
 from .draw_modes import DrawModeController
 from .file_list import FileListController
 from .file_session import FileSession
 from .label_filters import LabelFilterController
-from .label_file import LabelFile, LabelFileError
 from .label_loop import LabelLoop
 from .label_loop import _find_next_label_loop_shape  # noqa: F401 (re-export)
 from .logger import logger
@@ -37,16 +35,15 @@ from .operator import (  # noqa: F401 (re-exported gate contract)
 )
 from .relations import RelationController
 from .right_sidebar import RightSidebarTabs
-from .schema import CHECKED_FIELD, IMAGE_TAGS_FIELD
+from .schema import IMAGE_TAGS_FIELD
 from .settings.runtime_applier import SettingsRuntimeApplier
-from .settings.schema import load_template_config
 from .shape import Shape
 from .shape_commands import ShapeCommands
 from .special_workspaces import SpecialWorkspaces
 from .status import DocumentStatus
-from .utils.label_text import (
+from .utils.label_text import (  # noqa: F401 (re-exported helpers)
     format_label_list_text as _format_label_list_text,
-    measure_text_width as _measure_text_width,  # noqa: F401 (re-export)
+    measure_text_width as _measure_text_width,
 )
 from .utils.qt import apply_application_font, new_icon_path
 from .utils.theme import get_theme
@@ -56,7 +53,6 @@ from .widgets import (
     LabelDialog,
     LabelFilterComboBox,
     LabelListWidget,
-    LabelListWidgetItem,
     NavigatorDialog,
     Popup,
     SearchBar,
@@ -74,9 +70,6 @@ from .widgets.workspace import (
     build_workspace,
     restore_session_state,
 )
-
-LABEL_COLORMAP = utils.label_colormap()
-
 
 # Backwards-compatible alias for the label manager / tests.
 _set_label_list_item_lock = set_item_locked
@@ -999,128 +992,19 @@ class LabelingWidget(LabelDialog):
         return ObjectEditor(self).shape_selection_changed(selected_shapes)
 
     def add_label(self, shape, update_last_label=True, refresh_filters=True):
-        if shape.label in self.unique_label_list.lock_states:
-            shape.locked = self.unique_label_list.lock_states[shape.label]
-        if shape.group_id is None:
-            text = shape.label
-        else:
-            text = f"{shape.label} ({shape.group_id})"
-        label_list_item = LabelListWidgetItem(text, shape)
-        if not self.unique_label_list.find_items_by_label(shape.label):
-            item = self.unique_label_list.create_item_from_label(shape.label)
-            self.unique_label_list.addItem(item)
-            rgb = self._get_rgb_by_label(shape.label)
-            self.unique_label_list.set_item_label(
-                item, shape.label, rgb, LABEL_OPACITY
-            )
-
-        if shape.label not in self.label_info:
-            rgb = self._get_rgb_by_label(shape.label)
-            self.label_info[shape.label] = dict(
-                delete=False,
-                value=None,
-                color=list(rgb),
-                opacity=LABEL_OPACITY,
-                visible=True,
-            )
-
-        # Add label to history if it is not a special label
-        if shape.label not in [
-            AutoLabelingMode.OBJECT,
-            AutoLabelingMode.ADD,
-            AutoLabelingMode.REMOVE,
-        ]:
-            self.label_dialog.add_label_history(
-                shape.label, update_last_label=update_last_label
-            )
-            if update_last_label and shape.group_id is not None:
-                self.label_dialog._last_gid = shape.group_id
-
-        for action in self.actions.on_shapes_present:
-            action.setEnabled(True)
-
-        self._update_shape_color(shape)
-        color = self._get_rgb_by_label(shape.label)
-        label_list_item.setText(
-            _format_label_list_text(shape.label, shape.group_id)
-        )
-        _set_label_list_item_lock(label_list_item, shape.locked)
-        label_list_item.setBackground(QtGui.QColor(*color, LABEL_OPACITY))
-        self.label_list.add_iem(label_list_item)
-        if refresh_filters:
-            self._refresh_shape_filters()
+        return AnnotationEditor(self).add_label(shape, update_last_label, refresh_filters)
 
     def load_labels(self, labels, clear_existing=True):
-        """
-        Load labels to the unique label list widget.
-
-        Args:
-            labels (list): List of label names to load
-            clear_existing (bool): Whether to clear existing labels before loading new ones
-        """
-        if not labels:
-            return
-
-        if clear_existing:
-            self.unique_label_list.clear()
-
-        for label in labels:
-            # Check if label already exists to avoid duplicates
-            if not self.unique_label_list.find_items_by_label(label):
-                item = self.unique_label_list.create_item_from_label(label)
-                self.unique_label_list.addItem(item)
-                rgb = self._get_rgb_by_label(label)
-                self.unique_label_list.set_item_label(
-                    item, label, rgb, LABEL_OPACITY
-                )
+        return AnnotationEditor(self).load_labels(labels, clear_existing)
 
     def _update_shape_color(self, shape):
-        r, g, b = self._get_rgb_by_label(shape.label)
-        shape_config = self._config["shape"]
-        defaults = load_template_config()["shape"]
-        colors = {
-            "line_color": (r, g, b, 255),
-            "vertex_fill_color": (r, g, b, 255),
-            "hvertex_fill_color": (255, 255, 255, 255),
-            "fill_color": (r, g, b, 128),
-            "select_line_color": (255, 255, 255, 255),
-            "select_fill_color": (r, g, b, 155),
-        }
-        for key, color in colors.items():
-            if shape_config[key] != defaults[key]:
-                color = shape_config[key]
-            setattr(shape, key, QtGui.QColor(*color))
+        return AnnotationEditor(self)._update_shape_color(shape)
 
     def _get_rgb_by_label(self, label, skip_label_info=False):
-        if label == "AUTOLABEL_ADD":
-            return (144, 238, 144)
-        if label == "AUTOLABEL_REMOVE":
-            return (255, 182, 193)
-        if label in self.label_info and not skip_label_info:
-            return tuple(self.label_info[label]["color"])
-        if self._config["shape_color"] == "auto":
-            if not self.unique_label_list.find_items_by_label(label):
-                item = self.unique_label_list.create_item_from_label(label)
-                self.unique_label_list.addItem(item)
-            item = self.unique_label_list.find_items_by_label(label)[0]
-            label_id = self.unique_label_list.indexFromItem(item).row() + 1
-            label_id += self._runtime_shape_color_shift
-            return LABEL_COLORMAP[label_id % len(LABEL_COLORMAP)]
-        if (
-            self._config["shape_color"] == "manual"
-            and self._config["label_colors"]
-            and label in self._config["label_colors"]
-        ):
-            return self._config["label_colors"][label]
-        if self._config["default_shape_color"]:
-            return self._config["default_shape_color"]
-        return (0, 255, 0)
+        return AnnotationEditor(self)._get_rgb_by_label(label, skip_label_info)
 
     def remove_labels(self, shapes):
-        for shape in shapes:
-            item = self.label_list.find_item_by_shape(shape)
-            self.label_list.remove_item(item)
-        self._refresh_shape_filters()
+        return AnnotationEditor(self).remove_labels(shapes)
 
     def _relation_data_for_shapes(self, shapes):
         return RelationController(self)._relation_data_for_shapes(shapes)
@@ -1147,31 +1031,10 @@ class LabelingWidget(LabelDialog):
         return RelationController(self).on_canvas_shapes_deleted(shapes)
 
     def load_shapes(self, shapes, replace=True, update_last_label=True):
-        self._no_selection_slot = True
-        self.label_list.setUpdatesEnabled(False)
-        try:
-            for shape in shapes:
-                self.add_label(
-                    shape,
-                    update_last_label=update_last_label,
-                    refresh_filters=False,
-                )
-            self.label_list.clearSelection()
-        finally:
-            self.label_list.setUpdatesEnabled(True)
-            self._no_selection_slot = False
-        self.canvas.load_shapes(shapes, replace=replace)
-        self._refresh_shape_filters()
+        return AnnotationEditor(self).load_shapes(shapes, replace, update_last_label)
 
     def load_flags(self, flags):
-        self.flag_widget.clear()
-        for key, flag in flags.items():
-            item = QtWidgets.QListWidgetItem(key)
-            item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-            item.setCheckState(
-                Qt.CheckState.Checked if flag else Qt.CheckState.Unchecked
-            )
-            self.flag_widget.addItem(item)
+        return AnnotationEditor(self).load_flags(flags)
 
     def _sync_label_list_visibility(self, get_visible):
         return LabelFilterController(self)._sync_label_list_visibility(get_visible)
@@ -1192,59 +1055,7 @@ class LabelingWidget(LabelDialog):
         return LabelFilterController(self).update_gid_box(block_signal)
 
     def save_labels(self, filename):
-        label_file = LabelFile()
-        # Get current shapes
-        # Excluding auto labeling special shapes
-        shapes = [
-            item.shape().to_dict()
-            for item in self.label_list
-            if item.shape().label
-            not in [
-                AutoLabelingMode.OBJECT,
-                AutoLabelingMode.ADD,
-                AutoLabelingMode.REMOVE,
-            ]
-        ]
-        flags = {}
-        for i in range(self.flag_widget.count()):
-            item = self.flag_widget.item(i)
-            key = item.text()
-            flag = item.checkState() == Qt.CheckState.Checked
-            flags[key] = flag
-        self.other_data[CHECKED_FIELD] = self._annotation_checked()
-        signature, allowed = self._prepare_attribution(shapes, flags)
-        if not allowed:
-            return False
-        try:
-            image_path = osp.relpath(self.image_path, osp.dirname(filename))
-            image_data = (
-                self.image_data if self._config["store_data"] else None
-            )
-            if osp.dirname(filename) and not osp.exists(osp.dirname(filename)):
-                os.makedirs(osp.dirname(filename))
-
-            label_file.save(
-                filename=filename,
-                shapes=shapes,
-                image_path=image_path,
-                image_data=image_data,
-                image_height=self.image.height(),
-                image_width=self.image.width(),
-                other_data=self._relation_data_for_shapes(shapes),
-                flags=flags,
-            )
-            self.label_file = label_file
-            self.operator_gate.baseline = signature
-            self.actions.save.setIcon(utils.new_icon("save-check"))
-            self._update_file_row_after_save(len(shapes))
-            # disable allows next and previous image to proceed
-            # self.filename = filename
-            return True
-        except LabelFileError as e:
-            self.error_message(
-                self.tr("Error saving label data"), self.tr("<b>%s</b>") % e
-            )
-            return False
+        return AnnotationEditor(self).save_labels(filename)
 
     def duplicate_selected_shape(self):
         return ShapeCommands(self).duplicate_selected_shape()
@@ -1292,107 +1103,7 @@ class LabelingWidget(LabelDialog):
 
     # Callback functions:
     def new_shape(self):
-        """Pop-up and give focus to the label editor.
-
-        position MUST be in global coordinates.
-        """
-        items = self.unique_label_list.selectedItems()
-        text = None
-        if items:
-            text = items[0].data(Qt.ItemDataRole.UserRole)
-        flags = {}
-        group_id = None
-        description = ""
-        difficult = False
-        kie_linking = []
-        review_status = "pending"
-
-        if self.canvas.shapes[-1].label in [
-            AutoLabelingMode.ADD,
-            AutoLabelingMode.REMOVE,
-        ]:
-            text = self.canvas.shapes[-1].label
-        elif (
-            self._config["display_label_popup"]
-            or not text
-            or self.canvas.shapes[-1].label == AutoLabelingMode.OBJECT
-        ):
-            last_label = self.find_last_label()
-            last_gid = (
-                self.find_last_gid()
-                if self._config["auto_use_last_gid"]
-                else None
-            )
-            if self.digit_to_label is not None:
-                text = self.digit_to_label
-                self.digit_to_label = None
-                if last_gid is not None:
-                    group_id = last_gid
-            elif self._config["auto_use_last_label"] and last_label:
-                text = last_label
-                if last_gid is not None:
-                    group_id = last_gid
-            else:
-                previous_text = self.label_dialog.edit.text()
-                (
-                    text,
-                    flags,
-                    group_id,
-                    description,
-                    difficult,
-                    kie_linking,
-                ) = self.label_dialog.pop_up(
-                    text,
-                    group_id=last_gid,
-                    move_mode=self._config.get("move_mode", "auto"),
-                )
-                review_status = self.label_dialog.get_review_status()
-                if not text:
-                    self.label_dialog.edit.setText(previous_text)
-
-        if text and not self.validate_label(text):
-            self.error_message(
-                self.tr("Invalid label"),
-                self.tr("Invalid label '{}' with validation type '{}'").format(
-                    text, self._config["validate_label"]
-                ),
-            )
-            text = ""
-            return
-
-        if self.attributes and text:
-            text = self.reset_attribute(text, self.canvas.shapes[-1])
-
-        if text:
-            self.label_list.clearSelection()
-            shape = self.canvas.set_last_label(text, flags, group_id)
-            shape.group_id = group_id
-            shape.description = description
-            if text not in [AutoLabelingMode.ADD, AutoLabelingMode.REMOVE]:
-                shape.label = text
-            shape.difficult = difficult
-            shape.kie_linking = kie_linking
-            shape.other_data["review_status"] = review_status
-            self.add_label(shape)
-            self.actions.edit_mode.setEnabled(True)
-            self.actions.undo_last_point.setEnabled(False)
-            self.actions.undo.setEnabled(True)
-            self.set_dirty()
-            if (
-                self.canvas.drawing()
-                and self.canvas.create_mode == "polygon"
-                and not self.actions.create_brush_polygon_mode.isEnabled()
-            ):
-                self.canvas._brush_drawing = True
-
-        else:
-            if self.canvas.is_magic_wand_mode:
-                self.canvas.shapes.pop()
-                self.canvas.shapes_backups.pop()
-                self.canvas.update()
-            else:
-                self.canvas.undo_last_line()
-                self.canvas.shapes_backups.pop()
+        return AnnotationEditor(self).new_shape()
 
     def show_line_length(self, length, pos):
         if self.canvas.create_mode == "linestrip":
