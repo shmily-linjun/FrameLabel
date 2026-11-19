@@ -40,6 +40,7 @@ from ..widgets import (
     CompareViewManager,
     CompareViewSlider,
     ImageTagsWidget,
+    LabelManagerPanel,
     OperatorBar,
 )
 from ..widgets.panel import HoverScrollBars, RoundedPanel
@@ -526,12 +527,18 @@ def build_workspace(host, scroll_area, instruction_layout):
     host.shape_attributes.hide()
     host.scroll_area.hide()
 
-    # ---- Right side: one tab panel with objects/classes/flags/description
+    # ---- Right side: one tab panel with objects/classes/attributes/notes
+    # The "Classes" tab hosts the label manager panel (formerly the modal
+    # "Label Change Manager" dialog); the plain class registry stays hidden.
     labels_panel = RoundedPanel()
     labels_panel_layout = QVBoxLayout(labels_panel)
     labels_panel_layout.setContentsMargins(0, 0, 0, 0)
     labels_panel_layout.setSpacing(0)
-    labels_panel_layout.addWidget(host.unique_label_list, 1)
+    host.label_manager_widget = LabelManagerPanel(host, labels_panel)
+    host.label_manager_widget.set_editing_enabled(
+        host._operator_edit_allowed()
+    )
+    labels_panel_layout.addWidget(host.label_manager_widget, 1)
 
     objects_panel = RoundedPanel()
     objects_panel_layout = QVBoxLayout(objects_panel)
@@ -658,7 +665,7 @@ def build_workspace(host, scroll_area, instruction_layout):
     right_sidebar_layout.addWidget(host.right_splitter, 1)
     host._apply_right_tabs_config()
     for area in (
-        host.unique_label_list,
+        host.label_manager_widget.table,
         host.label_list,
         host.file_list_widget,
         host.flag_widget,

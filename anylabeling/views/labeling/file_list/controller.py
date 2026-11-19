@@ -298,7 +298,14 @@ class FileListController:
             self.table.setItem(row, column, item)
         self.fn_to_index[file] = row
         self.request_thumbnail(row, file)
+        self.invalidate_label_manager()
         return row
+
+    def invalidate_label_manager(self):
+        """Let the label manager re-scan when the file list changes."""
+        panel = getattr(self.host, "label_manager_widget", None)
+        if panel is not None:
+            panel.invalidate()
 
     def apply_row_state(self, row, checked, shape_count=None):
         shapes_item = self.table.item(row, FILE_COL_SHAPES)
@@ -435,6 +442,7 @@ class FileListController:
         self.rebuild_index()
         table.horizontalHeader().setSortIndicator(column, order)
         self.sync_selection()
+        self.invalidate_label_manager()
 
     @staticmethod
     def sort_key_value(key):
@@ -837,6 +845,7 @@ class FileListController:
             self.sync_selection()
         host.update_browse_actions()
         host._refresh_statistics_if_visible()
+        self.invalidate_label_manager()
 
     def clear(self):
         self.table.blockSignals(True)
@@ -849,3 +858,4 @@ class FileListController:
         self._import_times = {}
         self.reset_sort()
         self._thumbnail_loader.clear()
+        self.invalidate_label_manager()

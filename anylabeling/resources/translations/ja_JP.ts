@@ -11405,4 +11405,95 @@ Response preview:
     <message><source>Maximize</source><translation>最大化</translation></message>
     <message><source>Restore</source><translation>元に戻す</translation></message>
     <message><source>Close</source><translation>閉じる</translation></message>
-</context></TS>
+</context>  <context>
+    <name>LabelManagerPanel</name>
+    <message>
+        <source>Category</source>
+        <translation>カテゴリ</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>削除</translation>
+    </message>
+    <message>
+        <source>Visible</source>
+        <translation>表示</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>ロック</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation>色</translation>
+    </message>
+    <message>
+        <source>From</source>
+        <translation>開始</translation>
+    </message>
+    <message>
+        <source>To</source>
+        <translation>終了</translation>
+    </message>
+    <message>
+        <source>Go</source>
+        <translation>適用</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation>すべて選択</translation>
+    </message>
+    <message>
+        <source>Deselect All</source>
+        <translation>選択解除</translation>
+    </message>
+    <message>
+        <source>Copy Category</source>
+        <translation>カテゴリをコピー</translation>
+    </message>
+    <message>
+        <source>Double-click to rename the category</source>
+        <translation>ダブルクリックでカテゴリ名を変更</translation>
+    </message>
+    <message>
+        <source>Delete this category from the images in the range</source>
+        <translation>範囲内の画像からこのカテゴリを削除</translation>
+    </message>
+    <message>
+        <source>Show or hide the category in this session</source>
+        <translation>このセッションでカテゴリの表示を切り替え</translation>
+    </message>
+    <message>
+        <source>Session-only category lock; independent of the file range</source>
+        <translation>セッション限定のカテゴリロック（ファイル範囲とは無関係）</translation>
+    </message>
+    <message>
+        <source>Category cannot be empty</source>
+        <translation>カテゴリ名は空にできません</translation>
+    </message>
+    <message>
+        <source>Duplicate category: %s</source>
+        <translation>カテゴリが重複しています: %s</translation>
+    </message>
+    <message>
+        <source>No images loaded</source>
+        <translation>画像が読み込まれていません</translation>
+    </message>
+    <message>
+        <source>Please enter a valid range.</source>
+        <translation>有効な範囲を入力してください。</translation>
+    </message>
+    <message>
+        <source>An error occurred while updating the labels.</source>
+        <translation>カテゴリの更新中にエラーが発生しました。</translation>
+    </message>
+    <message>
+        <source>Labels modified successfully!</source>
+        <translation>カテゴリを更新しました！</translation>
+    </message>
+    <message>
+        <source>Browse mode - editing annotations requires login</source>
+        <translation>ブラウズモード - アノテーションの編集にはログインが必要です</translation>
+    </message>
+  </context>
+</TS>

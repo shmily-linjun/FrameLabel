@@ -1,9 +1,9 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-19（Asia/Shanghai）
-> 对应版本：4.3.2+fork.22（fork.19 的 T8 拆分未升版；fork.20 为 SAM 编码器 CPU 串行化与编码输出复制；fork.21 为无边框模块多屏最小化/最大化还原修复；fork.22 为文件表多选批量动作与图片标签并入“图像属性”页）
-> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；fork.21 在真实 Windows 双屏（主屏 100% + 副屏 200%）上用原生消息探测与真实 `MainWindow` 复核窗口行为；fork.22 用真实 `MainWindow` 离屏夹具做定向 pytest 与基线导出树对比；其余结论沿用 T8 阶段“基线工作树 vs 重构后”的 pytest 对比与离屏冒烟；各测试包的具体结果见 §16。
-> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8)/fork.20(SAM 编码锁)/fork.21(无边框多屏)/fork.22(文件表多选与图像属性页) 已改变的结构以本文当前版本说明为准。
+> 对应版本：4.3.2+fork.23（fork.19 的 T8 拆分未升版；fork.20 为 SAM 编码器 CPU 串行化与编码输出复制；fork.21 为无边框模块多屏最小化/最大化还原修复；fork.22 为文件表多选批量动作与图片标签并入“图像属性”页；fork.23 为标签管理器并入“类别”页）
+> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；fork.21 在真实 Windows 双屏（主屏 100% + 副屏 200%）上用原生消息探测与真实 `MainWindow` 复核窗口行为；fork.22/fork.23 用真实 `MainWindow` 离屏夹具做定向 pytest 与基线导出树对比；其余结论沿用 T8 阶段“基线工作树 vs 重构后”的 pytest 对比与离屏冒烟；各测试包的具体结果见 §16。
+> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8)/fork.20(SAM 编码锁)/fork.21(无边框多屏)/fork.22(文件表多选与图像属性页)/fork.23(标签管理器并入类别页) 已改变的结构以本文当前版本说明为准。
 > 行号锚点：T8 把 `label_widget.py` 从 9507 行降到 1776 行、`LabelingWidget.__init__` 从 2816 行降到 239 行，几乎所有历史行号都已失效；本报告中 `label_widget.py` 的行号均为 T8 第二阶段之后的当前值，定位时优先使用类名和方法名（实现多数已移入 §5.11 的模块）。
 > 规模口径：本报告的行数一律按 `str.splitlines()` 统计（与 `Get-Content | Measure-Object -Line` 的口径不同，后者会少算），早期章节里的 8949/8768 等数字属于旧口径，已在 §1.1 与 §8 更新。
 
@@ -12,24 +12,24 @@
 | 项目 | 结论 |
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
-| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.22 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，fork.20 的 SAM 编码锁见 §5.3，fork.21 的无边框多屏修复见 §5.7，fork.22 的文件表多选与“图像属性”页见 §4.3/§5.11，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.22，见 [app_info.py](../../anylabeling/app_info.py) |
+| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.23 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，fork.20 的 SAM 编码锁见 §5.3，fork.21 的无边框多屏修复见 §5.7，fork.22 的文件表多选与“图像属性”页见 §4.3/§5.11，fork.23 的标签管理器并入“类别”页见 §4.3/§5.11，实际提交哈希以 Git 记录为准 |
+| 版本 | 4.3.2+fork.23，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
 | 主入口 | `xanylabeling = anylabeling.app:main`；亦支持 `python -m anylabeling.app` |
 | 包构建 | `python -m build --no-isolation`，见 [build_and_publish_pypi.sh](../../scripts/build_and_publish_pypi.sh) |
-| 最近核对日期 | 2026-11-19（T8 两阶段拆分 + fork.20 SAM 编码锁 + fork.21 无边框多屏修复 + fork.22 文件表多选与图像属性页） |
+| 最近核对日期 | 2026-11-19（T8 两阶段拆分 + fork.20 SAM 编码锁 + fork.21 无边框多屏修复 + fork.22 文件表多选与图像属性页 + fork.23 标签管理器并入类别页） |
 
 ### 1.1 规模与统计口径
 
-当前枚举 `anylabeling` 下有 481 个 Python 文件，`tests` 下有 144 个 Python 文件。AST 与依赖统计仍排除：
+当前枚举 `anylabeling` 下有 482 个 Python 文件，`tests` 下有 144 个 Python 文件。AST 与依赖统计仍排除：
 
 - [resources.py](../../anylabeling/resources/resources.py)：生成代码，只分析加载关系；
 - `anylabeling/services/auto_labeling/visualgd/model/ops/build` 下 8 个生成 Python 文件；
 - `__pycache__` 缓存。
 
-因此当前统计集合为 **472 个 Python 文件、696 个唯一类名**。相比 fork.3，新增应用文件来自操作员身份服务包、登录/注册对话框与会话控件、fork.7 的无边框窗口包（`anylabeling/widgets/frameless/` 8 个模块 + `anylabeling/widgets/__init__.py`），以及 T8 从 `label_widget.py` 拆出的 29 个模块（第一阶段：`labeling/actions/` 3、`labeling/file_list/` 4、`labeling/operator/` 2、`auto_labeling_handoff.py`、`constants.py`、`widgets/workspace.py`、`widgets/splitters.py`、`utils/label_text.py`；第二阶段：`annotation_editor`、`file_session`、`object_editor`、`canvas_navigation`、`status`、`appearance`、`label_filters`、`shape_commands`、`draw_modes`、`special_workspaces`、`label_loop`、`relations`、`right_sidebar`、`actions/toolbar`、`widgets/attributes_panel`）；新增测试文件为身份库、归属字段、门禁逻辑与无边框窗口测试。
+因此当前统计集合为 **473 个 Python 文件、697 个唯一类名**。相比 fork.3，新增应用文件来自操作员身份服务包、登录/注册对话框与会话控件、fork.7 的无边框窗口包（`anylabeling/widgets/frameless/` 8 个模块 + `anylabeling/widgets/__init__.py`），以及 T8 从 `label_widget.py` 拆出的 29 个模块（第一阶段：`labeling/actions/` 3、`labeling/file_list/` 4、`labeling/operator/` 2、`auto_labeling_handoff.py`、`constants.py`、`widgets/workspace.py`、`widgets/splitters.py`、`utils/label_text.py`；第二阶段：`annotation_editor`、`file_session`、`object_editor`、`canvas_navigation`、`status`、`appearance`、`label_filters`、`shape_commands`、`draw_modes`、`special_workspaces`、`label_loop`、`relations`、`right_sidebar`、`actions/toolbar`、`widgets/attributes_panel`）；新增测试文件为身份库、归属字段、门禁逻辑与无边框窗口测试。
 
 ### 1.2 纳入范围
 
@@ -131,6 +131,8 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 ### 5.2A fork 文件表、统计与模型目录
 
 文件表由 [FileTableWidget](../../anylabeling/views/labeling/file_list/table.py)（`QTableWidget`）展示文件、对象、导入时间、推理、划分和标签等列，行/列/排序/缩略图/多选批量动作规则集中在 [FileListController](../../anylabeling/views/labeling/file_list/controller.py)，`LabelingWidget` 只保留 `fn_to_index` 与少量薄委托；右侧对象/类别/图像属性/描述/统计使用 `QTabWidget`，与文件表通过纵向 `QSplitter` 调整比例，布局装配见 [workspace.build_workspace()](../../anylabeling/views/labeling/widgets/workspace.py)。
+
+fork.23 起，**“类别”页就是标签管理器**（[LabelManagerPanel](../../anylabeling/views/labeling/widgets/label_manager.py)）：表格按当前文件列表扫描出的类别列出 `Category`（可编辑）/`Delete`/`Visible`/`Lock`/`Color`，底部 `From`/`To`/`Go` 是唯一的写盘边界；原 `LabelModifyDialog` 模态窗口已删除，`工具 → 标签管理器` 与 `Alt+L` 只负责切页。`unique_label_list` 不再显示，仅作为“类别 → 颜色/锁定”的会话登记表保留。浏览模式下整张表只读（`OperatorGate.apply()` 调 `set_editing_enabled()`）。
 
 fork.22 起，**图片级元数据只有一处编辑入口**：右侧 `flags` 页标题为“图像属性”，页内自上而下是图片标签编辑器（`ImageTagsWidget`）与图片标志列表（`flag_widget`）；原先画布下方的图片标签条已移除，画布区域不再被它占用。`right_sidebar.ALWAYS_VISIBLE_TABS = ("flags",)` 使该页不可隐藏，`show_image_tags` 动作（`Ctrl+Shift+T`/标题栏按钮）改为“切到该页并聚焦标签控件”。文件表的 `标签` 列是不切页也能看到标签的出口，`FileListController.set_row_tags()` 负责“编辑后尚未保存”时的即时更新。
 
@@ -269,17 +271,18 @@ label_widget.py（9507 行 → 1776 行；LabelingWidget 9118 → 1697 行）
 ├─ 窗口外壳/事件/缩略图/UI 密度 + 约 150 个一行委托            1697 行
 ├─ actions/builder.py        build_actions(host)：全部 QAction   1660 行
 ├─ file_session.py           FileSession：打开/导航/保存/删除/导入  789 行
-├─ widgets/workspace.py      窗口装配（画布/布局/会话恢复）        781 行
-├─ file_list/{table,controller,constants}.py                   1099 行
+├─ widgets/workspace.py      窗口装配（画布/布局/会话恢复）        790 行
+├─ widgets/label_manager.py   LabelManagerPanel：“类别”页标签管理器  641 行
+├─ file_list/{table,controller,constants}.py                   1110 行
 ├─ object_editor.py          ObjectEditor：选择/改名/锁定/显隐      576 行
 ├─ widgets/attributes_panel.py AttributesPanel：属性控件与保存      554 行
-├─ annotation_editor.py      AnnotationEditor：新建/加载/保存/颜色   344 行
+├─ annotation_editor.py      AnnotationEditor：新建/加载/保存/颜色   354 行
 ├─ canvas_navigation.py      CanvasNavigation：缩放/导航器         421 行
 ├─ auto_labeling_handoff.py  AutoLabelingHandoff                 428 行
 ├─ shape_commands.py         ShapeCommands：剪贴板/分组/显隐        321 行
 ├─ status.py / appearance.py 状态栏/标题/脏标记；主题/语言/提示     291 + 260 行
 ├─ actions/toolbar.py        ToolbarPolicy                       256 行
-├─ operator/gate.py          OperatorGate                        236 行
+├─ operator/gate.py          OperatorGate                        243 行
 ├─ label_filters.py / draw_modes.py / special_workspaces.py /
 │  label_loop.py / relations.py / right_sidebar.py / actions/menus.py
 └─ constants.py / utils/label_text.py / widgets/splitters.py      共享常量与工具
@@ -290,7 +293,8 @@ label_widget.py（9507 行 → 1776 行；LabelingWidget 9118 → 1697 行）
 | `actions.builder.build_actions` / `actions.menus.build_menus` | `tr`、`_config`、动作目标方法、`menu()`/`toolbar()`、`canvas`、`label_list`、`update_file_menu()` | 动作定义与菜单只在建窗时执行，无运行期状态 |
 | `widgets.workspace.build_*` / `restore_session_state` | 宿主全部控件属性与回调 | 纯装配，无状态、无业务判断 |
 | `FileListController` | `_config`、`output_dir`、`filename`、`load_file()`、`status()`、`_annotation_checked_text()` 等（见模块 docstring） | 文件表规则可单独构造测试；`LabelingWidget` 保留 `fn_to_index` 与委托 |
-| `OperatorGate` | `actions`、`canvas`、`image_tags_widget`、`filename`、`other_data`、`label_list`、`flag_widget`、`attribution_label`、`save_labels()`、`toggle_draw_mode()` 等 | 门禁/归属策略可独立测试；`baseline`/`suppress` 归 gate 所有 |
+| `LabelManagerPanel` | `file_list_widget`、`output_dir`、`filename`、`label_info`、`unique_label_list`、`label_dialog`、`_get_rgb_by_label()`、`apply_label_visibility()`、`load_file()`、`_refresh_statistics_if_visible()`（见模块 docstring） | “类别”页的批量类别管理可单独构造测试（`test_label_manager.py`） |
+| `OperatorGate` | `actions`、`canvas`、`image_tags_widget`、`label_manager_widget`、`filename`、`other_data`、`label_list`、`flag_widget`、`attribution_label`、`save_labels()`、`toggle_draw_mode()` 等 | 门禁/归属策略可独立测试；`baseline`/`suppress` 归 gate 所有 |
 | `AutoLabelingHandoff` | 画布/列表/标签对话框、`_config`、`cache_auto_label*`、`set_dirty()` 等 | 合并规则无自有状态，可脱离窗口测试 |
 | `ToolbarPolicy` | `tools`、`actions`、`_toolbar_show_labels`、`_toolbar_hidden_keys`、`settings`、`_utility_toolbar_entries` | 工具栏显隐/短标签/几何可独立测试 |
 | `AttributesPanel` | `scroll_area`、`grid_layout`、`attributes`、`canvas`、`label_list`、`_prepare_attribution()` 等 | 属性控件规则可独立测试 |
@@ -466,6 +470,7 @@ AST 统计排除 import、类定义本身和字符串，统计构造、继承、
 | `FrameMenuBar` | [menu_bar.py](../../anylabeling/widgets/frameless/menu_bar.py) | 真实 `QMenuBar` 与顶层菜单显隐 | `add_menu()`、`set_menu_visible()`、`visibility_state()`、`menu_visibility_changed` | `FramelessWindow`、`MainWindow`；测试 | Qt | 显隐用 `QAction` 可见性，不要重排菜单；溢出依赖 Qt 内建 extension 按钮 |
 | `FileTableWidget` | [file_list/table.py](../../anylabeling/views/labeling/file_list/table.py) | 六列文件表控件（列宽自适应、右键、多选手势、`Ctrl+A` 全选、QListWidget 兼容表面） | `fill_name_column()`、`count()`、`selectedItems()`、`currentItem()`、`selected_rows()`、`selection_only_gesture()`；配合 `FileTableItem`/`FileNameDelegate` | 由 `FileListController` 创建；直接类名测试引用 0，行为经 `test_file_table.py` 间接覆盖 | Qt、`file_list.constants` | 行/列/排序/批量语义在 `FileListController`，改表格显示时两边都要看；`_auto_fill_name_column`/`_adjusting_columns` 参与列宽持久化判据；`_selection_only_gesture` 是“Ctrl/Shift 只选不打开”的唯一判据，不要改回 `QApplication.keyboardModifiers()`（会被同进程残留键态污染） |
 | `StatisticsTable` | [statistics_table.py](../../anylabeling/views/labeling/widgets/statistics_table.py) | 类别×划分统计展示与点击过滤 | `_statistics`；`set_entries()`、`refresh()`、`cell_filter()`、`header_filter()` | 源码 1 处，第 462/648；`LabelingWidget`；测试 2 处 | `dataset_statistics`、Qt | 类别单元格按图片数、合计行按文件数；修改统计口径时必须同步 `StatisticsFilter` 和搜索转义 |
+| `LabelManagerPanel` | [label_manager.py](../../anylabeling/views/labeling/widgets/label_manager.py) | “类别”页：跨文件范围改名/删除 + 会话级显隐/锁定/颜色 | `table`、`from_input`/`to_input`/`range_button`；`invalidate()`、`ensure_built()`、`rebuild()`、`apply_changes()`、`selected_label()`、`set_editing_enabled()` | `LabelingWidget.label_manager_widget`；`test_label_manager.py` 直接测试，`test_file_table.py` 覆盖托管与门禁联动 | `label_info`、`unique_label_list.lock_states`、`label_dialog` 历史、Qt | `Go` 是唯一写盘边界；仍直接 `json.dump`（不写 `author`/`modified_at`，既有缺口）；`sizeHint()`/`minimumSizeHint()` 覆盖是为了不让五列表格把右侧栏最小宽度抬到 315px；首次进入会扫描文件列表内全部 JSON |
 | `Canvas` | [canvas.py](../../anylabeling/views/labeling/widgets/canvas.py) | 鼠标交互、绘制、几何编辑、撤销及渲染 | `shapes/current/selected_shapes/shapes_backups/scale/pixmap`；`finalise()`、`load_shapes()`、`paintEvent()` | 源码 1 处，第 263/648；`LabelingWidget`；测试 22 处 | `Shape`、`AutoLabelingMode`、OpenCV/NumPy、Qt | 列表与画布共享 `Shape`；改坐标或缓存时需同步撤销快照、选择状态和重绘 |
 | `Shape` | [shape.py](../../anylabeling/views/labeling/shape.py) | 标注数据、序列化、几何与绘制 | `label/points/group_id/other_data/shape_type`；`to_dict()`、`load_from_dict()`、`make_path()`、`move_by()` | 197 处，第 2/648；Canvas、LabelFile、模型适配器等；测试 81 处 | Qt、图像/几何工具、logger | 新字段须同步 `KEYS/to_dict/load_from_dict`；`locked` 被序列化移除，不能当作已持久化字段 |
 | `LabelFile` | [label_file.py](../../anylabeling/views/labeling/label_file.py) | XLABEL JSON 与图像数据读写 | `shapes/image_path/image_data/other_data`；`load()`、`save()` | 18 处，第 24/648；主标注和标签测试；测试 12 处 | `Shape`、`LabelConverter`、schema、文件系统 | 必须保留扩展字段、相对路径解析及临时文件替换语义，避免升级后丢字段或写坏原文件 |
@@ -709,6 +714,7 @@ model_manager.py:14
 | 改登录/门禁/标注归属 | [operator/gate.py](../../anylabeling/views/labeling/operator/gate.py)（`OPERATOR_*_ACTIONS`、`prepare_attribution`、`baseline/suppress`）、[identity/session.py](../../anylabeling/services/identity/session.py)、[label_file.py](../../anylabeling/views/labeling/label_file.py)（`ensure_attribution`）、[test_operator_gate.py](../../tests/test_labeling/test_operator_gate.py) |
 | 增删动作或改菜单 | [actions/builder.py](../../anylabeling/views/labeling/actions/builder.py)、[actions/menus.py](../../anylabeling/views/labeling/actions/menus.py)、[test_file_table.py](../../tests/test_labeling/test_file_table.py)（工具栏） |
 | 改文件表/列/排序/缩略图/多选批量动作 | [file_list/controller.py](../../anylabeling/views/labeling/file_list/controller.py)、[file_list/table.py](../../anylabeling/views/labeling/file_list/table.py)、[test_file_table.py](../../tests/test_labeling/test_file_table.py) |
+| 改类别管理（标签管理器）/类别页 | [widgets/label_manager.py](../../anylabeling/views/labeling/widgets/label_manager.py)、[operator/gate.py](../../anylabeling/views/labeling/operator/gate.py)（只读门禁）、[test_label_manager.py](../../tests/test_labeling/test_label_manager.py) |
 | 改自动标注结果合并/完成对象 | [auto_labeling_handoff.py](../../anylabeling/views/labeling/auto_labeling_handoff.py)、[auto_labeling.py](../../anylabeling/views/labeling/widgets/auto_labeling/auto_labeling.py)、[test_auto_labeling_finish.py](../../tests/test_labeling/test_auto_labeling_finish.py) |
 | 改窗口布局/右侧栏/画布视图 | [widgets/workspace.py](../../anylabeling/views/labeling/widgets/workspace.py)、[widgets/splitters.py](../../anylabeling/views/labeling/widgets/splitters.py)、[mainwindow.py](../../anylabeling/views/mainwindow.py) |
 | 改窗口 chrome/标题栏/菜单 | [widgets/frameless/window.py](../../anylabeling/widgets/frameless/window.py)、[title_bar.py](../../anylabeling/widgets/frameless/title_bar.py)、[menu_bar.py](../../anylabeling/widgets/frameless/menu_bar.py)、[mainwindow.py](../../anylabeling/views/mainwindow.py)；设计见 [无边框窗口模块-讨论稿](无边框窗口模块-讨论稿.md) |
@@ -756,6 +762,9 @@ model_manager.py:14
 - **拆分模块的宿主契约是隐式接口（T8）**：`FileListController`、`OperatorGate`、`AutoLabelingHandoff` 与 `workspace`/`actions` 构建函数都通过 `host` 属性表回调 `LabelingWidget`；重命名或删除宿主属性不会在 import 期报错，只会在运行时以 `AttributeError`/静默 `getattr` 回退暴露。改宿主属性时必须同步对应模块 docstring 并跑定向测试。
 - **文件表“只选不打开”只能依据控件自身手势（fork.22）**：`FileTableWidget._selection_only_gesture` 在 Ctrl/Shift 按下与 Ctrl/Shift+导航键时置位，`file_selection_changed()` 只看它。不要改回 `QApplication.keyboardModifiers()`：同进程内其它测试/控件残留的修饰键状态会让导航被误判为批量选择（fork.22 开发中因此让 `test_image_switch` 失败）。
 - **图片标签与图片标志只有“图像属性”页一处 UI（fork.22）**：该页在 `RightSidebarTabs.ALWAYS_VISIBLE_TABS` 中，旧配置里隐藏 `flags` 的项会被丢弃；`FileListController.set_row_tags()` 是“编辑后尚未保存”时的唯一同步点，跳过它会让 `标签` 列与内存数据不一致。
+- **“类别”页的标签管理器仍直接改写标注 JSON（fork.23）**：`LabelManagerPanel._rewrite_files()` 与旧对话框一样用 `json.dump` 落盘，不写 `author`/`modified_at`、不重置 `checked`，与 fork.4 的归属契约不一致；把它当作批量改名的入口时必须知道这一点，修的时候要走 `OperatorGate.prepare_attribution()`。
+- **“类别”页首次激活会扫描文件列表内所有 JSON（fork.23）**：大目录首次切页可能卡顿；`invalidate()` 只在文件列表增删/排序/清空与新增类别时置位，切页时按需重建，不要在 paint/resize 之类的路径里调用 `rebuild()`。
+- **右侧栏最小宽度受页面 `sizeHint` 影响（fork.23）**：`build_workspace()` 用 `sizeHint * 0.8` 计算最小宽度，五列表格原本会把 220 抬到 315；`LabelManagerPanel` 覆盖了 `sizeHint()`/`minimumSizeHint()` 让表格横向滚动，改列数或控件时要重新验证侧栏可拖窄。
 - **T8 两阶段后 `label_widget.py` 已降到 1776 行**（`LabelingWidget` 1697 行，其中约 150 个为一行委托）；剩余实现是窗口外壳/Qt 事件/缩略图/UI 密度，继续拆的收益递减，且需要处理 `eventFilter`、`resizeEvent`、`closeEvent` 与 UI 密度的联动。
 - **全项目按用户口径只剩 `Canvas` 一个上帝类**（6269 行/216 方法）；1000–2000 行级类（PPOCR 编辑器、PointCloud/Video/Ultralytics 对话框等）按用户 2026-11-19 口径不登记为上帝类，只按普通维护风险对待。
 - **SAM 类模型在 CPU 上仍是内存大户**：单次编码约 5 GB 峰值（ViT-L float 实测 5.31 GB），fork.20 的串行锁只消除并发双份峰值；页面文件不足或其它程序占用过多时仍可能 OOM。`_ON_NEXT_FILES_CHANGED_MODELS` 中尚未接入锁的适配器（`segment_anything_2`、`grounding_sam2`、`yolov8_sam2`、`efficientvit_sam`、`geco` 等）遇到同类报错时按 §5.3 方式处理。
@@ -801,6 +810,7 @@ model_manager.py:14
 - fork.20 的 SAM 编码器 CPU 串行锁（`encoder_lock.py` + 5 个适配器接入）与对应的内存实测、并发回归用例；
 - fork.21 的无边框多屏修复（`WM_NCHITTEST` 改 `ScreenToClient` 物理坐标、移除 `WM_GETMINMAXINFO` 覆写）与真实双屏验证；
 - fork.22 的文件表多选（`ExtendedSelection` + 控件级 `Ctrl+A` 拦截 + 手势判据）、批量划分/移除/复制、`标签` 列，以及图片标签并入“图像属性”页（页内标签编辑器 + 标志列表、`ALWAYS_VISIBLE_TABS`、`show_image_tags_editor()`）；
+- fork.23 的标签管理器并入“类别”页（`LabelManagerPanel`、可编辑类别列、`From/To/Go` 提交边界、未登录只读门禁、侧栏最小宽度修正），原 `LabelModifyDialog` 删除；
 - **T8（fork.19 内不升版）的 `label_widget.py` 拆分（两阶段）**：第一阶段 `actions/`（动作表 + 菜单 + 工具栏策略）、`file_list/`（表格 + 控制器）、`operator/gate.py`、`auto_labeling_handoff.py`、`widgets/workspace.py`、`widgets/splitters.py`、`utils/label_text.py`、`constants.py`；第二阶段 `annotation_editor.py`、`file_session.py`、`object_editor.py`、`canvas_navigation.py`、`widgets/attributes_panel.py`、`status.py`、`appearance.py`、`label_filters.py`、`shape_commands.py`、`draw_modes.py`、`special_workspaces.py`、`label_loop.py`、`relations.py`、`right_sidebar.py`；`label_widget.py` 9507 → 1776 行，`__init__` 2816 → 239 行；
 - 模块和核心类关系、跨线程/进程/网络边界、引用统计、维护路径、已知问题和风险；
 - 核心类表共 28 类：18 类进入总览图，fork.4 的 2 个身份类与 fork.7 的 2 个窗口类见 §5.6/§5.7，T8 的主要拆分类（`LabelingWidget`/`FileListController`/`OperatorGate`/`AutoLabelingHandoff`/`AnnotationEditor`/`FileSession`/其余控制器）见 §5.11/§8；
@@ -812,6 +822,8 @@ model_manager.py:14
 - **pytest 环境仍受限**：本机沙箱下 pytest 临时目录需 `sitecustomize` 放宽 mode 才能运行，且部分测试文件在退出阶段崩溃（基线与重构后一致）。因此本批按测试包分批执行，并以独立 `git worktree`（HEAD `104ada3`）作为基线逐包对比。**第一阶段与第二阶段结束后分别跑过同一套对比，两轮结果完全相同**，下表为第二阶段结束后的结果（括号内为第一阶段结果，两者一致）：
 - fork.22 的定向验证（2026-11-19）：`tests/test_labeling/test_file_table.py` 26 passed（新增 7 个用例覆盖 Ctrl/Shift 单击、Shift+方向键、表格内 `Ctrl+A`、批量划分、批量移除、`标签` 列、属性页托管标签编辑器）；`test_file_table + test_image_tags + test_utils/test_file_meta` 60 passed；`tests/test_labeling tests/test_settings tests/test_config tests/test_identity tests/test_widgets tests/test_utils` 合计 **529 passed / 1 skipped / 7 failed / 186 subtests**。7 条失败与 `temporary/baseline-fork21/src`（HEAD 只读导出树）逐条一致：6 条为 §13.1 已记录的测试债，1 条为已记录的时序抖动 `test_brightness_contrast_updates_are_throttled`。fork.22 曾引入 `test_image_switch::test_configured_image_jump_updates_navigation` 失败（手势判断误用 `QApplication.keyboardModifiers()`，被同进程残留键态污染），改为控件自身手势标志后该文件 4 passed。
 - fork.22 的翻译验证：四语言 `.ts` 新增 10 条（`LabelingWidget` 9 + `SettingsDialog` 1），`scripts/compile_languages.py` 重编 `.qm`（2183 条、0 unfinished）并重建 `resources.py`；从 `:/languages/translations/<lang>.qm` 加载并抽查全部新字符串，四语言均返回预期译文。真实桌面 GUI 交互（Ctrl+单击、右键批量菜单、高 DPI）未执行。
+- fork.23 的定向验证（2026-11-19）：`tests/test_labeling/test_label_manager.py` **12 passed**（行/范围、改名与删除的范围限制、重名与空名拒绝、未登录不可应用、锁定只读会话、显式解锁不写盘、删除后禁用编辑、选中类别作为默认类别、invalidate 重建）；`test_file_table` **27 passed**（新增“类别页托管面板 + Alt+L 切页 + 门禁联动”）；`test_file_table + test_label_manager + test_operator_gate + test_browse_mode` **55 passed**。全量 6 包 **539 passed / 1 skipped / 6 failed / 186 subtests**，失败集合与基线导出树一致（6 条既有测试债）。
+- fork.23 的翻译验证：新增 `LabelManagerPanel` 上下文 22 条、删除废弃的 `LabelModifyDialog` 上下文，重编 `.qm`（2205 条、0 unfinished）并重建 `resources.py`；从资源路径加载并抽查 `Category`/`Go`/`Duplicate category: %s` 等，四语言均返回预期译文。离屏冒烟确认类别页承载面板、`Alt+L` 切页、未登录只读；真实桌面交互未执行。
 
 | 测试包 | 基线 | 重构后 | 失败集合 |
 |---|---|---|---|
@@ -840,4 +852,4 @@ model_manager.py:14
 
 ---
 
-**文档自检：**核心类表在 fork.3 的 22 类基础上新增 T8 的拆分类（`FileListController`/`OperatorGate`/`AutoLabelingHandoff`/`AnnotationEditor`/`FileSession` 以及其余控制器，完整清单见 §5.11）；总览图与 SVG/JPG 资源未重绘，新增关系以 §6 Mermaid 与 §9.1 Mermaid 说明为准；所引项目文件均确认存在；T8 两阶段的规模、行号、模块表和验证结果按实际代码与本机实测更新；fork.21 的窗口原生行为按真实双屏实测更新（§5.7），并新增 `WM_GETMINMAXINFO` 守门用例；fork.22 按本批实际代码更新文件表列/选择语义、右侧 tab 名称与“图像属性”页归属、`FileTableWidget`/`FileListController` 接口表、模块行数（1776/1697/239、file_list 1099 行）与 §16 定向验证结果，未把未执行的真实桌面/打包验证写成已通过；上帝类口径按用户 2026-11-19 说明收敛为仅 `Canvas`。`docs/开始.md` T8 已标记完成。
+**文档自检：**核心类表在 fork.3 的 22 类基础上新增 T8 的拆分类（`FileListController`/`OperatorGate`/`AutoLabelingHandoff`/`AnnotationEditor`/`FileSession` 以及其余控制器，完整清单见 §5.11）；总览图与 SVG/JPG 资源未重绘，新增关系以 §6 Mermaid 与 §9.1 Mermaid 说明为准；所引项目文件均确认存在；T8 两阶段的规模、行号、模块表和验证结果按实际代码与本机实测更新；fork.21 的窗口原生行为按真实双屏实测更新（§5.7），并新增 `WM_GETMINMAXINFO` 守门用例；fork.22 按本批实际代码更新文件表列/选择语义、右侧 tab 名称与“图像属性”页归属、`FileTableWidget`/`FileListController` 接口表、模块行数与 §16 定向验证结果；fork.23 新增 `LabelManagerPanel` 类表行与“类别”页归属说明、`LabelModifyDialog` 删除后的宿主契约、侧栏最小宽度与直接写 JSON 的风险条目、§5.11 模块行数与 §16 验证结果；未把未执行的真实桌面/打包验证写成已通过；上帝类口径按用户 2026-11-19 说明收敛为仅 `Canvas`。`docs/开始.md` T8 已标记完成。

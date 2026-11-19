@@ -18,9 +18,9 @@ from .label_dialog import (
     DigitShortcutDialog,
     GroupIDModifyDialog,
     LabelDialog,
-    LabelModifyDialog,
     LabelQLineEdit,
 )
+from .label_manager import LabelManagerPanel
 from .label_list_widget import LabelListWidget, LabelListWidgetItem
 from .model_dropdown_widget import SearchBar
 from .navigator_widget import NavigatorDialog

@@ -806,6 +806,33 @@ def test_batch_remove_keeps_files_and_reindexes(window, tmp_path, monkeypatch):
         assert image.is_file()
 
 
+def test_classes_tab_hosts_the_label_manager(window, tmp_path):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, _first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+
+    panel = widget.label_manager_widget
+    page = panel.parentWidget()
+    tabs = widget.right_tabs
+    assert tabs.indexOf(page) == 1
+    assert tabs.tabText(1) == "Classes"
+
+    # Tools > Label manager (Alt+L) opens that tab instead of a dialog.
+    widget.right_tabs.setCurrentIndex(0)
+    widget.actions.label_manager.trigger()
+    app.processEvents()
+    assert tabs.currentWidget() is page
+
+    # The table is editable exactly when the operator gate allows editing
+    # (the process-level session may already be logged in from another test).
+    widget._apply_operator_gate()
+    assert panel._editing_enabled == widget.operator_gate.logged_in()
+    assert panel.table.isEnabled() == panel._editing_enabled
+
+
 def test_tags_column_tracks_file_and_live_edits(window, tmp_path):
     app = QtWidgets.QApplication.instance()
     widget = window.labeling_widget.view

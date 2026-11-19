@@ -126,6 +126,9 @@ class RightSidebarTabs:
 
     def _on_right_tab_changed(self, _index):
         page = self.host.right_tabs.currentWidget()
+        if page is getattr(self.host, "label_manager_widget", None):
+            page.ensure_built()
+            return
         if page is getattr(self.host, "statistics_table", None):
             self.host._refresh_statistics()
 

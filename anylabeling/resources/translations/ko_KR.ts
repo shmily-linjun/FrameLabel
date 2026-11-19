@@ -11407,4 +11407,95 @@ Response preview:
     <message><source>Maximize</source><translation>최대화</translation></message>
     <message><source>Restore</source><translation>이전 크기로</translation></message>
     <message><source>Close</source><translation>닫기</translation></message>
-</context></TS>
+</context>  <context>
+    <name>LabelManagerPanel</name>
+    <message>
+        <source>Category</source>
+        <translation>카테고리</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>삭제</translation>
+    </message>
+    <message>
+        <source>Visible</source>
+        <translation>표시</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>잠금</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation>색상</translation>
+    </message>
+    <message>
+        <source>From</source>
+        <translation>시작</translation>
+    </message>
+    <message>
+        <source>To</source>
+        <translation>끝</translation>
+    </message>
+    <message>
+        <source>Go</source>
+        <translation>적용</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation>모두 선택</translation>
+    </message>
+    <message>
+        <source>Deselect All</source>
+        <translation>선택 해제</translation>
+    </message>
+    <message>
+        <source>Copy Category</source>
+        <translation>카테고리 복사</translation>
+    </message>
+    <message>
+        <source>Double-click to rename the category</source>
+        <translation>두 번 클릭하여 카테고리 이름 변경</translation>
+    </message>
+    <message>
+        <source>Delete this category from the images in the range</source>
+        <translation>범위 내 이미지에서 이 카테고리 삭제</translation>
+    </message>
+    <message>
+        <source>Show or hide the category in this session</source>
+        <translation>이 세션에서 카테고리 표시/숨기기</translation>
+    </message>
+    <message>
+        <source>Session-only category lock; independent of the file range</source>
+        <translation>세션 전용 카테고리 잠금(파일 범위와 무관)</translation>
+    </message>
+    <message>
+        <source>Category cannot be empty</source>
+        <translation>카테고리는 비워 둘 수 없습니다</translation>
+    </message>
+    <message>
+        <source>Duplicate category: %s</source>
+        <translation>카테고리 중복: %s</translation>
+    </message>
+    <message>
+        <source>No images loaded</source>
+        <translation>이미지가 로드되지 않았습니다</translation>
+    </message>
+    <message>
+        <source>Please enter a valid range.</source>
+        <translation>올바른 범위를 입력하세요.</translation>
+    </message>
+    <message>
+        <source>An error occurred while updating the labels.</source>
+        <translation>카테고리를 업데이트하는 중 오류가 발생했습니다.</translation>
+    </message>
+    <message>
+        <source>Labels modified successfully!</source>
+        <translation>카테고리를 수정했습니다!</translation>
+    </message>
+    <message>
+        <source>Browse mode - editing annotations requires login</source>
+        <translation>찾아보기 모드 - 주석 편집에는 로그인이 필요합니다</translation>
+    </message>
+  </context>
+</TS>

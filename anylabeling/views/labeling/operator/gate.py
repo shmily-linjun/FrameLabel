@@ -48,6 +48,10 @@ OPERATOR_MODE_ACTIONS = (
 #: Actions that change annotation content or image tags and therefore need a
 #: logged-in operator.  Register new editing actions here, otherwise the
 #: write-time guard would be the only thing catching them.
+#:
+#: ``label_manager`` is deliberately absent: the action now only switches to
+#: the "Classes" tab, whose editable controls are gated by
+#: :meth:`apply` through ``label_manager_widget``.
 OPERATOR_REQUIRED_ACTIONS = (
     "edit",
     "delete",
@@ -61,7 +65,6 @@ OPERATOR_REQUIRED_ACTIONS = (
     "manage_relations",
     "group_selected_shapes",
     "ungroup_selected_shapes",
-    "label_manager",
     "gid_manager",
     "shape_manager",
     "run_all_images",
@@ -81,7 +84,8 @@ class OperatorGate:
     :class:`anylabeling.views.labeling.label_widget.LabelingWidget`):
 
     * ``operator_service`` -- :class:`OperatorService` with a live session;
-    * ``actions`` / ``canvas`` / ``image_tags_widget`` -- widgets to gate;
+    * ``actions`` / ``canvas`` / ``image_tags_widget`` /
+      ``label_manager_widget`` -- widgets to gate;
     * ``filename`` / ``image_path`` / ``dirty`` / ``output_dir`` -- state;
     * ``other_data`` -- annotation payload the author is stamped into;
     * ``label_list`` / ``flag_widget`` -- content used for the signature;
@@ -139,6 +143,9 @@ class OperatorGate:
                 tags_widget.set_interactions_enabled(
                     bool(allowed and host.image_path)
                 )
+            label_manager = getattr(host, "label_manager_widget", None)
+            if label_manager is not None:
+                label_manager.set_editing_enabled(bool(allowed))
             host._refresh_browse_mode_badge()
         finally:
             self._applying = False

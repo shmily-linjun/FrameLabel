@@ -14,7 +14,6 @@ from PyQt6.QtCore import Qt
 from ...config import save_config
 from ...views.training import UltralyticsDialog
 from . import utils
-from .constants import LABEL_OPACITY
 from .logger import logger
 from .widgets import (
     AboutDialog,
@@ -22,7 +21,6 @@ from .widgets import (
     ClassifierDialog,
     DigitShortcutDialog,
     GroupIDModifyDialog,
-    LabelModifyDialog,
     OverviewDialog,
     PPOCRDialog,
     Popup,
@@ -71,13 +69,12 @@ class SpecialWorkspaces:
             save_config(self.host._config)
 
     def label_manager(self):
-        modify_label_dialog = LabelModifyDialog(
-            parent=self.host, opacity=LABEL_OPACITY
-        )
-        result = modify_label_dialog.exec()
-        if result == QtWidgets.QDialog.DialogCode.Accepted:
-            if self.host.filename and modify_label_dialog.annotations_changed:
-                self.host.load_file(self.host.filename)
+        """Open the label manager, which lives in the "Classes" tab."""
+        self.host.show_right_tab("labels")
+        panel = getattr(self.host, "label_manager_widget", None)
+        if panel is not None:
+            panel.ensure_built()
+            panel.setFocus()
 
     def gid_manager(self):
         modify_gid_dialog = GroupIDModifyDialog(parent=self.host)

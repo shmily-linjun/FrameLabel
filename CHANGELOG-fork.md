@@ -6,6 +6,59 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.23 — 2026-11-19
+
+### 1. 背景与原因
+
+用户提出：`工具 → 标签管理器（Alt+L）` 的入口流程偏长，而右侧“类别”tab 功能单一、默认侧栏宽度也够，希望把标签管理器直接放进“类别”tab，同时少一个窗口。评估（见对话记录）指出：原 `LabelModifyDialog` 是**跨文件范围**的批量改名/删除 + 会话级显隐/锁定/颜色，和“类别”tab 的“当前图片类别列表”作用域不同；放进 tab 会失去 `From/To + Go` 的显式提交边界，且首次进入会扫描文件列表内的所有 JSON。用户确认仍选“整体搬入”，并给出简化口径：类别列改为可编辑、去掉 `New Value` 列、`Delete/Visible/Lock/Color` 列宽本来就窄，侧栏可调。本批按此实施，并保留“Go”作为唯一的写盘边界。
+
+### 2. 主要实现与关键细节
+
+- **新增 `widgets/label_manager.py`**：把原 `LabelModifyDialog` 的 UI 与逻辑重写为页内面板 `LabelManagerPanel(QWidget)`，并移入其专用的 `LabelColorButton`。表格改为 5 列：`Category`（可编辑）/ `Delete` / `Visible` / `Lock` / `Color`；底部保留 `From` / `To` / `Go`。
+- **类别列可编辑替代 New Value**：双击行内改名，应用时校验空名、重名与非法范围；非法时提示且不写盘。删除行会禁用该行的类别编辑。
+- **删除对话框**：移除 `LabelModifyDialog` 及其专用 `LabelColorButton`、`special_workspaces` 中的创建逻辑；`工具 → 标签管理器` / `Alt+L` 改为切到“类别”页、必要重建并聚焦表格。
+- **类别 tab 由面板承载**：`workspace.build_workspace()` 用面板替换原来的 `unique_label_list` 页面；`unique_label_list` 不再显示，仍作为“类别 → 颜色/锁定”的会话登记表保留（约 40 处调用不变，避免大面积重构）。
+- **新建对象的默认类别**：改为读取面板当前行（`selected_label()`）；未选中时回落到原有登记表选择，保持旧行为。
+- **门禁**：`label_manager` 移出 `OPERATOR_REQUIRED_ACTIONS`（动作只负责切页），改由 `OperatorGate.apply()` 调用 `label_manager_widget.set_editing_enabled(allowed)`；浏览模式下整张表只读。
+- **刷新**：文件列表增删、排序、清空以及当前图片新增类别时调用 `invalidate()`；切到该页时按需重建（`ensure_built()`），不在启动时扫描。
+- **侧栏宽度回归**：五列表格曾把右侧栏最小宽度从 220px 抬到 315px（`sizeHint * 0.8` 的既有算法），面板覆盖 `minimumSizeHint()`/`sizeHint()` 后恢复 220px，表格改为横向滚动。
+- **翻译**：新增 `LabelManagerPanel` 上下文 22 条（四语言），删除已废弃的 `LabelModifyDialog` 上下文；`scripts/compile_languages.py` 重编 `.qm`（各 2205 条、0 unfinished）并重建 `resources.py`。
+
+### 3. 涉及模块与文件
+
+- 新增：`anylabeling/views/labeling/widgets/label_manager.py`
+- 修改：`widgets/__init__.py`、`widgets/label_dialog.py`（删除两个类与无用导入）、`widgets/workspace.py`、`special_workspaces.py`、`operator/gate.py`、`right_sidebar.py`、`annotation_editor.py`、`file_list/controller.py`、`app_info.py`
+- 翻译资源：`resources/translations/{en_US,zh_CN,ja_JP,ko_KR}.{ts,qm}`、`resources/resources.py`
+- 测试：`tests/test_labeling/test_label_manager.py`（由 `test_label_manager_locks.py` 更名并扩展为 12 个用例）、`tests/test_labeling/test_file_table.py`（新增类别页集成用例）
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：标签管理器从模态窗口变为“类别”标签页；`Alt+L` / 菜单项切页；类别列可直接改名；`Go` 应用；浏览模式只读；右侧栏仍可拖到 220px。
+- **内部接口**：`LabelModifyDialog` 与其 `LabelColorButton` 删除（无其他内部调用方）；新增 `LabelManagerPanel`（`invalidate()`、`ensure_built()`、`rebuild()`、`apply_changes()`、`selected_label()`、`set_editing_enabled()`）与宿主属性 `LabelingWidget.label_manager_widget`。
+- **配置**：无新增键；`shortcuts.edit_labels`（`Alt+L`）键名与语义（“打开标签管理器”）保持不变。标注 JSON 契约不变。
+- **版本**：`4.3.2+fork.22` → `4.3.2+fork.23`。
+
+### 5. 实际验证内容
+
+- `tests/test_labeling/test_label_manager.py` **12 passed**：表格行/范围、改名只作用于范围、改名作用于范围内全部行、删除只作用于范围、重名拒绝、空名按“不改名”处理、未登录不可应用、锁定只改会话、显式解锁不写盘、删除后禁用编辑、选中类别作为默认类别、invalidate 后重建。
+- `tests/test_labeling/test_file_table.py` **27 passed**（新增“类别页托管面板 + Alt+L 切页 + 门禁联动”用例）。
+- `tests/test_labeling/test_file_table.py test_label_manager.py test_operator_gate.py test_browse_mode.py` **55 passed**；`test_file_table + test_label_manager` **38 passed**。
+- 全量回归（`tests/test_labeling tests/test_settings tests/test_config tests/test_identity tests/test_widgets tests/test_utils`）**539 passed / 1 skipped / 6 failed / 186 subtests**；6 条失败与 `temporary/baseline-fork21/src` 基线一致，均为结构报告 §13.1 记录的“用例未跟上实现”测试债（属性保存、笔刷模式、标题断言、属性上传）。
+- 翻译：从 `:/languages/translations/<lang>.qm` 加载并抽查 `LabelManagerPanel` 的 `Category`/`Go`/`Duplicate category: %s` 等，四语言均返回预期译文。
+- 离屏 `MainWindow` 冒烟：类别 tab 承载面板、`Alt+L` 切页并重建 2 行、表头/类别正确、未登录时表格与 `Go` 禁用。
+- **未执行**：真实桌面交互（行内编辑、`Go` 的实际写盘反馈、高 DPI 观感）、`black`/`flake8`/`pre-commit`（本机未安装）、打包。
+
+### 6. 已知限制与后续事项
+
+- 面板仍沿用旧对话框的做法**直接 `json.dump` 写标注 JSON**：不写 `author`/`modified_at`、不重置 `checked`，与 fork.4 的归属契约不一致。这是既有缺口，本次未顺手修改；若要修，应在写盘前走 `OperatorGate.prepare_attribution()` 并补批量归属测试。
+- 首次切到该页会扫描文件列表内所有 JSON；大目录首次进入可能卡顿，之后仅在 `invalidate()` 后重建。未做后台扫描或进度提示。
+- 删除类别只删除范围内的对象，不会清理 `_config["labels"]` 或类别编辑框历史之外的类别词表；项目级类别词表管理仍是另一项功能。
+- `From/To` 仍按文件列表序号；fork.22 的文件表多选尚未接入该面板（可改为“作用于选中行”，本次未做）。
+- `unique_label_list` 仍作为隐藏的会话登记表存在（颜色/锁定数据源），未改为纯数据模型；后续可评估用字典替代这个 QListWidget。
+
+---
+
 ## 4.3.2+fork.22 — 2026-11-19
 
 ### 1. 背景与原因

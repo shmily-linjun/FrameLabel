@@ -11407,4 +11407,95 @@ Response preview:
     <message><source>Maximize</source><translation>Maximize</translation></message>
     <message><source>Restore</source><translation>Restore</translation></message>
     <message><source>Close</source><translation>Close</translation></message>
-</context></TS>
+</context>  <context>
+    <name>LabelManagerPanel</name>
+    <message>
+        <source>Category</source>
+        <translation>Category</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Delete</translation>
+    </message>
+    <message>
+        <source>Visible</source>
+        <translation>Visible</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>Lock</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation>Color</translation>
+    </message>
+    <message>
+        <source>From</source>
+        <translation>From</translation>
+    </message>
+    <message>
+        <source>To</source>
+        <translation>To</translation>
+    </message>
+    <message>
+        <source>Go</source>
+        <translation>Go</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation>Select All</translation>
+    </message>
+    <message>
+        <source>Deselect All</source>
+        <translation>Deselect All</translation>
+    </message>
+    <message>
+        <source>Copy Category</source>
+        <translation>Copy Category</translation>
+    </message>
+    <message>
+        <source>Double-click to rename the category</source>
+        <translation>Double-click to rename the category</translation>
+    </message>
+    <message>
+        <source>Delete this category from the images in the range</source>
+        <translation>Delete this category from the images in the range</translation>
+    </message>
+    <message>
+        <source>Show or hide the category in this session</source>
+        <translation>Show or hide the category in this session</translation>
+    </message>
+    <message>
+        <source>Session-only category lock; independent of the file range</source>
+        <translation>Session-only category lock; independent of the file range</translation>
+    </message>
+    <message>
+        <source>Category cannot be empty</source>
+        <translation>Category cannot be empty</translation>
+    </message>
+    <message>
+        <source>Duplicate category: %s</source>
+        <translation>Duplicate category: %s</translation>
+    </message>
+    <message>
+        <source>No images loaded</source>
+        <translation>No images loaded</translation>
+    </message>
+    <message>
+        <source>Please enter a valid range.</source>
+        <translation>Please enter a valid range.</translation>
+    </message>
+    <message>
+        <source>An error occurred while updating the labels.</source>
+        <translation>An error occurred while updating the labels.</translation>
+    </message>
+    <message>
+        <source>Labels modified successfully!</source>
+        <translation>Labels modified successfully!</translation>
+    </message>
+    <message>
+        <source>Browse mode - editing annotations requires login</source>
+        <translation>Browse mode - editing annotations requires login</translation>
+    </message>
+  </context>
+</TS>

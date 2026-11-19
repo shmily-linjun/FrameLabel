@@ -42,13 +42,19 @@ class AnnotationEditor:
         else:
             text = f"{shape.label} ({shape.group_id})"
         label_list_item = LabelListWidgetItem(text, shape)
-        if not self.host.unique_label_list.find_items_by_label(shape.label):
+        new_category = not self.host.unique_label_list.find_items_by_label(
+            shape.label
+        )
+        if new_category:
             item = self.host.unique_label_list.create_item_from_label(shape.label)
             self.host.unique_label_list.addItem(item)
             rgb = self.host._get_rgb_by_label(shape.label)
             self.host.unique_label_list.set_item_label(
                 item, shape.label, rgb, LABEL_OPACITY
             )
+            panel = getattr(self.host, "label_manager_widget", None)
+            if panel is not None:
+                panel.invalidate()
 
         if shape.label not in self.host.label_info:
             rgb = self.host._get_rgb_by_label(shape.label)
@@ -245,10 +251,14 @@ class AnnotationEditor:
 
         position MUST be in global coordinates.
         """
-        items = self.host.unique_label_list.selectedItems()
         text = None
-        if items:
-            text = items[0].data(Qt.ItemDataRole.UserRole)
+        manager = getattr(self.host, "label_manager_widget", None)
+        if manager is not None:
+            text = manager.selected_label()
+        if text is None:
+            items = self.host.unique_label_list.selectedItems()
+            if items:
+                text = items[0].data(Qt.ItemDataRole.UserRole)
         flags = {}
         group_id = None
         description = ""

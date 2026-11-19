@@ -11405,4 +11405,95 @@ Response preview:
     <message><source>Maximize</source><translation>最大化</translation></message>
     <message><source>Restore</source><translation>还原</translation></message>
     <message><source>Close</source><translation>关闭</translation></message>
-</context></TS>
+</context>  <context>
+    <name>LabelManagerPanel</name>
+    <message>
+        <source>Category</source>
+        <translation>类别</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <source>Visible</source>
+        <translation>可见</translation>
+    </message>
+    <message>
+        <source>Lock</source>
+        <translation>锁定</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation>颜色</translation>
+    </message>
+    <message>
+        <source>From</source>
+        <translation>从</translation>
+    </message>
+    <message>
+        <source>To</source>
+        <translation>到</translation>
+    </message>
+    <message>
+        <source>Go</source>
+        <translation>应用</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation>全选</translation>
+    </message>
+    <message>
+        <source>Deselect All</source>
+        <translation>取消全选</translation>
+    </message>
+    <message>
+        <source>Copy Category</source>
+        <translation>复制类别</translation>
+    </message>
+    <message>
+        <source>Double-click to rename the category</source>
+        <translation>双击可重命名该类别</translation>
+    </message>
+    <message>
+        <source>Delete this category from the images in the range</source>
+        <translation>从范围内的图片中删除该类别</translation>
+    </message>
+    <message>
+        <source>Show or hide the category in this session</source>
+        <translation>在当前会话中显示或隐藏该类别</translation>
+    </message>
+    <message>
+        <source>Session-only category lock; independent of the file range</source>
+        <translation>仅当前会话的类别锁定，与文件范围无关</translation>
+    </message>
+    <message>
+        <source>Category cannot be empty</source>
+        <translation>类别不能为空</translation>
+    </message>
+    <message>
+        <source>Duplicate category: %s</source>
+        <translation>类别重复：%s</translation>
+    </message>
+    <message>
+        <source>No images loaded</source>
+        <translation>未加载图片</translation>
+    </message>
+    <message>
+        <source>Please enter a valid range.</source>
+        <translation>请输入有效的范围。</translation>
+    </message>
+    <message>
+        <source>An error occurred while updating the labels.</source>
+        <translation>更新类别时发生错误。</translation>
+    </message>
+    <message>
+        <source>Labels modified successfully!</source>
+        <translation>类别修改成功！</translation>
+    </message>
+    <message>
+        <source>Browse mode - editing annotations requires login</source>
+        <translation>浏览模式 - 编辑标注需要登录</translation>
+    </message>
+  </context>
+</TS>
