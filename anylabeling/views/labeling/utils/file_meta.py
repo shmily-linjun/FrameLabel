@@ -18,6 +18,7 @@ from typing import Union
 from anylabeling.app_info import __version__
 
 from .image import get_pil_img_dim
+from .image_tags import normalize_image_tags
 
 SPLIT_NONE = "none"
 SPLIT_TRAIN = "train"
@@ -52,6 +53,7 @@ class FileMeta:
     shape_count: int
     split: str
     import_time: float
+    tags: tuple = ()
 
 
 def read_file_meta(image_path, label_file=None):
@@ -79,7 +81,8 @@ def read_file_meta(image_path, label_file=None):
         shape_count = 0
     checked = _normalize_checked(data.get("checked", False))
     split = _normalize_split(data.get("split", SPLIT_NONE))
-    return FileMeta(True, checked, shape_count, split, import_time)
+    tags = tuple(normalize_image_tags(data.get("tags")))
+    return FileMeta(True, checked, shape_count, split, import_time, tags)
 
 
 def format_import_time(ts):

@@ -5410,6 +5410,44 @@ You can download the models again in the new directory.</source>
     <message><source>Import Folder</source><translation>폴더 가져오기</translation></message>
     <message><source>%s - Import Files</source><translation>%s - 파일 가져오기</translation></message>
     <message><source>Image files (%s)</source><translation>이미지 파일(%s)</translation></message>
+    <message>
+        <source>Tags</source>
+        <translation>태그</translation>
+    </message>
+    <message>
+        <source>Image Attributes</source>
+        <translation>이미지 속성</translation>
+    </message>
+    <message>
+        <source>Edit image tags</source>
+        <translation>이미지 태그 편집</translation>
+    </message>
+    <message>
+        <source>Copy File Names</source>
+        <translation>파일 이름 복사</translation>
+    </message>
+    <message>
+        <source>Copy File Paths</source>
+        <translation>파일 경로 복사</translation>
+    </message>
+    <message>
+        <source>Remove %d Files from List</source>
+        <translation>목록에서 %d개 파일 제거</translation>
+    </message>
+    <message>
+        <source>Remove %d files from the file list?
+The image files and their annotation files will NOT be deleted.</source>
+        <translation>파일 목록에서 %d개 파일을 제거하시겠습니까?
+이미지 파일과 주석 파일은 삭제되지 않습니다.</translation>
+    </message>
+    <message>
+        <source>Split of %d files set to %s</source>
+        <translation>%d개 파일의 분할을 %s(으)로 설정했습니다</translation>
+    </message>
+    <message>
+        <source>This panel cannot be hidden</source>
+        <translation>이 패널은 숨길 수 없습니다</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -8423,8 +8461,8 @@ Changes will not be saved until you click Save.</source>
     </message>
     <message>
         <location filename="..\..\views\labeling\settings\schema.py" line="69" />
-        <source>Toggle Image Tags</source>
-        <translation>이미지 태그 표시 전환</translation>
+        <source>Edit Image Tags</source>
+        <translation>이미지 태그 편집</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\settings\schema.py" line="70" />

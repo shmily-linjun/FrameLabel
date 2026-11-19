@@ -448,6 +448,9 @@ class LabelingWidget(LabelDialog):
             return
         self.other_data[IMAGE_TAGS_FIELD] = list(tags)
         self.set_dirty()
+        # The editor works on in-memory data until the file is saved, so the
+        # file table cannot read the new tags back from disk yet.
+        self.files.set_row_tags(str(self.image_path), tags)
 
     # -- operator identity ---------------------------------------------------
     # The browse-mode policy and the attribution baseline live in
@@ -483,11 +486,8 @@ class LabelingWidget(LabelDialog):
     def _refresh_attribution_display(self):
         self.operator_gate.refresh_display()
 
-    def toggle_image_tags_visibility(self, checked):
-        return AppearanceController(self).toggle_image_tags_visibility(checked)
-
-    def _auto_show_image_tags(self):
-        return AppearanceController(self)._auto_show_image_tags()
+    def show_image_tags_editor(self):
+        return AppearanceController(self).show_image_tags_editor()
 
     def _get_rgb_by_image_tag(self, label):
         return AppearanceController(self)._get_rgb_by_image_tag(label)
@@ -954,14 +954,21 @@ class LabelingWidget(LabelDialog):
         )
 
     def file_selection_changed(self):
+        if self._no_selection_slot:
+            return
+        if self.file_list_widget.selection_only_gesture():
+            # Ctrl/Shift clicks and keyboard range selection build the batch
+            # target set; they must not open the clicked image.
+            return
         row = self.file_list_widget.currentRow()
         if row < 0:
             return
+        filename = self._file_path_at(row)
+        if not filename or str(filename) == str(self.filename):
+            return
         if not self.may_continue():
             return
-        filename = self._file_path_at(row)
-        if filename:
-            self.load_file(filename)
+        self.load_file(filename)
 
     def attribute_selection_changed(self, i, property, combo):
         return AttributesPanel(self).attribute_selection_changed(i, property, combo)
@@ -1296,19 +1303,6 @@ class LabelingWidget(LabelDialog):
         self._position_browse_mode_badge()
 
     def eventFilter(self, obj, event):
-        if obj is getattr(
-            self, "image_tags_widget", None
-        ) and event.type() in (
-            QtCore.QEvent.Type.Show,
-            QtCore.QEvent.Type.Hide,
-            QtCore.QEvent.Type.Resize,
-        ):
-            height = (
-                0
-                if event.type() == QtCore.QEvent.Type.Hide
-                else self.image_tags_widget.height() + 4
-            )
-            self.right_sidebar.layout().setContentsMargins(0, 0, 0, height)
         if (
             hasattr(self, "_canvas_scroll_area")
             and obj is self._canvas_scroll_area.viewport()

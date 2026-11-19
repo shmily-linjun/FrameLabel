@@ -14,6 +14,11 @@ from PyQt6 import QtWidgets
 from .logger import logger
 from .utils.file_search import escape_query_value
 
+#: Tabs that may not be hidden.  The "Image Attributes" tab is the only place
+#: where image tags and image flags are edited, so hiding it would leave that
+#: metadata without any UI.
+ALWAYS_VISIBLE_TABS = ("flags",)
+
 
 class RightSidebarTabs:
     """Right panel tab visibility and statistics filtering."""
@@ -60,6 +65,9 @@ class RightSidebarTabs:
         elif isinstance(hidden, str):
             hidden_keys = [hidden] if hidden in valid_keys else []
         hidden_keys = [key for key in hidden_keys if key in valid_keys]
+        hidden_keys = [
+            key for key in hidden_keys if key not in ALWAYS_VISIBLE_TABS
+        ]
         if len(hidden_keys) >= len(valid_keys) and valid_keys:
             hidden_keys = sorted(valid_keys - {pages[0][0]})
         self.host._hidden_tabs = set(hidden_keys)
@@ -69,6 +77,9 @@ class RightSidebarTabs:
         pages = getattr(self.host, "_tab_pages", ())
         valid_keys = {page_key for page_key, _title, _page in pages}
         if key not in valid_keys:
+            return
+        if not visible and key in ALWAYS_VISIBLE_TABS:
+            self.host.status(self.host.tr("This panel cannot be hidden"))
             return
         hidden = set(self.host._hidden_tabs)
         if visible:

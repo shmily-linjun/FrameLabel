@@ -127,7 +127,7 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
             load_shapes=mock.Mock(),
             other_data=other_data,
             image_tags_widget=mock.Mock(),
-            _auto_show_image_tags=mock.Mock(),
+            files=mock.Mock(),
             set_dirty=mock.Mock(),
             _sync_annotation_checked_state=mock.Mock(),
             shape_text_edit=mock.Mock(),
@@ -143,7 +143,9 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
 
         self.assertEqual(widget.other_data["tags"], ["person"])
         widget.image_tags_widget.set_tags.assert_called_once_with(["person"])
-        widget._auto_show_image_tags.assert_called_once_with()
+        widget.files.set_row_tags.assert_called_once_with(
+            "/tmp/image.png", ["person"]
+        )
         widget.set_dirty.assert_not_called()
         self.assertTrue(widget.other_data["checked"])
         widget._sync_annotation_checked_state.assert_not_called()
@@ -174,20 +176,16 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
         self.assertFalse(widget.other_data["checked"])
         widget._sync_annotation_checked_state.assert_called_once_with()
 
-    def test_toggle_image_tags_visibility_tracks_explicit_state(self):
+    def test_show_image_tags_editor_opens_the_attributes_tab(self):
         widget = SimpleNamespace(
-            _image_tags_visibility="auto",
+            show_right_tab=mock.Mock(),
             image_tags_widget=mock.Mock(),
         )
 
-        LabelingWidget.toggle_image_tags_visibility(widget, True)
-        self.assertEqual(widget._image_tags_visibility, "explicit_visible")
-        widget.image_tags_widget.setVisible.assert_called_once_with(True)
+        LabelingWidget.show_image_tags_editor(widget)
 
-        LabelingWidget.toggle_image_tags_visibility(widget, False)
-        self.assertEqual(widget._image_tags_visibility, "explicit_hidden")
-        widget.image_tags_widget.setVisible.assert_called_with(False)
-
+        widget.show_right_tab.assert_called_once_with("flags")
+        widget.image_tags_widget.setFocus.assert_called_once_with()
     def test_batch_result_replaces_tags_without_changing_other_fields(self):
         with tempfile.TemporaryDirectory() as directory:
             image_path = os.path.join(directory, "image.png")

@@ -1312,27 +1312,18 @@ def build_actions(host):  # noqa: C901
 
     show_image_tags = action(
         host.tr("Image Tags"),
-        host.toggle_image_tags_visibility,
+        host.show_image_tags_editor,
         shortcuts["toggle_image_tags"],
-        tip=host.tr("Show or hide image tags"),
-        checkable=True,
-        checked=True,
+        tip=host.tr("Edit image tags"),
         enabled=True,
         icon="tags",
     )
     show_image_tags.setObjectName("toggleImageTags")
     theme = get_theme()
+    # The tags editor is a right-sidebar tab now, so the action only opens it;
+    # it is no longer a checkable show/hide switch for a canvas-bottom bar.
     show_image_tags.setIcon(
         get_icon("panel-down", theme["text"], theme["primary"])
-    )
-    show_image_tags.toggled.connect(
-        lambda checked: show_image_tags.setIcon(
-            get_icon(
-                "panel-down" if checked else "panel-up",
-                theme["text"],
-                theme["primary"],
-            )
-        )
     )
 
     # AI Actions

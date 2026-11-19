@@ -64,12 +64,16 @@ class FileTableItem(QtWidgets.QTableWidgetItem):
 
 
 class FileTableWidget(QtWidgets.QTableWidget):
-    """Five-column table listing the labeled images of the current folder."""
+    """Six-column table listing the labeled images of the current folder."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._auto_fill_name_column = True
         self._adjusting_columns = False
+        #: True while a Ctrl/Shift click is extending the selection; such a
+        #: click must not open the clicked image (see
+        #: ``LabelingWidget.file_selection_changed``).
+        self._selection_only_gesture = False
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -97,10 +101,88 @@ class FileTableWidget(QtWidgets.QTableWidget):
             self._adjusting_columns = False
 
     def mousePressEvent(self, event):
+        left_button = event.button() == QtCore.Qt.MouseButton.LeftButton
+        modifiers = event.modifiers()
+        self._selection_only_gesture = left_button and bool(
+            modifiers
+            & (
+                QtCore.Qt.KeyboardModifier.ControlModifier
+                | QtCore.Qt.KeyboardModifier.ShiftModifier
+            )
+        )
         if event.button() == QtCore.Qt.MouseButton.RightButton:
             event.accept()
             return
         super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        super().mouseReleaseEvent(event)
+        self._selection_only_gesture = False
+
+    def selection_only_gesture(self):
+        """Whether the last press only extended the selection."""
+        return self._selection_only_gesture
+
+    def event(self, event):
+        # ``Ctrl+A`` is a window-level shortcut of the auto-labeling action
+        # (``shortcuts.auto_label``).  Accepting the override makes Qt deliver
+        # the key press here instead, so the table can select all rows while it
+        # has the focus and the rest of the window keeps the old meaning.
+        if (
+            event.type() == QtCore.QEvent.Type.ShortcutOverride
+            and self._is_select_all(event)
+        ):
+            event.accept()
+            return True
+        return super().event(event)
+
+    def keyPressEvent(self, event):
+        if self._is_select_all(event):
+            self.selectAll()
+            event.accept()
+            return
+        if self._is_selection_extension(event):
+            # Shift/Ctrl + navigation keys move the current row while only
+            # extending the selection; that must not open the image.
+            self._selection_only_gesture = True
+            try:
+                super().keyPressEvent(event)
+            finally:
+                self._selection_only_gesture = False
+            return
+        super().keyPressEvent(event)
+
+    @staticmethod
+    def _is_select_all(event):
+        if event.key() != QtCore.Qt.Key.Key_A:
+            return False
+        modifiers = event.modifiers()
+        if not modifiers & QtCore.Qt.KeyboardModifier.ControlModifier:
+            return False
+        return not modifiers & (
+            QtCore.Qt.KeyboardModifier.ShiftModifier
+            | QtCore.Qt.KeyboardModifier.AltModifier
+        )
+
+    @staticmethod
+    def _is_selection_extension(event):
+        modifiers = event.modifiers()
+        if not modifiers & (
+            QtCore.Qt.KeyboardModifier.ControlModifier
+            | QtCore.Qt.KeyboardModifier.ShiftModifier
+        ):
+            return False
+        return event.key() in (
+            QtCore.Qt.Key.Key_Up,
+            QtCore.Qt.Key.Key_Down,
+            QtCore.Qt.Key.Key_Left,
+            QtCore.Qt.Key.Key_Right,
+            QtCore.Qt.Key.Key_Home,
+            QtCore.Qt.Key.Key_End,
+            QtCore.Qt.Key.Key_PageUp,
+            QtCore.Qt.Key.Key_PageDown,
+            QtCore.Qt.Key.Key_Space,
+        )
 
     def count(self):
         return self.rowCount()

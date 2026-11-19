@@ -556,7 +556,7 @@ def _shortcut_label(short_key: str) -> str:
             SETTINGS_TRANSLATION_CONTEXT, "Check Failed"
         ),
         "toggle_image_tags": QT_TRANSLATE_NOOP(
-            SETTINGS_TRANSLATION_CONTEXT, "Toggle Image Tags"
+            SETTINGS_TRANSLATION_CONTEXT, "Edit Image Tags"
         ),
         "auto_labeling_add_point": QT_TRANSLATE_NOOP(
             SETTINGS_TRANSLATION_CONTEXT, "Add Point"

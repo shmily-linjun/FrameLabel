@@ -1,10 +1,11 @@
 """Controller for the labeling file list.
 
-The controller owns the five-column file table, its row index, sorting and
-column layout, thumbnails and the per-row split/checked decorations.  It is
-deliberately separate from :class:`anylabeling.views.labeling.label_widget.
-LabelingWidget` so the file-list rules can be read, tested and changed without
-touching the annotation editing flow.
+The controller owns the six-column file table, its row index, sorting and
+column layout, thumbnails, the per-row split/checked decorations and the
+multi-row commands.  It is deliberately separate from
+:class:`anylabeling.views.labeling.label_widget.LabelingWidget` so the
+file-list rules can be read, tested and changed without touching the
+annotation editing flow.
 
 The host object passed to the constructor must provide this small surface
 (``LabelingWidget`` does):
@@ -20,6 +21,11 @@ The host object passed to the constructor must provide this small surface
 * ``_refresh_statistics_if_visible()`` / ``update_browse_actions()``;
 * ``_no_selection_slot`` -- re-entrancy guard for selection changes;
 * ``_ui_scale`` -- current interface scale used for row height.
+
+Selection model: the table allows extended (Ctrl/Shift) selection, but only a
+plain click or keyboard navigation may open the image.  ``FileTableWidget``
+reports an extending press through ``selection_only_gesture()`` and
+``LabelingWidget.file_selection_changed`` ignores that gesture.
 """
 
 import os.path as osp
@@ -45,6 +51,7 @@ from .constants import (
     FILE_COL_NAME,
     FILE_COL_SHAPES,
     FILE_COL_SPLIT,
+    FILE_COL_TAGS,
     FILE_COL_NAME_WIDTH,
     FILE_COLUMN_COUNT,
     FILE_COLUMN_WIDTHS,
@@ -96,13 +103,14 @@ class FileListController:
                 host.tr("Import Time"),
                 host.tr("Inference"),
                 host.tr("Split"),
+                host.tr("Tags"),
             ]
         )
         table.setSelectionBehavior(
             QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows
         )
         table.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection
         )
         table.setEditTriggers(
             QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers
@@ -250,12 +258,14 @@ class FileListController:
         split_item = FileTableItem(
             self.split_text(split), sort_key=SPLIT_KEYS.index(split)
         )
+        tags_item = self.build_tags_item(meta.tags)
         cells = [
             name_item,
             shapes_item,
             time_item,
             inference_item,
             split_item,
+            tags_item,
         ]
         row_flags = (
             QtCore.Qt.ItemFlag.ItemIsEnabled
@@ -264,6 +274,21 @@ class FileListController:
         for cell in cells:
             cell.setFlags(row_flags)
         return cells
+
+    @staticmethod
+    def tags_text(tags):
+        """Format image tags for the file table (``"—"`` when empty)."""
+        values = [str(tag) for tag in tags or ()]
+        return ", ".join(values) if values else "—"
+
+    def build_tags_item(self, tags):
+        text = self.tags_text(tags)
+        item = FileTableItem(
+            text, sort_key="" if text == "—" else text.lower()
+        )
+        if text != "—":
+            item.setToolTip(text)
+        return item
 
     def append_row(self, file, label_file=None):
         row = self.table.rowCount()
@@ -324,6 +349,28 @@ class FileListController:
         time_item = self.table.item(row, FILE_COL_IMPORT_TIME)
         if time_item is not None:
             time_item.setText(format_import_time(meta.import_time))
+        self._apply_tags_item(
+            self.table.item(row, FILE_COL_TAGS), meta.tags
+        )
+
+    def _apply_tags_item(self, item, tags):
+        if item is None:
+            return
+        text = self.tags_text(tags)
+        item.setText(text)
+        item.setData(FILE_SORT_ROLE, "" if text == "—" else text.lower())
+        item.setToolTip("" if text == "—" else text)
+
+    def set_row_tags(self, path, tags):
+        """Update the tags cell of ``path`` without re-reading the file.
+
+        The image tags editor works on in-memory data until the file is saved,
+        so the file table cannot take the tags from disk in that window.
+        """
+        row = self.row_of(str(path))
+        if row is None:
+            return
+        self._apply_tags_item(self.table.item(row, FILE_COL_TAGS), tags)
 
     def rebuild_index(self):
         mapping = {}
@@ -411,6 +458,21 @@ class FileListController:
         finally:
             self.host._no_selection_slot = False
 
+    def context_target_rows(self, item):
+        """Rows a context-menu command applies to.
+
+        Right-clicking inside a multi-row selection keeps that selection as
+        the command target; right-clicking any other row targets only that
+        row, which mirrors how file managers behave.
+        """
+        selected = self.table.selected_rows()
+        if item is not None:
+            row = item.row()
+            if len(selected) > 1 and row in selected:
+                return sorted(selected)
+            return [row]
+        return sorted(selected)
+
     # ------------------------------------------------------------------
     # Thumbnails
     # ------------------------------------------------------------------
@@ -480,6 +542,7 @@ class FileListController:
             (FILE_COL_IMPORT_TIME, "show_import_time"),
             (FILE_COL_INFERENCE, "show_inference"),
             (FILE_COL_SPLIT, "show_split"),
+            (FILE_COL_TAGS, "show_tags"),
         ):
             self.table.setColumnHidden(
                 column, not self.option(key, True)
@@ -531,6 +594,7 @@ class FileListController:
             FILE_COL_IMPORT_TIME: "show_import_time",
             FILE_COL_INFERENCE: "show_inference",
             FILE_COL_SPLIT: "show_split",
+            FILE_COL_TAGS: "show_tags",
         }.get(column)
         if key:
             section = self.host._config.setdefault("file_list", {})
@@ -564,6 +628,7 @@ class FileListController:
             (FILE_COL_IMPORT_TIME, self.host.tr("Import Time")),
             (FILE_COL_INFERENCE, self.host.tr("Inference")),
             (FILE_COL_SPLIT, self.host.tr("Split")),
+            (FILE_COL_TAGS, self.host.tr("Tags")),
         )
         for column, title in columns:
             action = menu.addAction(title)
@@ -587,33 +652,38 @@ class FileListController:
             host.tr("Import Folder"),
         )
 
-        row = None
-        file_path = None
+        targets = self.context_target_rows(item)
+        paths = [self.path_at(row) for row in targets]
+        paths = [path for path in paths if path]
+        multi = len(paths) > 1
         split_actions = {}
         copy_name_action = None
         copy_path_action = None
         thumbnail_action = None
         remove_action = None
-        if item is not None:
-            row = item.row()
-            file_path = self.path_at(row)
-            label_file = self.label_file_for(file_path)
+        if targets:
             menu.addSeparator()
             copy_name_action = menu.addAction(
                 utils.new_icon("copy", "svg"),
-                host.tr("Copy File Name"),
+                host.tr("Copy File Names")
+                if multi
+                else host.tr("Copy File Name"),
             )
             copy_path_action = menu.addAction(
                 utils.new_icon("copy", "svg"),
-                host.tr("Copy File Path"),
+                host.tr("Copy File Paths")
+                if multi
+                else host.tr("Copy File Path"),
             )
             menu.addSeparator()
             split_menu = menu.addMenu(host.tr("Split"))
             split_group = QtGui.QActionGroup(split_menu)
             split_group.setExclusive(True)
-            current_split = read_file_meta(file_path, label_file).split
-            if current_split not in SPLIT_KEYS:
-                current_split = SPLIT_NONE
+            splits = {
+                read_file_meta(path, self.label_file_for(path)).split
+                for path in paths
+            }
+            current_split = splits.pop() if len(splits) == 1 else None
             for split_key in ("train", "val", "test", SPLIT_NONE):
                 split_action = split_menu.addAction(
                     self.split_text(split_key)
@@ -630,7 +700,11 @@ class FileListController:
                 if self._show_thumbnails
                 else host.tr("Show Thumbnails")
             )
-            remove_action = menu.addAction(host.tr("Remove from List"))
+            remove_action = menu.addAction(
+                host.tr("Remove %d Files from List") % len(paths)
+                if multi
+                else host.tr("Remove from List")
+            )
 
         chosen = menu.exec(self.table.viewport().mapToGlobal(point))
         if chosen is None:
@@ -641,69 +715,117 @@ class FileListController:
         if chosen is import_folder_action:
             host.open_folder_dialog()
             return
-        if row is None:
+        if not targets:
             return
         if chosen is copy_name_action:
-            host.copy_file_path(osp.basename(file_path))
+            host.copy_file_path(
+                "\n".join(osp.basename(path) for path in paths)
+            )
         elif chosen is copy_path_action:
-            host.copy_file_path(file_path)
+            host.copy_file_path("\n".join(paths))
         elif chosen is thumbnail_action:
             self.set_thumbnails_visible(not self._show_thumbnails)
         elif chosen is remove_action:
-            self.remove_row(row)
+            self.remove_rows(targets)
         elif chosen in split_actions:
-            self.set_split(row, split_actions[chosen])
+            self.set_split_rows(targets, split_actions[chosen])
 
     # ------------------------------------------------------------------
     # Row mutations
     # ------------------------------------------------------------------
     def set_split(self, row, split):
+        self.set_split_rows([row], split)
+
+    def set_split_rows(self, rows, split):
+        """Store ``split`` for every row; one status message for the batch."""
         host = self.host
-        file_path = self.path_at(row)
-        if not file_path:
+        targets = [
+            row
+            for row in dict.fromkeys(rows)
+            if 0 <= row < self.table.rowCount()
+        ]
+        if not targets:
             return
-        label_file = self.label_file_for(file_path)
-        if not write_split(label_file, split, image_path=file_path):
+        updated = 0
+        failed = []
+        for row in targets:
+            file_path = self.path_at(row)
+            if not file_path:
+                continue
+            if write_split(
+                self.label_file_for(file_path), split, image_path=file_path
+            ):
+                self.refresh_row(row)
+                updated += 1
+            else:
+                failed.append(file_path)
+        host._refresh_statistics_if_visible()
+        if failed:
             host.status(
-                host.tr("Failed to update split for %s") % file_path
+                host.tr("Failed to update split for %s")
+                % ", ".join(osp.basename(path) for path in failed)
             )
             return
-        self.refresh_row(row)
-        host._refresh_statistics_if_visible()
+        if updated == 1:
+            host.status(
+                host.tr("Split of %s set to %s")
+                % (
+                    osp.basename(self.path_at(targets[0])),
+                    self.split_text(split),
+                )
+            )
+            return
         host.status(
-            host.tr("Split of %s set to %s")
-            % (osp.basename(file_path), self.split_text(split))
+            host.tr("Split of %d files set to %s")
+            % (updated, self.split_text(split))
         )
 
     def remove_row(self, row):
+        self.remove_rows([row])
+
+    def remove_rows(self, rows):
+        """Remove rows from the list (images and JSON files stay on disk)."""
         host = self.host
-        file_path = self.path_at(row)
-        if not file_path:
+        targets = sorted(
+            {row for row in rows if 0 <= row < self.table.rowCount()}
+        )
+        if not targets:
             return
+        paths = [self.path_at(row) for row in targets]
+        paths = [path for path in paths if path]
+        if len(paths) == 1:
+            question = host.tr(
+                'Remove "%s" from the file list?\n'
+                "The image file and its annotation file will NOT be deleted."
+            ) % osp.basename(paths[0])
+        else:
+            question = host.tr(
+                "Remove %d files from the file list?\n"
+                "The image files and their annotation files "
+                "will NOT be deleted."
+            ) % len(paths)
         answer = QtWidgets.QMessageBox.question(
             host,
             host.tr("Remove File"),
-            host.tr(
-                'Remove "%s" from the file list?\n'
-                "The image file and its annotation file will NOT be deleted."
-            )
-            % osp.basename(file_path),
+            question,
             QtWidgets.QMessageBox.StandardButton.Yes
             | QtWidgets.QMessageBox.StandardButton.No,
             QtWidgets.QMessageBox.StandardButton.No,
         )
         if answer != QtWidgets.QMessageBox.StandardButton.Yes:
             return
-        was_current = str(host.filename) == str(file_path)
+        was_current = str(host.filename) in {str(path) for path in paths}
+        first_row = targets[0]
         self.table.blockSignals(True)
         try:
-            self.table.removeRow(row)
+            for row in reversed(targets):
+                self.table.removeRow(row)
         finally:
             self.table.blockSignals(False)
         self.rebuild_index()
         if was_current:
             if self.table.count() > 0:
-                next_row = min(row, self.table.count() - 1)
+                next_row = min(first_row, self.table.count() - 1)
                 host.filename = None
                 self.table.setCurrentCell(next_row, FILE_COL_NAME)
                 next_path = self.path_at(next_row)

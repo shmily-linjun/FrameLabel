@@ -6,6 +6,71 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.22 — 2026-11-19
+
+### 1. 背景与原因
+
+用户提出两项需求：
+
+- **文件表不能多选**：无法用 `Ctrl + 鼠标` 多行选择，`Ctrl + A` 也不能全选。核查确认这是“从未实现”，不是回归：文件表自本 fork 首个提交起就是 `SingleSelection`（`git log -S SingleSelection` 只命中根提交与 T8 搬运提交）；而且 `Ctrl + A` 已被窗口级快捷键 `shortcuts.auto_label`（自动标注面板）占用，实测在表格上按 `Ctrl + A` 打开的是自动标注面板，所以只把选择模式改成 `ExtendedSelection` 仍然无法全选。文件表此前也没有任何批量动作，因此“多选”必须同时定义“选区与当前图片的关系”“批量动作”“反馈”三件事。
+- **图片标签条与“标志”页重复**：用户认为“在 tabwidget 中有标志的情况下，画布下方那条图片标签栏应去掉，把图片标签放进标志页”。两者其实不是同一种数据（`tags` 是自由文本有序数组，`flags` 是固定词表的布尔字典，数据库设计里也分别对应 `image_tag` 表与 `image_file.flags_json`），但用户明确选择合并，并要求补一个“不切页也能看到标签”的出口。本批按“图像属性”页承载两者、文件表新增 `标签` 列作为出口实施。
+
+### 2. 主要实现与关键细节
+
+#### 2.1 文件表多选与批量动作
+
+- `FileTableWidget` 选择模式改为 `ExtendedSelection`；`mousePressEvent` 记录 Ctrl/Shift 手势（右键仍只打开菜单、不改选区），`keyPressEvent` 对 Ctrl/Shift + 导航键同样置手势标志，`selection_only_gesture()` 暴露给宿主。
+- **`Ctrl + A`**：在 `event()` 中接受 `ShortcutOverride`，并在 `keyPressEvent()` 中调用 `selectAll()`。因此只有文件表获得焦点时 `Ctrl + A` 才是全选，窗口级“自动标注”快捷键在其他控件上语义不变。
+- `LabelingWidget.file_selection_changed()` 增加三道守卫：`_no_selection_slot` 期间返回；扩展选择手势期间返回（不打开图片）；当前行与已打开文件相同时返回（否则全选/取消选择会整份重载当前文件，丢失未保存状态）。
+- 批量动作（右键菜单；右键落在多选范围内时作用于全部选中行，否则只作用于该行）：
+  - 设置划分：`set_split_rows()` 逐行 `write_split()` 后 `refresh_row()`、刷新统计，并按条数给出状态消息；单选仍走 `set_split()` 薄封装。
+  - 从列表移除：`remove_rows()` 一次确认（多行时提示数量并说明不删除磁盘文件），从后往前删行、重建索引；若当前文件被移除则选中相邻行，否则重新同步选区。
+  - 复制文件名/路径：多行时每行一条（换行分隔）。
+- `context_target_rows()` 统一决定菜单目标集合。
+
+#### 2.2 图片标签并入“图像属性”页
+
+- `widgets/workspace.py` 新增 `attributes_panel`：`图片标签` 小节标题 + `ImageTagsWidget` + `标志` 小节标题 + `flag_widget`；右侧 tab 的 `flags` 页标题改为 `Image Attributes`（页 key 仍是 `flags`，不迁移配置）。
+- 画布下方不再有标签条：`central_layout` 移除该控件；`build_canvas_view()` 仍创建控件（`OperatorGate` 在工作区装配前就会访问它），但不再 `show()`；删除 `_image_tags_visibility` 状态、`toggle_image_tags_visibility()`、`_auto_show_image_tags()`，以及 `LabelingWidget.eventFilter` 中为该条调整右侧栏下边距的分支。
+- `show_image_tags` 动作改为一次性跳转：非 checkable，触发 `show_image_tags_editor()`（切到 `flags` 页并聚焦标签控件）；`Ctrl+Shift+T`、`视图 > Image Tags`、标题栏按钮共用该动作；设置页快捷键说明由 `Toggle Image Tags` 改为 `Edit Image Tags`。
+- `right_sidebar.ALWAYS_VISIBLE_TABS = ("flags",)`：该页不可隐藏（状态栏提示“该面板不可隐藏”），`_apply_right_tabs_config()` 会丢弃旧配置中隐藏它的项。
+- **文件表新增 `标签` 列**（`FILE_COL_TAGS`，共 6 列）：`FileMeta` 增加带默认值的 `tags`（用 `normalize_image_tags` 归一），行构建/刷新显示逗号分隔文本并支持表头显隐与 `file_list.show_tags`；标签编辑后由 `_on_image_tags_changed()` 调 `set_row_tags()` 直接更新单元格（文件尚未保存，不能从磁盘回读），`AutoLabelingHandoff` 写入自动标注 tags 后同样更新该行。
+
+### 3. 涉及模块与文件
+
+- 文件表：`anylabeling/views/labeling/file_list/{table,controller,constants,__init__}.py`、`utils/file_meta.py`
+- 视图装配与状态：`widgets/workspace.py`、`right_sidebar.py`、`appearance.py`、`actions/builder.py`、`label_widget.py`
+- 标签回写：`file_session.py`、`auto_labeling_handoff.py`
+- 配置与设置：`configs/xanylabeling_config.yaml`（`file_list.show_tags`）、`settings/schema.py`
+- 翻译资源：`resources/translations/{en_US,zh_CN,ja_JP,ko_KR}.{ts,qm}`、`resources/resources.py`
+- 测试：`tests/test_labeling/test_file_table.py`、`tests/test_labeling/test_image_tags.py`
+- 文档与版本：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/user/zh_cn/user_guide.md`、`app_info.py`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：文件表支持 `Ctrl + 单击`/`Shift + 单击`/`Ctrl + A` 多选，右键菜单多出批量划分、批量移除、批量复制路径；新增 `标签` 列；画布下方标签条移除，标签改在“图像属性”页编辑；`标志` 页改名“图像属性”且不可隐藏；`Ctrl+Shift+T` 由“显示/隐藏标签条”变为“跳到标签编辑区”。标注 JSON 契约不变。
+- **配置**：新增 `file_list.show_tags`（缺省 `true`）；`right_tabs.hidden` 中若含 `flags` 会在加载时被忽略；`shortcuts.toggle_image_tags` 键名保留但语义变化（不再切换可见性）。
+- **内部接口**：`FileMeta` 新增带默认值的 `tags` 字段；`FileListController` 新增 `selected_paths()`/`context_target_rows()`/`set_split_rows()`/`remove_rows()`/`set_row_tags()`；`FileTableWidget` 新增 `selection_only_gesture()`；`RightSidebarTabs.ALWAYS_VISIBLE_TABS` 常量为新约束。`LabelingWidget.toggle_image_tags_visibility()` 与 `_auto_show_image_tags()` 删除，`show_image_tags_editor()` 取而代之。
+- **版本**：`4.3.2+fork.21` → `4.3.2+fork.22`。
+
+### 5. 实际验证内容
+
+- 定向 pytest（本机 conda env，`QT_QPA_PLATFORM=offscreen`）：`tests/test_labeling/test_file_table.py` **26 passed**，其中新增 7 个用例：Ctrl/Shift 单击扩展选区且不换图、Shift+方向键扩展选区且不换图、表格内 `Ctrl+A` 全选且不触发自动标注面板、批量划分写盘、批量移除保留文件并重建索引、`标签` 列随文件/内存编辑更新、“图像属性”页托管标签编辑器且画布区域不再包含它；`test_file_table + test_image_tags + test_utils/test_file_meta` 首轮 **60 passed**。
+- 回归：`tests/test_labeling tests/test_settings tests/test_config tests/test_identity tests/test_widgets tests/test_utils` 合计 **529 passed / 1 skipped / 7 failed / 186 subtests passed**。7 条失败与 `temporary/baseline-fork21/src`（HEAD 的只读导出树）逐条一致：6 条为结构报告 §13.1 已记录的“用例未跟上实现”测试债，1 条为已记录的时序抖动 `test_brightness_contrast_updates_are_throttled`。
+- 回归中发现并修复的自伤：早期实现用 `QApplication.keyboardModifiers()` 判断手势，被同一进程内前序用例残留的 Ctrl 状态污染，导致 `test_image_switch::test_configured_image_jump_updates_navigation` 失败；改为只依据控件自身的手势标志后，该文件 **4 passed**。
+- 翻译：四语言 `.ts` 新增 10 条（`LabelingWidget` 9 条 + `SettingsDialog` 1 条），`scripts/compile_languages.py` 重编 `.qm`（各 2183 条、0 unfinished）并重建 `resources.py`；从 `:/languages/translations/<lang>.qm` 加载并抽查全部新字符串，四语言均返回预期译文。
+- **未执行**：真实桌面 GUI 交互（Ctrl+单击、右键批量菜单的观感与高 DPI 表现）、`black`/`flake8`/`pre-commit`（本机未安装）、打包与发布。
+
+### 6. 已知限制与后续事项
+
+- 批量动作只做了一期范围：**删除文件**与**对选中行跑自动标注**未纳入（后者与 `BatchRangeDialog` 的区间语义冲突，需先定规则）。
+- 切换图片会清空多选（`sync_selection()` 走 `setCurrentCell`），符合“跳图即重置选区”的约定，未做选择记忆。
+- “图像属性”页不可隐藏是硬约束；若将来把标签/标志拆回可隐藏面板，需同步调整 `ALWAYS_VISIBLE_TABS` 与用户手册。
+- `标签` 列只是逗号连接的文本（超长省略 + tooltip），搜索语法暂不支持 `tag::`；批量设置检查状态也未纳入。
+- 本机 pytest 仍受 DSH Windows 沙箱限制：沙箱内新建目录无法被枚举（`WinError 5`），本轮按用户授权以一次性完全权限运行；未在受限模式复现该限制的绕过方案。
+
+---
+
 ## 4.3.2+fork.20 — 2026-11-19
 
 ### 1. 背景与原因

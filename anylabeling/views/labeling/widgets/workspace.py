@@ -48,9 +48,11 @@ from ..widgets.splitters import RightSplitter, SidebarSplitter
 
 
 def build_canvas_view(host):
-    """Create the canvas, its scroll area, overlays and image tag bar.
+    """Create the canvas, its scroll area and the canvas overlays.
 
-    Returns the scroll area that hosts the canvas.
+    Returns the scroll area that hosts the canvas.  The image tags editor is
+    created here as well, but it is placed in the right-sidebar tab by
+    :func:`build_workspace`; it no longer takes canvas height.
     """
     host.canvas = host.label_list.canvas = Canvas(
         parent=host,
@@ -210,7 +212,9 @@ def build_canvas_view(host):
 
     host._central_widget = scroll_area
 
-    host._image_tags_visibility = "auto"
+    # Image tags are edited inside the right-sidebar "Image Attributes" tab;
+    # the widget is created here because the operator gate touches it before
+    # the workspace is assembled.
     host.image_tags_widget = ImageTagsWidget(
         host._get_rgb_by_image_tag, host
     )
@@ -219,7 +223,6 @@ def build_canvas_view(host):
     )
     host.image_tags_widget.status_message.connect(host.status)
     host.image_tags_widget.set_interactions_enabled(False)
-    host.image_tags_widget.show()
     return scroll_area
 
 
@@ -336,11 +339,13 @@ def build_instruction_bar(host):
         host._panel_toggle_icon("sidebar", True)
     )
     host.sidebar_toggle_button.clicked.connect(host.toggle_right_sidebar)
+    # Image tags live in the right-sidebar tab now; this button jumps to that
+    # tab instead of resizing the canvas area.
     host.image_tags_toggle_button = QtWidgets.QToolButton()
     host._configure_toggle_button(
         host.image_tags_toggle_button,
         toggle_style,
-        host.tr("Show or hide image tags"),
+        host.tr("Edit image tags"),
     )
     host.image_tags_toggle_button.setDefaultAction(
         host.actions.show_image_tags
@@ -459,7 +464,6 @@ def build_workspace(host, scroll_area, instruction_layout):
     canvas_panel_layout.addWidget(scroll_area)
     central_layout.addWidget(canvas_panel, 1)
     central_layout.addWidget(host.compare_view_slider)
-    central_layout.addWidget(host.image_tags_widget)
     central_widget = QWidget()
     central_widget.setLayout(central_layout)
     host.sidebar_splitter = SidebarSplitter(Qt.Orientation.Horizontal)
@@ -486,7 +490,6 @@ def build_workspace(host, scroll_area, instruction_layout):
     right_sidebar_layout = QVBoxLayout(host.right_sidebar)
     right_sidebar_layout.setContentsMargins(0, 0, 0, 0)
     right_sidebar_layout.setSpacing(4)
-    host.image_tags_widget.installEventFilter(host)
 
     # Thumbnail image display
     host.thumbnail_pixmap = None
@@ -536,11 +539,26 @@ def build_workspace(host, scroll_area, instruction_layout):
     objects_panel_layout.setSpacing(0)
     objects_panel_layout.addWidget(host.label_list, 1)
 
-    flags_panel = RoundedPanel()
-    flags_panel_layout = QVBoxLayout(flags_panel)
-    flags_panel_layout.setContentsMargins(0, 0, 0, 0)
-    flags_panel_layout.setSpacing(0)
-    flags_panel_layout.addWidget(host.flag_widget, 1)
+    # "Image Attributes": the only place where image-level metadata is
+    # edited.  Image tags (free text chips) sit above the image flags
+    # (checkbox template); both belong to the current image.
+    attributes_panel = RoundedPanel()
+    attributes_panel_layout = QVBoxLayout(attributes_panel)
+    attributes_panel_layout.setContentsMargins(0, 0, 0, 0)
+    attributes_panel_layout.setSpacing(0)
+    section_label_style = (
+        f"QLabel {{ color: {theme['text_secondary']};"
+        " font-size: 11px; font-weight: 600;"
+        " padding: 6px 6px 2px 6px; }"
+    )
+    tags_label = QLabel(host.tr("Image Tags"))
+    tags_label.setStyleSheet(section_label_style)
+    flags_label = QLabel(host.tr("Flags"))
+    flags_label.setStyleSheet(section_label_style)
+    attributes_panel_layout.addWidget(tags_label)
+    attributes_panel_layout.addWidget(host.image_tags_widget)
+    attributes_panel_layout.addWidget(flags_label)
+    attributes_panel_layout.addWidget(host.flag_widget, 1)
 
     description_panel = RoundedPanel()
     description_panel_layout = QVBoxLayout(description_panel)
@@ -564,7 +582,7 @@ def build_workspace(host, scroll_area, instruction_layout):
     host._tab_pages = (
         ("objects", host.tr("Objects"), objects_panel),
         ("labels", host.tr("Classes"), labels_panel),
-        ("flags", host.tr("Flags"), flags_panel),
+        ("flags", host.tr("Image Attributes"), attributes_panel),
         ("description", host.tr("Description"), description_panel),
         ("statistics", host.tr("Statistics"), host.statistics_table),
     )

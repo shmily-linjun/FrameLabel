@@ -224,18 +224,14 @@ class AppearanceController:
             return "<b>-</b>"
         return ", ".join(formatted)
 
-    def toggle_image_tags_visibility(self, checked):
-        self.host._image_tags_visibility = (
-            "explicit_visible" if checked else "explicit_hidden"
-        )
-        self.host.image_tags_widget.setVisible(checked)
-
-    def _auto_show_image_tags(self):
-        if self.host._image_tags_visibility != "auto":
-            return
-        with QtCore.QSignalBlocker(self.host.actions.show_image_tags):
-            self.host.actions.show_image_tags.setChecked(True)
-        self.host.image_tags_widget.show()
+    def show_image_tags_editor(self):
+        """Open the image-attributes tab and focus the image tags editor."""
+        host = self.host
+        if hasattr(host, "show_right_tab"):
+            host.show_right_tab("flags")
+        widget = getattr(host, "image_tags_widget", None)
+        if widget is not None:
+            widget.setFocus()
 
     def _get_rgb_by_image_tag(self, label):
         for shape in self.host.canvas.shapes:

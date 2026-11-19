@@ -5410,6 +5410,44 @@ You can download the models again in the new directory.</translation>
     <message><source>Import Folder</source><translation>Import Folder</translation></message>
     <message><source>%s - Import Files</source><translation>%s - Import Files</translation></message>
     <message><source>Image files (%s)</source><translation>Image files (%s)</translation></message>
+    <message>
+        <source>Tags</source>
+        <translation>Tags</translation>
+    </message>
+    <message>
+        <source>Image Attributes</source>
+        <translation>Image Attributes</translation>
+    </message>
+    <message>
+        <source>Edit image tags</source>
+        <translation>Edit image tags</translation>
+    </message>
+    <message>
+        <source>Copy File Names</source>
+        <translation>Copy File Names</translation>
+    </message>
+    <message>
+        <source>Copy File Paths</source>
+        <translation>Copy File Paths</translation>
+    </message>
+    <message>
+        <source>Remove %d Files from List</source>
+        <translation>Remove %d Files from List</translation>
+    </message>
+    <message>
+        <source>Remove %d files from the file list?
+The image files and their annotation files will NOT be deleted.</source>
+        <translation>Remove %d files from the file list?
+The image files and their annotation files will NOT be deleted.</translation>
+    </message>
+    <message>
+        <source>Split of %d files set to %s</source>
+        <translation>Split of %d files set to %s</translation>
+    </message>
+    <message>
+        <source>This panel cannot be hidden</source>
+        <translation>This panel cannot be hidden</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -8423,8 +8461,8 @@ Changes will not be saved until you click Save.</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\settings\schema.py" line="69" />
-        <source>Toggle Image Tags</source>
-        <translation>Toggle Image Tags</translation>
+        <source>Edit Image Tags</source>
+        <translation>Edit Image Tags</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\settings\schema.py" line="70" />

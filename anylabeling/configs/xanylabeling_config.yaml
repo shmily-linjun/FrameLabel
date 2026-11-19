@@ -72,6 +72,7 @@ file_list:
   show_import_time: true
   show_inference: true
   show_split: true
+  show_tags: true
   show_thumbnails: true
 
 # label_dialog

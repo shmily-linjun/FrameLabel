@@ -5408,6 +5408,44 @@ You can download the models again in the new directory.</source>
     <message><source>Import Folder</source><translation>文件夹导入</translation></message>
     <message><source>%s - Import Files</source><translation>%s - 单文件导入</translation></message>
     <message><source>Image files (%s)</source><translation>图片文件（%s）</translation></message>
+    <message>
+        <source>Tags</source>
+        <translation>标签</translation>
+    </message>
+    <message>
+        <source>Image Attributes</source>
+        <translation>图像属性</translation>
+    </message>
+    <message>
+        <source>Edit image tags</source>
+        <translation>编辑图片标签</translation>
+    </message>
+    <message>
+        <source>Copy File Names</source>
+        <translation>复制文件名</translation>
+    </message>
+    <message>
+        <source>Copy File Paths</source>
+        <translation>复制文件路径</translation>
+    </message>
+    <message>
+        <source>Remove %d Files from List</source>
+        <translation>从列表移除 %d 个文件</translation>
+    </message>
+    <message>
+        <source>Remove %d files from the file list?
+The image files and their annotation files will NOT be deleted.</source>
+        <translation>从文件列表移除 %d 个文件？
+图片文件及其标注文件不会被删除。</translation>
+    </message>
+    <message>
+        <source>Split of %d files set to %s</source>
+        <translation>已将 %d 个文件的划分设为 %s</translation>
+    </message>
+    <message>
+        <source>This panel cannot be hidden</source>
+        <translation>该面板不可隐藏</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -8421,8 +8459,8 @@ Changes will not be saved until you click Save.</source>
     </message>
     <message>
         <location filename="..\..\views\labeling\settings\schema.py" line="69" />
-        <source>Toggle Image Tags</source>
-        <translation>切换图片标签</translation>
+        <source>Edit Image Tags</source>
+        <translation>编辑图片标签</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\settings\schema.py" line="70" />

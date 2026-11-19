@@ -17,6 +17,7 @@ from anylabeling.views.labeling.file_list.constants import (
     FILE_COL_NAME,
     FILE_COL_SHAPES,
     FILE_COL_SPLIT,
+    FILE_COL_TAGS,
     FILE_ROW_HEIGHT,
     FILE_ROW_HEIGHT_COMPACT,
 )
@@ -125,7 +126,7 @@ def test_file_table_columns_rows_and_visibility(window, tmp_path):
 
     table = widget.file_list_widget
     assert isinstance(table, QtWidgets.QTableWidget)
-    assert table.columnCount() == 5
+    assert table.columnCount() == 6
     assert table.count() == 3
     assert widget.fn_to_index[str(first)] == 0
     assert widget._file_path_at(0) == str(first)
@@ -135,6 +136,7 @@ def test_file_table_columns_rows_and_visibility(window, tmp_path):
     assert table.item(0, FILE_COL_INFERENCE).text() == "—"
     assert table.item(0, FILE_COL_SPLIT).text() == "Train"
     assert table.item(1, FILE_COL_SPLIT).text() == "None"
+    assert table.item(0, FILE_COL_TAGS).text() == "—"
 
     flags = table.item(0, FILE_COL_NAME).flags()
     assert not (flags & QtCore.Qt.ItemFlag.ItemIsUserCheckable)
@@ -157,6 +159,14 @@ def test_file_table_columns_rows_and_visibility(window, tmp_path):
     assert not table.isColumnHidden(FILE_COL_IMPORT_TIME)
     table.setColumnWidth(FILE_COL_SPLIT, 77)
     assert widget._config["file_list"]["column_widths"]["4"] == 77
+
+    # The tags column is the only place where tags are visible without
+    # switching to the attributes tab, so it is shown by default.
+    assert not table.isColumnHidden(FILE_COL_TAGS)
+    widget.set_file_column_visible(FILE_COL_TAGS, False)
+    assert table.isColumnHidden(FILE_COL_TAGS)
+    assert widget._config["file_list"]["show_tags"] is False
+    widget.set_file_column_visible(FILE_COL_TAGS, True)
 
 
 def test_import_time_is_persisted_in_sidecar(window, tmp_path):
@@ -311,7 +321,13 @@ def test_right_tabs_visibility_and_guard(window):
     assert tabs.count() == 5
     assert [
         tabs.tabText(i) for i in range(tabs.count())
-    ] == ["Objects", "Classes", "Flags", "Description", "Statistics"]
+    ] == [
+        "Objects",
+        "Classes",
+        "Image Attributes",
+        "Description",
+        "Statistics",
+    ]
 
     widget.set_right_tab_visible("labels", False)
     assert tabs.count() == 4
@@ -319,13 +335,39 @@ def test_right_tabs_visibility_and_guard(window):
     widget.set_right_tab_visible("labels", True)
     assert tabs.count() == 5
 
+    # The attributes tab is the only UI for image tags and image flags, so it
+    # cannot be hidden (neither through the menu nor through a stale config).
+    widget.set_right_tab_visible("flags", False)
+    assert tabs.count() == 5
+    assert "flags" not in widget._config["right_tabs"]["hidden"]
+    assert "flags" not in widget._hidden_tabs
+
     widget.set_right_tab_visible("objects", False)
     widget.set_right_tab_visible("description", False)
-    widget.set_right_tab_visible("flags", False)
     widget.set_right_tab_visible("statistics", False)
-    assert tabs.count() == 1
+    assert tabs.count() == 2
     widget.set_right_tab_visible("labels", False)
     assert tabs.count() == 1
+    widget.set_right_tab_visible("flags", False)
+    assert tabs.count() == 1
+    assert tabs.tabText(0) == "Image Attributes"
+
+
+def test_stale_config_cannot_hide_the_attributes_tab(window):
+    widget = window.labeling_widget.view
+    widget._config["right_tabs"] = {"hidden": ["flags"]}
+    widget._apply_right_tabs_config()
+    assert "flags" not in widget._hidden_tabs
+    assert [
+        widget.right_tabs.tabText(index)
+        for index in range(widget.right_tabs.count())
+    ] == [
+        "Objects",
+        "Classes",
+        "Image Attributes",
+        "Description",
+        "Statistics",
+    ]
 
 
 def test_statistics_tab_click_filters_search(window, tmp_path):
@@ -612,3 +654,213 @@ def test_sidebar_can_be_dragged_to_minimum_width(window, tmp_path):
     assert abs(_drag_sidebar(splitter, 160) - min_width) <= 4
     assert abs(sidebar.width() - min_width) <= 4
     assert widget.file_list_widget.isVisible()
+
+
+def _click_row(table, row, modifier=None):
+    index = table.model().index(row, FILE_COL_NAME)
+    QTest.mouseClick(
+        table.viewport(),
+        QtCore.Qt.MouseButton.LeftButton,
+        modifier or QtCore.Qt.KeyboardModifier.NoModifier,
+        table.visualRect(index).center(),
+    )
+
+
+def test_ctrl_click_extends_selection_without_opening(window, tmp_path):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, first, second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+    table = widget.file_list_widget
+
+    _click_row(table, 0)
+    app.processEvents()
+    assert table.currentRow() == 0
+    assert table.selected_rows() == [0]
+    assert widget.filename == str(first)
+
+    # Ctrl+click extends the target set but must not open the clicked image.
+    _click_row(table, 1, QtCore.Qt.KeyboardModifier.ControlModifier)
+    app.processEvents()
+    assert table.selected_rows() == [0, 1]
+    assert widget.filename == str(first)
+
+    # Shift+click extends the range the same way.
+    _click_row(table, 2, QtCore.Qt.KeyboardModifier.ShiftModifier)
+    app.processEvents()
+    assert table.selected_rows() in ([1, 2], [0, 1, 2])
+    assert widget.filename == str(first)
+
+    # A plain click still opens the image.
+    _click_row(table, 1)
+    app.processEvents()
+    assert table.selected_rows() == [1]
+    assert widget.filename == str(second)
+
+
+def test_ctrl_a_selects_every_row_instead_of_auto_labeling(window, tmp_path):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, first, second, third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+    table = widget.file_list_widget
+
+    _click_row(table, 0)
+    app.processEvents()
+    auto_labeling_visible = widget.auto_labeling_widget.isVisible()
+
+    table.setFocus()
+    app.processEvents()
+    QTest.keyClick(
+        table,
+        QtCore.Qt.Key.Key_A,
+        QtCore.Qt.KeyboardModifier.ControlModifier,
+    )
+    app.processEvents()
+
+    assert table.selected_rows() == [0, 1, 2]
+    # The window-level Ctrl+A shortcut (auto labeling) must not fire here.
+    assert widget.auto_labeling_widget.isVisible() == auto_labeling_visible
+    # Select-all is a selection gesture: the open image does not change.
+    assert widget.filename == str(first)
+    assert table.currentRow() == 0
+    assert {str(first), str(second), str(third)} == {
+        widget._file_path_at(row) for row in table.selected_rows()
+    }
+
+
+def test_shift_arrow_extends_selection_without_opening(window, tmp_path):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+    table = widget.file_list_widget
+
+    _click_row(table, 0)
+    app.processEvents()
+    table.setFocus()
+    QTest.keyClick(
+        table,
+        QtCore.Qt.Key.Key_Down,
+        QtCore.Qt.KeyboardModifier.ShiftModifier,
+    )
+    app.processEvents()
+
+    assert table.selected_rows() == [0, 1]
+    assert widget.filename == str(first)
+
+
+def test_batch_split_applies_to_all_selected_rows(window, tmp_path):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, first, second, third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+    table = widget.file_list_widget
+    table.selectAll()
+    app.processEvents()
+    assert len(table.selected_rows()) == 3
+
+    widget.files.set_split_rows(table.selected_rows(), SPLIT_TRAIN)
+
+    for image in (first, second, third):
+        data = json.loads(
+            image.with_suffix(".json").read_text(encoding="utf-8")
+        )
+        assert data["split"] == SPLIT_TRAIN
+    for row in range(3):
+        assert table.item(row, FILE_COL_SPLIT).text() == "Train"
+
+
+def test_batch_remove_keeps_files_and_reindexes(window, tmp_path, monkeypatch):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, first, second, third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+    table = widget.file_list_widget
+
+    monkeypatch.setattr(
+        QtWidgets.QMessageBox,
+        "question",
+        lambda *args, **kwargs: QtWidgets.QMessageBox.StandardButton.Yes,
+    )
+    rows = [table.rowCount() - 1, 1]
+    widget.files.remove_rows(rows)
+
+    assert table.rowCount() == 1
+    assert [widget._file_path_at(0)] == [str(first)]
+    assert widget.fn_to_index[str(first)] == 0
+    assert str(second) not in widget.fn_to_index
+    assert str(third) not in widget.fn_to_index
+    # Files and annotation files are untouched.
+    for image in (second, third):
+        assert image.is_file()
+
+
+def test_tags_column_tracks_file_and_live_edits(window, tmp_path):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, first, _second, _third = _make_dataset(tmp_path)
+    data = json.loads(
+        first.with_suffix(".json").read_text(encoding="utf-8")
+    )
+    data["tags"] = ["defect", "blur"]
+    first.with_suffix(".json").write_text(
+        json.dumps(data), encoding="utf-8"
+    )
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+    table = widget.file_list_widget
+    row = widget.fn_to_index[str(first)]
+
+    assert table.item(row, FILE_COL_TAGS).text() == "defect, blur"
+    assert table.item(row, FILE_COL_TAGS).toolTip() == "defect, blur"
+
+    # The editor changes the in-memory tags before the file is written, so the
+    # cell must be updated directly instead of re-reading the JSON.
+    widget.files.set_row_tags(str(first), ["defect"])
+    assert table.item(row, FILE_COL_TAGS).text() == "defect"
+    widget.files.set_row_tags(str(first), [])
+    assert table.item(row, FILE_COL_TAGS).text() == "—"
+
+
+def test_attributes_tab_hosts_the_image_tags_editor(window, tmp_path):
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, _first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+
+    tabs = widget.right_tabs
+    attributes_page = widget.image_tags_widget.parentWidget()
+    index = tabs.indexOf(attributes_page)
+    assert index >= 0
+    assert tabs.tabText(index) == "Image Attributes"
+    # Image tags and image flags share that page.
+    assert widget.flag_widget.parentWidget() is attributes_page
+
+    # The tags editor is not part of the canvas area any more, so it costs no
+    # canvas height.
+    canvas_panel = widget._central_widget.parentWidget()
+    assert widget.image_tags_widget not in canvas_panel.findChildren(
+        QtWidgets.QWidget
+    )
+
+    # The action behind Ctrl+Shift+T / the title-bar button opens that tab.
+    widget.right_tabs.setCurrentWidget(widget.label_list.parentWidget())
+    assert widget.right_tabs.currentWidget() is not attributes_page
+    widget.actions.show_image_tags.trigger()
+    app.processEvents()
+    assert widget.right_tabs.currentWidget() is attributes_page
+    assert not widget.actions.show_image_tags.isCheckable()

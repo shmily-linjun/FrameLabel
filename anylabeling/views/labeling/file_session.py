@@ -142,15 +142,12 @@ class FileSession:
             return False
         self.host.image = image
         self.host.filename = filename
-        has_image_tags = IMAGE_TAGS_FIELD in self.host.other_data
         self.host.image_tags_widget.set_tags(
             self.host.other_data.get(IMAGE_TAGS_FIELD, [])
         )
         self.host.image_tags_widget.set_interactions_enabled(
             self.host._operator_edit_allowed()
         )
-        if has_image_tags:
-            self.host._auto_show_image_tags()
 
         if (
             hasattr(self.host, "navigator_dialog")
