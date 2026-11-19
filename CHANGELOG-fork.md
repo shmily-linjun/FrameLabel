@@ -8,6 +8,51 @@
 
 ---
 
+## 4.3.2+fork.19 — 2026-11-19
+
+### 1. 背景与原因
+
+fork.18 后用户报告两件事：
+
+- **SAM/自动标注“完成对象”闪退**：`Traceback ... label_widget.py, line 9321, in finish_auto_labeling_object / item.setText / AttributeError: 'NoneType' object has no attribute 'setText'`。复现确认根因：`new_shapes_from_auto_labeling()` 的“追加”分支只删除了旧占位对象的**对象列表行**，却把占位形状留在 `canvas.shapes` 里；第二次自动标注结果之后，画布上就存在“有形状、没有行”的孤儿 `AUTOLABEL_OBJECT`，`finish_auto_labeling_object()` 默认每个占位都有行，于是 `find_item_by_shape()` 返回 `None` 后直接 `setText`。
+- **“设置”“快捷键”按钮无法在 `设置 → 工具栏` 中控制显隐**：这两个按钮以 `QWidgetAction` 追加在 `actions.tool` 末尾且文本为空，`toolbar_entries()` 会跳过空文本动作，因此设置页只列出 43 个工具，两个固定按钮既看不到也关不掉。
+
+### 2. 修改与关键细节
+
+- **修复闪退根因**：`new_shapes_from_auto_labeling()`“追加”分支现在同时清理画布上的旧 `AUTOLABEL_OBJECT` 占位形状（按 `id()` 精确匹配，避免 `Shape.__eq__` 影响），不再产生孤儿；`clear_auto_labeling_marks()` 改为先判空再删行（原来只捕获 `ValueError`，`remove_item(None)` 实为 `TypeError`）。
+- **防御性兜底**：新增 `_auto_labeling_list_item(shape)`，在 `finish_auto_labeling_object()` 的两个循环里按需补建对象行；确实建不出来时跳过而不是崩溃。这样历史遗留的孤儿（例如中途中断的标注会话）也能被接管，标签照常写入。
+- **设置/快捷键可隐藏**：`_utility_toolbar_entries` 记录 `(key, title, action)`，`toolbar_entries()` 追加 `settings`/`shortcuts` 两项，`populate_mode_actions()` 先按 id 跳过 `actions.tool` 里的这两个动作、再按 key 决定是否插入；隐藏状态写入既有的 `toolbar/hidden_actions`，与普通工具一致。
+- **版本**：`4.3.2+fork.18` → `4.3.2+fork.19`。
+
+### 3. 涉及模块与文件
+
+- `anylabeling/views/labeling/label_widget.py`（自动标注占位清理、`_auto_labeling_list_item()`、工具条固定按钮条目）；
+- `tests/test_labeling/test_auto_labeling_finish.py`（新增）、`tests/test_labeling/test_file_table.py`（新增固定按钮显隐用例）；
+- `CHANGELOG-fork.md`、结构报告、中文用户手册、`docs/开始.md`（登记 T8）、版本号。
+
+### 4. 行为、接口与兼容性影响
+
+- 版本 `4.3.2+fork.18` → `4.3.2+fork.19`；无新增 QSettings 键（沿用 `toolbar/hidden_actions`），无数据格式或 CLI 变化。
+- 用户可观察：SAM/自动标注连续出结果后“完成对象”不再闪退；`设置 → 工具栏` 现在列出 45 项，含“设置”“快捷键”，可单独隐藏，`全选` 一并控制。
+- 代码接口：`LabelingWidget._auto_labeling_list_item()`、`_utility_toolbar_entries` 新增；`toolbar_entries()` 返回值由 43 项变为 45 项。
+
+### 5. 实际验证内容
+
+- 复现脚本（`temporary/verify-sam-crash/repro.py`，离屏真实 `MainWindow`）：
+  - 修复前两次“追加”结果后：画布 2 个占位、其中 1 个无行，`finish_auto_labeling_object()` 在 `label_widget.py:9321` 抛出与用户相同的 `AttributeError`；
+  - 修复后：画布 1 个占位且有行，finish 成功，`canvas` 标签为 `['cat']`、列表文本 `['cat']`；
+  - 孤儿补贴：手工插入无行占位后 finish 不崩溃，自动补行并写入标签 `cat`。
+- 工具条脚本（`temporary/verify-toolbar-utility/probe.py`）：`toolbar_entries()` 45 项且末尾为 `settings`/`shortcuts`；隐藏 `settings` 后工具条 44 项、按钮 `isVisible()` 为 False；同时隐藏两项后 43 项；恢复后 45 项。
+- **未执行**：pytest 回归——沙箱仍拒绝 pytest 临时目录，命令无输出退出，`test_auto_labeling_finish.py` 等新增用例需在有权限环境补跑。
+
+### 6. 已知限制与后续事项
+
+- 孤儿兜底只覆盖 `AUTOLABEL_OBJECT`；`AUTOLABEL_ADD/REMOVE` 标记仍按自动标注会话生命周期清理。
+- `end_move(copy=True)`（另一处直接改 `canvas.shapes` 的路径）仍假定由调用方补建对象行，本次未改动，已记入结构报告维护提示。
+- `label_widget.py` 上帝类问题登记为 `docs/开始.md` T8，分阶段处理，不在本批执行。
+
+---
+
 ## 4.3.2+fork.18 — 2026-11-19
 
 ### 1. 背景与原因

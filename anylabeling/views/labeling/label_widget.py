@@ -2843,11 +2843,18 @@ class LabelingWidget(LabelDialog):
         self.update_button.hide()
         instruction_layout.addWidget(self.update_button)
         utility_actions = []
-        for button in (self.settings_button, self.shortcuts_button):
+        utility_entries = []
+        for key, title, button in (
+            ("settings", self.tr("Settings"), self.settings_button),
+            ("shortcuts", self.tr("Shortcuts"), self.shortcuts_button),
+        ):
             button.setStyleSheet("")
             widget_action = QtWidgets.QWidgetAction(self)
             widget_action.setDefaultWidget(button)
             utility_actions.append(widget_action)
+            # (key, title, action) so the toolbar settings page can hide these
+            # pinned buttons like any other tool.
+            utility_entries.append((key, title, widget_action))
         self.display_mode_group = QtGui.QActionGroup(self)
         self.display_mode_group.setExclusive(True)
         display_actions = []
@@ -2877,6 +2884,7 @@ class LabelingWidget(LabelDialog):
             *utility_actions,
         )
         self._utility_toolbar_actions = utility_actions
+        self._utility_toolbar_entries = tuple(utility_entries)
         central_layout.addLayout(instruction_layout)
         self.operator_bar = OperatorBar(self.operator_service, self)
         self.operator_bar.login_requested.connect(self.open_operator_login)
@@ -3642,6 +3650,13 @@ class LabelingWidget(LabelDialog):
             entries.append(
                 (str(index), tool_action.text(), tool_action.toolTip())
             )
+        # Pinned utility buttons (Settings/Shortcuts) are QWidgetActions with
+        # empty text, so they need their own keys to appear in the settings
+        # list instead of being silently unreachable there.
+        for key, title, _action in getattr(
+            self, "_utility_toolbar_entries", ()
+        ):
+            entries.append((key, title, title))
         return entries
 
     def apply_toolbar_preferences(self, show_labels, hidden_keys):
@@ -3661,20 +3676,29 @@ class LabelingWidget(LabelDialog):
     def populate_mode_actions(self):
         tool = self.actions.tool
         menu = self.actions.canvas_menu
+        # The pinned Settings/Shortcuts buttons live at the end of
+        # ``actions.tool`` as QWidgetActions; they are added below by their own
+        # key so the settings page can hide them too.
+        utility_entries = getattr(self, "_utility_toolbar_entries", ())
+        utility_ids = {id(action) for _key, _title, action in utility_entries}
+        hidden_keys = getattr(self, "_toolbar_hidden_keys", set())
         self.tools.clear()
         visible_tool = []
         for index, tool_action in enumerate(tool):
             if tool_action is None:
                 continue
-            if str(index) not in getattr(
-                self, "_toolbar_hidden_keys", set()
-            ):
+            if id(tool_action) in utility_ids:
+                continue
+            if str(index) not in hidden_keys:
                 visible_tool.append(tool_action)
         utils.add_actions(self.tools, tuple(visible_tool))
         self._apply_toolbar_short_labels(self.tools)
         # Keep settings/shortcuts visible at the top of a vertical toolbar;
-        # otherwise the overflow menu hides them on smaller windows.
-        for action in reversed(getattr(self, "_utility_toolbar_actions", [])):
+        # otherwise the overflow menu hides them on smaller windows.  They can
+        # be hidden from the toolbar settings page like any other tool.
+        for key, _title, action in reversed(utility_entries):
+            if key in hidden_keys:
+                continue
             actions = self.tools.actions()
             if actions:
                 self.tools.insertAction(actions[0], action)
@@ -9035,11 +9059,28 @@ class LabelingWidget(LabelDialog):
                 locked_shapes + auto_labeling_result.shapes, replace=True
             )
         else:  # Just update existing shapes
-            # Remove shapes with label AutoLabelingMode.OBJECT
-            for shape in self.canvas.shapes:
-                if shape.label == AutoLabelingMode.OBJECT:
+            # Remove stale placeholder objects (label AUTOLABEL_OBJECT) from
+            # both the object list and the canvas.  Only the list row used to
+            # be removed, so the canvas kept an orphan placeholder without a
+            # row, and the later "finish object" step crashed on the missing
+            # row (AttributeError: 'NoneType' object has no attribute
+            # 'setText').
+            stale_objects = [
+                shape
+                for shape in self.canvas.shapes
+                if shape.label == AutoLabelingMode.OBJECT
+            ]
+            if stale_objects:
+                stale_ids = {id(shape) for shape in stale_objects}
+                for shape in stale_objects:
                     item = self.label_list.find_item_by_shape(shape)
-                    self.label_list.remove_item(item)
+                    if item is not None:
+                        self.label_list.remove_item(item)
+                self.canvas.shapes = [
+                    shape
+                    for shape in self.canvas.shapes
+                    if id(shape) not in stale_ids
+                ]
             self.load_shapes(auto_labeling_result.shapes, replace=False)
 
         incoming_relations = getattr(auto_labeling_result, "relations", None)
@@ -9127,11 +9168,9 @@ class LabelingWidget(LabelDialog):
                 AutoLabelingMode.ADD,
                 AutoLabelingMode.REMOVE,
             ]:
-                try:
-                    item = self.label_list.find_item_by_shape(shape)
+                item = self.label_list.find_item_by_shape(shape)
+                if item is not None:
                     self.label_list.remove_item(item)
-                except ValueError:
-                    pass
 
         # Clean up unique label list
         for shape_label in [
@@ -9315,7 +9354,9 @@ class LabelingWidget(LabelDialog):
 
                 # Update label list
                 self._update_shape_color(shape)
-                item = self.label_list.find_item_by_shape(shape)
+                item = self._auto_labeling_list_item(shape)
+                if item is None:
+                    continue
                 if shape.group_id is None:
                     color = self._get_rgb_by_label(shape.label)
                     item.setText(
@@ -9335,7 +9376,9 @@ class LabelingWidget(LabelDialog):
         for shape in self.canvas.shapes:
             self._update_shape_color(shape)
             color = self._get_rgb_by_label(shape.label)
-            item = self.label_list.find_item_by_shape(shape)
+            item = self._auto_labeling_list_item(shape)
+            if item is None:
+                continue
             item.setText(_format_label_list_text(shape.label, shape.group_id))
             item.setBackground(QtGui.QColor(*color, LABEL_OPACITY))
             self.unique_label_list.update_item_color(
@@ -9344,6 +9387,22 @@ class LabelingWidget(LabelDialog):
 
         if updated_shapes:
             self.set_dirty()
+
+    def _auto_labeling_list_item(self, shape):
+        """Return the object-list row for ``shape``, creating it if needed.
+
+        Auto-labeling can leave a shape on the canvas that has no row (for
+        example after an interrupted marking session).  The "finish object"
+        step must not crash on that, so the row is created on demand and
+        ``None`` is returned only when it cannot be added at all.
+        """
+        item = self.label_list.find_item_by_shape(shape)
+        if item is not None:
+            return item
+        self.add_label(
+            shape, update_last_label=False, refresh_filters=False
+        )
+        return self.label_list.find_item_by_shape(shape)
 
     def shape_text_changed(self):
         description = self.shape_text_edit.toPlainText()

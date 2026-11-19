@@ -1,8 +1,8 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-19（Asia/Shanghai）
-> 对应版本：4.3.2+fork.18
-> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批以离屏脚本验证浏览模式/右键菜单/主题禁用态（沙箱拒绝 pytest 临时目录提权，未跑成 pytest，详见 §16）。
+> 对应版本：4.3.2+fork.19
+> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；本批以离屏脚本验证自动标注占位清理、工具条固定按钮显隐与浏览模式（沙箱拒绝 pytest 临时目录提权，未跑成 pytest，详见 §16）。
 > 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4 已改变的结构以本文当前版本说明为准。
 > 行号锚点：`label_widget.py` 在 fork.4 中新增了身份/门禁相关代码，早前记录的行号会整体后移；定位时优先使用类名和方法名，行号仅作参考。
 
@@ -12,7 +12,7 @@
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
 | Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.17 的结构变化见 §5/§16，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.18，见 [app_info.py](../../anylabeling/app_info.py) |
+| 版本 | 4.3.2+fork.19，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
@@ -229,9 +229,25 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 - 动作集合拆分：`OPERATOR_MODE_ACTIONS`（`create_*`、`edit_mode`、`edit_brush_mode`）在浏览模式下保持可用，点击后由入口守卫弹出登录；`OPERATOR_REQUIRED_ACTIONS`（编辑标签、删除、复制/粘贴、撤销、关系、分组、管理器、批量运行）在浏览模式下禁用。
 - 入口守卫：`LabelingWidget._ensure_operator_for_edit()` 被 `toggle_draw_mode()`（创建类唯一入口，含数字快捷键、画笔、魔棒与自动标注交接）、`toggle_brush_mode()`、`_enter_edit_mode_from_toolbar()` 调用；取消登录时回退状态并在状态栏提示，不再静默失败。
 - 画布只读：`Canvas.set_read_only()` 置位后在 `bounded_move_shapes()`、`bounded_move_vertex()`、`move_cuboid_face_by()`、`_update_rotation_handle_drag()`、`add_point_to_edge()` 与 `mouseDoubleClickEvent()` 早退；缩放、平移、选中不受影响。
-- 状态提示：`OperatorBar` 未登录用 `warning` 色加粗显示；`LabelingWidget.browse_mode_badge`（视口左上角浮层，点击登录）在登录后隐藏，位置由 `_position_browse_mode_badge()` 跟随视口尺寸。
+- 状态提示：`OperatorBar` 未登录用 `warning_text` 色加粗显示；`LabelingWidget.browse_mode_badge`（视口左上角浮层，点击登录）在登录后隐藏，位置由 `_position_browse_mode_badge()` 跟随视口尺寸。
 - 主题禁用态：`DARK/LIGHT` 的 `text_disabled`（`#6e6e73` / `#a1a1a6`）用于 palette Disabled 组、`QMenu::item:disabled` 与 `QToolButton:disabled`；`warning_text`（`#FF9F0A` / `#8A5300`）用于浏览模式 chip 与画布浮层文字（浅色下琥珀色对比度不足，故分主题取值）；`utils.qt.with_disabled_variant()` 为图标生成 32% 不透明度的 Disabled 位图，`new_action()` 统一套用。
-- 画布右键菜单：`actions.canvas_menu`（16 项：筛选×2、检查状态、编辑标签、关系×2、锁定、复制坐标、合并、复制/粘贴/删除/撤销/撤销上一点/删点）取代原 29 项 `actions.menu`；工具模式项只保留在工具栏与“编辑”菜单。
+- 画布右键菜单：`actions.canvas_menu`（13 个动作 + 2 个分隔符；加上预置的筛选×2 与检查状态，菜单共 16 项可点条目）取代原 29 项 `actions.menu`；工具模式项只保留在工具栏与“编辑”菜单。
+
+### 5.10 自动标注占位对象与工具栏固定按钮（fork.19）
+
+```text
+自动标注结果（追加模式）
+  → 清理旧 AUTOLABEL_OBJECT 占位：对象列表行 + canvas.shapes 同时删除
+  → load_shapes(新结果, replace=False)
+完成对象：finish_auto_labeling_object()
+  → _auto_labeling_list_item(shape)：缺行时按需补建，补不出则跳过
+```
+
+- 根因：旧实现只删占位对象的列表行、不删画布形状，第二次结果后留下“有形状无行”的孤儿，`finish_auto_labeling_object()` 对 `None` 调用 `setText` 崩溃（fork.19 修复）。
+- `_auto_labeling_list_item(shape)` 是“完成对象”两个循环的唯一取行入口：先查 `find_item_by_shape()`，缺失时 `add_label(..., update_last_label=False, refresh_filters=False)` 补建；仍取不到则跳过，保证历史孤儿与中断会话不会再次崩溃。
+- `clear_auto_labeling_marks()` 改为判空后删行（`remove_item(None)` 抛的是 `TypeError`，原 `except ValueError` 捕获不到）。
+- 工具栏固定按钮：`_utility_toolbar_entries` 保存 `(key, title, action)`；`toolbar_entries()` 追加 `settings`/`shortcuts`；`populate_mode_actions()` 先按 `id()` 跳过 `actions.tool` 里的这两个 `QWidgetAction`，再按 key 决定是否插入，隐藏状态沿用 `toolbar/hidden_actions`。
+- 维护提示：`Canvas.end_move(copy=True)` 仍直接向 `canvas.shapes` 追加形状、由调用方负责补建对象行；新增直接改 `canvas.shapes` 的路径时必须同步对象列表，否则会重现 fork.19 的孤儿问题。
 
 ## 6. 模块依赖图
 
@@ -675,13 +691,14 @@ model_manager.py:14
 - fork.7 的无边框窗口模块（标题栏/菜单嵌入/窗口按钮/全屏/命中测试/主题）与主窗口接入、菜单显隐与全屏、`frameless` 启动配置与原生回退；
 - fork.17 的工具栏滚动窗格（`ToolsDock` + `ToolBarScrollArea`）、停靠方向与滚动条策略、分隔符移除与几何刷新；
 - fork.18 的浏览模式（画布只读、模式工具可点并引导登录、状态浮层）、主题禁用态与图标禁用变体、画布右键菜单精简；
+- fork.19 的自动标注占位对象清理与取行兜底、工具栏“设置/快捷键”按钮显隐；
 - 模块和核心类关系、跨线程/进程/网络边界、引用统计、维护路径、已知问题和风险；
 - 核心类表共 22 类：18 类进入总览图，fork.4 的 2 个身份类与 fork.7 的 2 个窗口类见 §5.6/§5.7；
 - 最终统计排除生成文件，依赖循环及扇入/扇出已按同一范围复核。
 
 ### 未覆盖及原因
 
-- 未运行应用、模型、训练、导出、更新或打包；本批以离屏脚本验证了浏览模式、登录守卫、右键菜单与主题禁用态，**未跑成 pytest**（沙箱拒绝 pytest 临时目录提权），不提供全量通过率、性能或实机结论；
+- 未运行应用、模型、训练、导出、更新或打包；本批以离屏脚本验证了自动标注占位清理、工具条固定按钮显隐、浏览模式、登录守卫与主题禁用态，**未跑成 pytest**（沙箱拒绝 pytest 临时目录提权），不提供全量通过率、性能或实机结论；
 - 未逐行阅读全部模型算法、OpenGL/相机投影、PPOCR 富文本编辑器及第三方库，按计划只覆盖公共接口；
 - 动态注册、条件导入和实际导入顺序可能不完整；本批只复核受 fork 改动影响的模块，没有重新执行全项目逐行分析；
 - 本批发现主窗口描述、文件规模、核心类排名和链接位置已过时并已修正；README 和全部注释未逐项核对。
@@ -690,4 +707,4 @@ model_manager.py:14
 
 ---
 
-**文档自检：**核心类表 20 类中 18 类入图，fork.4 新增 2 类以 §5.6 链路说明代替重绘；各 Mermaid 图未改动并保持既有节点上限；所引项目文件均确认存在；未将低置信度推测写入事实段。本批改变了浏览模式语义（画布只读、模式工具可点并引导登录）、主题禁用态与画布右键菜单，§5.9、行为、验证与风险章节已按实际代码更新；pytest 未执行的原因已写入 §16。
+**文档自检：**核心类表 20 类中 18 类入图，fork.4 新增 2 类以 §5.6 链路说明代替重绘；各 Mermaid 图未改动并保持既有节点上限；所引项目文件均确认存在；未将低置信度推测写入事实段。本批改变了自动标注占位的手工清理与工具栏固定按钮显隐，§5.10、覆盖声明与验证说明已按实际代码更新；pytest 未执行的原因已写入 §16。`label_widget.py` 的上帝类问题已登记为 `docs/开始.md` T8。

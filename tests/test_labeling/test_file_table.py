@@ -485,6 +485,35 @@ def test_toolbar_scrolls_the_whole_tool_set(window):
     assert scroll.verticalScrollBar().maximum() == 0
 
 
+def test_toolbar_settings_page_can_hide_pinned_buttons(window):
+    view = window.labeling_widget.view
+    entries = view.toolbar_entries()
+    keys = {key for key, _name, _tip in entries}
+    assert "settings" in keys
+    assert "shortcuts" in keys
+
+    def in_toolbar(button):
+        return any(
+            view.tools.widgetForAction(action) is button
+            for action in view.tools.actions()
+        )
+
+    assert in_toolbar(view.settings_button)
+    assert in_toolbar(view.shortcuts_button)
+
+    view.apply_toolbar_preferences(True, {"settings"})
+    assert not in_toolbar(view.settings_button)
+    assert in_toolbar(view.shortcuts_button)
+
+    view.apply_toolbar_preferences(True, {"settings", "shortcuts"})
+    assert not in_toolbar(view.settings_button)
+    assert not in_toolbar(view.shortcuts_button)
+
+    view.apply_toolbar_preferences(True, set())
+    assert in_toolbar(view.settings_button)
+    assert in_toolbar(view.shortcuts_button)
+
+
 def _settle_ui():
     """Let the deferred (100 ms) UI-density update run before measuring."""
     QTest.qWait(150)
