@@ -119,14 +119,16 @@ class TestLabelWidgetMetrics(unittest.TestCase):
         init_theme("light")
 
     def test_unchecked_review_status_icon_is_hollow_circle(self):
-        from anylabeling.views.labeling.label_widget import (
+        from anylabeling.views.labeling.file_list.constants import (
             FILE_CHECKED_COLOR,
             FILE_UNCHECKED_COLOR,
-            _create_file_status_icon,
+        )
+        from anylabeling.views.labeling.file_list.table import (
+            create_file_status_icon,
         )
 
-        checked = _create_file_status_icon(FILE_CHECKED_COLOR)
-        unchecked = _create_file_status_icon(
+        checked = create_file_status_icon(FILE_CHECKED_COLOR)
+        unchecked = create_file_status_icon(
             FILE_UNCHECKED_COLOR, filled=False
         )
         checked_image = checked.pixmap(12, 12).toImage()

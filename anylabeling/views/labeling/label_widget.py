@@ -16,21 +16,17 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtGui import QFontMetrics
 from PyQt6.QtWidgets import (
-    QAbstractItemView,
     QButtonGroup,
     QComboBox,
     QFrame,
     QGridLayout,
     QHBoxLayout,
-    QHeaderView,
     QLabel,
     QMessageBox,
     QPushButton,
     QRadioButton,
     QScrollArea,
     QTabWidget,
-    QTableWidget,
-    QTableWidgetItem,
     QVBoxLayout,
     QWidget,
     QLineEdit,
@@ -56,12 +52,13 @@ from .utils.qt import apply_application_font
 from .utils.style import (
     get_cancel_btn_style,
     get_dialog_style,
-    get_file_table_style,
     get_ok_btn_style,
     get_scrollbar_style,
     get_tab_widget_style,
 )
 from ...config import get_config, save_config
+from .file_list import FileListController
+from .file_list.constants import FILE_COL_NAME_WIDTH, FILE_COLUMN_WIDTHS
 from .label_file import LabelFile, LabelFileError
 from .logger import logger
 from .schema import IMAGE_TAGS_FIELD
@@ -82,21 +79,12 @@ from .utils.qt import new_icon_path
 from .utils.theme import get_theme
 from .pointcloud.icons import get_icon
 from .widgets.description_editor import DescriptionEditor
+from .widgets.splitters import RightSplitter, SidebarSplitter
 from .widgets.relation_dialog import (
     RelationDialog,
     RelationManagerDialog,
     show_relation_message,
 )
-from .utils.file_meta import (
-    SPLIT_KEYS,
-    SPLIT_NONE,
-    ensure_import_times,
-    format_import_time,
-    read_file_meta,
-    read_import_time,
-    write_split,
-)
-from .utils.thumbnail import THUMBNAIL_SIZE, ThumbnailLoader
 from .widgets.panel import HoverScrollBars, RoundedPanel
 from .widgets.statistics_table import StatisticsTable
 from .widgets import (
@@ -170,43 +158,6 @@ def _find_next_label_loop_shape(shapes, start_index, canvas_shapes):
     return len(shapes), None
 
 
-def _create_file_status_icon(color, filled=True):
-    pixmap = QtGui.QPixmap(10, 12)
-    pixmap.fill(Qt.GlobalColor.transparent)
-    painter = QtGui.QPainter(pixmap)
-    painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-    if filled:
-        painter.setBrush(QtGui.QColor(color))
-        painter.setPen(Qt.PenStyle.NoPen)
-    else:
-        painter.setBrush(Qt.BrushStyle.NoBrush)
-        painter.setPen(QtGui.QPen(QtGui.QColor(color), 1.5))
-    painter.drawEllipse(1, 2, 8, 8)
-    painter.end()
-    return QtGui.QIcon(pixmap)
-
-
-FILE_COL_NAME = 0
-FILE_COL_SHAPES = 1
-FILE_COL_IMPORT_TIME = 2
-FILE_COL_INFERENCE = 3
-FILE_COL_SPLIT = 4
-FILE_COLUMN_COUNT = 5
-FILE_COL_NAME_WIDTH = 200
-FILE_COL_NAME_MIN_WIDTH = 120
-FILE_COLUMN_WIDTHS = {
-    FILE_COL_SHAPES: 52,
-    FILE_COL_IMPORT_TIME: 128,
-    FILE_COL_INFERENCE: 64,
-    FILE_COL_SPLIT: 56,
-}
-
-FILE_ROW_HEIGHT = 36
-FILE_ROW_HEIGHT_COMPACT = 20
-
-FILE_PATH_ROLE = Qt.ItemDataRole.UserRole + 2
-FILE_SORT_ROLE = Qt.ItemDataRole.UserRole + 1
-
 #: Actions that switch the drawing/editing tool.  They stay clickable while
 #: nobody is logged in so a click can explain itself with a login prompt
 #: (the entry itself is guarded in ``toggle_draw_mode``/``toggle_brush_mode``);
@@ -250,143 +201,6 @@ OPERATOR_REQUIRED_ACTIONS = (
 )
 
 
-class FileNameDelegate(QtWidgets.QStyledItemDelegate):
-    def displayText(self, value, locale):
-        return osp.basename(super().displayText(value, locale))
-
-    def initStyleOption(self, option, index):
-        super().initStyleOption(option, index)
-        # The legacy file list encoded "has annotation file" in the check
-        # state of each item. The table keeps that state for compatibility but
-        # must not paint a per-row checkbox any more.
-        option.features &= (
-            ~QtWidgets.QStyleOptionViewItem.ViewItemFeature.HasCheckIndicator
-        )
-        option.checkState = Qt.CheckState.Unchecked
-
-    def sizeHint(self, option, index):
-        size = super().sizeHint(option, index)
-        size.setHeight(QtGui.QFontMetrics(option.font).height() + 4)
-        return size
-
-
-class FileTableItem(QtWidgets.QTableWidgetItem):
-    """``QTableWidgetItem`` that carries a comparable sort key per cell."""
-
-    def __init__(self, text="", sort_key=None):
-        super().__init__(text)
-        self.setData(FILE_SORT_ROLE, sort_key)
-
-
-class FileTableWidget(QtWidgets.QTableWidget):
-    """Table widget used for the image list.
-
-    Keeps a small ``QListWidget``-compatible surface (``count``,
-    single-argument ``item``, ``selectedItems``, ``currentItem``) so that the
-    rest of the code base, which historically consumed a list widget, keeps
-    working after the migration to a table.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._auto_fill_name_column = True
-        self._adjusting_columns = False
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.fill_name_column()
-
-    def fill_name_column(self):
-        """Let the file column take the remaining width when it is auto-sized."""
-        if not self._auto_fill_name_column or self.columnCount() < 2:
-            return
-        header = self.horizontalHeader()
-        if header is None:
-            return
-        used = sum(
-            self.columnWidth(column)
-            for column in range(1, self.columnCount())
-            if not self.isColumnHidden(column)
-        )
-        width = max(FILE_COL_NAME_MIN_WIDTH, self.viewport().width() - used)
-        if width == self.columnWidth(FILE_COL_NAME):
-            return
-        self._adjusting_columns = True
-        try:
-            self.setColumnWidth(FILE_COL_NAME, width)
-        finally:
-            self._adjusting_columns = False
-
-    def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.RightButton:
-            event.accept()
-            return
-        super().mousePressEvent(event)
-
-    def count(self):
-        return self.rowCount()
-
-    def setCurrentRow(self, row):
-        self.setCurrentCell(row, FILE_COL_NAME)
-
-    def item(self, row, column=0):
-        return super().item(row, column)
-
-    def selected_rows(self):
-        selection_model = self.selectionModel()
-        if selection_model is None:
-            return []
-        return [index.row() for index in selection_model.selectedRows()]
-
-    def selectedItems(self):
-        items = []
-        for row in self.selected_rows():
-            item = self.item(row)
-            if item is not None:
-                items.append(item)
-        return items
-
-    def currentItem(self):
-        row = self.currentRow()
-        if row < 0:
-            return None
-        return self.item(row)
-
-
-class SidebarSplitterHandle(QtWidgets.QSplitterHandle):
-    def paintEvent(self, event):
-        painter = QtGui.QPainter(self)
-        painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-        painter.setPen(Qt.PenStyle.NoPen)
-        painter.setBrush(QtGui.QColor(get_theme()["text_secondary"]))
-        center = QtCore.QPointF(self.width() / 2, self.height() / 2)
-        for offset in (-5, 0, 5):
-            painter.drawEllipse(center + QtCore.QPointF(0, offset), 1, 1)
-
-
-class SidebarSplitter(QtWidgets.QSplitter):
-    def createHandle(self):
-        return SidebarSplitterHandle(self.orientation(), self)
-
-
-class RightSplitterHandle(SidebarSplitterHandle):
-    """Splitter handle between the right tab panel and the file table."""
-
-    def paintEvent(self, event):
-        painter = QtGui.QPainter(self)
-        painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-        painter.setPen(Qt.PenStyle.NoPen)
-        painter.setBrush(QtGui.QColor(get_theme()["text_secondary"]))
-        center = QtCore.QPointF(self.width() / 2, self.height() / 2)
-        for offset in (-5, 0, 5):
-            painter.drawEllipse(center + QtCore.QPointF(offset, 0), 1, 1)
-
-
-class RightSplitter(QtWidgets.QSplitter):
-    def createHandle(self):
-        return RightSplitterHandle(self.orientation(), self)
-
-
 class LabelingWidget(LabelDialog):
     """The main widget for labeling images"""
 
@@ -424,7 +238,6 @@ class LabelingWidget(LabelDialog):
         self.supported_shape = Shape.get_supported_shape()
         self.label_info = {}
         self.image_flags = []
-        self.fn_to_index = {}
         self.cache_auto_label = None
         self.cache_auto_label_group_id = None
 
@@ -565,97 +378,11 @@ class LabelingWidget(LabelDialog):
         self.settings_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.settings_button.setAccessibleName(self.settings_button.toolTip())
         self.settings_button.clicked.connect(self.open_settings_dialog)
-        self.file_list_widget = FileTableWidget()
-        self.file_list_widget.setObjectName("FileList")
-        self.file_list_widget.setColumnCount(FILE_COLUMN_COUNT)
-        self.file_list_widget.setHorizontalHeaderLabels(
-            [
-                self.tr("Files"),
-                self.tr("Objects"),
-                self.tr("Import Time"),
-                self.tr("Inference"),
-                self.tr("Split"),
-            ]
-        )
-        self.file_list_widget.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows
-        )
-        self.file_list_widget.setSelectionMode(
-            QAbstractItemView.SelectionMode.SingleSelection
-        )
-        self.file_list_widget.setEditTriggers(
-            QAbstractItemView.EditTrigger.NoEditTriggers
-        )
-        self.file_list_widget.setShowGrid(False)
-        self.file_list_widget.setWordWrap(False)
-        self.file_list_widget.setVerticalScrollMode(
-            QAbstractItemView.ScrollMode.ScrollPerPixel
-        )
-        self.file_list_widget.setHorizontalScrollMode(
-            QAbstractItemView.ScrollMode.ScrollPerPixel
-        )
-        self.file_list_widget.verticalHeader().setVisible(True)
-        self.file_list_widget.verticalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Fixed
-        )
-        self.file_list_widget.verticalHeader().setDefaultSectionSize(
-            FILE_ROW_HEIGHT
-        )
-        self.file_list_widget.verticalHeader().setMinimumWidth(22)
-        file_header = self.file_list_widget.horizontalHeader()
-        file_header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
-        file_header.setStretchLastSection(False)
-        for column in range(FILE_COLUMN_COUNT):
-            self.file_list_widget.setColumnWidth(
-                column, self._default_file_column_width(column)
-            )
-        file_header.setSortIndicatorShown(True)
-        file_header.setSectionsClickable(True)
-        file_header.setMinimumSectionSize(40)
-        file_header.sectionClicked.connect(self.sort_file_list_by_column)
-        file_header.sectionResized.connect(self._on_file_column_resized)
-        file_header.setContextMenuPolicy(
-            Qt.ContextMenuPolicy.CustomContextMenu
-        )
-        file_header.customContextMenuRequested.connect(
-            self.pop_file_list_header_menu
-        )
-        self.file_list_widget.setItemDelegateForColumn(
-            FILE_COL_NAME, FileNameDelegate(self.file_list_widget)
-        )
-        self.file_list_widget.setIconSize(
-            QtCore.QSize(THUMBNAIL_SIZE, THUMBNAIL_SIZE)
-        )
-        self.file_list_widget.setStyleSheet(get_file_table_style())
-        self.file_status_icons = {
-            True: _create_file_status_icon(FILE_CHECKED_COLOR),
-            "failed": _create_file_status_icon(FILE_FAILED_COLOR),
-            False: _create_file_status_icon(
-                FILE_UNCHECKED_COLOR, filled=False
-            ),
-        }
-        self.file_list_widget.itemSelectionChanged.connect(
-            self.file_selection_changed
-        )
-        self.file_list_widget.setContextMenuPolicy(
-            Qt.ContextMenuPolicy.CustomContextMenu
-        )
-        self.file_list_widget.customContextMenuRequested.connect(
-            self.pop_file_list_menu
-        )
-        self._sort_column = None
-        self._sort_order = Qt.SortOrder.AscendingOrder
-        self._show_thumbnails = True
+        self.files = FileListController(self)
+        self.file_list_widget = self.files.table
         self._hidden_tabs = set()
         self._file_column_actions = {}
         self._tab_visibility_actions = {}
-        self._import_times = {}
-        self._applying_file_columns = False
-        self._thumbnail_loader = ThumbnailLoader(self)
-        self._thumbnail_loader.thumbnail_ready.connect(
-            self._on_thumbnail_ready
-        )
-        self._apply_file_list_config()
 
         self.zoom_widget = ZoomWidget()
         self._zoom_animation = QtCore.QVariantAnimation(self)
@@ -5109,506 +4836,38 @@ class LabelingWidget(LabelDialog):
 
     # ------------------------------------------------------------------
     # File table helpers
+    #
+    # The table widget, its columns, sorting, thumbnails and the per-file
+    # context menu live in ``file_list/``.  The methods below stay on the
+    # widget because callers and tests use the widget as the entry point.
     # ------------------------------------------------------------------
-    def _file_label_file(self, file):
-        label_file = osp.splitext(file)[0] + ".json"
-        if self.output_dir:
-            label_file = osp.join(self.output_dir, osp.basename(label_file))
-        return label_file
+    @property
+    def fn_to_index(self):
+        return self.files.fn_to_index
 
     def _file_path_at(self, row):
-        item = self.file_list_widget.item(row, FILE_COL_NAME)
-        if item is None:
-            return ""
-        path = item.data(FILE_PATH_ROLE)
-        return str(path) if path else item.text()
-
-    def _file_row_of(self, path):
-        mapping = getattr(self, "fn_to_index", None) or {}
-        return mapping.get(str(path))
+        return self.files.path_at(row)
 
     def _file_item_by_path(self, path):
-        row = self._file_row_of(path)
-        if row is None:
-            return None
-        return self.file_list_widget.item(row, FILE_COL_NAME)
-
-    def _split_text(self, split):
-        return {
-            SPLIT_NONE: self.tr("None"),
-            "train": self.tr("Train"),
-            "val": self.tr("Val"),
-            "test": self.tr("Test"),
-        }.get(split, self.tr("None"))
-
-    def _build_file_row_cells(self, file, label_file=None):
-        if label_file is None:
-            label_file = self._file_label_file(file)
-        meta = read_file_meta(file, label_file)
-        import_time = self._import_times.get(file)
-        if import_time is None:
-            import_time = read_import_time(file)
-
-        name_item = FileTableItem(file, sort_key=osp.basename(file).lower())
-        name_item.setData(FILE_PATH_ROLE, file)
-        name_item.setCheckState(
-            Qt.CheckState.Checked if meta.exists else Qt.CheckState.Unchecked
-        )
-        name_item.setData(Qt.ItemDataRole.UserRole, meta.checked)
-        name_item.setToolTip(
-            f"{file}\n{self._annotation_checked_text(meta.checked)}"
-        )
-
-        shapes_item = FileTableItem(str(meta.shape_count), sort_key=meta.shape_count)
-        shapes_item.setIcon(
-            self.file_status_icons.get(
-                meta.checked, self.file_status_icons[False]
-            )
-        )
-        shapes_item.setToolTip(self._annotation_checked_text(meta.checked))
-        shapes_item.setTextAlignment(
-            Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter
-        )
-
-        time_item = FileTableItem(
-            format_import_time(import_time), sort_key=import_time
-        )
-
-        inference_item = FileTableItem("—", sort_key="")
-
-        split = meta.split if meta.split in SPLIT_KEYS else SPLIT_NONE
-        split_item = FileTableItem(
-            self._split_text(split), sort_key=SPLIT_KEYS.index(split)
-        )
-        cells = [
-            name_item,
-            shapes_item,
-            time_item,
-            inference_item,
-            split_item,
-        ]
-        row_flags = (
-            Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
-        )
-        for cell in cells:
-            cell.setFlags(row_flags)
-        return cells
-
-    def _append_file_row(self, file, label_file=None):
-        row = self.file_list_widget.rowCount()
-        self.file_list_widget.insertRow(row)
-        cells = self._build_file_row_cells(file, label_file)
-        for column, item in enumerate(cells):
-            self.file_list_widget.setItem(row, column, item)
-        self.fn_to_index[file] = row
-        self._request_row_thumbnail(row, file)
-        return row
-
-    def _apply_row_state(self, row, checked, shape_count=None):
-        shapes_item = self.file_list_widget.item(row, FILE_COL_SHAPES)
-        if shapes_item is None:
-            return
-        if shape_count is None:
-            path = self._file_path_at(row)
-            meta = read_file_meta(path, self._file_label_file(path))
-            shape_count = meta.shape_count
-        shapes_item.setText(str(shape_count))
-        shapes_item.setData(FILE_SORT_ROLE, shape_count)
-        shapes_item.setIcon(
-            self.file_status_icons.get(checked, self.file_status_icons[False])
-        )
-        shapes_item.setToolTip(self._annotation_checked_text(checked))
-
-    def _refresh_file_row(self, row, checked=None, shape_count=None):
-        path = self._file_path_at(row)
-        if not path:
-            return
-        meta = read_file_meta(path, self._file_label_file(path))
-        name_item = self.file_list_widget.item(row, FILE_COL_NAME)
-        if name_item is not None:
-            name_item.setCheckState(
-                Qt.CheckState.Checked
-                if meta.exists
-                else Qt.CheckState.Unchecked
-            )
-        effective_checked = meta.checked if checked is None else checked
-        effective_count = (
-            meta.shape_count if shape_count is None else shape_count
-        )
-        name_item = self.file_list_widget.item(row, FILE_COL_NAME)
-        if name_item is not None:
-            name_item.setData(Qt.ItemDataRole.UserRole, effective_checked)
-            name_item.setToolTip(
-                f"{path}\n{self._annotation_checked_text(effective_checked)}"
-            )
-        self._apply_row_state(row, effective_checked, effective_count)
-        split_item = self.file_list_widget.item(row, FILE_COL_SPLIT)
-        if split_item is not None:
-            split = meta.split if meta.split in SPLIT_KEYS else SPLIT_NONE
-            split_item.setText(self._split_text(split))
-            split_item.setData(FILE_SORT_ROLE, SPLIT_KEYS.index(split))
-        time_item = self.file_list_widget.item(row, FILE_COL_IMPORT_TIME)
-        if time_item is not None:
-            time_item.setText(format_import_time(meta.import_time))
-
-    def _rebuild_fn_to_index(self):
-        mapping = {}
-        for row in range(self.file_list_widget.rowCount()):
-            item = self.file_list_widget.item(row, FILE_COL_NAME)
-            if item is None:
-                continue
-            path = item.data(FILE_PATH_ROLE)
-            mapping[str(path if path else item.text())] = row
-        self.fn_to_index = mapping
+        return self.files.item_by_path(path)
 
     def sort_file_list_by_column(self, column):
-        if not 0 <= column < FILE_COLUMN_COUNT:
-            return
-        if self._sort_column == column:
-            order = (
-                Qt.SortOrder.DescendingOrder
-                if self._sort_order == Qt.SortOrder.AscendingOrder
-                else Qt.SortOrder.AscendingOrder
-            )
-        else:
-            order = Qt.SortOrder.AscendingOrder
-        self._sort_column = column
-        self._sort_order = order
-        self._sort_file_list(column, order)
-
-    def _sort_file_list(self, column, order):
-        table = self.file_list_widget
-        rows = table.rowCount()
-        if rows <= 1:
-            return
-        sortable = []
-        for row in range(rows):
-            item = table.item(row, column)
-            key = item.data(FILE_SORT_ROLE) if item is not None else None
-            if key is None:
-                key = item.text() if item is not None else ""
-            sortable.append((self._sort_key_value(key), row))
-        sortable.sort(
-            key=lambda pair: pair[0],
-            reverse=order == Qt.SortOrder.DescendingOrder,
-        )
-        order_rows = [row for _, row in sortable]
-        table.blockSignals(True)
-        try:
-            taken = [
-                [table.takeItem(row, col) for col in range(FILE_COLUMN_COUNT)]
-                for row in range(rows)
-            ]
-            for new_row, old_row in enumerate(order_rows):
-                for col, item in enumerate(taken[old_row]):
-                    if item is not None:
-                        table.setItem(new_row, col, item)
-        finally:
-            table.blockSignals(False)
-        self._rebuild_fn_to_index()
-        table.horizontalHeader().setSortIndicator(column, order)
-        self._sync_file_selection()
-
-    @staticmethod
-    def _sort_key_value(key):
-        if isinstance(key, (int, float)) and not isinstance(key, bool):
-            return (0, float(key), "")
-        return (1, 0.0, str(key).lower())
-
-    def _sync_file_selection(self):
-        row = self._file_row_of(str(self.filename))
-        if row is None:
-            return
-        self._no_selection_slot = True
-        try:
-            self.file_list_widget.setCurrentCell(row, FILE_COL_NAME)
-        finally:
-            self._no_selection_slot = False
-
-    def _request_row_thumbnail(self, row, path):
-        if not self._show_thumbnails:
-            return
-        pixmap = self._thumbnail_loader.request(path)
-        if pixmap is None:
-            return
-        item = self.file_list_widget.item(row, FILE_COL_NAME)
-        if item is not None:
-            item.setIcon(QtGui.QIcon(pixmap))
-
-    def _on_thumbnail_ready(self, image_path, pixmap):
-        if not self._show_thumbnails or pixmap is None or pixmap.isNull():
-            return
-        row = self._file_row_of(image_path)
-        if row is None:
-            return
-        item = self.file_list_widget.item(row, FILE_COL_NAME)
-        if item is not None:
-            item.setIcon(QtGui.QIcon(pixmap))
-
-    def _update_file_row_height(self):
-        scale = getattr(self, "_ui_scale", 1.0) or 1.0
-        base = FILE_ROW_HEIGHT if self._show_thumbnails else FILE_ROW_HEIGHT_COMPACT
-        self.file_list_widget.verticalHeader().setDefaultSectionSize(
-            max(16, round(base * scale))
-        )
-
-    def _file_list_option(self, key, default=True):
-        section = self._config.get("file_list")
-        if not isinstance(section, dict):
-            return default
-        value = section.get(key, default)
-        return default if value is None else bool(value)
-
-    @staticmethod
-    def _default_file_column_width(column):
-        if column == FILE_COL_NAME:
-            return FILE_COL_NAME_WIDTH
-        return FILE_COLUMN_WIDTHS.get(column, 80)
-
-    def _saved_file_column_widths(self):
-        section = self._config.get("file_list")
-        if not isinstance(section, dict):
-            return {}
-        widths = section.get("column_widths")
-        if not isinstance(widths, dict):
-            return {}
-        cleaned = {}
-        for column in range(FILE_COLUMN_COUNT):
-            value = widths.get(str(column), widths.get(column))
-            if isinstance(value, (int, float)) and value > 0:
-                cleaned[column] = int(value)
-        return cleaned
-
-    def _apply_file_list_config(self):
-        for column, key in (
-            (FILE_COL_IMPORT_TIME, "show_import_time"),
-            (FILE_COL_INFERENCE, "show_inference"),
-            (FILE_COL_SPLIT, "show_split"),
-        ):
-            self.file_list_widget.setColumnHidden(
-                column, not self._file_list_option(key, True)
-            )
-        saved_widths = self._saved_file_column_widths()
-        self._applying_file_columns = True
-        try:
-            for column in range(FILE_COLUMN_COUNT):
-                self.file_list_widget.setColumnWidth(
-                    column,
-                    saved_widths.get(
-                        column, self._default_file_column_width(column)
-                    ),
-                )
-        finally:
-            self._applying_file_columns = False
-        if FILE_COL_NAME in saved_widths:
-            self.file_list_widget._auto_fill_name_column = False
-        self.set_file_thumbnails_visible(
-            self._file_list_option("show_thumbnails", True), persist=False
-        )
-
-    def _on_file_column_resized(self, column, _old_size, new_size):
-        if (
-            self._applying_file_columns
-            or self.file_list_widget._adjusting_columns
-            or new_size <= 0
-        ):
-            return
-        if column == FILE_COL_NAME:
-            # The user took manual control of the file column width.
-            self.file_list_widget._auto_fill_name_column = False
-        else:
-            self.file_list_widget.fill_name_column()
-        section = self._config.setdefault("file_list", {})
-        if not isinstance(section, dict):
-            return
-        widths = section.get("column_widths")
-        if not isinstance(widths, dict):
-            widths = {}
-            section["column_widths"] = widths
-        widths[str(column)] = int(new_size)
+        self.files.sort_by_column(column)
 
     def set_file_column_visible(self, column, visible):
-        if column == FILE_COL_NAME:
-            return
-        self.file_list_widget.setColumnHidden(column, not visible)
-        key = {
-            FILE_COL_IMPORT_TIME: "show_import_time",
-            FILE_COL_INFERENCE: "show_inference",
-            FILE_COL_SPLIT: "show_split",
-        }.get(column)
-        if key:
-            section = self._config.setdefault("file_list", {})
-            if isinstance(section, dict):
-                section[key] = bool(visible)
+        self.files.set_column_visible(column, visible)
 
     def set_file_thumbnails_visible(self, visible, persist=True):
-        self._show_thumbnails = bool(visible)
-        size = (
-            QtCore.QSize(THUMBNAIL_SIZE, THUMBNAIL_SIZE)
-            if self._show_thumbnails
-            else QtCore.QSize(0, 0)
-        )
-        self.file_list_widget.setIconSize(size)
-        self._update_file_row_height()
-        if self._show_thumbnails:
-            for row in range(self.file_list_widget.rowCount()):
-                self._request_row_thumbnail(row, self._file_path_at(row))
-        if persist:
-            section = self._config.setdefault("file_list", {})
-            if isinstance(section, dict):
-                section["show_thumbnails"] = self._show_thumbnails
-
-    def pop_file_list_header_menu(self, point):
-        header = self.file_list_widget.horizontalHeader()
-        menu = QtWidgets.QMenu(header)
-        columns = (
-            (FILE_COL_SHAPES, self.tr("Objects")),
-            (FILE_COL_IMPORT_TIME, self.tr("Import Time")),
-            (FILE_COL_INFERENCE, self.tr("Inference")),
-            (FILE_COL_SPLIT, self.tr("Split")),
-        )
-        for column, title in columns:
-            action = menu.addAction(title)
-            action.setCheckable(True)
-            action.setChecked(not self.file_list_widget.isColumnHidden(column))
-            action.setData(column)
-        chosen = menu.exec(header.mapToGlobal(point))
-        if chosen is not None:
-            self.set_file_column_visible(chosen.data(), chosen.isChecked())
-
-    def pop_file_list_menu(self, point):
-        item = self.file_list_widget.itemAt(point)
-        menu = QtWidgets.QMenu(self.file_list_widget)
-        import_files_action = menu.addAction(
-            utils.new_icon("import-export", "svg"),
-            self.tr("Import Files"),
-        )
-        import_folder_action = menu.addAction(
-            utils.new_icon("folder-open", "svg"),
-            self.tr("Import Folder"),
-        )
-
-        row = None
-        file_path = None
-        split_actions = {}
-        copy_name_action = None
-        copy_path_action = None
-        thumbnail_action = None
-        remove_action = None
-        if item is not None:
-            row = item.row()
-            file_path = self._file_path_at(row)
-            label_file = self._file_label_file(file_path)
-            menu.addSeparator()
-            copy_name_action = menu.addAction(
-                utils.new_icon("copy", "svg"),
-                self.tr("Copy File Name"),
-            )
-            copy_path_action = menu.addAction(
-                utils.new_icon("copy", "svg"),
-                self.tr("Copy File Path"),
-            )
-            menu.addSeparator()
-            split_menu = menu.addMenu(self.tr("Split"))
-            split_group = QtGui.QActionGroup(split_menu)
-            split_group.setExclusive(True)
-            current_split = read_file_meta(file_path, label_file).split
-            if current_split not in SPLIT_KEYS:
-                current_split = SPLIT_NONE
-            for split_key in ("train", "val", "test", SPLIT_NONE):
-                split_action = split_menu.addAction(
-                    self._split_text(split_key)
-                )
-                split_action.setCheckable(True)
-                split_action.setChecked(split_key == current_split)
-                split_action.setData(split_key)
-                split_group.addAction(split_action)
-                split_actions[split_action] = split_key
-
-            menu.addSeparator()
-            thumbnail_action = menu.addAction(
-                self.tr("Hide Thumbnails")
-                if self._show_thumbnails
-                else self.tr("Show Thumbnails")
-            )
-            remove_action = menu.addAction(self.tr("Remove from List"))
-
-        chosen = menu.exec(self.file_list_widget.viewport().mapToGlobal(point))
-        if chosen is None:
-            return
-        if chosen is import_files_action:
-            self.import_files_dialog()
-            return
-        if chosen is import_folder_action:
-            self.open_folder_dialog()
-            return
-        if row is None:
-            return
-        if chosen is copy_name_action:
-            self.copy_file_path(osp.basename(file_path))
-        elif chosen is copy_path_action:
-            self.copy_file_path(file_path)
-        elif chosen is thumbnail_action:
-            self.set_file_thumbnails_visible(not self._show_thumbnails)
-        elif chosen is remove_action:
-            self.remove_file_from_list(row)
-        elif chosen in split_actions:
-            self.set_file_split(row, split_actions[chosen])
+        self.files.set_thumbnails_visible(visible, persist=persist)
 
     def set_file_split(self, row, split):
-        file_path = self._file_path_at(row)
-        if not file_path:
-            return
-        label_file = self._file_label_file(file_path)
-        if not write_split(label_file, split, image_path=file_path):
-            self.status(self.tr("Failed to update split for %s") % file_path)
-            return
-        self._refresh_file_row(row)
-        self._refresh_statistics_if_visible()
-        self.status(
-            self.tr("Split of %s set to %s")
-            % (osp.basename(file_path), self._split_text(split))
-        )
+        self.files.set_split(row, split)
 
     def remove_file_from_list(self, row):
-        file_path = self._file_path_at(row)
-        if not file_path:
-            return
-        answer = QtWidgets.QMessageBox.question(
-            self,
-            self.tr("Remove File"),
-            self.tr(
-                'Remove "%s" from the file list?\n'
-                "The image file and its annotation file will NOT be deleted."
-            )
-            % osp.basename(file_path),
-            QtWidgets.QMessageBox.StandardButton.Yes
-            | QtWidgets.QMessageBox.StandardButton.No,
-            QtWidgets.QMessageBox.StandardButton.No,
-        )
-        if answer != QtWidgets.QMessageBox.StandardButton.Yes:
-            return
-        was_current = str(self.filename) == str(file_path)
-        self.file_list_widget.blockSignals(True)
-        try:
-            self.file_list_widget.removeRow(row)
-        finally:
-            self.file_list_widget.blockSignals(False)
-        self._rebuild_fn_to_index()
-        if was_current:
-            if self.file_list_widget.count() > 0:
-                next_row = min(row, self.file_list_widget.count() - 1)
-                self.filename = None
-                self.file_list_widget.setCurrentCell(next_row, FILE_COL_NAME)
-                next_path = self._file_path_at(next_row)
-                if next_path:
-                    self.load_file(next_path)
-            else:
-                self.filename = None
-        elif str(self.filename) in self.fn_to_index:
-            self._sync_file_selection()
-        self.update_browse_actions()
-        self._refresh_statistics_if_visible()
+        self.files.remove_row(row)
+
+    def _clear_file_list(self):
+        self.files.clear()
 
     # ------------------------------------------------------------------
     # Right side tab helpers
@@ -5783,17 +5042,17 @@ class LabelingWidget(LabelDialog):
         item.setToolTip(
             f"{item.text()}\n{self._annotation_checked_text(checked)}"
         )
-        row = self._file_row_of(item.text())
+        row = self.files.row_of(item.text())
         if row is not None:
-            self._apply_row_state(row, checked, shape_count)
+            self.files.apply_row_state(row, checked, shape_count)
 
     def _file_item_annotation_checked(self, item):
         return item.data(Qt.ItemDataRole.UserRole) in (True, "failed")
 
     def _create_file_list_item(self, file, label_file=None):
         if label_file is None:
-            label_file = self._file_label_file(file)
-        return self._build_file_row_cells(file, label_file)[FILE_COL_NAME]
+            label_file = self.files.label_file_for(file)
+        return self.files.build_row_cells(file, label_file)[FILE_COL_NAME]
 
     def _current_file_item(self):
         if str(self.filename) not in self.fn_to_index:
@@ -5826,7 +5085,7 @@ class LabelingWidget(LabelDialog):
 
     def _update_file_row_after_save(self, shape_count):
         path = str(self.image_path)
-        item = self._file_item_by_path(path)
+        item = self.files.item_by_path(path)
         if item is None:
             return
         item.setCheckState(Qt.CheckState.Checked)
@@ -8196,7 +7455,7 @@ class LabelingWidget(LabelDialog):
             app._xanylabeling_ui_scale = scale
             apply_application_font(self._config.get("font_family"))
             self.tools.setUiScale(scale)
-            self._update_file_row_height()
+            self.files.update_row_height()
 
         base_width = round(self._sidebar_base_width * scale)
         min_width = round(self._sidebar_min_width * scale)
@@ -8343,9 +7602,10 @@ class LabelingWidget(LabelDialog):
             except (RuntimeError, AttributeError):
                 pass
 
-        if getattr(self, "_thumbnail_loader", None) is not None:
+        files = getattr(self, "files", None)
+        if files is not None:
             try:
-                self._thumbnail_loader.shutdown()
+                files.shutdown()
             except (RuntimeError, AttributeError):
                 pass
 
@@ -8914,23 +8174,9 @@ class LabelingWidget(LabelDialog):
             for row in range(self.file_list_widget.rowCount())
         ]
 
-    def _reset_file_list_sort(self):
-        self._sort_column = None
-        self._sort_order = Qt.SortOrder.AscendingOrder
-        header = self.file_list_widget.horizontalHeader()
-        header.setSortIndicator(-1, Qt.SortOrder.AscendingOrder)
-
     def _clear_file_list(self):
-        self.file_list_widget.blockSignals(True)
-        try:
-            self.file_list_widget.clearContents()
-            self.file_list_widget.setRowCount(0)
-        finally:
-            self.file_list_widget.blockSignals(False)
-        self.fn_to_index.clear()
-        self._import_times = {}
-        self._reset_file_list_sort()
-        self._thumbnail_loader.clear()
+        self.files.clear()
+
 
     def import_dropped_image_files(self, image_files):
         extensions = utils.get_supported_image_extensions()
@@ -8950,9 +8196,9 @@ class LabelingWidget(LabelDialog):
                 label_file = self.output_dir + "/" + label_file_without_path
             rows.append((file, label_file))
 
-        self._import_times.update(ensure_import_times(valid_files))
+        self.files.update_import_times(valid_files)
         for file, label_file in rows:
-            self._append_file_row(file, label_file)
+            self.files.append_row(file, label_file)
         self.file_list_widget.fill_name_column()
 
         if len(self.image_list) > 1:
@@ -8988,13 +8234,13 @@ class LabelingWidget(LabelDialog):
         else:
             image_files = files_on_disk
 
-        self._import_times.update(ensure_import_times(image_files))
+        self.files.update_import_times(image_files)
         for filename in image_files:
             label_file = osp.splitext(filename)[0] + ".json"
             if self.output_dir:
                 label_file_without_path = osp.basename(label_file)
                 label_file = self.output_dir + "/" + label_file_without_path
-            self._append_file_row(filename, label_file)
+            self.files.append_row(filename, label_file)
         self.file_list_widget.fill_name_column()
 
         self.actions.open_next_image.setEnabled(True)

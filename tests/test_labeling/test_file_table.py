@@ -11,7 +11,7 @@ from PyQt6.QtTest import QTest
 from anylabeling import config as app_config
 from anylabeling.app_info import __version__
 from anylabeling.resources import resources  # noqa: F401
-from anylabeling.views.labeling.label_widget import (
+from anylabeling.views.labeling.file_list.constants import (
     FILE_COL_IMPORT_TIME,
     FILE_COL_INFERENCE,
     FILE_COL_NAME,
