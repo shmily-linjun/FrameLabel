@@ -148,6 +148,8 @@ CLI/默认 YAML/用户 YAML → `get_config()` → `MainWindow` → `LabelingWid
 
 **SAM 内存与编码串行化（fork.20）：**SAM ViT 编码器的全局注意力需要一次性分配约 1 GiB，单次编码峰值约 5 GB；`segment_anything` 属于 `_ON_NEXT_FILES_CHANGED_MODELS`，后台预加载与交互编码并发时峰值约 10.5 GB。[encoder_lock.py](../../anylabeling/services/auto_labeling/encoder_lock.py) 的 `cpu_encoder_lock(providers)` 在 CPU-only 环境返回进程级共享锁，`sam_onnx.py`/`sam_hq.py`/`grounding_sam.py`/`sam_med2d.py`/`__base__/sam.py` 的 `run_encoder` 已接入，峰值降为单次编码水平；GPU/加速 provider 不加锁以保留预加载并行。新增 SAM 适配器时应沿用该锁，否则并发预加载仍可能 OOM。
 
+**另一个已修复的累积问题：**ORT `InferenceSession.run()` 返回的 numpy 数组是会话 arena 的视图（`owndata=False`）；`image_embedding_cache` 缓存视图会让整个约 4 GB 的 arena 在 session 关闭后仍不释放（表现为每张图 +4 GB、切图不回收）。`sam_onnx.py`/`sam_hq.py` 的 `run_encoder` 现在先复制输出（`np.array(..., copy=True)`）再释放 session；新增会缓存编码输出的适配器时必须复制，不能缓存 ORT 视图。
+
 ### 5.4 自动训练与导出
 
 标注 UI → `UltralyticsDialog` → `TrainingManager` → 临时 JSON payload → **subprocess.Popen 子进程** → 训练 worker。
@@ -821,7 +823,7 @@ model_manager.py:14
 - 动态注册、条件导入和实际导入顺序可能不完整；本批复核了 T8 涉及的模块及其直接依赖，没有重新执行全项目逐行分析；
 - 核心类/引用排名沿用 fork.3 时期的 AST 统计，T8 只刷新了文件规模、行号和受影响的描述，未重跑全项目排名；
 - `black`/`flake8`/`pre-commit` 在本机环境未安装（按协作规则未自行安装），**格式与 lint 未执行**；提交前只做了等价性自检（`symtable` 未定义名/未使用导入检查、`compileall`、离屏冒烟、结构快照）；
-- fork.20 的 SAM 编码锁验证：真实 ViT-L 模型两路并发峰值由 10.55 GB 降到 5.42 GB（串行 22.3s），新增 `tests/test_models/test_sam_encoder_lock.py` 4 passed；`tests/test_models`+`tests/test_auto_labeling` 的 4 个失败（符号链接权限/沙箱权限）在基线工作树同样存在。
+- fork.20 的 SAM 编码锁验证：真实 ViT-L 模型两路并发峰值由 10.55 GB 降到 5.42 GB（串行 22.3s）；输出视图钉住 arena 的修复用小型 ONNX 探针验证（保留副本时连续运行 RSS 平直，保留 ORT 视图时每次 +arena）；`tests/test_models/test_sam_encoder_lock.py` 6 passed；`tests/test_models`+`tests/test_auto_labeling` 的 4 个失败（符号链接权限/沙箱权限）在基线工作树同样存在。真实 ViT-L 的“逐图缓存后回落到基线”复测因用户旧应用占用约 8.8 GB、提交内存只剩约 3 GB 而未在本轮执行，需重启应用后验证。
 - README 和全部注释未逐项核对。
 
 本批同时建立了后续文档维护规则：每次代码变化按差异更新本报告，而不是把本报告当作一次性静态快照。

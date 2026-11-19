@@ -79,7 +79,9 @@ class SegmentAnythingONNX:
             output = None
             try:
                 output = self.encoder_session.run(None, encoder_inputs)
-                image_embedding = output[0]
+                # ORT returns a view into the session arena; copy it so the
+                # cached embedding does not pin the arena after release.
+                image_embedding = np.array(output[0], copy=True)
                 return image_embedding
 
             finally:

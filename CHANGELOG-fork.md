@@ -55,6 +55,22 @@
 - 页面文件仍只有约 1 GB，属系统设置；代码加锁只把峰值减半，不能替代足够的内存/页面文件。
 - 报错 1 属于使用方式问题，文档已说明；如后续希望降低误用，可考虑增加一个显式的开发启动脚本（本次未改）。
 
+### 7. 追加修复（同一 fork.20 批次，未推送）：缓存嵌入不再钉住 ORT arena
+
+用户补充现象：**每用 SAM 标注一张图，进程内存上涨约 4000 MB，切换图片也不回收**，最终 OOM。复核后确认这是真正的根因（串行锁只消除了并发峰值，不能解决累积）：
+
+- ONNX Runtime 的 `InferenceSession.run()` 返回的 numpy 数组是**会话 CPU arena 的视图**（实测 `ndarray.flags.owndata == False`）。应用会把 `image_embedding` 放进 `image_embedding_cache`（LRU，最多 10 个文件），于是**即使 `run_encoder()` 已把 `encoder_session` 置空，只要缓存里还留着一个 4 MB 的视图，整个约 4 GB 的 encoder arena 就不会释放**；后台预加载还会一次缓存后续 7 张图的嵌入，放大到几十 GB。
+- 用小型 ONNX 探针复现（`temporary/sam-diag/arena_pin_test.py`）：丢弃输出时销毁 session 后 RSS 0.45 → 0.12 GB；**保留输出视图**销毁 session 后停在 0.39 GB，直到视图被删除才回到 0.12 GB；保留 `np.array(out, copy=True)` 的副本时 3 次运行 RSS 始终 0.12 GB。
+
+修复：
+
+- `sam_onnx.py`（`segment_anything`）：`run_encoder()` 返回前先 `np.array(output[0], copy=True)`，再走原有的 `del output / gc / encoder_session=None` 释放，缓存的是自有内存的 4 MB 数组；
+- `sam_hq.py`：同样把 `features[0]` 复制后再释放（`np.stack(features[1:])` 本身已是新内存）；
+- 其余保留常驻 encoder session 的 SAM 适配器不在本次范围（它们的 arena 本就随会话常驻，不存在“释放后被视图钉住”的累积问题）。
+- 版本仍为 `4.3.2+fork.20`（与第 1–6 节同批、尚未推送，作为同一批次的追加修复记录）。
+
+验证：新增/扩展 `tests/test_models/test_sam_encoder_lock.py` 至 6 个用例（CPU 串行锁、加速 provider 不串行、并发不重叠、`sam_onnx`/`sam_hq` 输出 `owndata` 且不与假 ORT 视图共享内存、连续编码不保留 session），全部通过；小型 ONNX 探针的“保留副本”对照实验 RSS 保持平直。真实 ViT-L 的复测因**当前用户正在运行的旧进程已占用约 8.8 GB 且提交内存接近上限**（commit 可用约 3 GB，单次编码约需 5 GB）而无法在本轮完成，需用户重启应用后验证；修复后的预期是编码峰值仍约 5 GB，但每张图处理后回落到基线，不再逐图累积。
+
 ---
 
 ## 4.3.2+fork.19 — 2026-11-19

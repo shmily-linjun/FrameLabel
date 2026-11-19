@@ -104,7 +104,9 @@ class SegmentAnythingONNX:
             features = None
             try:
                 features = self.encoder_session.run(None, encoder_inputs)
-                image_embeddings = features[0]
+                # Copy the arena-backed view before the session is released;
+                # np.stack already creates fresh storage for the rest.
+                image_embeddings = np.array(features[0], copy=True)
                 interm_embeddings = np.stack(features[1:])
                 return image_embeddings, interm_embeddings
 

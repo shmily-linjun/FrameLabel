@@ -1,13 +1,13 @@
-"""CPU encoder serialisation for the SAM-family adapters.
+"""SAM-family encoder safety rules.
 
-The labeling app preloads the next files in a background thread, so two
-encoder sessions used to run concurrently.  A SAM ViT encoder peaks around
-5 GiB, which made ONNX Runtime fail to allocate the 1 GiB attention buffer on
-memory-constrained machines.  These tests pin the contract:
+Two rules are pinned here:
 
-* CPU-only provider lists share one lock (one encoder at a time);
-* accelerator provider lists keep the previous parallel behaviour;
-* two concurrent ``run_encoder`` calls never overlap on CPU.
+* CPU-only provider lists share one lock (one encoder at a time), because a
+  SEM ViT encoder peaks around 5 GiB and the labeling app can otherwise run the
+  preload thread and an interactive encode at the same time;
+* encoder outputs are copied out of the ONNX Runtime arena before the session
+  is released.  ORT returns views (``owndata`` is False); caching such a view
+  per image pins the whole ~4 GB arena even after the session is closed.
 """
 
 import os
@@ -22,7 +22,7 @@ import numpy as np
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 try:
-    from anylabeling.services.auto_labeling import sam_onnx
+    from anylabeling.services.auto_labeling import sam_hq, sam_onnx
     from anylabeling.services.auto_labeling.encoder_lock import (
         cpu_encoder_lock,
     )
@@ -31,14 +31,22 @@ try:
 except Exception:  # pragma: no cover - PyQt6/onnxruntime may be missing
     AVAILABLE = False
 
+EMBEDDING = np.zeros((1, 256, 64, 64), dtype=np.float32)
+INTERMEDIATE = np.zeros((1, 2, 3, 4), dtype=np.float32)
+
 
 class _FakeSession:
-    """Collects overlap information for concurrent ``run`` calls."""
+    """Fake ORT session that reports overlapping ``run`` calls.
+
+    ``run`` returns non-owning views, mimicking the real ORT behaviour where
+    graph outputs live in the session arena.
+    """
 
     active = 0
     max_active = 0
     calls = 0
     gate = threading.Lock()
+    outputs = [EMBEDDING]
 
     def __init__(self, *_args, **_kwargs):
         pass
@@ -58,7 +66,8 @@ class _FakeSession:
         finally:
             with _FakeSession.gate:
                 _FakeSession.active -= 1
-        return [np.zeros((1, 256, 64, 64), dtype=np.float32)]
+        # Slices are views: owndata is False, like ORT graph outputs.
+        return [output[:] for output in _FakeSession.outputs]
 
 
 def _reset_fake():
@@ -66,6 +75,7 @@ def _reset_fake():
         _FakeSession.active = 0
         _FakeSession.max_active = 0
         _FakeSession.calls = 0
+    _FakeSession.outputs = [EMBEDDING]
 
 
 @unittest.skipUnless(
@@ -99,9 +109,7 @@ class TestCpuEncoderLock(unittest.TestCase):
                 "input_image": np.zeros((684, 1024, 3), dtype=np.float32)
             }
             threads = [
-                threading.Thread(
-                    target=model.run_encoder, args=(feeds,)
-                )
+                threading.Thread(target=model.run_encoder, args=(feeds,))
                 for _ in range(2)
             ]
             for thread in threads:
@@ -112,7 +120,12 @@ class TestCpuEncoderLock(unittest.TestCase):
         self.assertEqual(_FakeSession.calls, 2)
         self.assertEqual(_FakeSession.max_active, 1)
 
-    def test_session_is_released_after_encode(self):
+
+@unittest.skipUnless(
+    AVAILABLE, "PyQt6 and onnxruntime are required for SAM encoder tests"
+)
+class TestEncoderOutputIsCopied(unittest.TestCase):
+    def test_sam_onnx_output_owns_its_data(self):
         _reset_fake()
         with patch.object(
             sam_onnx.onnxruntime,
@@ -122,10 +135,57 @@ class TestCpuEncoderLock(unittest.TestCase):
             sam_onnx.onnxruntime, "InferenceSession", _FakeSession
         ):
             model = sam_onnx.SegmentAnythingONNX("encoder.onnx", "decoder.onnx")
-            model.run_encoder(
+            embedding = model.run_encoder(
                 {"input_image": np.zeros((684, 1024, 3), dtype=np.float32)}
             )
             self.assertIsNone(model.encoder_session)
+
+        self.assertTrue(embedding.flags.owndata)
+        self.assertFalse(np.shares_memory(embedding, EMBEDDING))
+
+    def test_sam_hq_encoder_output_owns_its_data(self):
+        _reset_fake()
+        _FakeSession.outputs = [EMBEDDING, INTERMEDIATE]
+        with patch.object(
+            sam_hq.onnxruntime,
+            "get_available_providers",
+            return_value=["CPUExecutionProvider"],
+        ), patch.object(
+            sam_hq.onnxruntime, "InferenceSession", _FakeSession
+        ):
+            model = sam_hq.SegmentAnythingONNX("encoder.onnx", "decoder.onnx")
+            embeddings, interms = model.run_encoder(
+                {"input_image": np.zeros((684, 1024, 3), dtype=np.float32)}
+            )
+            self.assertIsNone(model.encoder_session)
+
+        self.assertTrue(embeddings.flags.owndata)
+        self.assertFalse(np.shares_memory(embeddings, EMBEDDING))
+        self.assertTrue(interms.flags.owndata)
+
+    def test_repeated_encodes_do_not_retain_session(self):
+        _reset_fake()
+        with patch.object(
+            sam_onnx.onnxruntime,
+            "get_available_providers",
+            return_value=["CPUExecutionProvider"],
+        ), patch.object(
+            sam_onnx.onnxruntime, "InferenceSession", _FakeSession
+        ):
+            model = sam_onnx.SegmentAnythingONNX("encoder.onnx", "decoder.onnx")
+            embeddings = [
+                model.run_encoder(
+                    {
+                        "input_image": np.zeros(
+                            (684, 1024, 3), dtype=np.float32
+                        )
+                    }
+                )
+                for _ in range(3)
+            ]
+        self.assertEqual(len(embeddings), 3)
+        for embedding in embeddings:
+            self.assertTrue(embedding.flags.owndata)
 
 
 if __name__ == "__main__":
