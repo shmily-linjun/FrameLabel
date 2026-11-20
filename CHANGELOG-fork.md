@@ -57,6 +57,14 @@
 - `From/To` 仍按文件列表序号；fork.22 的文件表多选尚未接入该面板（可改为“作用于选中行”，本次未做）。
 - `unique_label_list` 仍作为隐藏的会话登记表存在（颜色/锁定数据源），未改为纯数据模型；后续可评估用字典替代这个 QListWidget。
 
+### 7. T3/P0 预埋：数据集 SQLite 存储层（2026-11-20，未发布、不升版）
+
+- **背景**：T3 数据库改造启动，先落不改变现有 UI 行为的存储地基；设计见 `docs/dev/数据库设计-讨论稿.md` v0.13。
+- **新增**：`anylabeling/services/dataset/`（`schema.py`、`connection.py`、`codec.py`、`repository.py`、`importer.py`、`errors.py`、`__init__.py`）。8 表 86 列 3 视图；WAL/`foreign_keys`/`application_id`/`user_version`；在线 `VACUUM INTO` 备份；XLABEL JSON↔DB 编解码（几何对象、flags/attributes/kie/extra、tags、relations、`author`→`editor`）；按 uuid upsert、缺失对象软删/恢复、回收站 `deleted_at`；XLABEL 目录导入（skip/replace/error，源文件只读）。
+- **测试**：`tests/test_dataset_db/` **12 passed**（schema 同步、建库、导入往返、upsert/恢复、NOCASE、回收站、坏 JSON）。conda Python 3.12.14 / SQLite 3.53.4。
+- **行为/兼容性**：现有 JSON 读写链路未改，不新增配置键、不改界面；`LabelingWidget`/`FileSession`/文件表/搜索/统计/导出均未接入。版本保持 `4.3.2+fork.23`，本批只做本地提交、不推送。
+- **限制/后续**：P1 才接单图读写与文件列表；P1 起才出现用户可观察的存储行为变化并按规则升版。测试因 DSH 沙箱下 `tmp_path` 的 `mode=0o700` DACL 问题改用 `dataset_tmp`（普通 mode 目录），不是产品行为。
+
 ---
 
 ## 4.3.2+fork.22 — 2026-11-19
