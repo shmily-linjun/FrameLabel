@@ -106,6 +106,14 @@ class LabelingWidget(LabelDialog):
         self.image_data = None
         self.label_file = None
         self.other_data = {}
+        # Dataset database mode (T3/P1).  ``None`` means the classic JSON
+        # workflow; ``dataset_repository`` switches file listing/load/save to
+        # the SQLite store.
+        self.dataset_database = None
+        self.dataset_repository = None
+        self.dataset_root = None
+        self.dataset_image_id = None
+        self._cli_output_dir = output_dir
         self.classes_file = None
         self.attributes = {}
         self.attribute_widget_types = {}
@@ -946,6 +954,11 @@ class LabelingWidget(LabelDialog):
         return ObjectEditor(self).edit_label(item)
 
     def file_search_changed(self):
+        if getattr(self, "dataset_repository", None) is not None:
+            self.status(
+                self.tr("Search filters are not available in dataset mode yet.")
+            )
+            return
         search_text = self.file_search.text()
         self.import_image_folder(
             self.last_open_dir,

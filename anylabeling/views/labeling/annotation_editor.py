@@ -17,10 +17,11 @@ from PyQt6 import QtGui, QtWidgets
 from PyQt6.QtCore import Qt
 
 from ...services.auto_labeling.types import AutoLabelingMode
+from ...services.dataset.codec import ImageAnnotation, KNOWN_TOP_LEVEL_KEYS
 from . import utils
 from .constants import LABEL_COLORMAP, LABEL_OPACITY
 from .label_file import LabelFile, LabelFileError
-from .schema import CHECKED_FIELD
+from .schema import CHECKED_FIELD, IMAGE_TAGS_FIELD
 from .settings.schema import load_template_config
 from .utils.label_text import format_label_list_text
 from .widgets.label_list_widget import (
@@ -215,6 +216,9 @@ class AnnotationEditor:
         signature, allowed = self.host._prepare_attribution(shapes, flags)
         if not allowed:
             return False
+        repository = getattr(self.host, "dataset_repository", None)
+        if repository is not None:
+            return self._save_database_labels(repository, shapes, flags, signature)
         try:
             image_path = osp.relpath(self.host.image_path, osp.dirname(filename))
             image_data = (
@@ -245,6 +249,49 @@ class AnnotationEditor:
                 self.host.tr("Error saving label data"), self.host.tr("<b>%s</b>") % e
             )
             return False
+
+    def _save_database_labels(self, repository, shapes, flags, signature):
+        image_id = getattr(self.host, "dataset_image_id", None)
+        if image_id is None:
+            self.host.error_message(
+                self.host.tr("Error saving label data"),
+                self.host.tr("Current image is not registered in the dataset."),
+            )
+            return False
+        other_data = self.host._relation_data_for_shapes(shapes)
+        extra = {
+            key: value
+            for key, value in other_data.items()
+            if key not in KNOWN_TOP_LEVEL_KEYS
+        }
+        annotation = ImageAnnotation(
+            shapes=shapes,
+            flags=flags,
+            tags=list(other_data.get(IMAGE_TAGS_FIELD, []) or []),
+            description=other_data.get("description", "") or "",
+            split=other_data.get("split"),
+            relations=other_data.get("relations", []) or [],
+            extra=extra,
+            editor=other_data.get("author", "") or "",
+            modified_at=other_data.get("modified_at", "") or "",
+        )
+        try:
+            repository.save_annotation(
+                image_id,
+                annotation,
+                editor=other_data.get("author") or None,
+                modified_at=other_data.get("modified_at") or None,
+            )
+        except Exception as exc:  # noqa: BLE001 - surfaced to the operator
+            self.host.error_message(
+                self.host.tr("Error saving label data"),
+                self.host.tr("<b>%s</b>") % exc,
+            )
+            return False
+        self.host.operator_gate.baseline = signature
+        self.host.actions.save.setIcon(utils.new_icon("save-check"))
+        self.host._update_file_row_after_save(len(shapes))
+        return True
 
     def new_shape(self):
         """Pop-up and give focus to the label editor.

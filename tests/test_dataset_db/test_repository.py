@@ -158,6 +158,33 @@ def test_upsert_soft_delete_and_restore(dataset_tmp):
         database.close()
 
 
+def test_image_summaries_and_split_update(dataset_tmp):
+    database, repository = make_repository(dataset_tmp)
+    try:
+        image_id = repository.add_image(
+            "images/summary.png", width=64, height=48, split="train"
+        )
+        repository.save_annotation(
+            image_id,
+            ImageAnnotation(
+                shapes=[rectangle("a", "s1"), rectangle("b", "s2")],
+                tags=["t1", "t2"],
+            ),
+            editor="alice",
+        )
+        rows = repository.image_summaries()
+        assert len(rows) == 1
+        assert rows[0]["id"] == image_id
+        assert rows[0]["object_count"] == 2
+        assert rows[0]["tags"] == ["t1", "t2"]
+        assert rows[0]["split"] == "train"
+
+        assert repository.set_split(image_id, "val") is True
+        assert repository.find_image("images/summary.png")["split"] == "val"
+    finally:
+        database.close()
+
+
 def test_polygon_holes_and_unknown_shape_keys_roundtrip(dataset_tmp):
     database, repository = make_repository(dataset_tmp)
     try:

@@ -15,6 +15,8 @@ import os
 import os.path as osp
 import re
 import shutil
+from datetime import datetime
+from pathlib import Path
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt
@@ -24,14 +26,215 @@ from . import utils
 from .label_file import LabelFile, LabelFileError
 from .logger import logger
 from .schema import CHECKED_FIELD, IMAGE_TAGS_FIELD
+from .shape import Shape
+from .utils.file_meta import FileMeta
 from .utils.file_search import filter_image_files, parse_search_query
 from .widgets.file_dialog_preview import FileDialogPreview
+
+
+class DatabaseLabelFile:
+    """Minimal LabelFile-shaped holder for an annotation loaded from SQLite.
+
+    ``FileSession.load_file`` and the rest of the view expect a label file
+    object with ``shapes``/``flags``/``other_data``/``image_data``.  In database
+    mode there is no JSON file, so this object carries the same fields and uses
+    the image path as its save identity.
+    """
+
+    suffix = ".db"
+
+    def __init__(
+        self,
+        filename,
+        image_data,
+        resolved_image_path,
+        shapes,
+        flags,
+        other_data,
+    ):
+        self.filename = filename
+        self.image_path = resolved_image_path
+        self.resolved_image_path = resolved_image_path
+        self.image_data = image_data
+        self.shapes = shapes
+        self.flags = flags
+        self.other_data = other_data
+
 
 class FileSession:
     """File lifecycle commands of the labeling window."""
 
     def __init__(self, host):
         self.host = host
+
+    def _open_dataset_for_folder(self, directory):
+        """Open ``<directory>/xanylabeling.db``; False means a hard error."""
+
+        database_path = Path(directory) / "xanylabeling.db"
+        if not database_path.is_file():
+            return None
+        from ...services.dataset import DatasetDatabase, DatasetRepository
+
+        try:
+            database = DatasetDatabase.open(database_path)
+            repository = DatasetRepository(database)
+        except Exception as exc:  # noqa: BLE001 - reported to the operator
+            if "database" in locals():
+                try:
+                    database.close()
+                except Exception:  # noqa: BLE001 - preserve original error
+                    pass
+            self.host.error_message(
+                self.host.tr("Error opening dataset"),
+                self.host.tr("<b>%s</b><br/>%s") % (database_path, exc),
+            )
+            return False
+        self._close_dataset()
+        self.host.dataset_database = database
+        self.host.dataset_repository = repository
+        self.host.dataset_root = str(Path(directory).resolve())
+        self.host.dataset_image_id = None
+        self.host.output_dir = None
+        return repository
+
+    def _close_dataset(self):
+        database = getattr(self.host, "dataset_database", None)
+        if database is not None:
+            try:
+                database.close()
+            except Exception:  # noqa: BLE001 - best effort on switch/close
+                logger.exception("failed to close dataset database")
+        self.host.dataset_database = None
+        self.host.dataset_repository = None
+        self.host.dataset_root = None
+        self.host.dataset_image_id = None
+
+    @staticmethod
+    def _import_timestamp(value):
+        if not isinstance(value, str) or not value:
+            return 0.0
+        try:
+            moment = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            return 0.0
+        return moment.timestamp()
+
+    def _apply_dataset_ui_state(self, dataset_mode):
+        """Disable JSON-only review actions while a dataset is open."""
+
+        for name in (
+            "toggle_annotation_checked",
+            "clear_annotation_checked",
+            "fail_annotation_checked",
+            "open_next_unchecked_image",
+            "open_prev_unchecked_image",
+        ):
+            action = getattr(self.host.actions, name, None)
+            if action is not None:
+                action.setEnabled(not dataset_mode)
+
+    def _load_database_folder(self, directory, repository, load=True):
+        self.host.last_open_dir = str(directory)
+        self.host.filename = None
+        self.host.update_browse_actions()
+        self.host._clear_file_list()
+
+        root = Path(directory)
+        for row in repository.image_summaries():
+            file_path = str(root / row["rel_path"])
+            meta = FileMeta(
+                True,
+                False,
+                int(row["object_count"]),
+                row["split"],
+                self._import_timestamp(row["imported_at"]),
+                tuple(row["tags"]),
+            )
+            self.host.files.append_db_row(file_path, meta)
+        self.host.file_list_widget.fill_name_column()
+
+        self.host.actions.open_next_image.setEnabled(True)
+        self.host.actions.open_prev_image.setEnabled(True)
+        self.host.actions.open_next_unchecked_image.setEnabled(True)
+        self.host.actions.open_prev_unchecked_image.setEnabled(True)
+        self.host.toggle_actions(True)
+        self._apply_dataset_ui_state(True)
+        self.host.status(self.host.tr("Dataset database: %s") % str(root))
+        if self.host.file_list_widget.count() > 0:
+            self.host._no_selection_slot = True
+            try:
+                self.host.file_list_widget.setCurrentRow(0)
+            finally:
+                self.host._no_selection_slot = False
+            self.host.filename = self.host._file_path_at(0)
+            if load:
+                self.host.load_file(self.host.filename)
+
+    def _prepare_database_file(self, filename, repository):
+        root = Path(self.host.dataset_root)
+        try:
+            relative = Path(filename).resolve().relative_to(root.resolve()).as_posix()
+        except ValueError:
+            self.host.error_message(
+                self.host.tr("Error opening file"),
+                self.host.tr("<b>%s</b> is outside the dataset root.") % filename,
+            )
+            return False
+        image = repository.find_image(relative)
+        if image is None:
+            self.host.error_message(
+                self.host.tr("Error opening file"),
+                self.host.tr("Image is not registered in the dataset: <b>%s</b>")
+                % relative,
+            )
+            return False
+        image_data = LabelFile.load_image_file(filename)
+        if not image_data:
+            self.host.error_message(
+                self.host.tr("Error opening file"),
+                self.host.tr("Failed opening image file: <b>%s</b>") % filename,
+            )
+            return False
+        try:
+            annotation = repository.load_annotation(image["id"])
+            shapes = [Shape().load_from_dict(shape) for shape in annotation.shapes]
+        except Exception as exc:  # noqa: BLE001 - invalid stored payload
+            self.host.error_message(
+                self.host.tr("Error opening file"),
+                self.host.tr("<b>%s</b><br/>%s") % (relative, exc),
+            )
+            return False
+
+        other_data = dict(annotation.extra)
+        other_data.update(
+            {
+                IMAGE_TAGS_FIELD: list(annotation.tags),
+                "description": annotation.description,
+                "split": annotation.split,
+                "relations": annotation.relations,
+                CHECKED_FIELD: False,
+            }
+        )
+        if annotation.editor:
+            other_data["author"] = annotation.editor
+        if annotation.modified_at:
+            other_data["modified_at"] = annotation.modified_at
+
+        self.host.dataset_image_id = image["id"]
+        self.host.label_file = DatabaseLabelFile(
+            filename,
+            image_data,
+            filename,
+            shapes,
+            annotation.flags,
+            other_data,
+        )
+        self.host.image_data = image_data
+        self.host.image_path = filename
+        self.host.other_data = other_data
+        with QtCore.QSignalBlocker(self.host.shape_text_edit):
+            self.host.shape_text_edit.setPlainText(annotation.description)
+        return True
 
     def load_file(self, filename=None):  # noqa: C901
         """Load the specified file, or the last opened file if None."""
@@ -52,6 +255,9 @@ class FileSession:
             self.host.file_list_widget.currentRow()
             != self.host.fn_to_index[str(filename)]
         ):
+            # Clear ``filename`` first so the selection handler (which ignores
+            # a click on the already-open file) performs the actual load.
+            self.host.filename = None
             self.host.file_list_widget.setCurrentRow(
                 self.host.fn_to_index[str(filename)]
             )
@@ -70,6 +276,12 @@ class FileSession:
                 self.host.tr("No such file: <b>%s</b>") % filename,
             )
             return False
+
+        repository = getattr(self.host, "dataset_repository", None)
+        if repository is not None:
+            if not self._prepare_database_file(filename, repository):
+                return False
+            return self._load_image_common(filename)
 
         # assumes same name, but json extension
         label_file = osp.splitext(filename)[0] + ".json"
@@ -117,6 +329,11 @@ class FileSession:
             self.host.other_data = {CHECKED_FIELD: False}
             with QtCore.QSignalBlocker(self.host.shape_text_edit):
                 self.host.shape_text_edit.setPlainText("")
+        return self._load_image_common(filename)
+
+    def _load_image_common(self, filename):
+        """Load image data already prepared by the JSON/DB branch."""
+
         self.host.shape_text_label.setText(self.host.tr("Image Description"))
         self.host.shape_text_edit.setDisabled(False)
         self.host.canvas.relations = self.host.other_data.get("relations", [])
@@ -281,6 +498,9 @@ class FileSession:
         if self.host.compare_view_manager.is_active():
             self.host.compare_view_manager.load_compare_for_file(self.host.filename)
 
+        self._apply_dataset_ui_state(
+            getattr(self.host, "dataset_repository", None) is not None
+        )
         return True
 
     def load_recent(self, filename):
@@ -381,6 +601,13 @@ class FileSession:
                 self.host.load_file(filename)
 
     def change_output_dir_dialog(self, _value=False):
+        if getattr(self.host, "dataset_repository", None) is not None:
+            self.host.status(
+                self.host.tr(
+                    "Changing the output directory is not available in dataset mode."
+                )
+            )
+            return
         default_output_dir = self.host.output_dir
         if default_output_dir is None and self.host.filename:
             default_output_dir = osp.dirname(self.host.filename)
@@ -430,9 +657,24 @@ class FileSession:
 
     def save_file_as(self, _value=False):
         assert not self.host.image.isNull(), "cannot save empty image"
+        if getattr(self.host, "dataset_repository", None) is not None:
+            self.host.status(
+                self.host.tr(
+                    "Save As is not available in dataset mode yet; "
+                    "the annotation is stored in the dataset database."
+                )
+            )
+            return
         self.host._save_file(self.host.save_file_dialog())
 
     def save_file_dialog(self):
+        if getattr(self.host, "dataset_repository", None) is not None:
+            self.host.status(
+                self.host.tr(
+                    "Save As is not available in dataset mode yet."
+                )
+            )
+            return ""
         caption = self.host.tr("%s - Choose File") % __appname__
         filters = self.host.tr("Label files (*%s)") % LabelFile.suffix
         if self.host.output_dir:
@@ -504,6 +746,13 @@ class FileSession:
         return image_file
 
     def delete_file(self):
+        if getattr(self.host, "dataset_repository", None) is not None:
+            self.host.status(
+                self.host.tr(
+                    "Deleting annotations is not available in dataset mode yet."
+                )
+            )
+            return
         mb = QtWidgets.QMessageBox
         if self.host._config.get("keep_prev", False):
             mb.warning(
@@ -545,6 +794,13 @@ class FileSession:
                 self.host.load_file(self.host.filename)
 
     def delete_image_file(self):
+        if getattr(self.host, "dataset_repository", None) is not None:
+            self.host.status(
+                self.host.tr(
+                    "Deleting image files is not available in dataset mode yet."
+                )
+            )
+            return
         if len(self.host.image_list) < 2:
             return
 
@@ -713,6 +969,14 @@ class FileSession:
         ]
 
     def import_dropped_image_files(self, image_files):
+        if getattr(self.host, "dataset_repository", None) is not None:
+            self.host.status(
+                self.host.tr(
+                    "Adding files is not available in dataset mode yet; "
+                    "use the dataset import/sync entry."
+                )
+            )
+            return
         extensions = utils.get_supported_image_extensions()
 
         self.host.filename = None
@@ -754,6 +1018,22 @@ class FileSession:
         if self.host.compare_view_manager.is_active():
             self.host.close_compare_view(confirm=False)
 
+        repository = self._open_dataset_for_folder(dirpath)
+        if repository is False:
+            return
+        if repository is not None:
+            if pattern:
+                self.host.status(
+                    self.host.tr(
+                        "Search filters are not available in dataset mode yet."
+                    )
+                )
+            self._load_database_folder(dirpath, repository, load=load)
+            return
+        self._close_dataset()
+        if self.host.output_dir is None:
+            self.host.output_dir = getattr(self.host, "_cli_output_dir", None)
+
         self.host.last_open_dir = dirpath
         self.host.filename = None
         self.host.update_browse_actions()
@@ -782,6 +1062,7 @@ class FileSession:
         self.host.actions.open_next_unchecked_image.setEnabled(True)
         self.host.actions.open_prev_unchecked_image.setEnabled(True)
         self.host.toggle_actions(True)
+        self._apply_dataset_ui_state(False)
         self.host.open_next_image(load=load)
 
         if image_files and self.host._config.get("exif_scan_enabled", True):

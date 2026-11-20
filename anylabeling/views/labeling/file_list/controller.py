@@ -210,10 +210,11 @@ class FileListController:
     # ------------------------------------------------------------------
     # Row construction and refresh
     # ------------------------------------------------------------------
-    def build_row_cells(self, file, label_file=None):
-        if label_file is None:
-            label_file = self.label_file_for(file)
-        meta = read_file_meta(file, label_file)
+    def build_row_cells(self, file, label_file=None, meta=None):
+        if meta is None:
+            if label_file is None:
+                label_file = self.label_file_for(file)
+            meta = read_file_meta(file, label_file)
         import_time = self._import_times.get(file)
         if import_time is None:
             import_time = read_import_time(file)
@@ -294,6 +295,20 @@ class FileListController:
         row = self.table.rowCount()
         self.table.insertRow(row)
         cells = self.build_row_cells(file, label_file)
+        for column, item in enumerate(cells):
+            self.table.setItem(row, column, item)
+        self.fn_to_index[file] = row
+        self.request_thumbnail(row, file)
+        self.invalidate_label_manager()
+        return row
+
+    def append_db_row(self, file, meta):
+        """Append a row whose metadata came from the dataset database."""
+
+        self._import_times[file] = meta.import_time
+        row = self.table.rowCount()
+        self.table.insertRow(row)
+        cells = self.build_row_cells(file, meta=meta)
         for column, item in enumerate(cells):
             self.table.setItem(row, column, item)
         self.fn_to_index[file] = row
@@ -744,6 +759,13 @@ class FileListController:
     def set_split(self, row, split):
         self.set_split_rows([row], split)
 
+    def _apply_split_item(self, row, split):
+        item = self.table.item(row, FILE_COL_SPLIT)
+        if item is None:
+            return
+        item.setText(self.split_text(split))
+        item.setData(FILE_SORT_ROLE, SPLIT_KEYS.index(split))
+
     def set_split_rows(self, rows, split):
         """Store ``split`` for every row; one status message for the batch."""
         host = self.host
@@ -754,20 +776,43 @@ class FileListController:
         ]
         if not targets:
             return
+        repository = getattr(host, "dataset_repository", None)
+        root = getattr(host, "dataset_root", None)
         updated = 0
         failed = []
         for row in targets:
             file_path = self.path_at(row)
             if not file_path:
                 continue
-            if write_split(
+            if repository is not None:
+                relative = None
+                if root:
+                    relative = osp.relpath(file_path, root).replace("\\", "/")
+                image = (
+                    repository.find_image(relative) if relative else None
+                )
+                if image is not None and repository.set_split(
+                    image["id"], split
+                ):
+                    self._apply_split_item(row, split)
+                    if (
+                        host.image_path
+                        and osp.normcase(osp.abspath(file_path))
+                        == osp.normcase(osp.abspath(host.image_path))
+                    ):
+                        host.other_data["split"] = split
+                    updated += 1
+                else:
+                    failed.append(file_path)
+            elif write_split(
                 self.label_file_for(file_path), split, image_path=file_path
             ):
                 self.refresh_row(row)
                 updated += 1
             else:
                 failed.append(file_path)
-        host._refresh_statistics_if_visible()
+        if repository is None:
+            host._refresh_statistics_if_visible()
         if failed:
             host.status(
                 host.tr("Failed to update split for %s")

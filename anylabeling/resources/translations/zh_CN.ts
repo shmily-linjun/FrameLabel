@@ -5446,6 +5446,76 @@ The image files and their annotation files will NOT be deleted.</source>
         <source>This panel cannot be hidden</source>
         <translation>该面板不可隐藏</translation>
     </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Error opening dataset</source>
+        <translation>打开数据集失败</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Dataset database: %s</source>
+        <translation>数据集数据库：%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; 不在数据集根目录内。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>图片未在数据集中登记：&lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>打开图片文件失败：&lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
+        <translation>数据集模式下暂不支持“另存为”；标注保存在数据集数据库中。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Save As is not available in dataset mode yet.</source>
+        <translation>数据集模式下暂不支持“另存为”。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Deleting annotations is not available in dataset mode yet.</source>
+        <translation>数据集模式下暂不支持删除标注。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Deleting image files is not available in dataset mode yet.</source>
+        <translation>数据集模式下暂不支持删除图片文件。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Changing the output directory is not available in dataset mode.</source>
+        <translation>数据集模式下不支持修改输出目录。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
+        <translation>数据集模式下暂不支持添加文件；请使用数据集导入/同步入口。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Search filters are not available in dataset mode yet.</source>
+        <translation>数据集模式下暂不支持搜索过滤。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Current image is not registered in the dataset.</source>
+        <translation>当前图片未在数据集中登记。</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>

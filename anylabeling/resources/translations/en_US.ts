@@ -5448,6 +5448,76 @@ The image files and their annotation files will NOT be deleted.</translation>
         <source>This panel cannot be hidden</source>
         <translation>This panel cannot be hidden</translation>
     </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Error opening dataset</source>
+        <translation>Error opening dataset</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Dataset database: %s</source>
+        <translation>Dataset database: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
+        <translation>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Save As is not available in dataset mode yet.</source>
+        <translation>Save As is not available in dataset mode yet.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Deleting annotations is not available in dataset mode yet.</source>
+        <translation>Deleting annotations is not available in dataset mode yet.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Deleting image files is not available in dataset mode yet.</source>
+        <translation>Deleting image files is not available in dataset mode yet.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Changing the output directory is not available in dataset mode.</source>
+        <translation>Changing the output directory is not available in dataset mode.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
+        <translation>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Search filters are not available in dataset mode yet.</source>
+        <translation>Search filters are not available in dataset mode yet.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Current image is not registered in the dataset.</source>
+        <translation>Current image is not registered in the dataset.</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>

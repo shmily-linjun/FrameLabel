@@ -5448,6 +5448,76 @@ The image files and their annotation files will NOT be deleted.</source>
         <source>This panel cannot be hidden</source>
         <translation>이 패널은 숨길 수 없습니다</translation>
     </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Error opening dataset</source>
+        <translation>데이터셋을 열 수 없습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Dataset database: %s</source>
+        <translation>데이터셋 데이터베이스: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 데이터셋 루트 밖에 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>이미지가 데이터셋에 등록되어 있지 않습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>이미지 파일을 열지 못했습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
+        <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다. 주석은 데이터셋 데이터베이스에 저장됩니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Save As is not available in dataset mode yet.</source>
+        <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Deleting annotations is not available in dataset mode yet.</source>
+        <translation>데이터셋 모드에서는 주석 삭제를 아직 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Deleting image files is not available in dataset mode yet.</source>
+        <translation>데이터셋 모드에서는 이미지 파일 삭제를 아직 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Changing the output directory is not available in dataset mode.</source>
+        <translation>데이터셋 모드에서는 출력 디렉터리를 변경할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
+        <translation>데이터셋 모드에서는 파일 추가를 아직 사용할 수 없습니다. 데이터셋 가져오기/동기화 항목을 사용하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Search filters are not available in dataset mode yet.</source>
+        <translation>데이터셋 모드에서는 검색 필터를 아직 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" />
+        <source>Current image is not registered in the dataset.</source>
+        <translation>현재 이미지가 데이터셋에 등록되어 있지 않습니다.</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>

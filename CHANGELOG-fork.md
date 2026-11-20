@@ -6,6 +6,59 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.24 — 2026-11-20
+
+### 1. 背景与原因
+
+T3/P0 已落地 SQLite 存储层，但没有任何 UI 路径使用它。P1 的目标是让“打开一个含 `xanylabeling.db` 的数据集目录”走数据库：文件表从库里列出图片，单图从库里读标注，保存写回库；同时不破坏 JSON 目录的既有行为。
+
+### 2. 主要实现与关键细节
+
+- **目录检测**：`FileSession.import_image_folder()` 先检查 `<目录>/xanylabeling.db`。存在则 `DatasetDatabase.open()` + `DatasetRepository`，设置 `dataset_database`/`dataset_repository`/`dataset_root`，文件表改从 `image_summaries()` 取数；不存在则关闭旧库并回退 JSON 扫描。
+- **文件表**：新增 `FileListController.append_db_row(file, FileMeta)` 与 `build_row_cells(..., meta=...)`；行内对象数来自 `annotation_object`，划分来自 `image_file.split`，标签来自 `image_tag`，导入时间来自 `imported_at`。DB 模式下“划分”列直接写 `image_file.split`（不再写 JSON）。
+- **单图加载**：`FileSession.load_file()` 增加 DB 分支，把 `ImageAnnotation` 转成 `Shape` 列表和 `DatabaseLabelFile`（轻量 LabelFile 形状，`filename` 用图片路径），复用原有的图像/缩放/画布/缩略图公共尾部；`author`/`modified_at`/`tags`/`split`/`description`/`relations`/未知顶层字段都回到 `other_data`，图片 flags 回到 `label_file.flags`。
+- **单图保存**：`AnnotationEditor.save_labels()` 在 DB 模式走 `_save_database_labels()`，按 `dataset_image_id` 调 `DatasetRepository.save_annotation()`；归属仍由 `OperatorGate.prepare_attribution()` 决定，JSON 的 `author`/`modified_at` 写入 DB `editor`/`modified_at`；未知顶层字段进 `extra`。
+- **不适用动作**：DB 模式下 `Save As`、删除标注、删除图片、修改输出目录、拖入外部文件均给出状态提示并阻止写 JSON；审核勾选/“上一张/下一张未审核”动作一并禁用（DB schema 无 `checked`）。这些动作要等 P3 的回收站/同步/导出，勾选功能 P4 删除。
+- **首行加载修复**：`load_file()` 在“目标行不是当前行”时先清空 `host.filename` 再 `setCurrentRow()`，让选择信号真正加载第一张图；此前首行加载会被“点击当前文件”判断吞掉。
+- **翻译**：四语言 `.ts` 在 `LabelingWidget` 上下文新增 14 条 DB 模式提示；`scripts/compile_languages.py` 重编 `.qm`（各 2219 条、0 unfinished）并重建 `resources.py`。
+- **版本**：`4.3.2+fork.23` → `4.3.2+fork.24`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/file_session.py`、`annotation_editor.py`、`file_list/controller.py`、`label_widget.py`、`anylabeling/services/dataset/repository.py`（`image_summaries()`/`set_split()`）、`anylabeling/app_info.py`
+- 测试：`tests/test_dataset_db/test_ui_adapter.py`（新增 2 个适配器用例）、`tests/test_dataset_db/` 其余用例
+- 翻译资源：`anylabeling/resources/translations/{en_US,zh_CN,ja_JP,ko_KR}.{ts,qm}`、`anylabeling/resources/resources.py`
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`、`docs/dev/数据库设计-讨论稿.md`（代码基线）
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：打开含库目录时文件表来自 DB；首图可正常加载；编辑后 `Ctrl+S` 写回 SQLite；划分列写 DB。JSON 目录仍走原 JSON 读写，行为不变（首行加载修复对 JSON 同样生效）。
+- **内部接口**：新增 `FileListController.append_db_row()`、`DatabaseLabelFile`、`FileSession._open_dataset_for_folder()/_load_database_folder()/_prepare_database_file()/_close_dataset()`、`AnnotationEditor._save_database_labels()`、`DatasetRepository.image_summaries()/set_split()`。
+- **数据契约**：DB schema 不变（P0 的 v0.13 8 表/86 列/3 视图）；JSON 契约不变。
+- **兼容性**：没有 `xanylabeling.db` 的目录仍按 JSON 模式；DB 存在但无图片/损坏时给错误提示，不回退 JSON。
+- **版本**：`4.3.2+fork.23` → `4.3.2+fork.24`（用户可观察的存储行为变化）。
+
+### 5. 实际验证内容
+
+- `python -m pytest tests/test_dataset_db -q`：**15 passed**（新增 `test_open_dataset_for_folder_and_file_rows`、`test_save_database_labels_writes_through_repository`、`test_image_summaries_and_split_update`）。
+- 离屏 `MainWindow` 冒烟（`temporary/p1/smoke_gui.py`，使用 P0 导入器生成 DB）：
+  - DB 目录：`dataset_repository` 非空、文件表 1 行、首图 `DatabaseLabelFile`、`dataset_image_id` 非空、`save_labels()` 写回库后对象数 1、tags `['tag']`；
+  - 同一窗口切到无库 JSON 目录：`dataset_repository` 回到 `None`、`label_file` 为 `LabelFile`、读取 1 个对象、`save_labels()` 后 JSON 仍有 1 个对象；
+  - 结果：`gui smoke ok` / `json smoke ok`。
+- `python -m compileall` 覆盖修改模块：通过。
+- 翻译：四语言 `.ts` 各新增 14 条，`pyside6-lrelease` 重编 `.qm` 各 **2219 条 / 0 unfinished**；从 `:/languages/translations/zh_CN.qm` 加载并抽查 `Dataset database: %s`、`Search filters are not available in dataset mode yet.`、`Current image is not registered in the dataset.`，均返回预期中文。
+- **未执行**：真实桌面点击/快捷键、DB 大目录性能、搜索/统计/类别页/导出/训练、打包。
+
+### 6. 已知限制与后续事项
+
+- **搜索、统计、类别页、导出、训练仍是 JSON 口径**：DB 模式下搜索框只提示“暂不可用”且不再重建列表；统计/类别页可能为空或停留在旧数据；按计划 P2 接入。
+- **checked 审核状态**：DB schema 已无 `checked`，DB 模式下审核动作与“未审核”导航被禁用；文件表勾选框仍由 `meta.exists` 显示（不代表审核状态），P4 删除该列/功能。
+- **删除/另存为/拖入/输出目录**：DB 模式下已阻止，提示“暂不可用”；P3 接回收站、同步与导出。
+- **创建/导入入口**：P1 只检测已存在的库，没有“无库时自动创建/导入 JSON”的 UI；目前用 P0 的 `import_xlabel_folder()` 或测试夹具建库。P3 接导入向导。
+- **测试环境**：`temporary/p1` 与 `tests/test_dataset_db` 使用普通 mode 目录；现有 pytest `tmp_path` 用例在本机 DSH 沙箱下仍会因 `mode=0o700` DACL 卡住，未用其作为 P1 验证依据。
+
+---
+
 ## 4.3.2+fork.23 — 2026-11-19
 
 ### 1. 背景与原因

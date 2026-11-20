@@ -158,6 +158,29 @@ class DatasetRepository:
         sql += " ORDER BY rel_path COLLATE NOCASE"
         return [dict(row) for row in self.db.query(sql, (self.dataset_id,))]
 
+    def image_summaries(self) -> list[dict[str, Any]]:
+        """Rows for the file table: image fields + object count + tags."""
+
+        rows = self.db.query(
+            "SELECT f.*, "
+            " (SELECT COUNT(*) FROM annotation_object o "
+            "   WHERE o.image_id = f.id AND o.is_deleted = 0) AS object_count, "
+            " (SELECT GROUP_CONCAT(tag, char(31)) FROM ("
+            "    SELECT tag FROM image_tag WHERE image_id = f.id "
+            "    ORDER BY sort_index, tag)) AS tags "
+            "FROM image_file f "
+            "WHERE f.dataset_id = ? AND f.is_deleted = 0 "
+            "ORDER BY f.rel_path COLLATE NOCASE",
+            (self.dataset_id,),
+        )
+        result = []
+        for row in rows:
+            item = dict(row)
+            text = item.get("tags") or ""
+            item["tags"] = [tag for tag in text.split(chr(31)) if tag]
+            result.append(item)
+        return result
+
     def get_image(
         self, image_id: int, *, include_deleted: bool = False
     ) -> dict[str, Any] | None:
@@ -176,6 +199,16 @@ class DatasetRepository:
             (self.dataset_id, value),
         )
         return dict(row) if row is not None else None
+
+    def set_split(self, image_id: int, split: str) -> bool:
+        if split not in SPLITS:
+            raise DatasetFormatError(f"unsupported split: {split!r}")
+        cursor = self.db.execute(
+            "UPDATE image_file SET split = ?, updated_at = ? "
+            "WHERE id = ? AND dataset_id = ? AND is_deleted = 0",
+            (split, _now(), image_id, self.dataset_id),
+        )
+        return cursor.rowcount > 0
 
     def add_image(
         self,
