@@ -1,5 +1,5 @@
 -- ============================================================================
--- demo.db 查询示例（与 schema.sql v1 / 讨论稿 v0.6 的 8 表 3 视图对应）
+-- demo.db 查询示例（与 schema.sql v1 / 讨论稿 v0.12 的 8 表 86 列 3 视图对应）
 -- 本目录随 docs/dev/数据库设计-讨论稿.md 保留，不是一次性临时文件。
 -- 运行方式（仓库根目录，Windows；python -m sqlite3 需 Python 3.12+）：
 --   python -m sqlite3 docs/dev/db_design_assets/demo.db ".read docs/dev/db_design_assets/queries.sql"
@@ -21,16 +21,16 @@ SELECT * FROM dataset;
 SELECT * FROM schema_migration;
 
 -- ---------------------------------------------------------------------------
--- 1. 文件列表常用字段（文件 / 对象数 / 复核 / 划分 / 导入时间 / 尺寸）
---    文件表另有“推理”“标签”两列，数据源见讨论稿 §15.2-U13。
+-- 1. 文件列表常用字段（文件 / 对象数 / 划分 / 导入时间 / 尺寸 / 归属）
+--    文件表另有“推理”“标签”两列，数据源见讨论稿 §6.4。
 -- ---------------------------------------------------------------------------
 SELECT
     f.rel_path                    AS 文件,
     COUNT(o.id)                   AS 对象数,
-    f.checked                     AS 复核状态,      -- unchecked/passed/failed
     f.split                       AS 划分,
     f.imported_at                 AS 导入时间,
-    f.width || 'x' || f.height    AS 尺寸
+    f.width || 'x' || f.height    AS 尺寸,
+    f.author                      AS 最后操作者
 FROM image_file f
 LEFT JOIN annotation_object o
        ON o.image_id = f.id AND o.is_deleted = 0
@@ -71,7 +71,8 @@ ORDER BY f.rel_path;
 
 -- ---------------------------------------------------------------------------
 -- 3. 搜索语法 -> SQL（现有搜索字段：label/split/shape/type/gid/difficult/
---    checked/review/score/description + 文件名子串；AND=',' OR='|' NOT='!'）
+--    review/score/description + 文件名子串；AND=',' OR='|' NOT='!'；
+--    `#N` 已废弃，文件名正则留在应用层，见讨论稿 §2.6-D14）
 -- ---------------------------------------------------------------------------
 
 -- 3.1 label::crack,split::train
@@ -123,9 +124,7 @@ FROM image_file f
 JOIN annotation_object o ON o.image_id = f.id AND o.is_deleted = 0
 WHERE f.is_deleted = 0 AND o.difficult = 1;
 
--- 3.7 checked::failed / review::false_positive
-SELECT rel_path FROM v_image_summary WHERE checked = 'failed';
-
+-- 3.7 review::false_positive
 SELECT DISTINCT f.rel_path, o.review_status
 FROM image_file f
 JOIN annotation_object o ON o.image_id = f.id AND o.is_deleted = 0
@@ -204,11 +203,12 @@ FROM import_session ORDER BY id;
 -- ---------------------------------------------------------------------------
 -- 6. JSON 字段查询（SQLite JSON1）
 -- ---------------------------------------------------------------------------
--- 6.1 顶点数 / 首点坐标
+-- 6.1 顶点数 / 孔洞数 / 首点坐标（几何对象：schema_version/outer/holes）
 SELECT f.rel_path, c.name, o.shape_type,
-       json_array_length(o.points_json) AS n_points,
-       json_extract(o.points_json, '$[0][0]') AS x0,
-       json_extract(o.points_json, '$[0][1]') AS y0
+       json_array_length(o.points_json, '$.outer') AS n_points,
+       json_array_length(o.points_json, '$.holes') AS n_holes,
+       json_extract(o.points_json, '$.outer[0][0]') AS x0,
+       json_extract(o.points_json, '$.outer[0][1]') AS y0
 FROM annotation_object o
 JOIN image_file f ON f.id = o.image_id
 JOIN category c ON c.id = o.category_id
@@ -249,9 +249,14 @@ JOIN category c ON c.id = o.category_id
 WHERE f.is_deleted = 0 AND c.in_class_list = 1
 ORDER BY f.rel_path, o.sort_index;
 
--- 7.2 仅导出满足条件的图片（对应“Skip unchecked / passed / failed”）
-SELECT rel_path FROM image_file
- WHERE is_deleted = 0 AND checked = 'passed';
+-- 7.2 仅导出有对象的图片（对应“跳过空标注”；按复核状态跳过已随 D17 移除）
+SELECT f.rel_path
+FROM image_file f
+WHERE f.is_deleted = 0
+  AND EXISTS (
+      SELECT 1 FROM annotation_object o
+       WHERE o.image_id = f.id AND o.is_deleted = 0
+  );
 
 -- ---------------------------------------------------------------------------
 -- 8. 写操作示例（事务；实际由服务层封装，不要手改库）
@@ -280,6 +285,33 @@ SELECT rel_path FROM image_file
 -- DELETE FROM annotation_object WHERE image_id = 2;
 -- -- INSERT ... （应用代码）
 -- COMMIT;
+
+-- 8.5 回收站（D19）：删除文件 = 软删库行 + 图片移入 .trash/；恢复 = 移回 + 置 0
+-- 删除（程序同时把图片移到 <数据集根>/.trash/<image_id>/）
+-- BEGIN;
+-- UPDATE image_file
+--    SET is_deleted = 1,
+--        deleted_at = strftime('%Y-%m-%dT%H:%M:%fZ','now'),
+--        updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')
+--  WHERE rel_path = 'images/steel_plate_001.jpg' AND is_deleted = 0;
+-- COMMIT;
+
+-- 恢复（程序把图片移回原 rel_path）
+-- BEGIN;
+-- UPDATE image_file
+--    SET is_deleted = 0, deleted_at = NULL,
+--        updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')
+--  WHERE id = 3 AND is_deleted = 1;
+-- COMMIT;
+
+-- 回收站列表
+SELECT id, rel_path, deleted_at, author
+FROM image_file
+WHERE is_deleted = 1
+ORDER BY deleted_at DESC;
+
+-- 清空回收站（物理删除库行；程序同时删除 .trash/ 下的文件）
+-- DELETE FROM image_file WHERE is_deleted = 1 AND deleted_at < '2026-01-01T00:00:00.000Z';
 
 -- ---------------------------------------------------------------------------
 -- 9. 完整性与维护

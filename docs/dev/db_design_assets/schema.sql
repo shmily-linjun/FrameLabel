@@ -1,22 +1,28 @@
 -- ============================================================================
--- X-AnyLabeling 数据集数据库 schema v1（讨论稿资产，尚未接入软件代码）
+-- X-AnyLabeling 数据集数据库 schema v1（讨论稿 v0.12 资产）
 -- 文件：<数据集根目录>/xanylabeling.db
--- 版本：PRAGMA user_version = 1
--- 规模：v0.6 精简后 8 表 3 视图（原 11 表；去掉 db_meta / flag_def /
---       attribute_def 与 5 个预留列，见 ../数据库设计-讨论稿.md §2.4 与 §16 v0.6）
--- 维护：本文件是讨论稿的 DDL 源，与 ../数据库设计-讨论稿.md §5 字段表
---       及本目录 demo.db 同步维护；改动后要重新生成 demo.db 并核对列清单。
+-- 版本：PRAGMA user_version = 1（讨论稿阶段；正式迁移时按 §13.1 升版）
+-- 规模：8 表 / 86 列 / 3 视图
+-- 本轮变更（见 ../数据库设计-讨论稿.md §2.6）：
+--   * D1  dataset.task（主任务提示，不限制数据用途）
+--   * D6  image_file.author / author_modified_at（归属过渡列）
+--   * D11 points_json 改为几何对象 {"schema_version":1,"outer":[...],"holes":[]}
+--   * D16 rel_path 唯一索引使用 COLLATE NOCASE（一期 Windows）
+--   * D17 移除 image_file.checked（改标签即核对；空图=未核对）
+--   * D19 image_file.deleted_at（回收站；图片移入数据集内 .trash/）
+-- 维护：本文件是讨论稿的 DDL 源，与 ../数据库设计-讨论稿.md §5 字段表及
+--       本目录 demo.db / queries.sql / report.txt 同步维护。
 -- 说明：
 --   * 图片本体仍保存在文件系统；数据库只存标注与元数据。
 --   * 一个数据库 = 一个数据集（dataset 表当前只有一行，为将来多数据集留位）。
 --   * 所有时间戳为 UTC ISO-8601 文本（毫秒精度，形如 2026-11-11T10:00:00.000Z）。
---   * 所有 *_json 列存放 JSON 文本，并用 json_valid() 约束。
+--   * 所有 *_json 列存 JSON 文本，并由 json_valid() 约束。
 --   * PRAGMA foreign_keys 不是持久设置，打开数据库的每个连接都必须执行。
 --   * 几何格式版本随 schema 版本走（PRAGMA user_version），不另设几何版本列。
 -- ============================================================================
 
 PRAGMA user_version = 1;
--- 文件类型标识（'XALB' = 0x58414C42），防止误把非本程序数据库当成数据集打开
+-- 文件类型标识（'XALB' = 0x58414C42），防止把非本程序数据库当数据集打开
 PRAGMA application_id = 1480674370;
 
 -- ----------------------------------------------------------------------------
@@ -33,28 +39,25 @@ CREATE TABLE schema_migration (
 -- ----------------------------------------------------------------------------
 CREATE TABLE dataset (
     id          INTEGER PRIMARY KEY,
-    uuid        TEXT    NOT NULL UNIQUE,   -- 对外稳定身份（未来项目包/跨库合并用；库内连接仍用整数 id）
+    uuid        TEXT    NOT NULL UNIQUE,
     name        TEXT    NOT NULL DEFAULT '',
     root_path   TEXT    NOT NULL DEFAULT '',   -- 空串=数据库文件所在目录；否则为绝对路径
     description TEXT    NOT NULL DEFAULT '',
-    app_version TEXT    NOT NULL DEFAULT '',   -- 最近写入本库的软件版本（诊断用）
+    task        TEXT    NOT NULL DEFAULT '',   -- 主任务提示；不限制数据用途（det/seg/obb 可互转）
+    app_version TEXT    NOT NULL DEFAULT '',
     created_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
 
 -- ----------------------------------------------------------------------------
 -- 2. 类别表（替代 .xanylabelingrc 的 labels / classes.txt / label_colors）
---    * 名称是标注事实，重命名直接 UPDATE，行 id 不变。
---    * in_class_list 表示是否在“当前类别清单”中；删除类别清单条目只改此列，
---      不删行，历史对象仍然有效（软删除由 is_deleted 表达）。
---    * sort_index 是类别显示顺序；训练 class_index 的取法见讨论稿 §15.2-U15。
 -- ----------------------------------------------------------------------------
 CREATE TABLE category (
     id            INTEGER PRIMARY KEY,
     dataset_id    INTEGER NOT NULL REFERENCES dataset(id) ON DELETE CASCADE,
     name          TEXT    NOT NULL,
-    color         TEXT,                          -- '#RRGGBB'，替代 config.label_colors
-    sort_index    INTEGER NOT NULL DEFAULT 0,
+    color         TEXT,                          -- '#RRGGBB'
+    sort_index    INTEGER NOT NULL DEFAULT 0,    -- 显示顺序，也是导出顺序权威（D7）
     in_class_list INTEGER NOT NULL DEFAULT 1 CHECK (in_class_list IN (0, 1)),
     description   TEXT    NOT NULL DEFAULT '',
     is_deleted    INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)),
@@ -66,16 +69,14 @@ CREATE UNIQUE INDEX ux_category_name
 CREATE INDEX ix_category_sort ON category(dataset_id, sort_index);
 
 -- ----------------------------------------------------------------------------
--- 3. 导入批次（替代“无来源追溯”的现状；支持幂等重导与排障）
---    只为真实的导入/导入项目动作建行；打开目录扫描、拖拽追加不建批次，
---    image_file.import_session_id 保持 NULL（讨论稿 §5.7）。
+-- 3. 导入批次（只记录真实导入动作；同步/追加不建批次）
 -- ----------------------------------------------------------------------------
 CREATE TABLE import_session (
     id                INTEGER PRIMARY KEY,
     dataset_id        INTEGER NOT NULL REFERENCES dataset(id) ON DELETE CASCADE,
-    source_format     TEXT    NOT NULL,        -- 例：xlabel-json / coco:det / yolo:hbb / voc:det / dota / mask / mot / odvg / ppocr:rec / labelme-json / labelimg-voc
+    source_format     TEXT    NOT NULL,
     source_path       TEXT    NOT NULL DEFAULT '',
-    class_source      TEXT    NOT NULL DEFAULT '',  -- classes.txt / COCO categories / 内置
+    class_source      TEXT    NOT NULL DEFAULT '',
     options_json      TEXT    NOT NULL DEFAULT '{}' CHECK (json_valid(options_json)),
     category_map_json TEXT    NOT NULL DEFAULT '[]' CHECK (json_valid(category_map_json)),
     stats_json        TEXT    NOT NULL DEFAULT '{}' CHECK (json_valid(stats_json)),
@@ -84,17 +85,7 @@ CREATE TABLE import_session (
 );
 
 -- ----------------------------------------------------------------------------
--- 4. 文件表（替代“图片 + 同名 .json + .xanylabeling_import_time.json”）
---    * rel_path 相对 dataset.root_path，统一使用 '/'；数据库可整体搬移。
---    * width/height 为应用 EXIF 显示方向后的尺寸（画布坐标系）；原图文件是尺寸
---      唯一权威，若需排障再读文件，不在库里存第二份。
---    * 图片本体不入库（BLOB 会让 SQLite 备份/搬移/读取变差，且制造第二事实源）。
---    * checked 三态：unchecked / passed / failed（对应原 bool / "failed"）。
---    * flags_json / extra_json 保存图片级 flags 与未知顶层键（chat_history、
---      vqaData、text 等），保证与旧 JSON 无损往返。
---    * 来源标注文件快照列（source_label_*）统一放在表末尾：它们可能不存在，
---      也可能不是 JSON（LabelImg 是 XML、YOLO 是 TXT），因此不叫 json 列。
---      来源文件严格只读：导入后不再读取，也不做“是否被外部改动”的比对。
+-- 4. 图片文件表（一行一张图片；图片本体在磁盘）
 -- ----------------------------------------------------------------------------
 CREATE TABLE image_file (
     id                   INTEGER PRIMARY KEY,
@@ -108,44 +99,29 @@ CREATE TABLE image_file (
     mtime_ns             INTEGER,
     split                TEXT    NOT NULL DEFAULT 'none'
                                  CHECK (split IN ('none', 'train', 'val', 'test')),
-    checked              TEXT    NOT NULL DEFAULT 'unchecked'
-                                 CHECK (checked IN ('unchecked', 'passed', 'failed')),
     description          TEXT    NOT NULL DEFAULT '',
     flags_json           TEXT    NOT NULL DEFAULT '{}' CHECK (json_valid(flags_json)),
     extra_json           TEXT    NOT NULL DEFAULT '{}' CHECK (json_valid(extra_json)),
+    author               TEXT    NOT NULL DEFAULT '',   -- 最后操作者（与 JSON author 同名同义）
+    author_modified_at   TEXT    NOT NULL DEFAULT '',   -- 最后操作时间（ISO-8601）
     import_session_id    INTEGER REFERENCES import_session(id) ON DELETE SET NULL,
     imported_at          TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at           TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     is_deleted           INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)),
+    deleted_at           TEXT CHECK (is_deleted = 1 OR deleted_at IS NULL),  -- 删除进回收站时间；未删必须为 NULL
     -- 来源标注文件快照（只读；原文件保持原位，不移动/不删除；可为空）
-    source_label_path       TEXT,                -- 例：images/001.json / images/001.xml / labels/001.txt
-    source_label_format     TEXT                 -- xlabel-json / labelme-json / voc-xml / yolo-txt …
+    source_label_path       TEXT,
+    source_label_format     TEXT
 );
+-- Windows 文件系统大小写不敏感；一期只支持 Windows（D16）
 CREATE UNIQUE INDEX ux_image_file_rel_path
-    ON image_file(dataset_id, rel_path) WHERE is_deleted = 0;
+    ON image_file(dataset_id, rel_path COLLATE NOCASE) WHERE is_deleted = 0;
 CREATE INDEX ix_image_file_split   ON image_file(dataset_id, split) WHERE is_deleted = 0;
-CREATE INDEX ix_image_file_checked ON image_file(dataset_id, checked) WHERE is_deleted = 0;
 CREATE INDEX ix_image_file_session ON image_file(import_session_id);
+CREATE INDEX ix_image_file_trash   ON image_file(dataset_id, deleted_at) WHERE is_deleted = 1;
 
 -- ----------------------------------------------------------------------------
--- 5. 图片标签（替代 JSON 顶层 "tags": [...] 数组）
--- ----------------------------------------------------------------------------
-CREATE TABLE image_tag (
-    image_id   INTEGER NOT NULL REFERENCES image_file(id) ON DELETE CASCADE,
-    tag        TEXT    NOT NULL,
-    sort_index INTEGER NOT NULL DEFAULT 0,   -- 保持原 tags[] 的显示顺序
-    PRIMARY KEY (image_id, tag)
-) WITHOUT ROWID;
-CREATE INDEX ix_image_tag_tag ON image_tag(tag);
-
--- ----------------------------------------------------------------------------
--- 6. 对象表（替代原 JSON 的 shapes[]，一行 = 一个 Shape）
---    * uuid 是稳定标识；有 relation 的旧 shape_id 直接复用为 uuid。
---    * points_json 只存几何顶点 [[x,y],...]；类别在 category_id 列，方向在
---      direction 列；shape 级未知字段（cuboid3d、visible、text…）进 extra_json。
---    * score 为模型置信度；review_status 对应原 other_data.review_status。
---    * source 记录来源（manual / auto_labeling / imported:coco …），
---      解决现状“导入后无法追溯来源格式”的问题。
+-- 5. 标注对象表（一行一个对象，原 shapes[] 元素）
 -- ----------------------------------------------------------------------------
 CREATE TABLE annotation_object (
     id               INTEGER PRIMARY KEY,
@@ -167,7 +143,7 @@ CREATE TABLE annotation_object (
     review_status    TEXT    NOT NULL DEFAULT 'pending'
                              CHECK (review_status IN ('pending', 'missed', 'false_positive')),
     source           TEXT    NOT NULL DEFAULT 'manual',
-    source_model     TEXT,                          -- 自动标注时的模型名
+    source_model     TEXT,
     attributes_json  TEXT    NOT NULL DEFAULT '{}' CHECK (json_valid(attributes_json)),
     flags_json       TEXT    NOT NULL DEFAULT '{}' CHECK (json_valid(flags_json)),
     kie_linking_json TEXT    NOT NULL DEFAULT '[]' CHECK (json_valid(kie_linking_json)),
@@ -183,8 +159,18 @@ CREATE INDEX ix_object_review   ON annotation_object(review_status) WHERE is_del
 CREATE INDEX ix_object_score    ON annotation_object(score);
 
 -- ----------------------------------------------------------------------------
--- 7. 对象间关系（替代 JSON 顶层 "relations": [{subject_id,object_id,label,score}]）
---    关系属于“当前标注内容”，随保存整体重建，不做独立软删除。
+-- 6. 图片标签（原 tags[]，自由文本，不与类别绑定）
+-- ----------------------------------------------------------------------------
+CREATE TABLE image_tag (
+    image_id   INTEGER NOT NULL REFERENCES image_file(id) ON DELETE CASCADE,
+    tag        TEXT    NOT NULL,
+    sort_index INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (image_id, tag)
+) WITHOUT ROWID;
+CREATE INDEX ix_image_tag_tag ON image_tag(tag);
+
+-- ----------------------------------------------------------------------------
+-- 7. 对象关系（原 relations[]；外键指向对象）
 -- ----------------------------------------------------------------------------
 CREATE TABLE object_relation (
     id                INTEGER PRIMARY KEY,
@@ -195,16 +181,14 @@ CREATE TABLE object_relation (
     score             REAL,
     created_at        TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
-CREATE UNIQUE INDEX ux_relation
-    ON object_relation(image_id, subject_object_id, object_object_id, label);
 CREATE INDEX ix_relation_subject ON object_relation(subject_object_id);
 CREATE INDEX ix_relation_object  ON object_relation(object_object_id);
+CREATE UNIQUE INDEX ux_relation
+    ON object_relation(image_id, subject_object_id, object_object_id, label);
 
--- ============================================================================
--- 常用视图：口径封装（视图不加速，性能仍靠上面的索引；见讨论稿 §6 与附录 B.1.1）
--- ============================================================================
-
--- 文件 + 对象数（文件列表“对象”列、统计页“无对象”判定）
+-- ----------------------------------------------------------------------------
+-- 8. 视图（口径封装，不是性能手段）
+-- ----------------------------------------------------------------------------
 CREATE VIEW v_image_summary AS
 SELECT
     f.id            AS image_id,
@@ -212,7 +196,6 @@ SELECT
     f.rel_path,
     f.file_name,
     f.split,
-    f.checked,
     f.imported_at,
     f.updated_at,
     COUNT(o.id)     AS object_count,
@@ -225,7 +208,6 @@ LEFT JOIN category c
 WHERE f.is_deleted = 0
 GROUP BY f.id;
 
--- 对象明细（加载图片/导出/搜索用）
 CREATE VIEW v_object_detail AS
 SELECT
     o.id            AS object_id,
@@ -250,7 +232,6 @@ JOIN image_file f ON f.id = o.image_id AND f.is_deleted = 0
 JOIN category  c ON c.id = o.category_id
 WHERE o.is_deleted = 0;
 
--- 统计页：类别 × split 的“包含该类别的图片数”（与现有 UI 口径一致）
 CREATE VIEW v_category_split_stats AS
 SELECT
     c.dataset_id,
@@ -266,3 +247,9 @@ JOIN image_file f
      ON f.id = o.image_id AND f.is_deleted = 0
 WHERE c.is_deleted = 0
 GROUP BY c.id, f.split;
+
+-- ----------------------------------------------------------------------------
+-- 9. 首次建库种子（由程序在导入时写入；此处只示意，不自动执行）
+-- ----------------------------------------------------------------------------
+-- INSERT INTO dataset (uuid, name, task, app_version) VALUES (..., 'detect', ...);
+-- INSERT INTO schema_migration (version, description) VALUES (1, '初始 schema：8 表 3 视图（v0.12）');

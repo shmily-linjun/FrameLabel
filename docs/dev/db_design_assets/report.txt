@@ -1,402 +1,166 @@
-X-AnyLabeling 数据集数据库 · demo.db 验证输出（讨论稿 v0.6）
+X-AnyLabeling 数据集数据库 demo 报告
+==============================================================================
+生成时间：2026-11-20T13:17:53+00:00
+数据库：docs\dev\db_design_assets\demo.db
+schema：docs\dev\db_design_assets\schema.sql（讨论稿 v0.12：8 表 86 列 3 视图）
+SQLite：3.45.1
+库文件大小：122880 字节
 
-数据库文件 : docs/dev/db_design_assets/demo.db
-文件大小   : 120.0 KiB
-结构版本   : user_version=1, application_id=1480674370
-日志模式   : wal
+0. 结构与版本
+------------------------------------------------------------------------------
+  PRAGMA user_version     = 1
+  PRAGMA application_id   = 1480674370 (0x58414C42)
+  PRAGMA journal_mode     = wal
+  PRAGMA page_size        = 4096
+  表：8；视图：3；显式索引：15；列：86
+  [OK] 表数为 8：['annotation_object', 'category', 'dataset', 'image_file', 'image_tag', 'import_session', 'object_relation', 'schema_migration']
+  [OK] 视图数为 3：['v_category_split_stats', 'v_image_summary', 'v_object_detail']
+  [OK] 总列数为 86：86
 
-本文件由一次性脚本对 demo.db 逐条执行 queries.sql 生成；表/视图/列清单
-与 schema.sql 及讨论稿 §5 交叉核对。迁移、导入、往返这些一次性结果
-属于 2026-11-11 的旧 schema 原型，脚本与演示数据已移除，见讨论稿 §13.2。
+1. 逐表列清单与核对
+------------------------------------------------------------------------------
+  annotation_object（22 列） [OK]
+    - id                   INTEGER   PK
+    - uuid                 TEXT     NOT NULL
+    - image_id             INTEGER  NOT NULL
+    - category_id          INTEGER  NOT NULL
+    - shape_type           TEXT     NOT NULL
+    - sort_index           INTEGER  NOT NULL DEFAULT 0
+    - points_json          TEXT     NOT NULL
+    - score                REAL     
+    - group_id             INTEGER  
+    - difficult            INTEGER  NOT NULL DEFAULT 0
+    - direction            REAL     
+    - description          TEXT     NOT NULL DEFAULT ''
+    - review_status        TEXT     NOT NULL DEFAULT 'pending'
+    - source               TEXT     NOT NULL DEFAULT 'manual'
+    - source_model         TEXT     
+    - attributes_json      TEXT     NOT NULL DEFAULT '{}'
+    - flags_json           TEXT     NOT NULL DEFAULT '{}'
+    - kie_linking_json     TEXT     NOT NULL DEFAULT '[]'
+    - extra_json           TEXT     NOT NULL DEFAULT '{}'
+    - created_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+    - updated_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+    - is_deleted           INTEGER  NOT NULL DEFAULT 0
+  category（10 列） [OK]
+    - id                   INTEGER   PK
+    - dataset_id           INTEGER  NOT NULL
+    - name                 TEXT     NOT NULL
+    - color                TEXT     
+    - sort_index           INTEGER  NOT NULL DEFAULT 0
+    - in_class_list        INTEGER  NOT NULL DEFAULT 1
+    - description          TEXT     NOT NULL DEFAULT ''
+    - is_deleted           INTEGER  NOT NULL DEFAULT 0
+    - created_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+    - updated_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+  dataset（9 列） [OK]
+    - id                   INTEGER   PK
+    - uuid                 TEXT     NOT NULL
+    - name                 TEXT     NOT NULL DEFAULT ''
+    - root_path            TEXT     NOT NULL DEFAULT ''
+    - description          TEXT     NOT NULL DEFAULT ''
+    - task                 TEXT     NOT NULL DEFAULT ''
+    - app_version          TEXT     NOT NULL DEFAULT ''
+    - created_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+    - updated_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+  image_file（22 列） [OK]
+    - id                   INTEGER   PK
+    - dataset_id           INTEGER  NOT NULL
+    - rel_path             TEXT     NOT NULL
+    - file_name            TEXT     NOT NULL
+    - ext                  TEXT     NOT NULL DEFAULT ''
+    - width                INTEGER  
+    - height               INTEGER  
+    - size_bytes           INTEGER  
+    - mtime_ns             INTEGER  
+    - split                TEXT     NOT NULL DEFAULT 'none'
+    - description          TEXT     NOT NULL DEFAULT ''
+    - flags_json           TEXT     NOT NULL DEFAULT '{}'
+    - extra_json           TEXT     NOT NULL DEFAULT '{}'
+    - author               TEXT     NOT NULL DEFAULT ''
+    - author_modified_at   TEXT     NOT NULL DEFAULT ''
+    - import_session_id    INTEGER  
+    - imported_at          TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+    - updated_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+    - is_deleted           INTEGER  NOT NULL DEFAULT 0
+    - deleted_at           TEXT     
+    - source_label_path    TEXT     
+    - source_label_format  TEXT     
+  image_tag（3 列） [OK]
+    - image_id             INTEGER  NOT NULL PK
+    - tag                  TEXT     NOT NULL PK
+    - sort_index           INTEGER  NOT NULL DEFAULT 0
+  import_session（10 列） [OK]
+    - id                   INTEGER   PK
+    - dataset_id           INTEGER  NOT NULL
+    - source_format        TEXT     NOT NULL
+    - source_path          TEXT     NOT NULL DEFAULT ''
+    - class_source         TEXT     NOT NULL DEFAULT ''
+    - options_json         TEXT     NOT NULL DEFAULT '{}'
+    - category_map_json    TEXT     NOT NULL DEFAULT '[]'
+    - stats_json           TEXT     NOT NULL DEFAULT '{}'
+    - app_version          TEXT     NOT NULL DEFAULT ''
+    - created_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+  object_relation（7 列） [OK]
+    - id                   INTEGER   PK
+    - image_id             INTEGER  NOT NULL
+    - subject_object_id    INTEGER  NOT NULL
+    - object_object_id     INTEGER  NOT NULL
+    - label                TEXT     NOT NULL
+    - score                REAL     
+    - created_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+  schema_migration（3 列） [OK]
+    - version              INTEGER   PK
+    - description          TEXT     NOT NULL DEFAULT ''
+    - applied_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
 
-==============================================================================
-0. 结构核对
-==============================================================================
-  表 8 张，视图 3 个，列 83 个
-  视图: v_category_split_stats, v_image_summary, v_object_detail
-  [OK] annotation_object: 22 列
-  [OK] category: 10 列
-  [OK] dataset: 8 列
-  [OK] image_file: 20 列
-  [OK] image_tag: 3 列
-  [OK] import_session: 10 列
-  [OK] object_relation: 7 列
-  [OK] schema_migration: 3 列
+2. 行数
+------------------------------------------------------------------------------
+  annotation_object    14
+  category             9
+  dataset              1
+  image_file           9
+  image_tag            6
+  import_session       3
+  object_relation      1
+  schema_migration     1
 
-  行数: annotation_object=14, category=9, dataset=1, image_file=9, image_tag=6, import_session=3, object_relation=1, schema_migration=1
-  文档列覆盖: OK（§5 覆盖全部列）
+3. 数据与约束检查
+------------------------------------------------------------------------------
+  [OK] integrity_check
+  [OK] foreign_key_check 无违规
+  [OK] 对象 JSON 列全部可解析：bad=0
+  [OK] 几何全部为 schema_version=1 的 outer/holes 对象：bad=0
+  [OK] image_file 不再有 checked 列
+  [OK] dataset.task 已存在：value=detect
+  [OK] image_file.author / author_modified_at 已存在
+  [OK] image_file.deleted_at 已存在
+  [OK] 回收站当前为空（演示数据未删图）
+  [OK] rel_path 唯一索引使用 COLLATE NOCASE
+  [OK] v_image_summary 不再暴露 checked
 
-==============================================================================
-0. 库结构与版本
-==============================================================================
-  name                    type 
-  ----------------------  -----
-  annotation_object       table
-  category                table
-  dataset                 table
-  image_file              table
-  image_tag               table
-  import_session          table
-  object_relation         table
-  schema_migration        table
-  v_category_split_stats  view 
-  v_image_summary         view 
-  v_object_detail         view 
+4. 视图口径
+------------------------------------------------------------------------------
+  v_image_summary：9 行
+    - images/bolt_007.jpg  objects=2
+    - images/empty_005.jpg  objects=0
+    - images/gear_004.jpg  objects=3
+    - images/label_006.png  objects=1
+    - images/nut_008.jpg  objects=2
+  v_object_detail：14 行
+  v_category_split_stats：10 行
+    - bolt/none images=1 objects=1
+    - crack/train images=1 objects=2
+    - crack/val images=1 objects=1
+    - gear/test images=1 objects=3
+    - hex_nut/none images=1 objects=1
 
-==============================================================================
-0. 库结构与版本（PRAGMA user_version;…）
-==============================================================================
-  user_version
-  ------------
-  1           
+5. queries.sql 回归
+------------------------------------------------------------------------------
+  可执行语句：38；成功：38；失败：0
+  [OK] queries.sql 全部语句可执行
 
-==============================================================================
-0. 库结构与版本
-==============================================================================
-  application_id
-  --------------
-  1480674370    
-
-==============================================================================
-0. 库结构与版本（PRAGMA journal_mode;…）
-==============================================================================
-  journal_mode
-  ------------
-  wal         
-
-==============================================================================
-0. 库结构与版本
-==============================================================================
-  id  uuid                              name       root_path  description                app_version   created_at                updated_at              
-  --  --------------------------------  ---------  ---------  -------------------------  ------------  ------------------------  ------------------------
-  1   e0a5b3201f1b4fcc96f027ad5e88a201  工业视觉演示数据集             SQLite 替换 JSON 设计讨论用演示数据集  4.3.2+fork.3  2026-11-11T13:33:35.899Z  2026-11-11T13:33:35.899Z
-
-==============================================================================
-0. 库结构与版本（SELECT * FROM schema_migration;…）
-==============================================================================
-  version  description                                           applied_at              
-  -------  ----------------------------------------------------  ------------------------
-  1        初始 schema：数据集/类别/文件/对象/标签/关系/导入批次（v0.6 精简为 8 表 3 视图）  2026-11-11T13:33:35.899Z
-
-==============================================================================
-文件表另有“推理”“标签”两列，数据源见讨论稿 §15.2-U13。
-==============================================================================
-  文件                          对象数  复核状态       划分     导入时间                      尺寸      
-  --------------------------  ---  ---------  -----  ------------------------  --------
-  images/bolt_007.jpg         2    unchecked  none   2026-11-11T13:33:35.943Z  900x600 
-  images/empty_005.jpg        0    unchecked  none   2025-11-04T23:53:20.000Z  800x600 
-  images/gear_004.jpg         3    passed     test   2025-11-04T23:51:40.000Z  1024x768
-  images/label_006.png        1    passed     test   2025-11-04T23:55:00.000Z  960x540 
-  images/nut_008.jpg          2    unchecked  none   2026-11-11T13:33:35.984Z  640x640 
-  images/screw_003.png        2    unchecked  none   2025-11-04T23:50:00.000Z  640x480 
-  images/steel_plate_001.jpg  2    passed     train  2025-11-04T23:46:40.000Z  1280x720
-  images/steel_plate_002.jpg  2    failed     val    2025-11-04T23:48:20.000Z  1280x720
-  images/washer_009.png       0    unchecked  none   2026-11-11T13:33:35.988Z  512x512 
-
-==============================================================================
-复用视图（少写 GROUP BY）
-==============================================================================
-  image_id  dataset_id  rel_path                    file_name            split  checked    imported_at               updated_at                object_count  category_names
-  --------  ----------  --------------------------  -------------------  -----  ---------  ------------------------  ------------------------  ------------  --------------
-  1         1           images/bolt_007.jpg         bolt_007.jpg         none   unchecked  2026-11-11T13:33:35.943Z  2026-11-11T13:33:35.988Z  2             bolt,hole     
-  2         1           images/empty_005.jpg        empty_005.jpg        none   unchecked  2025-11-04T23:53:20.000Z  2026-11-11T13:33:35.944Z  0             NULL          
-  3         1           images/gear_004.jpg         gear_004.jpg         test   passed     2025-11-04T23:51:40.000Z  2026-11-11T13:33:35.945Z  3             gear          
-  4         1           images/label_006.png        label_006.png        test   passed     2025-11-04T23:55:00.000Z  2026-11-11T13:33:35.983Z  1             text          
-  5         1           images/nut_008.jpg          nut_008.jpg          none   unchecked  2026-11-11T13:33:35.984Z  2026-11-11T13:33:35.989Z  2             hex_nut,washer
-  6         1           images/screw_003.png        screw_003.png        none   unchecked  2025-11-04T23:50:00.000Z  2026-11-11T13:33:35.985Z  2             screw         
-  7         1           images/steel_plate_001.jpg  steel_plate_001.jpg  train  passed     2025-11-04T23:46:40.000Z  2026-11-11T13:33:35.986Z  2             crack         
-  8         1           images/steel_plate_002.jpg  steel_plate_002.jpg  val    failed     2025-11-04T23:48:20.000Z  2026-11-11T13:33:35.987Z  2             rust,crack    
-  9         1           images/washer_009.png       washer_009.png       none   unchecked  2026-11-11T13:33:35.988Z  2026-11-11T13:33:35.988Z  0             NULL          
-
-==============================================================================
-2. 统计页：类别 x split（口径 = “包含该类别的图片数”，与现有 UI 一致）
-==============================================================================
-  类别       训练  验证  测试  未划分  合计
-  -------  --  --  --  ---  --
-  bolt     0   0   0   1    1 
-  crack    1   1   0   0    2 
-  gear     0   0   1   0    1 
-  hex_nut  0   0   0   1    1 
-  hole     0   0   0   1    1 
-  rust     0   1   0   0    1 
-  screw    0   0   0   1    1 
-  text     0   0   1   0    1 
-  washer   0   0   0   1    1 
-
-==============================================================================
-每个 split 的文件总数（统计表 Total 行）
-==============================================================================
-  split  files
-  -----  -----
-  none   5    
-  test   2    
-  train  1    
-  val    1    
-
-==============================================================================
-“无对象”图片（含无标注文件和空标注，口径与现有 UI 相同）
-==============================================================================
-  rel_path             
-  ---------------------
-  images/empty_005.jpg 
-  images/washer_009.png
-
-==============================================================================
-3.1 label::crack,split::train
-==============================================================================
-  rel_path                  
-  --------------------------
-  images/steel_plate_001.jpg
-
-==============================================================================
-3.2 label::crack|rust  （任意一个类别）
-==============================================================================
-  rel_path                  
-  --------------------------
-  images/steel_plate_001.jpg
-  images/steel_plate_002.jpg
-
-==============================================================================
-3.3 shape::1 （有对象） / shape::0 （无对象）
-==============================================================================
-  rel_path                    object_count
-  --------------------------  ------------
-  images/bolt_007.jpg         2           
-  images/gear_004.jpg         3           
-  images/label_006.png        1           
-  images/nut_008.jpg          2           
-  images/screw_003.png        2           
-  images/steel_plate_001.jpg  2           
-  images/steel_plate_002.jpg  2           
-
-==============================================================================
-3.4 type::rotation,split::test
-==============================================================================
-  (0 rows)
-
-==============================================================================
-3.5 gid::0 （组号）
-==============================================================================
-  (0 rows)
-
-==============================================================================
-3.6 difficult::1
-==============================================================================
-  rel_path                  
-  --------------------------
-  images/steel_plate_001.jpg
-
-==============================================================================
-3.7 checked::failed / review::false_positive
-==============================================================================
-  rel_path                  
-  --------------------------
-  images/steel_plate_002.jpg
-
-==============================================================================
-3.7 checked::failed / review::false_positive（SELECT DISTINCT f.rel_path, o.review_sta…）
-==============================================================================
-  rel_path                    review_status 
-  --------------------------  --------------
-  images/steel_plate_002.jpg  false_positive
-
-==============================================================================
-3.8 score::[0.5,1.0]
-==============================================================================
-  rel_path            
-  --------------------
-  images/screw_003.png
-
-==============================================================================
-3.9 description::1 （图片或对象有描述）
-==============================================================================
-  rel_path                  
-  --------------------------
-  images/steel_plate_002.jpg
-  images/gear_004.jpg       
-  images/label_006.png      
-  images/steel_plate_001.jpg
-  images/screw_003.png      
-
-==============================================================================
-3.10 文件名子串（原搜索的裸文本行为）
-==============================================================================
-  rel_path                  
-  --------------------------
-  images/steel_plate_002.jpg
-  images/steel_plate_001.jpg
-
-==============================================================================
-4.1 类别及使用量
-==============================================================================
-  name     sort_index  in_class_list  color    objects
-  -------  ----------  -------------  -------  -------
-  crack    0           1              #e74c3c  3      
-  rust     1           1              #e67e22  1      
-  screw    2           1              #3498db  2      
-  gear     3           1              #9b59b6  3      
-  bolt     4           1              #2ecc71  1      
-  hole     5           1              #f1c40f  1      
-  hex_nut  6           1              #34495e  1      
-  washer   7           1              #95a5a6  1      
-  text     8           0              #16a085  1      
-
-==============================================================================
-4.2 训练类别（YOLO/COCO 导出的 class_index 依据）
-==============================================================================
-  class_index  name   
-  -----------  -------
-  0            crack  
-  1            rust   
-  2            screw  
-  3            gear   
-  4            bolt   
-  5            hole   
-  6            hex_nut
-  7            washer 
-
-==============================================================================
-4.3 不在训练类别清单中的标注类别（只标注、不训练）
-==============================================================================
-  name  objects
-  ----  -------
-  text  1      
-
-==============================================================================
-5. 对象明细 / 关系 / 来源
-==============================================================================
-  object_id  object_uuid                       image_id  rel_path                    category_id  category_name  shape_type     sort_index  points_json                                                       score  group_id  difficult  direction  description  review_status   source                attributes_json                          
-  ---------  --------------------------------  --------  --------------------------  -----------  -------------  -------------  ----------  ----------------------------------------------------------------  -----  --------  ---------  ---------  -----------  --------------  --------------------  -----------------------------------------
-  11         ccbdf72d5dca43daae44fa199b24850f  1         images/bolt_007.jpg         6            bolt           rectangle      0           [[100.0, 80.0], [320.0, 80.0], [320.0, 230.0], [100.0, 230.0]]    NULL   NULL      0          NULL                    pending         imported:coco:det     {}                                       
-  12         a143c0ff26234c298dd5a2ec30415199  1         images/bolt_007.jpg         7            hole           rectangle      1           [[520.0, 240.0], [580.0, 240.0], [580.0, 300.0], [520.0, 300.0]]  NULL   NULL      0          NULL                    pending         imported:coco:det     {}                                       
-  1          a1b2c3d4e5f60718293a4b5c6d7e8f90  3         images/gear_004.jpg         1            gear           polygon        0           [[300.0, 200.0], [700.0, 200.0], [760.0, 500.0], [640.0, 640.0]…  NULL   NULL      0          NULL                    pending         migrated:xlabel-json  {}                                       
-  2          0f1e2d3c4b5a69788796a5b4c3d2e1f0  3         images/gear_004.jpg         1            gear           point          1           [[500.0, 400.0]]                                                  NULL   1         0          NULL                    pending         migrated:xlabel-json  {}                                       
-  3          aa13ae706ea346aeafdf771caed3ce2b  3         images/gear_004.jpg         1            gear           linestrip      2           [[300.0, 200.0], [500.0, 400.0], [760.0, 500.0]]                  NULL   NULL      0          NULL                    pending         migrated:xlabel-json  {}                                       
-  4          0d334e9298704385bd0be7b0e5afc1fc  4         images/label_006.png        2            text           quadrilateral  0           [[180.0, 140.0], [760.0, 130.0], [770.0, 290.0], [170.0, 300.0]]  NULL   NULL      0          NULL       A-1024       pending         migrated:xlabel-json  {"text": "A-1024", "confidence": "0.98"} 
-  13         bca06a8c7a6a4271a2ce2f51f8f5248f  5         images/nut_008.jpg          8            hex_nut        rectangle      0           [[224.0, 224.0], [416.0, 224.0], [416.0, 352.0], [224.0, 352.0]]  NULL   NULL      0          NULL                    pending         imported:yolo:hbb     {}                                       
-  14         b7cfa4c20f54437dac2180d8d7ce223a  5         images/nut_008.jpg          9            washer         rectangle      1           [[127.99999999999999, 415.99999999999994], [256.0, 415.99999999…  NULL   NULL      0          NULL                    pending         imported:yolo:hbb     {}                                       
-  5          087534292318480ca48e6ab497c54ab8  6         images/screw_003.png        3            screw          rotation       0           [[220.0, 150.0], [380.0, 160.0], [370.0, 330.0], [210.0, 320.0]]  0.92   NULL      0          0.12                    pending         migrated:xlabel-json  {}                                       
-  6          33ece470d8604dc5bfc0efb71135dd75  6         images/screw_003.png        3            screw          point          1           [[300.0, 240.0]]                                                  0.66   NULL      0          NULL                    pending         migrated:xlabel-json  {}                                       
-  7          18baeccd769d4331b97023055198c6ba  7         images/steel_plate_001.jpg  4            crack          rectangle      0           [[120.0, 80.0], [420.0, 80.0], [420.0, 240.0], [120.0, 240.0]]    NULL   NULL      0          NULL                    pending         migrated:xlabel-json  {}                                       
-  8          ac72c2ddb7314fd9a38e82ad2bb5119e  7         images/steel_plate_001.jpg  4            crack          rectangle      1           [[700.0, 300.0], [900.0, 300.0], [900.0, 360.0], [700.0, 360.0]]  NULL   NULL      1          NULL                    pending         migrated:xlabel-json  {"severity": "minor"}                    
-  9          fcc4002821634f7d8149daf65ff81b2c  8         images/steel_plate_002.jpg  5            rust           polygon        0           [[600.0, 300.0], [820.0, 320.0], [800.0, 520.0], [560.0, 480.0]]  NULL   NULL      0          NULL                    false_positive  migrated:xlabel-json  {"severity": "major", "area": "1200 mm2"}
-  10         67b6edf6d4aa4239be270c2a7137bf5d  8         images/steel_plate_002.jpg  4            crack          rectangle      1           [[120.0, 500.0], [300.0, 500.0], [300.0, 560.0], [120.0, 560.0]]  NULL   NULL      0          NULL                    pending         migrated:xlabel-json  {}                                       
-
-==============================================================================
-关系（原 JSON relations：subject_id/object_id/label/score）
-==============================================================================
-  rel_path             subject_category  object_category  label      score
-  -------------------  ----------------  ---------------  ---------  -----
-  images/gear_004.jpg  gear              gear             center_of  1    
-
-==============================================================================
-自动标注/模型结果（score 非空）
-==============================================================================
-  rel_path              name   shape_type  score  source                source_model
-  --------------------  -----  ----------  -----  --------------------  ------------
-  images/screw_003.png  screw  rotation    0.92   migrated:xlabel-json  NULL        
-  images/screw_003.png  screw  point       0.66   migrated:xlabel-json  NULL        
-
-==============================================================================
-导入批次（来源可追溯）
-==============================================================================
-  id  source_format  source_path                                                       class_source            stats_json                                                        category_map_json                                               
-  --  -------------  ----------------------------------------------------------------  ----------------------  ----------------------------------------------------------------  ----------------------------------------------------------------
-  1   xlabel-json    E:\dev-GitHub\X-AnyLabeling-main\temporary\sqlite-design\demo_d…  内嵌在 JSON 的 shape.label  {"images": 9, "images_with_embedded_image_data": 1, "images_wit…  [{"mapped": "category.name", "source": "JSON shape.label"}]     
-  2   coco:det       E:\dev-GitHub\X-AnyLabeling-main\temporary\sqlite-design\demo_d…  COCO categories         {"images": 1, "objects": 2, "skipped": 0}                         [{"category_id": 6, "source_id": 1, "source_name": "bolt"}, {"c…
-  3   yolo:hbb       E:\dev-GitHub\X-AnyLabeling-main\temporary\sqlite-design\demo_d…  classes.txt             {"images": 1, "objects": 2, "skipped": 8}                         [{"category_id": 8, "class_index": 0, "source_name": "hex_nut"}…
-
-==============================================================================
-6.1 顶点数 / 首点坐标
-==============================================================================
-  rel_path                    name     shape_type     n_points  x0   y0 
-  --------------------------  -------  -------------  --------  ---  ---
-  images/bolt_007.jpg         bolt     rectangle      4         100  80 
-  images/bolt_007.jpg         hole     rectangle      4         520  240
-  images/gear_004.jpg         gear     polygon        6         300  200
-  images/gear_004.jpg         gear     point          1         500  400
-  images/gear_004.jpg         gear     linestrip      3         300  200
-  images/label_006.png        text     quadrilateral  4         180  140
-  images/nut_008.jpg          hex_nut  rectangle      4         224  224
-  images/nut_008.jpg          washer   rectangle      4         128  416
-  images/screw_003.png        screw    rotation       4         220  150
-  images/screw_003.png        screw    point          1         300  240
-  images/steel_plate_001.jpg  crack    rectangle      4         120  80 
-  images/steel_plate_001.jpg  crack    rectangle      4         700  300
-  images/steel_plate_002.jpg  rust     polygon        4         600  300
-  images/steel_plate_002.jpg  crack    rectangle      4         120  500
-
-==============================================================================
-6.2 带属性的对象
-==============================================================================
-  rel_path                    name   attributes_json                          
-  --------------------------  -----  -----------------------------------------
-  images/label_006.png        text   {"text": "A-1024", "confidence": "0.98"} 
-  images/steel_plate_001.jpg  crack  {"severity": "minor"}                    
-  images/steel_plate_002.jpg  rust   {"severity": "major", "area": "1200 mm2"}
-
-==============================================================================
-6.3 图片级 flags / 未知扩展字段
-==============================================================================
-  rel_path                    blurry  extra_json                                               
-  --------------------------  ------  ---------------------------------------------------------
-  images/label_006.png        NULL    {"vqaData": {"question": "标签内容是什么？", "answer": "A-1024"}}
-  images/steel_plate_001.jpg  0       {}                                                       
-  images/steel_plate_002.jpg  1       {}                                                       
-
-==============================================================================
-格式可能是 json / xml / txt，所以列名统一叫 source_label_*
-==============================================================================
-  rel_path                    source_label_path            source_label_format
-  --------------------------  ---------------------------  -------------------
-  images/empty_005.jpg        images/empty_005.json        xlabel-json        
-  images/gear_004.jpg         images/gear_004.json         xlabel-json        
-  images/label_006.png        images/label_006.json        xlabel-json        
-  images/screw_003.png        images/screw_003.json        xlabel-json        
-  images/steel_plate_001.jpg  images/steel_plate_001.json  xlabel-json        
-  images/steel_plate_002.jpg  images/steel_plate_002.json  xlabel-json        
-
-==============================================================================
-7.1 YOLO hbb/seg/obb 的输入（类别顺序 + 几何）
-==============================================================================
-  rel_path                    width  height  class_index  class_name  shape_type  points_json                                                       difficult
-  --------------------------  -----  ------  -----------  ----------  ----------  ----------------------------------------------------------------  ---------
-  images/bolt_007.jpg         900    600     4            bolt        rectangle   [[100.0, 80.0], [320.0, 80.0], [320.0, 230.0], [100.0, 230.0]]    0        
-  images/bolt_007.jpg         900    600     5            hole        rectangle   [[520.0, 240.0], [580.0, 240.0], [580.0, 300.0], [520.0, 300.0]]  0        
-  images/gear_004.jpg         1024   768     3            gear        polygon     [[300.0, 200.0], [700.0, 200.0], [760.0, 500.0], [640.0, 640.0]…  0        
-  images/gear_004.jpg         1024   768     3            gear        point       [[500.0, 400.0]]                                                  0        
-  images/gear_004.jpg         1024   768     3            gear        linestrip   [[300.0, 200.0], [500.0, 400.0], [760.0, 500.0]]                  0        
-  images/nut_008.jpg          640    640     6            hex_nut     rectangle   [[224.0, 224.0], [416.0, 224.0], [416.0, 352.0], [224.0, 352.0]]  0        
-  images/nut_008.jpg          640    640     7            washer      rectangle   [[127.99999999999999, 415.99999999999994], [256.0, 415.99999999…  0        
-  images/screw_003.png        640    480     2            screw       rotation    [[220.0, 150.0], [380.0, 160.0], [370.0, 330.0], [210.0, 320.0]]  0        
-  images/screw_003.png        640    480     2            screw       point       [[300.0, 240.0]]                                                  0        
-  images/steel_plate_001.jpg  1280   720     0            crack       rectangle   [[120.0, 80.0], [420.0, 80.0], [420.0, 240.0], [120.0, 240.0]]    0        
-  images/steel_plate_001.jpg  1280   720     0            crack       rectangle   [[700.0, 300.0], [900.0, 300.0], [900.0, 360.0], [700.0, 360.0]]  1        
-  images/steel_plate_002.jpg  1280   720     1            rust        polygon     [[600.0, 300.0], [820.0, 320.0], [800.0, 520.0], [560.0, 480.0]]  0        
-  images/steel_plate_002.jpg  1280   720     0            crack       rectangle   [[120.0, 500.0], [300.0, 500.0], [300.0, 560.0], [120.0, 560.0]]  0        
-
-==============================================================================
-7.2 仅导出满足条件的图片（对应“Skip unchecked / passed / failed”）
-==============================================================================
-  rel_path                  
-  --------------------------
-  images/gear_004.jpg       
-  images/label_006.png      
-  images/steel_plate_001.jpg
-
-==============================================================================
-9. 完整性与维护
-==============================================================================
-  integrity_check
-  ---------------
-  ok             
-
-==============================================================================
-9. 完整性与维护（PRAGMA foreign_key_check;…）
-==============================================================================
-  (0 rows)
-
-==============================================================================
-一致性检查：孤儿对象 / 跨图关系 / 重复类别名 / 悬空关系
-==============================================================================
-  (0 rows)
+6. 结论
+------------------------------------------------------------------------------
+  [OK] 结构（8 表 86 列 3 视图）、行数、JSON/几何、约束与 queries.sql 全部通过。
+  说明：本报告由一次性脚本生成；schema.sql / demo.db / queries.sql 同目录同步维护。
