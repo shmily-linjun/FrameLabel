@@ -2,14 +2,17 @@
 -- X-AnyLabeling 数据集数据库 schema v1（讨论稿资产，尚未接入软件代码）
 -- 文件：<数据集根目录>/xanylabeling.db
 -- 版本：PRAGMA user_version = 1
--- 维护：本文件是讨论稿的 DDL 源，与 ../数据库设计-讨论稿.md §6 字段表
---       及本目录 demo.db 同步维护；改动后运行 check_doc_vs_db.py 校验。
+-- 规模：v0.6 精简后 8 表 3 视图（原 11 表；去掉 db_meta / flag_def /
+--       attribute_def 与 5 个预留列，见 ../数据库设计-讨论稿.md §2.4 与 §16 v0.6）
+-- 维护：本文件是讨论稿的 DDL 源，与 ../数据库设计-讨论稿.md §5 字段表
+--       及本目录 demo.db 同步维护；改动后要重新生成 demo.db 并核对列清单。
 -- 说明：
 --   * 图片本体仍保存在文件系统；数据库只存标注与元数据。
 --   * 一个数据库 = 一个数据集（dataset 表当前只有一行，为将来多数据集留位）。
 --   * 所有时间戳为 UTC ISO-8601 文本（毫秒精度，形如 2026-11-11T10:00:00.000Z）。
 --   * 所有 *_json 列存放 JSON 文本，并用 json_valid() 约束。
 --   * PRAGMA foreign_keys 不是持久设置，打开数据库的每个连接都必须执行。
+--   * 几何格式版本随 schema 版本走（PRAGMA user_version），不另设几何版本列。
 -- ============================================================================
 
 PRAGMA user_version = 1;
@@ -17,14 +20,8 @@ PRAGMA user_version = 1;
 PRAGMA application_id = 1480674370;
 
 -- ----------------------------------------------------------------------------
--- 0. 库级元信息
+-- 0. 迁移记录（PRAGMA user_version 为主版本，此表只记录每次迁移的说明）
 -- ----------------------------------------------------------------------------
-CREATE TABLE db_meta (
-    key   TEXT PRIMARY KEY,
-    value TEXT NOT NULL
-) WITHOUT ROWID;
-
--- 有序迁移记录（PRAGMA user_version 为主版本，此表记录每次迁移的说明）
 CREATE TABLE schema_migration (
     version     INTEGER PRIMARY KEY,
     description TEXT    NOT NULL DEFAULT '',
@@ -50,13 +47,12 @@ CREATE TABLE dataset (
 --    * 名称是标注事实，重命名直接 UPDATE，行 id 不变。
 --    * in_class_list 表示是否在“当前类别清单”中；删除类别清单条目只改此列，
 --      不删行，历史对象仍然有效（软删除由 is_deleted 表达）。
---    * sort_index 即类别顺序（YOLO/COCO 导出的 class_index 顺序）。
+--    * sort_index 是类别显示顺序；训练 class_index 的取法见讨论稿 §15.2-U15。
 -- ----------------------------------------------------------------------------
 CREATE TABLE category (
     id            INTEGER PRIMARY KEY,
     dataset_id    INTEGER NOT NULL REFERENCES dataset(id) ON DELETE CASCADE,
     name          TEXT    NOT NULL,
-    group_name    TEXT,                          -- 类别分组（平台方向预留）
     color         TEXT,                          -- '#RRGGBB'，替代 config.label_colors
     sort_index    INTEGER NOT NULL DEFAULT 0,
     in_class_list INTEGER NOT NULL DEFAULT 1 CHECK (in_class_list IN (0, 1)),
@@ -71,6 +67,8 @@ CREATE INDEX ix_category_sort ON category(dataset_id, sort_index);
 
 -- ----------------------------------------------------------------------------
 -- 3. 导入批次（替代“无来源追溯”的现状；支持幂等重导与排障）
+--    只为真实的导入/导入项目动作建行；打开目录扫描、拖拽追加不建批次，
+--    image_file.import_session_id 保持 NULL（讨论稿 §5.7）。
 -- ----------------------------------------------------------------------------
 CREATE TABLE import_session (
     id                INTEGER PRIMARY KEY,
@@ -96,6 +94,7 @@ CREATE TABLE import_session (
 --      vqaData、text 等），保证与旧 JSON 无损往返。
 --    * 来源标注文件快照列（source_label_*）统一放在表末尾：它们可能不存在，
 --      也可能不是 JSON（LabelImg 是 XML、YOLO 是 TXT），因此不叫 json 列。
+--      来源文件严格只读：导入后不再读取，也不做“是否被外部改动”的比对。
 -- ----------------------------------------------------------------------------
 CREATE TABLE image_file (
     id                   INTEGER PRIMARY KEY,
@@ -107,9 +106,6 @@ CREATE TABLE image_file (
     height               INTEGER,
     size_bytes           INTEGER,
     mtime_ns             INTEGER,
-    sha256               TEXT,                   -- 可选：跨库/去重/完整性校验的图片身份
-    media_type           TEXT    NOT NULL DEFAULT 'image'
-                                 CHECK (media_type IN ('image', 'video_frame', 'pointcloud')),
     split                TEXT    NOT NULL DEFAULT 'none'
                                  CHECK (split IN ('none', 'train', 'val', 'test')),
     checked              TEXT    NOT NULL DEFAULT 'unchecked'
@@ -123,9 +119,7 @@ CREATE TABLE image_file (
     is_deleted           INTEGER NOT NULL DEFAULT 0 CHECK (is_deleted IN (0, 1)),
     -- 来源标注文件快照（只读；原文件保持原位，不移动/不删除；可为空）
     source_label_path       TEXT,                -- 例：images/001.json / images/001.xml / labels/001.txt
-    source_label_format     TEXT,                -- xlabel-json / labelme-json / voc-xml / yolo-txt …
-    source_label_sha256     TEXT,                -- 导入时内容哈希，用于发现“导入后被外部改动”
-    source_label_mtime_ns   INTEGER              -- 导入时修改时间
+    source_label_format     TEXT                 -- xlabel-json / labelme-json / voc-xml / yolo-txt …
 );
 CREATE UNIQUE INDEX ux_image_file_rel_path
     ON image_file(dataset_id, rel_path) WHERE is_deleted = 0;
@@ -190,6 +184,7 @@ CREATE INDEX ix_object_score    ON annotation_object(score);
 
 -- ----------------------------------------------------------------------------
 -- 7. 对象间关系（替代 JSON 顶层 "relations": [{subject_id,object_id,label,score}]）
+--    关系属于“当前标注内容”，随保存整体重建，不做独立软删除。
 -- ----------------------------------------------------------------------------
 CREATE TABLE object_relation (
     id                INTEGER PRIMARY KEY,
@@ -205,38 +200,8 @@ CREATE UNIQUE INDEX ux_relation
 CREATE INDEX ix_relation_subject ON object_relation(subject_object_id);
 CREATE INDEX ix_relation_object  ON object_relation(object_object_id);
 
--- ----------------------------------------------------------------------------
--- 8. 标记定义（可选支撑表；替代 config.flags / label_flags 的“仅内存”）
---    值仍存 image_file.flags_json / annotation_object.flags_json。
--- ----------------------------------------------------------------------------
-CREATE TABLE flag_def (
-    id         INTEGER PRIMARY KEY,
-    dataset_id INTEGER NOT NULL REFERENCES dataset(id) ON DELETE CASCADE,
-    scope      TEXT    NOT NULL CHECK (scope IN ('image', 'label')),
-    name       TEXT    NOT NULL,
-    sort_index INTEGER NOT NULL DEFAULT 0,
-    UNIQUE (dataset_id, scope, name)
-);
-
--- ----------------------------------------------------------------------------
--- 9. 对象属性定义（可选支撑表；替代“上传 attributes JSON 只存内存、重启丢失”）
---    注意：这不是“dataset 自己的属性”。dataset 表存数据集自身字段（名称/根路径）；
---    本表存“某类别的对象可以有哪些属性”的表单模板（如 crack 的 severity 只能是
---    minor/major），具体取值存 annotation_object.attributes_json。
---    数据集归属由 category 隐含，不再重复存 dataset_id。
--- ----------------------------------------------------------------------------
-CREATE TABLE attribute_def (
-    id           INTEGER PRIMARY KEY,
-    category_id  INTEGER NOT NULL REFERENCES category(id) ON DELETE CASCADE,
-    name         TEXT    NOT NULL,
-    widget_type  TEXT    NOT NULL DEFAULT 'select',
-    options_json TEXT    NOT NULL DEFAULT '[]' CHECK (json_valid(options_json)),
-    sort_index   INTEGER NOT NULL DEFAULT 0,
-    UNIQUE (category_id, name)
-);
-
 -- ============================================================================
--- 常用视图：供文件列表、统计页与搜索使用
+-- 常用视图：口径封装（视图不加速，性能仍靠上面的索引；见讨论稿 §6 与附录 B.1.1）
 -- ============================================================================
 
 -- 文件 + 对象数（文件列表“对象”列、统计页“无对象”判定）

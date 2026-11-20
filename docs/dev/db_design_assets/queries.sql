@@ -1,5 +1,5 @@
 -- ============================================================================
--- demo.db 查询示例（与 schema.sql v1 对应）
+-- demo.db 查询示例（与 schema.sql v1 / 讨论稿 v0.6 的 8 表 3 视图对应）
 -- 本目录随 docs/dev/数据库设计-讨论稿.md 保留，不是一次性临时文件。
 -- 运行方式（仓库根目录，Windows；python -m sqlite3 需 Python 3.12+）：
 --   python -m sqlite3 docs/dev/db_design_assets/demo.db ".read docs/dev/db_design_assets/queries.sql"
@@ -14,14 +14,15 @@ SELECT name, type FROM sqlite_master
  ORDER BY type, name;
 
 PRAGMA user_version;
+PRAGMA application_id;
 PRAGMA journal_mode;
 
-SELECT * FROM db_meta ORDER BY key;
 SELECT * FROM dataset;
+SELECT * FROM schema_migration;
 
 -- ---------------------------------------------------------------------------
--- 1. 文件列表（对应 UI 文件表五列：文件 / 对象 / 导入时间 / 推理 / 划分）
---    “推理”列当前无数据源，保留 NULL 占位即可；将来加 inference 表再做 left join。
+-- 1. 文件列表常用字段（文件 / 对象数 / 复核 / 划分 / 导入时间 / 尺寸）
+--    文件表另有“推理”“标签”两列，数据源见讨论稿 §15.2-U13。
 -- ---------------------------------------------------------------------------
 SELECT
     f.rel_path                    AS 文件,
@@ -228,11 +229,9 @@ SELECT rel_path,
 FROM image_file
 WHERE flags_json <> '{}' OR extra_json <> '{}';
 
--- 6.4 来源标注文件快照（导入时记录；原文件保持原位，用于检测“导入后被外部改动”）
+-- 6.4 来源标注文件快照（导入时记录；原文件保持原位且导入后不再读取）
 --     格式可能是 json / xml / txt，所以列名统一叫 source_label_*
-SELECT rel_path, source_label_path, source_label_format,
-       source_label_mtime_ns,
-       substr(source_label_sha256, 1, 16) AS sha256_prefix
+SELECT rel_path, source_label_path, source_label_format
 FROM image_file
 WHERE source_label_path IS NOT NULL
 ORDER BY rel_path;
@@ -299,7 +298,7 @@ SELECT 'cross_image_relation', r.id FROM object_relation r
  WHERE s.image_id <> r.image_id OR t.image_id <> r.image_id;
 
 -- 备份：SQLite 在线安全备份（不覆盖原库）
--- VACUUM INTO 'temporary/sqlite-design/demo_backup.db';
+-- VACUUM INTO '<目标目录>/demo_backup.db';
 
 -- WAL 检查点（关闭前/打包备份前）
 -- PRAGMA wal_checkpoint(TRUNCATE);
