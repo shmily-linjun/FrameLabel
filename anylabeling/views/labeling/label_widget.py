@@ -954,16 +954,11 @@ class LabelingWidget(LabelDialog):
         return ObjectEditor(self).edit_label(item)
 
     def file_search_changed(self):
-        if getattr(self, "dataset_repository", None) is not None:
-            self.status(
-                self.tr("Search filters are not available in dataset mode yet.")
-            )
-            return
         search_text = self.file_search.text()
         self.import_image_folder(
             self.last_open_dir,
             pattern=search_text,
-            load=False,
+            load=getattr(self, "dataset_repository", None) is not None,
         )
 
     def file_selection_changed(self):

@@ -811,8 +811,7 @@ class FileListController:
                 updated += 1
             else:
                 failed.append(file_path)
-        if repository is None:
-            host._refresh_statistics_if_visible()
+        host._refresh_statistics_if_visible()
         if failed:
             host.status(
                 host.tr("Failed to update split for %s")

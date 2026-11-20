@@ -880,6 +880,19 @@ def escape_query_value(text) -> str:
     return escaped
 
 
+def matches_query_label_data(query_or_pattern, image_file, data) -> bool:
+    """Evaluate a parsed query against an in-memory annotation payload.
+
+    Used by the dataset database adapter, which has no annotation JSON to read.
+    Index queries are positional and must be handled by the caller.
+    """
+
+    query = _query_from_any(query_or_pattern)
+    if query.is_index or query.matches_all:
+        return True
+    return bool(query.node.matches(_to_text(image_file), _LabelData(data)))
+
+
 def escape_search_text(text) -> str:
     """Alias of :func:`escape_query_value` for plain search text."""
     return escape_query_value(text)

@@ -11,7 +11,10 @@ file table controller and the search bar; this class is stateless.
 
 from PyQt6 import QtWidgets
 
+import os.path as osp
+
 from .logger import logger
+from .utils.dataset_statistics import FileStatisticsEntry
 from .utils.file_search import escape_query_value
 
 #: Tabs that may not be hidden.  The "Image Attributes" tab is the only place
@@ -137,7 +140,20 @@ class RightSidebarTabs:
         if table is None:
             return
         try:
-            table.refresh(self.host.image_list, self.host.output_dir)
+            repository = getattr(self.host, "dataset_repository", None)
+            if repository is not None:
+                root = self.host.dataset_root or ""
+                entries = [
+                    FileStatisticsEntry(
+                        path=osp.join(root, row["path"]),
+                        split=row["split"],
+                        labels=tuple(row["labels"]),
+                    )
+                    for row in repository.statistics_rows()
+                ]
+                table.set_entries(entries)
+            else:
+                table.refresh(self.host.image_list, self.host.output_dir)
         except Exception:  # noqa: BLE001
             logger.warning("Failed to refresh statistics table", exc_info=True)
 

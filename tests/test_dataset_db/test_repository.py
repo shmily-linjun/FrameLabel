@@ -158,6 +158,55 @@ def test_upsert_soft_delete_and_restore(dataset_tmp):
         database.close()
 
 
+def test_rewrite_categories_renames_and_soft_deletes(dataset_tmp):
+    database, repository = make_repository(dataset_tmp)
+    try:
+        image_id = repository.add_image("images/rewrite.png")
+        repository.save_annotation(
+            image_id,
+            ImageAnnotation(
+                shapes=[rectangle("bolt", "s1"), polygon("nut", "s2")]
+            ),
+        )
+        changed = repository.rewrite_categories(
+            [image_id], {"bolt": "screw"}, {"nut"}
+        )
+        assert changed == 2
+        loaded = repository.load_annotation(image_id)
+        assert [shape["label"] for shape in loaded.shapes] == ["screw"]
+        counts = {row["name"]: row["object_count"] for row in repository.category_counts()}
+        assert counts["screw"] == 1
+        assert counts["nut"] == 0
+    finally:
+        database.close()
+
+
+def test_statistics_and_category_counts(dataset_tmp):
+    database, repository = make_repository(dataset_tmp)
+    try:
+        image_id = repository.add_image(
+            "images/stats.png", width=64, height=48, split="val"
+        )
+        repository.save_annotation(
+            image_id,
+            ImageAnnotation(
+                shapes=[rectangle("bolt", "s1"), polygon("nut", "s2")],
+                tags=["t1"],
+            ),
+        )
+        rows = repository.statistics_rows()
+        assert rows == [
+            {"path": "images/stats.png", "split": "val", "labels": ["bolt", "nut"]}
+        ]
+        counts = repository.category_counts()
+        assert counts == [
+            {"name": "bolt", "object_count": 1},
+            {"name": "nut", "object_count": 1},
+        ]
+    finally:
+        database.close()
+
+
 def test_image_summaries_and_split_update(dataset_tmp):
     database, repository = make_repository(dataset_tmp)
     try:

@@ -28,7 +28,11 @@ from .logger import logger
 from .schema import CHECKED_FIELD, IMAGE_TAGS_FIELD
 from .shape import Shape
 from .utils.file_meta import FileMeta
-from .utils.file_search import filter_image_files, parse_search_query
+from .utils.file_search import (
+    filter_image_files,
+    matches_query_label_data,
+    parse_search_query,
+)
 from .widgets.file_dialog_preview import FileDialogPreview
 
 
@@ -133,14 +137,36 @@ class FileSession:
             if action is not None:
                 action.setEnabled(not dataset_mode)
 
-    def _load_database_folder(self, directory, repository, load=True):
+    def _load_database_folder(self, directory, repository, load=True, pattern=None):
         self.host.last_open_dir = str(directory)
         self.host.filename = None
         self.host.update_browse_actions()
         self.host._clear_file_list()
 
         root = Path(directory)
-        for row in repository.image_summaries():
+        rows = repository.image_summaries()
+        if pattern:
+            query = parse_search_query(pattern)
+            if query.is_index:
+                index = query.index - 1
+                rows = [rows[index]] if 0 <= index < len(rows) else []
+            elif not query.matches_all:
+                filtered = []
+                for row in rows:
+                    file_path = str(root / row["rel_path"])
+                    annotation = repository.load_annotation(row["id"])
+                    data = {
+                        "shapes": annotation.shapes,
+                        "flags": annotation.flags,
+                        "split": annotation.split,
+                        "checked": False,
+                        "description": annotation.description,
+                        "tags": annotation.tags,
+                    }
+                    if matches_query_label_data(query, file_path, data):
+                        filtered.append(row)
+                rows = filtered
+        for row in rows:
             file_path = str(root / row["rel_path"])
             meta = FileMeta(
                 True,
@@ -160,6 +186,7 @@ class FileSession:
         self.host.toggle_actions(True)
         self._apply_dataset_ui_state(True)
         self.host.status(self.host.tr("Dataset database: %s") % str(root))
+        self.host._refresh_statistics_if_visible()
         if self.host.file_list_widget.count() > 0:
             self.host._no_selection_slot = True
             try:
@@ -1022,13 +1049,9 @@ class FileSession:
         if repository is False:
             return
         if repository is not None:
-            if pattern:
-                self.host.status(
-                    self.host.tr(
-                        "Search filters are not available in dataset mode yet."
-                    )
-                )
-            self._load_database_folder(dirpath, repository, load=load)
+            self._load_database_folder(
+                dirpath, repository, load=load, pattern=pattern
+            )
             return
         self._close_dataset()
         if self.host.output_dir is None:

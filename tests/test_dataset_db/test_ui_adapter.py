@@ -94,10 +94,14 @@ class FakeHost:
         pass
 
     def _clear_file_list(self):
-        pass
+        self.files.rows.clear()
+        self.file_list_widget.current_row = -1
 
     def toggle_actions(self, enabled):
         self.actions_enabled = enabled
+
+    def _refresh_statistics_if_visible(self):
+        pass
 
     def open_next_image(self, load=True):
         self.opened = load
@@ -156,6 +160,25 @@ def test_open_dataset_for_folder_and_file_rows(dataset_tmp):
         assert host.opened is None
     finally:
         session._close_dataset()
+
+
+def test_database_folder_search_uses_annotation_payload(dataset_tmp):
+    root = dataset_tmp / "dataset"
+    root.mkdir()
+    database, repository, _ = make_db(root)
+    try:
+        host = FakeHost()
+        session = FileSession(host)
+        session._load_database_folder(root, repository, load=False, pattern="label::bolt")
+        assert len(host.files.rows) == 1
+        session._load_database_folder(root, repository, load=False, pattern="label::nut")
+        assert host.files.rows == []
+        session._load_database_folder(root, repository, load=False, pattern="shape::0")
+        assert host.files.rows == []
+        session._load_database_folder(root, repository, load=False, pattern="#1")
+        assert len(host.files.rows) == 1
+    finally:
+        database.close()
 
 
 def test_save_database_labels_writes_through_repository(dataset_tmp, monkeypatch):

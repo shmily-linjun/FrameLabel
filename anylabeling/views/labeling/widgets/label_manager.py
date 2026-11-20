@@ -263,6 +263,9 @@ class LabelManagerPanel(QtWidgets.QWidget):
         )
 
     def _collect_labels(self, files):
+        repository = getattr(self.host, "dataset_repository", None)
+        if repository is not None:
+            return [row["name"] for row in repository.category_counts()]
         labels = set()
         for image_file in files:
             label_file = self._label_file_for(image_file)
@@ -598,6 +601,9 @@ class LabelManagerPanel(QtWidgets.QWidget):
             dialog.add_label_history(new)
 
     def _rewrite_files(self, files, renames, deletes):
+        repository = getattr(self.host, "dataset_repository", None)
+        if repository is not None:
+            return self._rewrite_database(repository, files, renames, deletes)
         try:
             for image_file in files:
                 label_file = self._label_file_for(image_file)
@@ -618,6 +624,25 @@ class LabelManagerPanel(QtWidgets.QWidget):
                     json.dump(data, stream, indent=2, ensure_ascii=False)
             return True
         except (OSError, ValueError, KeyError, TypeError) as error:
+            logger.error(f"Error occurred while updating labels: {error}")
+            return False
+
+    def _rewrite_database(self, repository, files, renames, deletes):
+        root = getattr(self.host, "dataset_root", None)
+        if not root:
+            return False
+        image_ids = []
+        for image_file in files:
+            relative = os.path.relpath(image_file, root).replace(os.sep, "/")
+            image = repository.find_image(relative)
+            if image is not None:
+                image_ids.append(image["id"])
+        if not image_ids:
+            return False
+        try:
+            repository.rewrite_categories(image_ids, renames, deletes)
+            return True
+        except Exception as error:  # noqa: BLE001 - surfaced as a popup
             logger.error(f"Error occurred while updating labels: {error}")
             return False
 

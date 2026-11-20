@@ -181,6 +181,101 @@ class DatasetRepository:
             result.append(item)
         return result
 
+    def statistics_rows(self) -> list[dict[str, Any]]:
+        """Per-image labels/split for the statistics tab (one row per image)."""
+
+        rows = self.db.query(
+            "SELECT f.id, f.rel_path, f.split, c.name AS label "
+            "FROM image_file f "
+            "LEFT JOIN annotation_object o "
+            "  ON o.image_id = f.id AND o.is_deleted = 0 "
+            "LEFT JOIN category c ON c.id = o.category_id "
+            "WHERE f.dataset_id = ? AND f.is_deleted = 0 "
+            "ORDER BY f.id, o.sort_index, o.id",
+            (self.dataset_id,),
+        )
+        result = []
+        by_image = {}
+        for row in rows:
+            image_id = row["id"]
+            item = by_image.get(image_id)
+            if item is None:
+                item = {
+                    "path": row["rel_path"],
+                    "split": row["split"],
+                    "labels": [],
+                }
+                by_image[image_id] = item
+                result.append(item)
+            if row["label"] is not None:
+                item["labels"].append(row["label"])
+        return result
+
+    def category_counts(self) -> list[dict[str, Any]]:
+        rows = self.db.query(
+            "SELECT c.name, COUNT(o.id) AS object_count "
+            "FROM category c "
+            "LEFT JOIN annotation_object o "
+            "  ON o.category_id = c.id AND o.is_deleted = 0 "
+            "WHERE c.dataset_id = ? "
+            "GROUP BY c.id "
+            "ORDER BY c.name COLLATE NOCASE",
+            (self.dataset_id,),
+        )
+        return [dict(row) for row in rows]
+
+    def rewrite_categories(
+        self,
+        image_ids: list[int],
+        renames: dict[str, str],
+        deletes: set[str],
+    ) -> int:
+        """Apply category renames/deletes to the active objects of images."""
+
+        if not image_ids or (not renames and not deletes):
+            return 0
+        for old, new in renames.items():
+            if not isinstance(old, str) or not isinstance(new, str) or not new:
+                raise DatasetFormatError("invalid category rename")
+        ids = sorted({int(image_id) for image_id in image_ids})
+        now = _now()
+        changed = 0
+        with self.db.transaction():
+            for image_id in ids:
+                image_changed = 0
+                rows = self.db.query(
+                    "SELECT o.id, c.name AS label "
+                    "FROM annotation_object o "
+                    "JOIN category c ON c.id = o.category_id "
+                    "WHERE o.image_id = ? AND o.is_deleted = 0",
+                    (image_id,),
+                )
+                for row in rows:
+                    label = row["label"]
+                    if label in deletes:
+                        self.db.execute(
+                            "UPDATE annotation_object SET is_deleted = 1, "
+                            "updated_at = ? WHERE id = ?",
+                            (now, row["id"]),
+                        )
+                        image_changed += 1
+                    elif label in renames:
+                        target = renames[label]
+                        category_id = self.ensure_category(target)
+                        self.db.execute(
+                            "UPDATE annotation_object SET category_id = ?, "
+                            "updated_at = ? WHERE id = ?",
+                            (category_id, now, row["id"]),
+                        )
+                        image_changed += 1
+                if image_changed:
+                    self.db.execute(
+                        "UPDATE image_file SET updated_at = ? WHERE id = ?",
+                        (now, image_id),
+                    )
+                    changed += image_changed
+        return changed
+
     def get_image(
         self, image_id: int, *, include_deleted: bool = False
     ) -> dict[str, Any] | None:

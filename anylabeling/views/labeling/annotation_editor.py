@@ -291,6 +291,7 @@ class AnnotationEditor:
         self.host.operator_gate.baseline = signature
         self.host.actions.save.setIcon(utils.new_icon("save-check"))
         self.host._update_file_row_after_save(len(shapes))
+        self.host._refresh_statistics_if_visible()
         return True
 
     def new_shape(self):

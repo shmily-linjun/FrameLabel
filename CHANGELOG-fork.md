@@ -6,6 +6,55 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.25 — 2026-11-20
+
+### 1. 背景与原因
+
+P1 已让 DB 目录可打开、可读写单图，但搜索、统计、类别页仍按 JSON 扫描；DB 模式下搜索框只提示不可用，统计/类别页为空或旧数据。P2 把这三处改成数据库查询，并复用现有搜索语法与统计表模型，避免另造一套 UI。
+
+### 2. 主要实现与关键细节
+
+- **搜索复用现有语法**：`file_search.matches_query_label_data()` 把 DB 的 `ImageAnnotation` 转成 `{shapes, flags, split, description, tags}`，直接走现有 `SearchQuery` 节点求值；`label::`/`split::`/`shape::0`/属性/描述/文件名/布尔组合/`#N` 的行为与 JSON 模式一致。
+- **文件表过滤**：`FileSession._load_database_folder(pattern=...)` 先用 `parse_search_query()` 过滤 `image_summaries()` 的行，再生成文件表；DB 搜索 `load=True` 直接打开第一条结果，避免 `load=False` 留下“文件名已变但画布未变”的状态。
+- **统计**：`DatasetRepository.statistics_rows()` 按图片聚合活动对象的类别与 `split`；`RightSidebarTabs._refresh_statistics()` 在 DB 模式构造 `FileStatisticsEntry` 并调用 `StatisticsTable.set_entries()`，不再读 JSON。保存/划分后会刷新当前可见统计页。
+- **类别页**：`DatasetRepository.category_counts()` 提供数据集级类别与对象数；`LabelManagerPanel._collect_labels()` 在 DB 模式直接读库。`rewrite_categories(image_ids, renames, deletes)` 在事务内按图片范围重命名（合并到目标类别）或软删对象，`LabelManagerPanel._rewrite_database()` 把文件表路径映射为 `image_id` 后调用；范围、重名/空名校验沿用原面板。
+- **版本**：`4.3.2+fork.24` → `4.3.2+fork.25`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/utils/file_search.py`、`file_session.py`、`label_widget.py`、`right_sidebar.py`、`file_list/controller.py`、`annotation_editor.py`、`widgets/label_manager.py`、`anylabeling/services/dataset/repository.py`、`anylabeling/app_info.py`
+- 测试：`tests/test_dataset_db/test_repository.py`、`tests/test_dataset_db/test_ui_adapter.py`
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`、`docs/dev/数据库设计-讨论稿.md`（代码基线）
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：DB 模式下搜索可用（含统计表点击反筛）；统计表显示 DB 的类别 × 划分；类别页显示数据集类别并可在登录后按范围改名/删除。JSON 目录行为不变。
+- **内部接口**：新增 `matches_query_label_data()`、`FileSession._load_database_folder(pattern=...)`、`DatasetRepository.statistics_rows()/category_counts()/rewrite_categories()`、`LabelManagerPanel._rewrite_database()`。
+- **数据契约**：DB schema 不变；类别删除为对象软删（`is_deleted=1`），不做物理删；重命名合并到目标类别。
+- **版本**：`4.3.2+fork.24` → `4.3.2+fork.25`（用户可观察行为变化）。
+
+### 5. 实际验证内容
+
+- `python -m pytest tests/test_dataset_db -q`：**18 passed**（新增 DB 搜索过滤、统计/类别计数、类别重命名+软删）。
+- 离屏 `MainWindow` 冒烟（`temporary/p2/smoke_p2.py`，2 张图/2 类别）：
+  - 统计：`classes=('bolt','nut')`，`bolt` 在 train、`nut` 在 val，`total=2`；
+  - 类别页：`['bolt','nut']`，未登录时表禁用，显式启用可编辑；
+  - 搜索：`label::bolt` → 1 行且加载 `a.png`；清空 → 2 行；
+  - 类别编辑：把 `bolt` 改为 `screw` 后重载 DB，当前图对象标签为 `['screw']`。
+  - 结果：`p2 smoke ok`。
+- `python -m compileall` 修改模块通过；四语言翻译仍为 2219 条 / 0 unfinished（P2 未新增界面文案）。
+- **未执行**：真实桌面点击/快捷键、DB 大目录搜索/统计性能、回收站/导入/同步/导出/训练、打包、全量回归。
+
+### 6. 已知限制与后续事项
+
+- **搜索按图加载**：当前每条候选调用 `load_annotation()`，大库搜索是 O(图片数) 次查询；P3 可改为一次查询对象/批量聚合，或加 FTS/索引。
+- **类别批量编辑不写归属**：`rewrite_categories()` 只改 `image_file.updated_at` 与对象 `category_id`/`is_deleted`，不写 `image_file.editor/modified_at`；与 fork.23 类别页直接改 JSON 的既有缺口一致，后续统一走归属盖章。
+- **类别页范围**：类别列表是数据集级（D15），但 `From/To` 仍按当前文件表（含搜索过滤）的行号；搜索后范围语义要在 UI 上提示清楚。
+- **统计口径**：DB 统计按“图片是否包含该类别”计数，与 JSON 版一致；`checked` 仍未持久化。
+- **未接**：回收站、导入/同步、导出/训练、项目文件；P3/P4。
+
+---
+
 ## 4.3.2+fork.24 — 2026-11-20
 
 ### 1. 背景与原因
