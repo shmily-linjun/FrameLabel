@@ -1,5 +1,5 @@
--- ============================================================================
--- demo.db 查询示例（与 schema.sql v1 / 讨论稿 v0.12 的 8 表 86 列 3 视图对应）
+﻿-- ============================================================================
+-- demo.db 查询示例（与 schema.sql v1 / 讨论稿 v0.13 的 8 表 86 列 3 视图对应）
 -- 本目录随 docs/dev/数据库设计-讨论稿.md 保留，不是一次性临时文件。
 -- 运行方式（仓库根目录，Windows；python -m sqlite3 需 Python 3.12+）：
 --   python -m sqlite3 docs/dev/db_design_assets/demo.db ".read docs/dev/db_design_assets/queries.sql"
@@ -30,7 +30,7 @@ SELECT
     f.split                       AS 划分,
     f.imported_at                 AS 导入时间,
     f.width || 'x' || f.height    AS 尺寸,
-    f.author                      AS 最后操作者
+    f.editor                      AS 最后编辑者
 FROM image_file f
 LEFT JOIN annotation_object o
        ON o.image_id = f.id AND o.is_deleted = 0
@@ -305,7 +305,7 @@ WHERE f.is_deleted = 0
 -- COMMIT;
 
 -- 回收站列表
-SELECT id, rel_path, deleted_at, author
+SELECT id, rel_path, deleted_at, editor
 FROM image_file
 WHERE is_deleted = 1
 ORDER BY deleted_at DESC;
@@ -334,3 +334,5 @@ SELECT 'cross_image_relation', r.id FROM object_relation r
 
 -- WAL 检查点（关闭前/打包备份前）
 -- PRAGMA wal_checkpoint(TRUNCATE);
+
+

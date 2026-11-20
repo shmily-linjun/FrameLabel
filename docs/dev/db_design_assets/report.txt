@@ -1,8 +1,8 @@
 X-AnyLabeling 数据集数据库 demo 报告
 ==============================================================================
-生成时间：2026-11-20T13:17:53+00:00
+生成时间：2026-11-20T13:22:45+00:00
 数据库：docs\dev\db_design_assets\demo.db
-schema：docs\dev\db_design_assets\schema.sql（讨论稿 v0.12：8 表 86 列 3 视图）
+schema：docs\dev\db_design_assets\schema.sql（讨论稿 v0.13：8 表 86 列 3 视图）
 SQLite：3.45.1
 库文件大小：122880 字节
 
@@ -77,8 +77,8 @@ SQLite：3.45.1
     - description          TEXT     NOT NULL DEFAULT ''
     - flags_json           TEXT     NOT NULL DEFAULT '{}'
     - extra_json           TEXT     NOT NULL DEFAULT '{}'
-    - author               TEXT     NOT NULL DEFAULT ''
-    - author_modified_at   TEXT     NOT NULL DEFAULT ''
+    - editor               TEXT     NOT NULL DEFAULT ''
+    - modified_at          TEXT     NOT NULL DEFAULT ''
     - import_session_id    INTEGER  
     - imported_at          TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
     - updated_at           TEXT     NOT NULL DEFAULT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
@@ -133,9 +133,10 @@ SQLite：3.45.1
   [OK] 几何全部为 schema_version=1 的 outer/holes 对象：bad=0
   [OK] image_file 不再有 checked 列
   [OK] dataset.task 已存在：value=detect
-  [OK] image_file.author / author_modified_at 已存在
+  [OK] image_file.editor / modified_at 已存在
+  [OK] image_file 不再有 author / author_modified_at
   [OK] image_file.deleted_at 已存在
-  [OK] 回收站当前为空（演示数据未删图）
+  [OK] 回收站当前为空
   [OK] rel_path 唯一索引使用 COLLATE NOCASE
   [OK] v_image_summary 不再暴露 checked
 

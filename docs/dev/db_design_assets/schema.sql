@@ -1,11 +1,11 @@
--- ============================================================================
--- X-AnyLabeling 数据集数据库 schema v1（讨论稿 v0.12 资产）
+﻿-- ============================================================================
+-- X-AnyLabeling 数据集数据库 schema v1（讨论稿 v0.13 资产）
 -- 文件：<数据集根目录>/xanylabeling.db
 -- 版本：PRAGMA user_version = 1（讨论稿阶段；正式迁移时按 §13.1 升版）
 -- 规模：8 表 / 86 列 / 3 视图
 -- 本轮变更（见 ../数据库设计-讨论稿.md §2.6）：
 --   * D1  dataset.task（主任务提示，不限制数据用途）
---   * D6  image_file.author / author_modified_at（归属过渡列）
+--   * D6  image_file.editor / modified_at（归属过渡列；JSON author → DB editor）
 --   * D11 points_json 改为几何对象 {"schema_version":1,"outer":[...],"holes":[]}
 --   * D16 rel_path 唯一索引使用 COLLATE NOCASE（一期 Windows）
 --   * D17 移除 image_file.checked（改标签即核对；空图=未核对）
@@ -102,8 +102,8 @@ CREATE TABLE image_file (
     description          TEXT    NOT NULL DEFAULT '',
     flags_json           TEXT    NOT NULL DEFAULT '{}' CHECK (json_valid(flags_json)),
     extra_json           TEXT    NOT NULL DEFAULT '{}' CHECK (json_valid(extra_json)),
-    author               TEXT    NOT NULL DEFAULT '',   -- 最后操作者（与 JSON author 同名同义）
-    author_modified_at   TEXT    NOT NULL DEFAULT '',   -- 最后操作时间（ISO-8601）
+    editor               TEXT    NOT NULL DEFAULT '',   -- 最后编辑者（对应 JSON author）
+    modified_at          TEXT    NOT NULL DEFAULT '',   -- 标注内容最后修改时间（对应 JSON modified_at；行级时间用 updated_at）
     import_session_id    INTEGER REFERENCES import_session(id) ON DELETE SET NULL,
     imported_at          TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
     updated_at           TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
@@ -252,4 +252,6 @@ GROUP BY c.id, f.split;
 -- 9. 首次建库种子（由程序在导入时写入；此处只示意，不自动执行）
 -- ----------------------------------------------------------------------------
 -- INSERT INTO dataset (uuid, name, task, app_version) VALUES (..., 'detect', ...);
--- INSERT INTO schema_migration (version, description) VALUES (1, '初始 schema：8 表 3 视图（v0.12）');
+-- INSERT INTO schema_migration (version, description) VALUES (1, '初始 schema：8 表 3 视图（v0.13）');
+
+
