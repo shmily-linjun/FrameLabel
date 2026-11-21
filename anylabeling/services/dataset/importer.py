@@ -31,7 +31,7 @@ SUPPORTED_IMAGE_EXTENSIONS = {
     ".tiff",
     ".gif",
 }
-SKIPPED_DIRECTORIES = {".trash", "__pycache__"}
+SKIPPED_DIRECTORIES = {".trash", "__pycache__", "_delete_"}
 
 
 @dataclass

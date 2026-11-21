@@ -1683,8 +1683,12 @@ class LabelingWidget(LabelDialog):
     def import_dropped_image_files(self, image_files):
         return FileSession(self).import_dropped_image_files(image_files)
 
-    def import_image_folder(self, dirpath, pattern=None, load=True):
-        return FileSession(self).import_image_folder(dirpath, pattern, load)
+    def import_image_folder(
+        self, dirpath, pattern=None, load=True, auto_db=True
+    ):
+        return FileSession(self).import_image_folder(
+            dirpath, pattern, load, auto_db
+        )
 
     def import_project_dialog(self):
         return FileSession(self).import_project_dialog()

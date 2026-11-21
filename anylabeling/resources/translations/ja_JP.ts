@@ -5596,6 +5596,26 @@ The image files and their annotation files will NOT be deleted.</source>
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>この画像と注釈をごみ箱に移動しますか？</translation>
     </message>
+    <message>
+        <source>Creating dataset database…</source>
+        <translation>データセットデータベースを作成中…</translation>
+    </message>
+    <message>
+        <source>Dataset database</source>
+        <translation>データセットデータベース</translation>
+    </message>
+    <message>
+        <source>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; にデータセットデータベースを作成できませんでした:&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <source>Dataset database created: %s</source>
+        <translation>データセットデータベースを作成しました: %s</translation>
+    </message>
+    <message>
+        <source>Dataset database created with %d file errors; see logs.</source>
+        <translation>データセットデータベースを作成しましたが、%d 件のファイルエラーがあります。ログを確認してください。</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>

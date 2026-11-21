@@ -5598,6 +5598,26 @@ The image files and their annotation files will NOT be deleted.</source>
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>이 이미지와 주석을 휴지통으로 이동할까요?</translation>
     </message>
+    <message>
+        <source>Creating dataset database…</source>
+        <translation>데이터셋 데이터베이스 생성 중…</translation>
+    </message>
+    <message>
+        <source>Dataset database</source>
+        <translation>데이터셋 데이터베이스</translation>
+    </message>
+    <message>
+        <source>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;에 데이터셋 데이터베이스를 만들 수 없습니다:&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <source>Dataset database created: %s</source>
+        <translation>데이터셋 데이터베이스가 생성되었습니다: %s</translation>
+    </message>
+    <message>
+        <source>Dataset database created with %d file errors; see logs.</source>
+        <translation>데이터셋 데이터베이스가 생성되었지만 %d개의 파일 오류가 있습니다. 로그를 확인하세요.</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>

@@ -6,6 +6,55 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.27 — 2026-11-21
+
+### 1. 背景与原因
+
+用户反馈两点：①按约定每个项目/目录应生成替代 JSON 的 `xanylabeling.db`，但实际没有，数据仍在 JSON；②打开过的项目二次打开时文件表仍很慢，似乎没有读数据库。
+
+根因确认：fork.24–fork.26 的 DB 模式只在“目录里已经存在 `xanylabeling.db`”时生效；普通“打开目录”仍只扫描 JSON，自动建库/导入从未实现。用户只有手动走 P3a 的 `Import Project…` 才会生成库，所以数据留在 JSON，二次打开也继续走 JSON 扫描。
+
+### 2. 主要实现与关键细节
+
+- `FileSession._ensure_dataset_for_folder()`：打开目录且无 `xanylabeling.db`、目录内有图片时，自动调用 P0 `import_xlabel_folder()` 建库并导入 X-AnyLabeling JSON；来源 JSON 只读、不移动/不删除。
+- `import_image_folder(..., auto_db=True)` 在无库且非搜索请求时先自动建库；建库成功后立即打开 DB。失败时提示并回退 JSON，不阻塞用户。
+- 过滤 `.trash/`、`_delete_/`，避免把回收站/旧删除目录重新导入。
+- 状态栏显示“正在创建 / 已创建”及库路径；有文件错误时显示错误数。
+- 二次打开：`_open_dataset_for_folder()` 检测到库后直接走 P1/P2 的 DB 文件表/搜索/统计，不再扫描 JSON。
+- 版本：`4.3.2+fork.26` → `4.3.2+fork.27`（缺陷修复）。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/file_session.py`、`label_widget.py`、`anylabeling/services/dataset/importer.py`（`_delete_` 跳过）、`app_info.py`
+- 翻译：四语言新增 5 条（建库状态/错误），`.qm` 各 **2258 条 / 0 unfinished**
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`、`docs/dev/数据库设计-讨论稿.md`（代码基线）
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：首次打开含图片的普通目录会生成 `<目录>/xanylabeling.db`，文件表/单图/搜索/统计走 DB；二次打开直接读库。来源 JSON 保留原位，不再作为运行期权威。
+- **接口**：`import_image_folder()` 增加 `auto_db=True` 参数；`LabelingWidget.import_image_folder()` 透传；内部 JSON 删除路径使用 `auto_db=False`。
+- **兼容性**：无图片目录不建库、仍回退 JSON；建库失败提示后可继续 JSON；已有库不重复导入。
+- **版本**：fork.26 → fork.27。
+
+### 5. 实际验证内容
+
+- `python -m pytest tests/test_dataset_db -q`：**18 passed**。
+- 离屏 `MainWindow` 冒烟（`temporary/diag/smoke_auto_db.py`）：
+  - 目录只有图片 + JSON，首次 `import_image_folder()` 后生成 `xanylabeling.db`，文件表 2 行、`dataset_repository` 非空、加载 `bolt`；耗时约 **0.09s**；
+  - 删除源 JSON 后二次打开，仍从 DB 显示 2 行并加载 `bolt`；耗时约 **0.03s**；
+  - 结果：`auto db smoke ok`。
+- `python -m compileall` 修改模块通过；四语言 `.qm` 各 2258 条 / 0 unfinished。
+- **未执行**：真实桌面目录选择/大目录导入进度、同步/导出/训练、打包、全量回归。
+
+### 6. 已知限制与后续事项
+
+- 首次建库是同步导入，超大目录会阻塞 UI；P3b 需要进度条/分批事务。
+- 自动建库目前只解析 X-AnyLabeling 同名 JSON；COCO/YOLO/VOC/LabelMe/LabelImg 的标注不会被迁移，P3b 多格式导入补。
+- 若目录已有其他格式标注且用户不希望空库，仍需 P3b 的导入向导选择；当前会建“只有图片、无对象”的库。
+- 打开单张 recent 文件（而非目录）不会触发目录建库；需先打开所在目录。
+
+---
+
 ## 4.3.2+fork.26 — 2026-11-21
 
 ### 1. 背景与原因

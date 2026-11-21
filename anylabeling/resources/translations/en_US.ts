@@ -5598,6 +5598,26 @@ The image files and their annotation files will NOT be deleted.</translation>
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>Move this image and its annotation to the recycle bin?</translation>
     </message>
+    <message>
+        <source>Creating dataset database…</source>
+        <translation>Creating dataset database…</translation>
+    </message>
+    <message>
+        <source>Dataset database</source>
+        <translation>Dataset database</translation>
+    </message>
+    <message>
+        <source>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</source>
+        <translation>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <source>Dataset database created: %s</source>
+        <translation>Dataset database created: %s</translation>
+    </message>
+    <message>
+        <source>Dataset database created with %d file errors; see logs.</source>
+        <translation>Dataset database created with %d file errors; see logs.</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>

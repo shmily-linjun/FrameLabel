@@ -5596,6 +5596,26 @@ The image files and their annotation files will NOT be deleted.</source>
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>将此图片及其标注移入回收站？</translation>
     </message>
+    <message>
+        <source>Creating dataset database…</source>
+        <translation>正在创建数据集数据库…</translation>
+    </message>
+    <message>
+        <source>Dataset database</source>
+        <translation>数据集数据库</translation>
+    </message>
+    <message>
+        <source>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</source>
+        <translation>无法在 &lt;b&gt;%s&lt;/b&gt; 创建数据集数据库：&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <source>Dataset database created: %s</source>
+        <translation>数据集数据库已创建：%s</translation>
+    </message>
+    <message>
+        <source>Dataset database created with %d file errors; see logs.</source>
+        <translation>数据集数据库已创建，但有 %d 个文件错误；详见日志。</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>

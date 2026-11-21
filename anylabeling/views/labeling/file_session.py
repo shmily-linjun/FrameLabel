@@ -71,6 +71,58 @@ class FileSession:
     def __init__(self, host):
         self.host = host
 
+    def _ensure_dataset_for_folder(self, directory):
+        """Create ``xanylabeling.db`` for a JSON-only folder on first open.
+
+        The source JSON files are imported read-only, so opening a legacy
+        project once migrates it into the database and later opens use the DB.
+        """
+
+        database_path = Path(directory) / "xanylabeling.db"
+        if database_path.is_file():
+            return True
+        images = [
+            path
+            for path in utils.scan_all_images(directory)
+            if ".trash" not in Path(path).parts
+            and "_delete_" not in Path(path).parts
+        ]
+        if not images:
+            return False
+        from ...services.dataset.importer import import_xlabel_folder
+
+        QtWidgets.QApplication.setOverrideCursor(
+            QtCore.Qt.CursorShape.WaitCursor
+        )
+        try:
+            self.host.status(
+                self.host.tr("Creating dataset database…")
+            )
+            QtWidgets.QApplication.processEvents()
+            report = import_xlabel_folder(directory)
+        except Exception as exc:  # noqa: BLE001 - fall back to JSON mode
+            self.host.error_message(
+                self.host.tr("Dataset database"),
+                self.host.tr(
+                    "Could not create a dataset database in <b>%s</b>:<br/>%s"
+                )
+                % (directory, exc),
+            )
+            return False
+        finally:
+            QtWidgets.QApplication.restoreOverrideCursor()
+        self.host.status(
+            self.host.tr("Dataset database created: %s") % database_path
+        )
+        if report.errors:
+            self.host.status(
+                self.host.tr(
+                    "Dataset database created with %d file errors; see logs."
+                )
+                % len(report.errors)
+            )
+        return True
+
     def _open_dataset_for_folder(self, directory):
         """Open ``<directory>/xanylabeling.db``; False means a hard error."""
 
@@ -78,7 +130,6 @@ class FileSession:
         if not database_path.is_file():
             return None
         from ...services.dataset import DatasetDatabase, DatasetRepository
-
         try:
             database = DatasetDatabase.open(database_path)
             repository = DatasetRepository(database)
@@ -1031,7 +1082,7 @@ class FileSession:
             self.host.reset_state()
             if osp.isfile(image_path):
                 image_path = osp.dirname(image_path)
-            self.host.import_image_folder(image_path)
+            self.host.import_image_folder(image_path, auto_db=False)
 
             self.host.filename = filename
             if self.host.filename:
@@ -1180,12 +1231,17 @@ class FileSession:
         if valid_files and self.host._config.get("exif_scan_enabled", True):
             self.host.async_exif_scanner.start_scan(valid_files)
 
-    def import_image_folder(self, dirpath, pattern=None, load=True):
+    def import_image_folder(
+        self, dirpath, pattern=None, load=True, auto_db=True
+    ):
         if not self.host.may_continue() or not dirpath:
             return
 
         if self.host.compare_view_manager.is_active():
             self.host.close_compare_view(confirm=False)
+
+        if auto_db and not pattern:
+            self._ensure_dataset_for_folder(dirpath)
 
         repository = self._open_dataset_for_folder(dirpath)
         if repository is False:
