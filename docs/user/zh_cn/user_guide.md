@@ -377,16 +377,11 @@ X-AnyLabeling 默认开启自动保存功能，用户在初次启动界面时，
 - `score::[0,0.6)`：查找包含分数在 [0, 0.6) 区间内的对象（左闭右开）
 - `score::(0,0.6)`：查找包含分数在 (0, 0.6) 区间内的对象（开区间）
 - `description::1` 或 `description::true`：查找包含非空描述的图片
-- `checked::passed`：仅查找检查通过的图片
-- `checked::failed`：仅查找检查不通过的图片
-- `checked::unchecked`：查找未检查的图片；缺少 `checked` 字段或未生成标签文件的图片也会视为未检查
-- `checked::1` 或 `checked::true`：查找所有已检查的图片，包含检查通过和检查不通过
-- `checked::0` 或 `checked::false`：与 `checked::unchecked` 相同
 - `review::pending`：查找包含待审对象的图片
 - `review::missed`：查找包含漏检对象的图片
 - `review::false_positive`：查找包含误检对象的图片
 
-对象审批搜索中，旧标注中未设置状态的对象按待审处理，无对象的图片不匹配。
+对象审批搜索中，旧标注中未设置状态的对象按待审处理，无对象的图片不匹配。图片级 `checked` 已从数据库和搜索中移除，不再支持 `checked::...` 查询；旧 JSON 的 `checked` 仅作兼容显示，不参与筛选。
 
 **布尔组合**
 

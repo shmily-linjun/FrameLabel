@@ -120,40 +120,6 @@ class TestFileSearch(unittest.TestCase):
                     result = filter_image_files(image_files, pattern)
                     self.assertEqual(result, expected)
 
-    def test_checked_status_search_modes(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            image_files = [
-                str(Path(temp_dir) / "checked.jpg"),
-                str(Path(temp_dir) / "unchecked.jpg"),
-                str(Path(temp_dir) / "missing.jpg"),
-                str(Path(temp_dir) / "failed.jpg"),
-            ]
-            self._write_label_data(
-                Path(temp_dir) / "checked.json",
-                {"checked": True, "shapes": []},
-            )
-            self._write_label_data(
-                Path(temp_dir) / "unchecked.json",
-                {"checked": False, "shapes": []},
-            )
-
-            self._write_label_data(
-                Path(temp_dir) / "failed.json",
-                {"checked": "failed", "shapes": []},
-            )
-
-            checked_pattern = parse_search_pattern("checked::1")
-            unchecked_pattern = parse_search_pattern("checked::0")
-
-            self.assertEqual(
-                filter_image_files(image_files, checked_pattern),
-                [image_files[0], image_files[3]],
-            )
-            self.assertEqual(
-                filter_image_files(image_files, unchecked_pattern),
-                [image_files[1], image_files[2]],
-            )
-
     def test_object_review_search(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             output_dir = Path(temp_dir) / "labels"
@@ -200,50 +166,6 @@ class TestFileSearch(unittest.TestCase):
                 pattern = parse_search_pattern(query)
                 self.assertEqual(pattern.mode, "normal")
                 self.assertEqual(pattern.pattern, query)
-
-    def test_three_state_check_search_with_output_directory(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_dir = Path(temp_dir) / "labels"
-            output_dir.mkdir()
-            image_files = [
-                str(Path(temp_dir) / f"{name}.jpg")
-                for name in (
-                    "passed",
-                    "failed",
-                    "unchecked",
-                    "legacy",
-                    "missing",
-                )
-            ]
-            for name, data in (
-                ("passed", {"checked": True}),
-                ("failed", {"checked": "failed"}),
-                ("unchecked", {"checked": False}),
-                ("legacy", {}),
-            ):
-                self._write_label_data(output_dir / f"{name}.json", data)
-            for value, indices in (
-                ("passed", [0]),
-                ("failed", [1]),
-                ("unchecked", [2, 3, 4]),
-                ("PASSED", [0]),
-                ("FAILED", [1]),
-                ("UNCHECKED", [2, 3, 4]),
-                ("1", [0, 1]),
-                ("true", [0, 1]),
-                ("yes", [0, 1]),
-                ("0", [2, 3, 4]),
-                ("false", [2, 3, 4]),
-            ):
-                with self.subTest(value=value):
-                    pattern = parse_search_pattern(f"checked::{value}")
-                    self.assertEqual(
-                        filter_image_files(
-                            image_files, pattern, str(output_dir)
-                        ),
-                        [image_files[index] for index in indices],
-                    )
-
 
 class TestSearchQueryEngine(unittest.TestCase):
     """Tests for the split keyword and the boolean query syntax."""
@@ -560,10 +482,6 @@ class TestSearchQueryEngine(unittest.TestCase):
             ("split::train", False),
             ("shape::0", True),
             ("shape::1", False),
-            ("checked::0", True),
-            ("checked::1", False),
-            ("checked::unchecked", True),
-            ("checked::passed", False),
             ("label::person", False),
             ("review::pending", False),
             ("description::0", False),
@@ -601,12 +519,6 @@ class TestSearchQueryEngine(unittest.TestCase):
         self._assert_query("difficult::1", "a")
         self._assert_query("gid::1", "a", "b")
         self._assert_query("gid::0", "a")
-        self._assert_query("checked::passed", "a", "d", "g", "k")
-        self._assert_query("checked::failed", "b")
-        self._assert_query(
-            "checked::unchecked", "c", "e", "f", "h", "i", "j", "l", "m",
-            "n", "invalid",
-        )
         self._assert_query("review::missed", "a", "b")
         self._assert_query(
             "review::pending", "a", "d", "f", "g", "h", "i", "j", "k", "l",

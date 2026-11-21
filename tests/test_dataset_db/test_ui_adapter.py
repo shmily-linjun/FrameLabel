@@ -179,6 +179,10 @@ def test_database_folder_search_uses_annotation_payload(dataset_tmp):
             root, repository, load=False, pattern="label::bolt,split::train"
         )
         assert len(host.files.rows) == 1
+        session._load_database_folder(
+            root, repository, load=False, pattern="a.png"
+        )
+        assert len(host.files.rows) == 1
         session._load_database_folder(root, repository, load=False, pattern="#1")
         assert len(host.files.rows) == 1
     finally:

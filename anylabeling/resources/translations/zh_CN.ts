@@ -3147,7 +3147,6 @@ Continue?</source>
 - Regex: &lt;pattern&gt; (e.g., &lt;\.png$&gt;)
 - Attributes: label::xxx, split::train, shape::1, type::xxx,
   gid::0, difficult::1, score::[0,0.5], description::1,
-  checked::passed, review::pending
 - split values: none/train/val/test (also 未划分/训练/验证/测试)
 - Several values: label::cat|dog (or), label::cat,dog (and)
 - Combine conditions: label::cat,split::train
@@ -3160,7 +3159,6 @@ Continue?</source>
 - 正则：&lt;pattern&gt;（如 &lt;\.png$&gt;）
 - 属性：label::xxx、split::train、shape::1、type::xxx、
   gid::0、difficult::1、score::[0,0.5]、description::1、
-  checked::passed、review::pending
 - split 取值：none/train/val/test（也支持 未划分/训练/验证/测试）
 - 多值：label::cat|dog（或）、label::cat,dog（且）
 - 组合条件：label::cat,split::train

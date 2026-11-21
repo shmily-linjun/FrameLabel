@@ -164,12 +164,14 @@ class DatasetRepository:
         labels: list[str] | None = None,
         split: str | None = None,
         objectless: bool = False,
+        filename: str | None = None,
     ) -> list[dict[str, Any]]:
         """Rows for the file table: image fields + object count + tags.
 
-        ``labels``/``split``/``objectless`` are a fast SQL path for the common
-        search terms (``label::``, ``split::``, ``shape::0``); complex boolean
-        expressions still fall back to the in-Python query evaluator.
+        ``labels``/``split``/``objectless``/``filename`` are a fast SQL path
+        for the common search terms (``label::``, ``split::``, ``shape::0``,
+        plain filename text); complex boolean expressions still fall back to
+        the in-Python query evaluator.
         """
 
         where = ["f.dataset_id = ?", "f.is_deleted = 0"]
@@ -182,6 +184,9 @@ class DatasetRepository:
                 "NOT EXISTS (SELECT 1 FROM annotation_object o "
                 "WHERE o.image_id = f.id AND o.is_deleted = 0)"
             )
+        if filename:
+            where.append("instr(f.file_name, ?) > 0")
+            params.append(filename)
         for label in labels or ():
             where.append(
                 "EXISTS (SELECT 1 FROM annotation_object o "

@@ -203,6 +203,9 @@ def test_image_summaries_sql_filters(dataset_tmp):
         assert [row["rel_path"] for row in repository.image_summaries(
             objectless=True
         )] == ["c.png"]
+        assert [row["rel_path"] for row in repository.image_summaries(
+            filename="b.png"
+        )] == ["b.png"]
         assert repository.image_summaries(
             labels=["bolt"], split="val"
         ) == []

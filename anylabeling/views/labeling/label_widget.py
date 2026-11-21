@@ -239,7 +239,7 @@ class LabelingWidget(LabelDialog):
                 "- Regex: <pattern> (e.g., <\\.png$>)\n"
                 "- Attributes: label::xxx, split::train, shape::1, type::xxx,\n"
                 "  gid::0, difficult::1, score::[0,0.5], description::1,\n"
-                "  checked::passed, review::pending\n"
+                "  review::pending\n"
                 "- split values: none/train/val/test (also 未划分/训练/验证/测试)\n"
                 "- Several values: label::cat|dog (or), label::cat,dog (and)\n"
                 "- Combine conditions: label::cat,split::train\n"

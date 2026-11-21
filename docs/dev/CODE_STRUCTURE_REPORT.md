@@ -1,9 +1,9 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-20（Asia/Shanghai）
-> 对应版本：4.3.2+fork.29（fork.19 的 T8 拆分未升版；fork.20 为 SAM 编码器 CPU 串行化与编码输出复制；fork.21 为无边框模块多屏最小化/最大化还原修复；fork.22 为文件表多选批量动作与图片标签并入“图像属性”页；fork.23 为标签管理器并入“类别”页；fork.24 为 T3/P1 数据集存储层接入文件表与单图读写；fork.25 为 T3/P2 搜索、统计与类别页接入 DB；fork.26 为 T3/P3a 导入项目与回收站；fork.27 修复普通目录未自动建库/二次打开仍扫 JSON；fork.28 修复 DB 连接未在退出时关闭与旧 sidecar 清理；fork.29 优化文件表缩略图与 DB 搜索快路径）
-> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；fork.21 在真实 Windows 双屏（主屏 100% + 副屏 200%）上用原生消息探测与真实 `MainWindow` 复核窗口行为；fork.22/fork.23 用真实 `MainWindow` 离屏夹具做定向 pytest 与基线导出树对比；fork.24 用 P0 导入器生成 DB 后做离屏 `MainWindow` 打开/保存冒烟，并切回 JSON 目录验证兼容；fork.25 在同一离屏夹具上验证 DB 搜索、统计、类别读取/改名；fork.26 验证导入建库、回收站移动/恢复；fork.27 验证普通目录自动建库与二次打开走库；fork.28 验证 `rel_path`/`file_name`、旧 sidecar 清理、关闭后 WAL/SHM 消失；fork.29 用 7553 图 DB 做文件表/统计/搜索性能冒烟；T3/P0 用 Qt-free 存储层单测验证 schema/导入/往返；其余结论沿用 T8 阶段“基线工作树 vs 重构后”的 pytest 对比与离屏冒烟；各测试包的具体结果见 §16。
-> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8)/fork.20(SAM 编码锁)/fork.21(无边框多屏)/fork.22(文件表多选与图像属性页)/fork.23(标签管理器并入类别页)/fork.24(T3/P1 数据集接入)/fork.25(T3/P2 搜索/统计/类别页)/fork.26(T3/P3a 导入/回收站)/fork.27(目录自动建库修复)/fork.28(DB 关闭/sidecar 清理)/fork.29(性能快路径) 已改变的结构以本文当前版本说明为准。
+> 对应版本：4.3.2+fork.30（fork.19 的 T8 拆分未升版；fork.20 为 SAM 编码器 CPU 串行化与编码输出复制；fork.21 为无边框模块多屏最小化/最大化还原修复；fork.22 为文件表多选批量动作与图片标签并入“图像属性”页；fork.23 为标签管理器并入“类别”页；fork.24 为 T3/P1 数据集存储层接入文件表与单图读写；fork.25 为 T3/P2 搜索、统计与类别页接入 DB；fork.26 为 T3/P3a 导入项目与回收站；fork.27 修复普通目录未自动建库/二次打开仍扫 JSON；fork.28 修复 DB 连接未在退出时关闭与旧 sidecar 清理；fork.29 优化文件表缩略图与 DB 搜索快路径；fork.30 移除 `checked::` 搜索并补充设计书性能约束）
+> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；fork.21 在真实 Windows 双屏（主屏 100% + 副屏 200%）上用原生消息探测与真实 `MainWindow` 复核窗口行为；fork.22/fork.23 用真实 `MainWindow` 离屏夹具做定向 pytest 与基线导出树对比；fork.24 用 P0 导入器生成 DB 后做离屏 `MainWindow` 打开/保存冒烟，并切回 JSON 目录验证兼容；fork.25 在同一离屏夹具上验证 DB 搜索、统计、类别读取/改名；fork.26 验证导入建库、回收站移动/恢复；fork.27 验证普通目录自动建库与二次打开走库；fork.28 验证 `rel_path`/`file_name`、旧 sidecar 清理、关闭后 WAL/SHM 消失；fork.29 用 7553 图 DB 做文件表/统计/搜索性能冒烟；fork.30 验证 `checked::` 移除与文件名 SQL 过滤；T3/P0 用 Qt-free 存储层单测验证 schema/导入/往返；其余结论沿用 T8 阶段“基线工作树 vs 重构后”的 pytest 对比与离屏冒烟；各测试包的具体结果见 §16。
+> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8)/fork.20(SAM 编码锁)/fork.21(无边框多屏)/fork.22(文件表多选与图像属性页)/fork.23(标签管理器并入类别页)/fork.24(T3/P1 数据集接入)/fork.25(T3/P2 搜索/统计/类别页)/fork.26(T3/P3a 导入/回收站)/fork.27(目录自动建库修复)/fork.28(DB 关闭/sidecar 清理)/fork.29(性能快路径)/fork.30(checked 搜索移除) 已改变的结构以本文当前版本说明为准。
 > 行号锚点：T8 把 `label_widget.py` 从 9507 行降到 1776 行、`LabelingWidget.__init__` 从 2816 行降到 239 行，几乎所有历史行号都已失效；本报告中 `label_widget.py` 的行号均为 T8 第二阶段之后的当前值，定位时优先使用类名和方法名（实现多数已移入 §5.11 的模块）。
 > 规模口径：本报告的行数一律按 `str.splitlines()` 统计（与 `Get-Content | Measure-Object -Line` 的口径不同，后者会少算），早期章节里的 8949/8768 等数字属于旧口径，已在 §1.1 与 §8 更新。
 
@@ -12,14 +12,14 @@
 | 项目 | 结论 |
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
-| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.29 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，fork.20 的 SAM 编码锁见 §5.3，fork.21 的无边框多屏修复见 §5.7，fork.22 的文件表多选与“图像属性”页见 §4.3/§5.11，fork.23 的标签管理器并入“类别”页见 §4.3/§5.11，fork.24–fork.29 的 T3 数据集接入见 §5.12，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.29，见 [app_info.py](../../anylabeling/app_info.py) |
+| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.30 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，fork.20 的 SAM 编码锁见 §5.3，fork.21 的无边框多屏修复见 §5.7，fork.22 的文件表多选与“图像属性”页见 §4.3/§5.11，fork.23 的标签管理器并入“类别”页见 §4.3/§5.11，fork.24–fork.30 的 T3 数据集接入见 §5.12，实际提交哈希以 Git 记录为准 |
+| 版本 | 4.3.2+fork.30，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
 | 主入口 | `xanylabeling = anylabeling.app:main`；亦支持 `python -m anylabeling.app` |
 | 包构建 | `python -m build --no-isolation`，见 [build_and_publish_pypi.sh](../../scripts/build_and_publish_pypi.sh) |
-| 最近核对日期 | 2026-11-21（T8 两阶段拆分 + fork.20 SAM 编码锁 + fork.21 无边框多屏修复 + fork.22 文件表多选与图像属性页 + fork.23 标签管理器并入类别页 + fork.24 T3/P1 数据集接入 + fork.25 T3/P2 搜索/统计/类别页 + fork.26 T3/P3a 导入/回收站 + fork.27 目录自动建库修复 + fork.28 DB 关闭/sidecar 清理 + fork.29 文件表/搜索性能） |
+| 最近核对日期 | 2026-11-21（T8 两阶段拆分 + fork.20 SAM 编码锁 + fork.21 无边框多屏修复 + fork.22 文件表多选与图像属性页 + fork.23 标签管理器并入类别页 + fork.24 T3/P1 数据集接入 + fork.25 T3/P2 搜索/统计/类别页 + fork.26 T3/P3a 导入/回收站 + fork.27 目录自动建库修复 + fork.28 DB 关闭/sidecar 清理 + fork.29 文件表/搜索性能 + fork.30 checked 搜索移除/设计书约束） |
 
 ### 1.1 规模与统计口径
 
@@ -340,15 +340,16 @@ AnnotationEditor.save_labels()
   ─► _save_database_labels() → DatasetRepository.save_annotation()
   ─► image_file.editor/modified_at + annotation_object upsert/soft-delete
 
-搜索（P2/fork.29）：
+搜索（P2/fork.30）：
 FileSession._load_database_folder(pattern=...)
   ─► parse_search_query() → SearchQuery
-  ─► 简单 label::/split::/shape::0 逗号 AND
-       └─ _simple_database_filters() → image_summaries(labels=,split=,objectless=)
-          （SQL EXISTS/NOT EXISTS，不逐图 load_annotation）
-  ─► 复杂布尔/属性/描述/正则/文件名
+  ─► 简单 label::/split::/shape::0/普通文件名，逗号 AND
+       └─ _simple_database_filters() → image_summaries(labels=,split=,objectless=,filename=)
+          （SQL EXISTS/NOT EXISTS/instr，不逐图 load_annotation）
+  ─► 复杂布尔/属性/描述/正则
        └─ 逐图 load_annotation() → matches_query_label_data()（回退）
   ─► select_first=False：筛选只刷新文件表，不自动解码第一张图
+  ─► checked:: 已移除，不再有图片级审核状态搜索
 
 文件表（fork.29）：
 image_summaries() → append_db_row()
@@ -397,7 +398,7 @@ TrashDialog
 - P3b 未接：COCO/YOLO/VOC/LabelMe/LabelImg 导入、同步文件数据、导出/训练、项目文件、“checked”持久化；DB 模式仍显示 JSON 口径的旧数据或提示。
 - 测试：`tests/test_dataset_db/`（schema 同步、建库、导入、往返、upsert/软删/恢复、大小写、回收站、P1/P2 适配器）。测试用 `dataset_tmp` 而不是 `tmp_path`：当前 DSH 沙箱下 pytest 以 `mode=0o700` 创建的目录会带 owner-only DACL，导致无法列举。
 
-**维护重点：**schema 以 `anylabeling/services/dataset/schema.py` 为运行时源，`docs/dev/db_design_assets/schema.sql` 是评审/demo 副本；两者结构由 `test_schema.py` 对比，改表必须同步两处。存储层不得 import Qt 或 `views/labeling`，否则会破坏 Qt-free 单测与后续独立导入器。P1 的 `DatabaseLabelFile` 只实现 `FileSession` 需要的字段（`shapes/flags/other_data/image_data/filename/resolved_image_path`），不要把它扩成第二个 `LabelFile`；以 `Shape.to_dict()` 的契约做编解码测试。P2 的简单搜索（`label::`/`split::`/`shape::0` 逗号 AND）已下推 SQL，复杂查询仍逐图求值；不要为快路径改变标签/AND 语义。文件表仍是 `QTableWidget`，7553 行约 0.8s；缩略图只请求视口附近行，不要恢复“append 即请求全部”。`rewrite_categories()` 只改对象/图片行，不写 editor/modified_at（与类别页既有缺口一致）。P3a 的回收站文件布局是 `<root>/.trash/<image_id>/<basename>`，来源 JSON 不移动；删除/恢复必须先移动文件再改 DB（失败回滚文件），不要只改 DB 留下孤儿。DB 模式的 `checked` 只是会话显示，不是持久状态；删除该 UI 前不要把它写进 DB。
+**维护重点：**schema 以 `anylabeling/services/dataset/schema.py` 为运行时源，`docs/dev/db_design_assets/schema.sql` 是评审/demo 副本；两者结构由 `test_schema.py` 对比，改表必须同步两处。存储层不得 import Qt 或 `views/labeling`，否则会破坏 Qt-free 单测与后续独立导入器。P1 的 `DatabaseLabelFile` 只实现 `FileSession` 需要的字段（`shapes/flags/other_data/image_data/filename/resolved_image_path`），不要把它扩成第二个 `LabelFile`；以 `Shape.to_dict()` 的契约做编解码测试。P2 的简单搜索（`label::`/`split::`/`shape::0`/普通文件名，逗号 AND）已下推 SQL，复杂查询仍逐图求值；不要为快路径改变标签/AND 语义。文件表仍是 `QTableWidget`，7553 行约 0.8s；缩略图只请求视口附近行，不要恢复“append 即请求全部”。`checked` 已从搜索语法/DB 移除；文件表/审核动作/JSON 兼容仍保留，P4 清理。`rewrite_categories()` 只改对象/图片行，不写 editor/modified_at（与类别页既有缺口一致）。P3a 的回收站文件布局是 `<root>/.trash/<image_id>/<basename>`，来源 JSON 不移动；删除/恢复必须先移动文件再改 DB（失败回滚文件），不要只改 DB 留下孤儿。
 
 ## 6. 模块依赖图
 
@@ -863,7 +864,7 @@ model_manager.py:14
 - **文件表“只选不打开”只能依据控件自身手势（fork.22）**：`FileTableWidget._selection_only_gesture` 在 Ctrl/Shift 按下与 Ctrl/Shift+导航键时置位，`file_selection_changed()` 只看它。不要改回 `QApplication.keyboardModifiers()`：同进程内其它测试/控件残留的修饰键状态会让导航被误判为批量选择（fork.22 开发中因此让 `test_image_switch` 失败）。
 - **图片标签与图片标志只有“图像属性”页一处 UI（fork.22）**：该页在 `RightSidebarTabs.ALWAYS_VISIBLE_TABS` 中，旧配置里隐藏 `flags` 的项会被丢弃；`FileListController.set_row_tags()` 是“编辑后尚未保存”时的唯一同步点，跳过它会让 `标签` 列与内存数据不一致。
 - **“类别”页的标签管理器仍直接改写标注 JSON（fork.23）**：`LabelManagerPanel._rewrite_files()` 与旧对话框一样用 `json.dump` 落盘，不写 `author`/`modified_at`、不重置 `checked`，与 fork.4 的归属契约不一致；把它当作批量改名的入口时必须知道这一点，修的时候要走 `OperatorGate.prepare_attribution()`。
-- **DB 模式覆盖到 P3a（fork.29）**：打开含库目录、文件表、单图读写、划分、搜索、统计、类别读取/按范围改名/删除、X-AnyLabeling 导入建库、回收站删除/恢复/清空已接 DB；普通目录无库时首次打开会自动建库/导入（fork.27）。COCO/YOLO/VOC/LabelMe/LabelImg 导入、同步文件数据、导出/训练、项目文件仍按 JSON 或未接。首次自动导入是同步操作，超大目录会阻塞；文件表仍是 `QTableWidget`，7553 行约 0.8s（fork.29 已把缩略图改为视口懒加载）；简单 `label::`/`split::`/`shape::0` 搜索已下推 SQL（7553 图 `label::` 约 0.5s），复杂布尔/属性/描述/正则仍逐图求值；统计反筛不再自动加载第一张图。类别批量编辑不写 `editor/modified_at`。`checked` 审核动作与“未审核”导航在 DB 模式下被禁用；`Save As`、拖入外部文件、修改输出目录被显式阻止。导入冲突仍是整批 skip/replace，不是逐项清单。
+- **DB 模式覆盖到 P3a（fork.30）**：打开含库目录、文件表、单图读写、划分、搜索、统计、类别读取/按范围改名/删除、X-AnyLabeling 导入建库、回收站删除/恢复/清空已接 DB；普通目录无库时首次打开会自动建库/导入（fork.27）。COCO/YOLO/VOC/LabelMe/LabelImg 导入、同步文件数据、导出/训练、项目文件仍按 JSON 或未接。首次自动导入是同步操作，超大目录会阻塞；文件表仍是 `QTableWidget`，7553 行约 0.8s（fork.29 已把缩略图改为视口懒加载；数万行虚拟化要求已写入设计书 §4.4）；简单 `label::`/`split::`/`shape::0`/普通文件名搜索已下推 SQL，复杂布尔/属性/描述/正则仍逐图求值；统计反筛不再自动加载第一张图。`checked` 已从搜索语法与 DB 移除，文件表勾选/审核动作/JSON 兼容仍保留（P4 清理）。类别批量编辑不写 `editor/modified_at`。`Save As`、拖入外部文件、修改输出目录被显式阻止。导入冲突仍是整批 skip/replace，不是逐项清单。
 - **DB 模式首行加载依赖选择信号（fork.24/P1）**：`_load_database_folder()` 先设 `_no_selection_slot` 再 `setCurrentRow(0)`，随后显式 `load_file()`；`load_file()` 在目标行不是当前行时会先清空 `host.filename` 再切行，否则首图会被“点击当前文件”判断吞掉。改选择/加载逻辑时要同时验证 DB 与 JSON 两种目录。
 - **“类别”页首次激活会扫描文件列表内所有 JSON（fork.23）**：大目录首次切页可能卡顿；`invalidate()` 只在文件列表增删/排序/清空与新增类别时置位，切页时按需重建，不要在 paint/resize 之类的路径里调用 `rebuild()`。
 - **右侧栏最小宽度受页面 `sizeHint` 影响（fork.23）**：`build_workspace()` 用 `sizeHint * 0.8` 计算最小宽度，五列表格原本会把 220 抬到 315；`LabelManagerPanel` 覆盖了 `sizeHint()`/`minimumSizeHint()` 让表格横向滚动，改列数或控件时要重新验证侧栏可拖窄。
@@ -888,7 +889,7 @@ model_manager.py:14
 | `other_data` | 未纳入基础字段的扩展数据 | [shape.py:182](../../anylabeling/views/labeling/shape.py#L182)、[label_file.py:135-139](../../anylabeling/views/labeling/label_file.py#L135-L139) |
 | GID | `group_id` 对应的图形组号 | [label_widget.py](../../anylabeling/views/labeling/label_widget.py) |
 | `AutoLabelingMode` | OBJECT/ADD/REMOVE 等交互标记，保存时过滤 | [types.py:48-81](../../anylabeling/services/auto_labeling/types.py#L48-L81) |
-| `checked` | 标注审核状态，可为布尔值或 `"failed"` | [label_file.py:145-150](../../anylabeling/views/labeling/label_file.py#L145-L150) |
+| `checked` | 旧 XLABEL JSON 的图片级审核字段；DB schema 不建列、搜索语法已移除 `checked::`；当前文件表/审核动作仍保留为 JSON 兼容，P4 清理 | [label_file.py:145-150](../../anylabeling/views/labeling/label_file.py#L145-L150) |
 | Sidecar | 与视频同名的独立分类/时间段 JSON | [sidecar.py](../../anylabeling/views/labeling/video_classifier/sidecar.py) |
 | AMG | 代码中无提示全图分割模式，使用 `auto_grid` 标记 | [auto_labeling.py:1007-1025](../../anylabeling/views/labeling/widgets/auto_labeling/auto_labeling.py#L1007-L1025) |
 | SAHI | 项目内切片推理适配工具包名称；全称未在代码中定义 | `services/auto_labeling/utils/sahi` |
@@ -927,7 +928,7 @@ model_manager.py:14
 - fork.22 的翻译验证：四语言 `.ts` 新增 10 条（`LabelingWidget` 9 + `SettingsDialog` 1），`scripts/compile_languages.py` 重编 `.qm`（2183 条、0 unfinished）并重建 `resources.py`；从 `:/languages/translations/<lang>.qm` 加载并抽查全部新字符串，四语言均返回预期译文。真实桌面 GUI 交互（Ctrl+单击、右键批量菜单、高 DPI）未执行。
 - fork.23 的定向验证（2026-11-19）：`tests/test_labeling/test_label_manager.py` **12 passed**（行/范围、改名与删除的范围限制、重名与空名拒绝、未登录不可应用、锁定只读会话、显式解锁不写盘、删除后禁用编辑、选中类别作为默认类别、invalidate 重建）；`test_file_table` **27 passed**（新增“类别页托管面板 + Alt+L 切页 + 门禁联动”）；`test_file_table + test_label_manager + test_operator_gate + test_browse_mode` **55 passed**。全量 6 包 **539 passed / 1 skipped / 6 failed / 186 subtests**，失败集合与基线导出树一致（6 条既有测试债）。
 - fork.23 的翻译验证：新增 `LabelManagerPanel` 上下文 22 条、删除废弃的 `LabelModifyDialog` 上下文，重编 `.qm`（2205 条、0 unfinished）并重建 `resources.py`；从资源路径加载并抽查 `Category`/`Go`/`Duplicate category: %s` 等，四语言均返回预期译文。离屏冒烟确认类别页承载面板、`Alt+L` 切页、未登录只读；真实桌面交互未执行。
-- T3/P0–P3a 的验证（2026-11-21）：`tests/test_dataset_db` **19 passed**（P0：schema 与设计资产结构一致、8 表 86 列 3 视图、建库/PRAGMA、XLABEL 目录导入与源文件只读、往返、uuid upsert/软删/恢复、NOCASE 唯一、回收站与恢复冲突、坏 JSON 报告；P1：DB 目录检测/文件行、DB 保存写穿 repository；P2：DB 搜索过滤、统计/类别计数、类别重命名+软删；fork.29：`image_summaries` 的 label/split/objectless SQL 过滤、`label::bolt,split::train` 快路径）。离屏 `MainWindow` 冒烟（`temporary/p3/smoke_p3.py`）：打开 1 图 DB，`_trash_current_image()` 后 DB 行不可见、图片在 `.trash/1/a.png`、来源 `a.json` 仍在；`TrashDialog` 显示 1 行，`_restore()` 后 DB 行恢复、图片回原路径、`.trash` 文件消失；结果 `p3 smoke ok`。fork.27 追加 `temporary/diag/smoke_auto_db.py`：只有图片+JSON 的目录首次打开自动生成 `xanylabeling.db`（约 0.09s，2 行，加载 `bolt`）；删除源 JSON 后二次打开仍从 DB 加载 2 行/`bolt`（约 0.03s）；结果 `auto db smoke ok`。fork.28 追加 `temporary/diag/smoke_close.py`：`rel_path='images/a.png'`、`file_name='a.png'`；根下预置 sidecar 被清理；`window.close()` 后 `-wal`/`-shm` 均不存在；结果 `close smoke ok`。fork.29 的 7553 图 DB 性能冒烟：`image_summaries` 0.07s、文件表 7553 行约 0.84s（缩略图懒加载，原约 7.8s）、统计刷新 0.16s、`label::` 搜索约 0.53s（原 1.16s）且筛选后 `filename=None` 不自动加载图片。所用 conda 环境 Python 3.12.14 / SQLite 3.53.4。测试目录使用 `dataset_tmp`（普通 mode 目录）而非 `tmp_path`：当前 DSH 沙箱下 pytest 的 `mode=0o700` 目录带 owner-only DACL，无法列举；这不是产品缺陷。**未执行**：真实桌面菜单/文件选择/确认框、导入冲突逐项选择、大目录导入进度、真实 7553 张 TIFF 解码、同步/导出/训练、打包与全量回归。
+- T3/P0–P3a 的验证（2026-11-21）：`tests/test_dataset_db` **19 passed**（P0：schema 与设计资产结构一致、8 表 86 列 3 视图、建库/PRAGMA、XLABEL 目录导入与源文件只读、往返、uuid upsert/软删/恢复、NOCASE 唯一、回收站与恢复冲突、坏 JSON 报告；P1：DB 目录检测/文件行、DB 保存写穿 repository；P2：DB 搜索过滤、统计/类别计数、类别重命名+软删；fork.29：`image_summaries` 的 label/split/objectless SQL 过滤、`label::bolt,split::train` 快路径）。离屏 `MainWindow` 冒烟（`temporary/p3/smoke_p3.py`）：打开 1 图 DB，`_trash_current_image()` 后 DB 行不可见、图片在 `.trash/1/a.png`、来源 `a.json` 仍在；`TrashDialog` 显示 1 行，`_restore()` 后 DB 行恢复、图片回原路径、`.trash` 文件消失；结果 `p3 smoke ok`。fork.27 追加 `temporary/diag/smoke_auto_db.py`：只有图片+JSON 的目录首次打开自动生成 `xanylabeling.db`（约 0.09s，2 行，加载 `bolt`）；删除源 JSON 后二次打开仍从 DB 加载 2 行/`bolt`（约 0.03s）；结果 `auto db smoke ok`。fork.28 追加 `temporary/diag/smoke_close.py`：`rel_path='images/a.png'`、`file_name='a.png'`；根下预置 sidecar 被清理；`window.close()` 后 `-wal`/`-shm` 均不存在；结果 `close smoke ok`。fork.29 的 7553 图 DB 性能冒烟：`image_summaries` 0.07s、文件表 7553 行约 0.84s（缩略图懒加载，原约 7.8s）、统计刷新 0.16s、`label::` 搜索约 0.53s（原 1.16s）且筛选后 `filename=None` 不自动加载图片。fork.30：`checked::` 从搜索字段/求值器/帮助文案移除（旧输入回退为文件名文本），普通文件名子串走 `instr(file_name, ?)` SQL；`tests/test_utils/test_file_search.py` 的 checked 用例已删除，`tests/test_dataset_db` 仍 19 passed。所用 conda 环境 Python 3.12.14 / SQLite 3.53.4。测试目录使用 `dataset_tmp`（普通 mode 目录）而非 `tmp_path`：当前 DSH 沙箱下 pytest 的 `mode=0o700` 目录带 owner-only DACL，无法列举；这不是产品缺陷。**未执行**：真实桌面菜单/文件选择/确认框、导入冲突逐项选择、大目录导入进度、真实 7553 张 TIFF 解码、同步/导出/训练、打包与全量回归。
 - T3/P1–P3a 的翻译验证：P1 新增 14 条、P3a 新增 34 条、fork.27 新增 5 条（自动建库状态/错误），P2 未新增；`pyside6-lrelease` 重编 `.qm` 各 **2258 条 / 0 unfinished** 并重建 `resources.py`；从 `:/languages/translations/zh_CN.qm` 加载并抽查 `Import Project`、`Move this image and its annotation to the recycle bin?`、`Empty Recycle Bin`、`Creating dataset database…`，均返回预期中文。
 
 | 测试包 | 基线 | 重构后 | 失败集合 |

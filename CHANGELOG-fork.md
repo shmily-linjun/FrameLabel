@@ -6,6 +6,48 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.30 — 2026-11-21
+
+### 1. 背景与原因
+
+用户要求：①把缩略图懒加载记录到设计书；②把“数万行 model/view 虚拟化”记录到设计书；③既然 DB/软件不再把 `checked` 当审核状态，正则/搜索也不应保留 `checked::`；④解释“逐图 `load_annotation` + SearchQuery”回退，并确认文件名能否用 SQL。
+
+### 2. 主要实现与关键细节
+
+- **设计书 v1.7（正文）**新增 §4.4“文件表、搜索与统计的性能约束”：记录 DB 为权威、缩略图视口懒加载、7553 图实测、数万行必须迁移 model/view 虚拟化、搜索 DSL 下推 SQL、统计反筛不自动打开图片、真实万图验收口径；§3.2 明确图片级 `checked` 已移除。
+- **《开始》新增第 10 条**：用户可见功能/交互/性能约束及已确认演进需求必须写入设计书，结构报告只记实现，CHANGELOG 记变更；设计书正文版本递增但文件名可保留历史链接。
+- **移除 `checked::`**：从 `file_search.py` 的字段集合、`_LabelData.checked`、`_matches_checked`、解析器/求值器、搜索帮助文案中删除；旧 `checked::x` 不再表达审核状态（按未知条件回退为文件名文本）。搜索测试同步删除 checked 用例。
+- **文件名 SQL 快路径**：`_simple_database_filters()` 接受普通文件名子串；`image_summaries(filename=...)` 用 `instr(f.file_name, ?)` 过滤。复杂正则/布尔仍回退。
+- 版本：`4.3.2+fork.29` → `4.3.2+fork.30`。
+
+### 3. 涉及模块与文件
+
+- 修改：`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.7）、`docs/开始.md`、`anylabeling/views/labeling/utils/file_search.py`、`label_widget.py`、`file_session.py`、`anylabeling/services/dataset/repository.py`、`app_info.py`、翻译资源
+- 测试：`tests/test_utils/test_file_search.py`（删除 checked 用例）、`tests/test_dataset_db/test_repository.py`/`test_ui_adapter.py`（文件名 SQL 过滤）
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：搜索帮助不再宣传 `checked::`；`checked::x` 不再返回“已审核/未审核”结果；普通文件名搜索走 SQL。DB 模式搜索更快。
+- **数据契约**：DB schema 不变；旧 JSON `checked` 仍可被 `LabelFile` 兼容读取/写出，但不再作为审核事实、不参与 DB 搜索；文件表勾选/审核动作仍是 P4 清理项。
+- **接口**：`image_summaries(filename=...)`、`_simple_database_filters` 返回四元组。
+- **版本**：fork.29 → fork.30。
+
+### 5. 实际验证内容
+
+- `python -m pytest tests/test_dataset_db -q`：**19 passed**（含文件名 SQL 过滤、`label::bolt,split::train` 快路径）。
+- `python -m py_compile` 修改的 `file_search.py`/`file_session.py`/`repository.py`/测试：通过。
+- `scripts/compile_languages.py`：四语言 `.qm` 各 **2258 条 / 0 unfinished**。
+- **未执行**：`tests/test_utils/test_file_search.py` 全量（本机 tempfile/DACL 限制）、真实 UI 搜索观感、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 文件表/审核动作/JSON 的 `checked` 兼容仍在；P4 删除 JSON 链路时一并清理，当前只保证 DB/搜索不再使用它。
+- 普通文件名 SQL 只做 `instr(file_name, ?)`，大小写/路径目录语义与旧“绝对路径子串”略有差异；复杂正则仍回退。
+- 数万行虚拟化是设计书 v1.7 记录的演进要求，**本批未实现**；当前仍是 `QTableWidget`。
+- 设计书文件名仍为 `-v1.6.md` 以保持历史链接，正文版本为 v1.7，已在文件头说明。
+
+---
+
 ## 4.3.2+fork.29 — 2026-11-21
 
 ### 1. 背景与原因

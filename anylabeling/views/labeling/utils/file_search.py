@@ -7,7 +7,7 @@ Grammar (all operators work for every field and can be freely combined)
 -----------------------------------------------------------------------
 ``field::value``
     A condition.  Supported fields are ``label``, ``split``, ``shape``,
-    ``type``, ``gid``, ``difficult``, ``checked``, ``review``, ``score`` and
+    ``type``, ``gid``, ``difficult``, ``review``, ``score`` and
     ``description``.  The field name is case insensitive.
 
 ``plain text``
@@ -47,19 +47,18 @@ Special values
 --------------
 ``split`` accepts ``none``/``train``/``val``/``test`` and the Chinese aliases
 ``未划分``/``训练``/``验证``/``测试``.  ``shape::1``/``shape::0`` mean "has
-objects" / "has no objects".  ``checked`` accepts ``passed``/``failed``/
-``unchecked`` or a boolean-ish value.  ``score`` accepts a range such as
+objects" / "has no objects".  ``score`` accepts a range such as
 ``[0,0.5]`` or ``(0,0.6]``.
 
 Legacy syntax
 -------------
 ``#N`` selects the N-th imported image, ``<regex>`` searches the file name with
 a regular expression and the single condition forms used before this module was
-rewritten (``checked::1``, ``label::person``, ``gid::0`` ...) keep working.
+rewritten (``label::person``, ``gid::0`` ...) keep working.
 :func:`parse_search_pattern`, :func:`matches_filename` and
 :func:`matches_label_attribute` are kept for existing callers.
 
-Missing annotation files are treated as "no objects / split none / unchecked"
+Missing annotation files are treated as "no objects / split none"
 when a query is evaluated.
 """
 
@@ -105,7 +104,6 @@ _SEARCH_FIELDS = frozenset(
         "type",
         "gid",
         "difficult",
-        "checked",
         "review",
         "score",
         "description",
@@ -113,7 +111,6 @@ _SEARCH_FIELDS = frozenset(
 )
 
 _REVIEW_STATUSES = frozenset(("pending", "missed", "false_positive"))
-_CHECKED_STATUSES = frozenset(("passed", "failed", "unchecked"))
 _TRUE_VALUES = frozenset(("true", "1", "yes"))
 
 _INDEX_RE = re.compile(r"^#(\d+)$")
@@ -142,7 +139,7 @@ class _LabelData:
     :class:`SearchQuery` can use a single code path for missing files.
     """
 
-    __slots__ = ("data", "exists", "shapes", "split", "checked")
+    __slots__ = ("data", "exists", "shapes", "split")
 
     def __init__(self, data=None):
         self.data = data if isinstance(data, dict) else None
@@ -150,13 +147,11 @@ class _LabelData:
         if not self.exists:
             self.shapes = []
             self.split = SPLIT_NONE
-            self.checked = False
             return
 
         shapes = self.data.get("shapes")
         self.shapes = shapes if isinstance(shapes, list) else []
         self.split = _normalize_stored_split(self.data.get("split"))
-        self.checked = self.data.get("checked", False)
 
 
 def _normalize_stored_split(value):
@@ -320,8 +315,6 @@ class _AttributeNode(_Node):
             return self.spec is False
         if field == "split":
             return self.spec == SPLIT_NONE
-        if field == "checked":
-            return self.spec is False or self.spec == "unchecked"
         return False
 
     def matches(self, image_file, label_data):
@@ -335,8 +328,6 @@ class _AttributeNode(_Node):
             return (len(label_data.shapes) > 0) == spec
         if field == "split":
             return label_data.split == spec
-        if field == "checked":
-            return _matches_checked(label_data.checked, spec)
         if field == "label":
             return _matches_label(label_data, spec)
         if field == "type":
@@ -355,16 +346,6 @@ class _AttributeNode(_Node):
         if field == "description":
             return _matches_description(label_data, spec)
         return False
-
-
-def _matches_checked(checked, spec):
-    if spec == "passed":
-        return checked is True
-    if spec == "failed":
-        return checked == "failed"
-    if spec == "unchecked":
-        return checked is not True and checked != "failed"
-    return (checked is True or checked == "failed") == spec
 
 
 def _matches_label(label_data, spec):
@@ -471,11 +452,6 @@ def _make_attribute_node(field, raw_value):
             return _AttributeNode(field, int(str(raw_value).strip()))
         except (TypeError, ValueError):
             raise SearchQueryError(f"invalid gid value: {raw_value!r}")
-    if field == "checked":
-        status = str(raw_value).strip().lower()
-        if status in _CHECKED_STATUSES:
-            return _AttributeNode(field, status)
-        return _AttributeNode(field, _as_bool(status))
     if field == "review":
         status = str(raw_value).strip().lower()
         if status not in _REVIEW_STATUSES:
@@ -809,7 +785,7 @@ class SearchQuery:
 
         ``label_file`` is the annotation JSON path; when omitted it is derived
         from ``image_file``.  A missing or unreadable annotation file is
-        treated as "no objects / split none / unchecked".
+        treated as "no objects / split none".
         """
         if self._index is not None:
             # Index queries are positional and only make sense for a list of
@@ -948,7 +924,6 @@ def parse_search_pattern(search_text: str) -> SearchPattern:
         - "score::[0,0.5]" -> files with score in [0, 0.5]
         - "score::(0,0.6]" -> files with score in (0, 0.6]
         - "description::1" -> files with a non-empty description
-        - "checked::1" -> checked files
         - "label::cat|dog" -> files with cat or dog (mode "query")
     """
     query = parse_search_query(search_text)
