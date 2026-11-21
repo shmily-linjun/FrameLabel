@@ -158,9 +158,38 @@ class DatasetRepository:
         sql += " ORDER BY rel_path COLLATE NOCASE"
         return [dict(row) for row in self.db.query(sql, (self.dataset_id,))]
 
-    def image_summaries(self) -> list[dict[str, Any]]:
-        """Rows for the file table: image fields + object count + tags."""
+    def image_summaries(
+        self,
+        *,
+        labels: list[str] | None = None,
+        split: str | None = None,
+        objectless: bool = False,
+    ) -> list[dict[str, Any]]:
+        """Rows for the file table: image fields + object count + tags.
 
+        ``labels``/``split``/``objectless`` are a fast SQL path for the common
+        search terms (``label::``, ``split::``, ``shape::0``); complex boolean
+        expressions still fall back to the in-Python query evaluator.
+        """
+
+        where = ["f.dataset_id = ?", "f.is_deleted = 0"]
+        params: list[Any] = [self.dataset_id]
+        if split is not None:
+            where.append("f.split = ?")
+            params.append(split)
+        if objectless:
+            where.append(
+                "NOT EXISTS (SELECT 1 FROM annotation_object o "
+                "WHERE o.image_id = f.id AND o.is_deleted = 0)"
+            )
+        for label in labels or ():
+            where.append(
+                "EXISTS (SELECT 1 FROM annotation_object o "
+                "JOIN category c ON c.id = o.category_id "
+                "WHERE o.image_id = f.id AND o.is_deleted = 0 "
+                "AND c.name = ?)"
+            )
+            params.append(label)
         rows = self.db.query(
             "SELECT f.*, "
             " (SELECT COUNT(*) FROM annotation_object o "
@@ -169,9 +198,9 @@ class DatasetRepository:
             "    SELECT tag FROM image_tag WHERE image_id = f.id "
             "    ORDER BY sort_index, tag)) AS tags "
             "FROM image_file f "
-            "WHERE f.dataset_id = ? AND f.is_deleted = 0 "
+            "WHERE " + " AND ".join(where) + " "
             "ORDER BY f.rel_path COLLATE NOCASE",
-            (self.dataset_id,),
+            tuple(params),
         )
         result = []
         for row in rows:

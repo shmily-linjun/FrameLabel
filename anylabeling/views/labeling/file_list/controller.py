@@ -85,7 +85,14 @@ class FileListController:
         self._thumbnail_loader.thumbnail_ready.connect(
             self.on_thumbnail_ready
         )
+        self._thumbnail_rows = set()
         self.table = self._create_table()
+        self._thumbnail_timer = QtCore.QTimer(self.table)
+        self._thumbnail_timer.setSingleShot(True)
+        self._thumbnail_timer.timeout.connect(self.request_visible_thumbnails)
+        self.table.verticalScrollBar().valueChanged.connect(
+            self.request_visible_thumbnails
+        )
         self.apply_config()
 
     # ------------------------------------------------------------------
@@ -168,6 +175,7 @@ class FileListController:
 
     def shutdown(self):
         """Stop the background thumbnail loader."""
+        self._thumbnail_timer.stop()
         self._thumbnail_loader.shutdown()
 
     # ------------------------------------------------------------------
@@ -298,7 +306,7 @@ class FileListController:
         for column, item in enumerate(cells):
             self.table.setItem(row, column, item)
         self.fn_to_index[file] = row
-        self.request_thumbnail(row, file)
+        self._schedule_thumbnail_scan()
         self.invalidate_label_manager()
         return row
 
@@ -312,7 +320,7 @@ class FileListController:
         for column, item in enumerate(cells):
             self.table.setItem(row, column, item)
         self.fn_to_index[file] = row
-        self.request_thumbnail(row, file)
+        self._schedule_thumbnail_scan()
         self.invalidate_label_manager()
         return row
 
@@ -457,6 +465,8 @@ class FileListController:
         self.rebuild_index()
         table.horizontalHeader().setSortIndicator(column, order)
         self.sync_selection()
+        self._thumbnail_rows.clear()
+        self._schedule_thumbnail_scan()
         self.invalidate_label_manager()
 
     @staticmethod
@@ -499,6 +509,40 @@ class FileListController:
     # ------------------------------------------------------------------
     # Thumbnails
     # ------------------------------------------------------------------
+    def _schedule_thumbnail_scan(self):
+        if self._show_thumbnails and not self._thumbnail_timer.isActive():
+            self._thumbnail_timer.start(0)
+
+    def request_visible_thumbnails(self):
+        """Decode only thumbnails near the viewport, not every row.
+
+        A 7000-row table used to enqueue 7000 thumbnail jobs during the first
+        paint; that competed with the table construction and made reopening a
+        dataset feel slow.  Scrolling extends the requested range lazily.
+        """
+
+        if not self._show_thumbnails:
+            return
+        rows = self.table.rowCount()
+        if rows <= 0:
+            return
+        top = self.table.rowAt(0)
+        bottom = self.table.rowAt(self.table.viewport().height())
+        if top < 0:
+            top = 0
+        if bottom < 0:
+            bottom = min(rows - 1, top + 40)
+        start = max(0, top - 2)
+        end = min(rows - 1, bottom + 3)
+        for row in range(start, end + 1):
+            if row in self._thumbnail_rows:
+                continue
+            path = self.path_at(row)
+            if not path:
+                continue
+            self._thumbnail_rows.add(row)
+            self.request_thumbnail(row, path)
+
     def request_thumbnail(self, row, path):
         if not self._show_thumbnails:
             return
@@ -632,9 +676,9 @@ class FileListController:
             else QtCore.QSize(0, 0)
         )
         self.update_row_height()
+        self._thumbnail_rows.clear()
         if self._show_thumbnails:
-            for row in range(self.table.rowCount()):
-                self.request_thumbnail(row, self.path_at(row))
+            self.request_visible_thumbnails()
         if persist:
             section = self.host._config.setdefault("file_list", {})
             if isinstance(section, dict):
@@ -900,6 +944,8 @@ class FileListController:
             self.table.blockSignals(False)
         self.fn_to_index.clear()
         self._import_times = {}
+        self._thumbnail_rows.clear()
+        self._thumbnail_timer.stop()
         self.reset_sort()
         self._thumbnail_loader.clear()
         self.invalidate_label_manager()

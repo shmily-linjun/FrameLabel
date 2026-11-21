@@ -6,6 +6,67 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.29 — 2026-11-21
+
+### 1. 背景与原因
+
+用户用 7553 图的 DGLF 数据集反馈：二次打开文件表约 4s；统计页筛选卡顿；并建议搜索栏字段最终应转成数据库查询，而不是继续逐图读数据。
+
+实测（7553 图 DB、离屏 `MainWindow`，不含真实图片解码）：
+
+| 路径 | 优化前 | 优化后 |
+|---|---|---|
+| `image_summaries()` | 0.07s | 0.07s |
+| 文件表 7553 行（缩略图开启） | 约 7.8s | **约 0.84s** |
+| `statistics_rows()` / 刷新统计 | 0.09–0.16s | 0.09–0.16s |
+| `label::` 搜索（逐图 `load_annotation`） | 约 1.16s | **约 0.53s**（SQL 快路径，且不再自动加载第一张图） |
+
+根因：
+- `append_db_row()` 为每一行立即调用 `request_thumbnail()`，7553 行一次排队 7553 个缩略图任务，拖慢首屏；
+- DB 搜索虽然读库，但对 `label::`/`split::`/`shape::0` 仍是“每图一次 `load_annotation()` + Python 求值”，统计页点击反筛也走这条慢路径；
+- DB 搜索后还自动加载第一张图，大 TIFF 解码会放大卡顿。
+
+### 2. 主要实现与关键细节
+
+- **缩略图懒加载**：`append_row()`/`append_db_row()` 不再逐行请求缩略图；新增 `request_visible_thumbnails()`，只请求视口附近行，滚动/排序/切换缩略图时再补。`ThumbnailLoader` 不再被 7000+ 任务淹没。
+- **搜索 SQL 快路径**：`DatasetRepository.image_summaries(labels=..., split=..., objectless=...)` 用 `EXISTS`/`NOT EXISTS` + 索引过滤；`FileSession._simple_database_filters()` 把 `label::x`、`split::train`、`shape::0` 及逗号 AND 组合编译为 SQL。
+- **保留完整语法回退**：布尔分组、属性、描述、正则、文件名、`checked::` 等复杂条件仍走现有 `SearchQuery` + 逐图求值，避免语义分叉。
+- **筛选不自动打开图片**：DB 搜索 `load=False, select_first=False`，只刷新文件表；用户点击行再加载，避免大图解码拖慢统计反筛。
+- **版本**：`4.3.2+fork.28` → `4.3.2+fork.29`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/services/dataset/repository.py`、`anylabeling/views/labeling/file_list/controller.py`、`file_session.py`、`label_widget.py`、`app_info.py`
+- 测试：`tests/test_dataset_db/test_repository.py`（SQL 过滤）、`test_ui_adapter.py`（`label::bolt,split::train` 快路径）
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`、`docs/dev/数据库设计-讨论稿.md`（代码基线）
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：7553 图文件表首屏由约 4–8s 降到约 1s 量级；缩略图只加载可见行，滚动时补；统计页点击 `label::`/`split::`/`shape::0` 反筛约 0.5s，且不再自动打开第一张图。
+- **接口**：新增 `image_summaries(labels=,split=,objectless=)`、`request_visible_thumbnails()`、`_simple_database_filters()`；`import_image_folder()` 增加 `select_first` 参数。
+- **语义**：简单字段 SQL 与 JSON `SearchQuery` 保持 AND/精确标签语义；复杂查询回退，不改变结果含义。
+- **版本**：fork.28 → fork.29。
+
+### 5. 实际验证内容
+
+- `python -m pytest tests/test_dataset_db -q`：**19 passed**（新增 SQL 过滤用例；搜索适配器覆盖 `label::bolt,split::train`）。
+- 7553 图 DB 性能冒烟（`temporary/perf/`，无真实图片解码）：
+  - `image_summaries` 0.07s；
+  - 文件表 7553 行：缩略图全量请求约 7.8s → 懒加载约 **0.84s**；
+  - 统计刷新 0.16s；
+  - `label::` 搜索约 **0.53s**（原 1.16s），筛选后 `filename=None`，不自动加载图片。
+- `python -m compileall` 修改模块通过。
+- **未执行**：真实桌面滚动/缩略图观感、7553 张 TIFF 的实际解码耗时、复杂查询回退性能、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 文件表仍是 `QTableWidget`，7553 行的构建约 0.8s；更大规模（数万）应改为 model/view 虚拟化。
+- SQL 快路径只覆盖 `label::`/`split::`/`shape::0` 的逗号 AND；属性、描述、正则、文件名、复杂布尔仍逐图求值，后续可继续下推。
+- 统计筛选后文件表仍要重建匹配行（3509 行约 0.4s），这是目前 0.5s 的主要成本；可进一步做结果集缓存/增量。
+- 缩略图懒加载后，快速滚动到底部时可能需要短暂等待缩略图。
+
+---
+
 ## 4.3.2+fork.28 — 2026-11-21
 
 ### 1. 背景与原因

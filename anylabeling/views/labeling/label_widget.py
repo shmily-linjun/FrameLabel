@@ -955,10 +955,12 @@ class LabelingWidget(LabelDialog):
 
     def file_search_changed(self):
         search_text = self.file_search.text()
+        dataset_mode = getattr(self, "dataset_repository", None) is not None
         self.import_image_folder(
             self.last_open_dir,
             pattern=search_text,
-            load=getattr(self, "dataset_repository", None) is not None,
+            load=False,
+            select_first=not dataset_mode,
         )
 
     def file_selection_changed(self):
@@ -1691,10 +1693,15 @@ class LabelingWidget(LabelDialog):
         return FileSession(self).import_dropped_image_files(image_files)
 
     def import_image_folder(
-        self, dirpath, pattern=None, load=True, auto_db=True
+        self,
+        dirpath,
+        pattern=None,
+        load=True,
+        auto_db=True,
+        select_first=True,
     ):
         return FileSession(self).import_image_folder(
-            dirpath, pattern, load, auto_db
+            dirpath, pattern, load, auto_db, select_first
         )
 
     def import_project_dialog(self):

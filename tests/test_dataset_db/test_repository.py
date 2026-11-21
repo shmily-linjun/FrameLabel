@@ -181,6 +181,35 @@ def test_rewrite_categories_renames_and_soft_deletes(dataset_tmp):
         database.close()
 
 
+def test_image_summaries_sql_filters(dataset_tmp):
+    database, repository = make_repository(dataset_tmp)
+    try:
+        first = repository.add_image("a.png", split="train")
+        repository.save_annotation(
+            first, ImageAnnotation(shapes=[rectangle("bolt", "s1")])
+        )
+        second = repository.add_image("b.png", split="val")
+        repository.save_annotation(
+            second, ImageAnnotation(shapes=[polygon("nut", "s2")])
+        )
+        repository.add_image("c.png", split="none")
+
+        assert [row["rel_path"] for row in repository.image_summaries(
+            labels=["bolt"]
+        )] == ["a.png"]
+        assert [row["rel_path"] for row in repository.image_summaries(
+            split="val"
+        )] == ["b.png"]
+        assert [row["rel_path"] for row in repository.image_summaries(
+            objectless=True
+        )] == ["c.png"]
+        assert repository.image_summaries(
+            labels=["bolt"], split="val"
+        ) == []
+    finally:
+        database.close()
+
+
 def test_statistics_and_category_counts(dataset_tmp):
     database, repository = make_repository(dataset_tmp)
     try:
