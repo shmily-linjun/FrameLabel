@@ -6,6 +6,55 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.28 — 2026-11-21
+
+### 1. 背景与原因
+
+用户核对 DGLF 数据集后确认 `image_file` 实为 7553 条；随后提出：`rel_path`/`file_name` 内容相同、DB 模式仍会出现 `.xanylabeling_import_time.json`、关闭应用/浏览器后 `xanylabeling.db-wal`/`-shm` 仍存在。
+
+- `rel_path` 的语义是“相对数据集根”，不是绝对路径；当根目录就是图片目录时，`rel_path == file_name` 是预期结果（`dataset.root_path` + `rel_path` 才是定位信息）。
+- `.xanylabeling_import_time.json` 是 JSON 模式 sidecar；DB 模式下 `image_file.imported_at` 才是权威，但旧文件不会自动清理。
+- 应用退出路径没有关闭 `DatasetDatabase`，SQLite 未执行 checkpoint/close，导致 `-wal`/`-shm` 残留。
+
+### 2. 主要实现与关键细节
+
+- `LabelingWidget.closeEvent()` 在窗口正常关闭时调用 `FileSession._close_dataset()`；`DatasetDatabase.close()` 先 `PRAGMA wal_checkpoint(TRUNCATE)` 再 close，正常退出后 WAL/SHM 由 SQLite 清理。
+- `_open_dataset_for_folder()` 在打开 DB 时删除数据集根下遗留的 `.xanylabeling_import_time.json`（DB 模式不再读取它；删除失败只记 warning）。
+- 不改变 `rel_path` 语义，也不把绝对路径写进 DB；绝对路径由“打开目录 + rel_path”在运行时还原，保持项目目录可移动/可复制。
+- 版本：`4.3.2+fork.27` → `4.3.2+fork.28`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/file_session.py`、`label_widget.py`、`app_info.py`
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`、`docs/dev/数据库设计-讨论稿.md`（代码基线）
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：正常关闭窗口后 `-wal`/`-shm` 消失；DB 模式打开目录会清掉根下旧 `.xanylabeling_import_time.json`；DB 仍以 `rel_path`（相对根）+ `file_name` 存储。
+- **接口**：`FileSession._close_dataset()` 现在也被窗口关闭调用（原只在切换目录时调用）；无新增公共 API。
+- **兼容性**：`rel_path`/`file_name` 语义不变；已有库不受影响；若其他进程（SQLite 浏览器）仍持有连接，WAL/SHM 可能继续存在，这是 SQLite 正常行为。
+- **版本**：fork.27 → fork.28（缺陷修复）。
+
+### 5. 实际验证内容
+
+- `python -m pytest tests/test_dataset_db -q`：**18 passed**。
+- 离屏 `MainWindow` 冒烟（`temporary/diag/smoke_close.py`）：
+  - 目录根为数据集根，图片在 `images/` 下；建库后 `rel_path='images/a.png'`、`file_name='a.png'`（验证两者不同）；
+  - 根下预置 `.xanylabeling_import_time.json`，打开 DB 后被删除；
+  - 正常 `window.close()` 后 `-wal`、`-shm` 均不存在；`view.dataset_repository is None`；
+  - 结果：`close smoke ok`。
+- `python -m compileall` 修改模块通过。
+- **未执行**：真实桌面关闭、SQLite 浏览器同时打开、异常退出/断电恢复、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 如果关闭应用时仍有 SQLite 浏览器/其他进程持有连接，`-wal`/`-shm` 仍会存在；需关闭所有连接后再检查。
+- 异常退出/强杀不会走 `closeEvent`，WAL 可能保留（SQLite 下次打开会自动恢复）；不要手动删除运行中的 WAL。
+- `rel_path` 不存绝对路径是设计选择，便于整目录移动/复制；绝对路径由运行时 `dataset_root + rel_path` 还原。
+- 若希望一个项目只建一个 DB，需要 T5 的 `.xalp` 项目文件/根目录识别；当前“打开哪个目录就在哪个目录建库”。
+
+---
+
 ## 4.3.2+fork.27 — 2026-11-21
 
 ### 1. 背景与原因

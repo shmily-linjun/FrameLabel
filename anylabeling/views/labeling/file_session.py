@@ -150,6 +150,18 @@ class FileSession:
         self.host.dataset_root = str(Path(directory).resolve())
         self.host.dataset_image_id = None
         self.host.output_dir = None
+        # The DB's imported_at is authoritative; a legacy JSON-mode sidecar
+        # would only confuse users and is no longer read in DB mode.
+        legacy_sidecar = Path(directory) / ".xanylabeling_import_time.json"
+        if legacy_sidecar.is_file():
+            try:
+                legacy_sidecar.unlink()
+                logger.info("Removed legacy import-time sidecar: %s", legacy_sidecar)
+            except OSError:
+                logger.warning(
+                    "Could not remove legacy import-time sidecar: %s",
+                    legacy_sidecar,
+                )
         return repository
 
     def _close_dataset(self):

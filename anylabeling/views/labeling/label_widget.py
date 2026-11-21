@@ -1504,6 +1504,13 @@ class LabelingWidget(LabelDialog):
             except (RuntimeError, AttributeError):
                 pass
 
+        # Close the dataset connection on a clean exit so SQLite can
+        # checkpoint/truncate the WAL and release its -shm handle.
+        try:
+            FileSession(self)._close_dataset()
+        except Exception:  # noqa: BLE001 - never block window close
+            logger.exception("Failed to close dataset database")
+
         unsubscribe = getattr(self, "_operator_unsubscribe", None)
         if unsubscribe is not None:
             unsubscribe()
