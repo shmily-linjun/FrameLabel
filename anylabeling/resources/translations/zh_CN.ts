@@ -5516,6 +5516,86 @@ The image files and their annotation files will NOT be deleted.</source>
         <source>Current image is not registered in the dataset.</source>
         <translation>当前图片未在数据集中登记。</translation>
     </message>
+    <message>
+        <source>Import Project (X-AnyLabeling)</source>
+        <translation>导入项目（X-AnyLabeling）</translation>
+    </message>
+    <message>
+        <source>Import Project</source>
+        <translation>导入项目</translation>
+    </message>
+    <message>
+        <source>A dataset database already exists in this directory.</source>
+        <translation>此目录已存在数据集数据库。</translation>
+    </message>
+    <message>
+        <source>Skip existing images or replace their annotations?</source>
+        <translation>跳过已存在的图片，还是替换其标注？</translation>
+    </message>
+    <message>
+        <source>Skip Existing</source>
+        <translation>跳过已存在</translation>
+    </message>
+    <message>
+        <source>Replace Existing</source>
+        <translation>替换已存在</translation>
+    </message>
+    <message>
+        <source>Import failed</source>
+        <translation>导入失败</translation>
+    </message>
+    <message>
+        <source>Images: %d</source>
+        <translation>图片：%d</translation>
+    </message>
+    <message>
+        <source>Labeled: %d</source>
+        <translation>有标注：%d</translation>
+    </message>
+    <message>
+        <source>Objects: %d</source>
+        <translation>对象：%d</translation>
+    </message>
+    <message>
+        <source>Skipped: %d</source>
+        <translation>跳过：%d</translation>
+    </message>
+    <message>
+        <source>Errors: %d</source>
+        <translation>错误：%d</translation>
+    </message>
+    <message>
+        <source>Backup: %s</source>
+        <translation>备份：%s</translation>
+    </message>
+    <message>
+        <source>Recycle bin is available in dataset mode only.</source>
+        <translation>回收站仅在数据集模式下可用。</translation>
+    </message>
+    <message>
+        <source>No dataset image is open.</source>
+        <translation>当前没有打开的数据集图片。</translation>
+    </message>
+    <message>
+        <source>Error deleting image</source>
+        <translation>删除图片失败</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; 不存在。</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; 已存在。</translation>
+    </message>
+    <message>
+        <source>Image moved to the recycle bin.</source>
+        <translation>图片已移入回收站。</translation>
+    </message>
+    <message>
+        <source>Move this image and its annotation to the recycle bin?</source>
+        <translation>将此图片及其标注移入回收站？</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -11566,4 +11646,62 @@ Response preview:
         <translation>浏览模式 - 编辑标注需要登录</translation>
     </message>
   </context>
+<context><name>TrashDialog</name>
+    <message>
+        <source>Recycle Bin</source>
+        <translation>回收站</translation>
+    </message>
+    <message>
+        <source>Image</source>
+        <translation>图片</translation>
+    </message>
+    <message>
+        <source>Deleted at</source>
+        <translation>删除时间</translation>
+    </message>
+    <message>
+        <source>Restore</source>
+        <translation>恢复</translation>
+    </message>
+    <message>
+        <source>Delete Permanently</source>
+        <translation>永久删除</translation>
+    </message>
+    <message>
+        <source>Empty Recycle Bin</source>
+        <translation>清空回收站</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <source>Restore failed</source>
+        <translation>恢复失败</translation>
+    </message>
+    <message>
+        <source>The trashed file is missing: %s</source>
+        <translation>回收站文件缺失：%s</translation>
+    </message>
+    <message>
+        <source>The original path already exists: %s</source>
+        <translation>原路径已存在：%s</translation>
+    </message>
+    <message>
+        <source>Permanently delete this image? This cannot be undone.</source>
+        <translation>永久删除此图片？此操作不可撤销。</translation>
+    </message>
+    <message>
+        <source>Permanently delete every trashed image?</source>
+        <translation>永久删除回收站中的所有图片？</translation>
+    </message>
+    <message>
+        <source>The database row could not be deleted.</source>
+        <translation>无法删除数据库记录。</translation>
+    </message>
+    <message>
+        <source>Some database rows could not be deleted.</source>
+        <translation>部分数据库记录无法删除。</translation>
+    </message>
+</context>
 </TS>

@@ -113,6 +113,136 @@ class FileSession:
         self.host.dataset_root = None
         self.host.dataset_image_id = None
 
+    def import_project_dialog(self):
+        """Import X-AnyLabeling JSON files into a dataset DB, then open it."""
+
+        directory = QtWidgets.QFileDialog.getExistingDirectory(
+            self.host,
+            self.host.tr("Import Project (X-AnyLabeling)"),
+            self.host.current_path(),
+        )
+        if not directory:
+            return
+        database_path = Path(directory) / "xanylabeling.db"
+        overwrite = "skip"
+        if database_path.exists():
+            box = QtWidgets.QMessageBox(self.host)
+            box.setWindowTitle(self.host.tr("Import Project"))
+            box.setText(
+                self.host.tr(
+                    "A dataset database already exists in this directory."
+                )
+            )
+            box.setInformativeText(
+                self.host.tr(
+                    "Skip existing images or replace their annotations?"
+                )
+            )
+            skip_button = box.addButton(
+                self.host.tr("Skip Existing"),
+                QtWidgets.QMessageBox.ButtonRole.AcceptRole,
+            )
+            replace_button = box.addButton(
+                self.host.tr("Replace Existing"),
+                QtWidgets.QMessageBox.ButtonRole.DestructiveRole,
+            )
+            box.addButton(
+                self.host.tr("Cancel"), QtWidgets.QMessageBox.ButtonRole.RejectRole
+            )
+            box.exec()
+            if box.clickedButton() is skip_button:
+                overwrite = "skip"
+            elif box.clickedButton() is replace_button:
+                overwrite = "replace"
+            else:
+                return
+        from ...services.dataset.importer import import_xlabel_folder
+
+        try:
+            report = import_xlabel_folder(directory, overwrite=overwrite)
+        except Exception as exc:  # noqa: BLE001 - surfaced to the operator
+            self.host.error_message(
+                self.host.tr("Import failed"), self.host.tr("<b>%s</b>") % exc
+            )
+            return
+        details = [
+            self.host.tr("Images: %d") % report.images,
+            self.host.tr("Labeled: %d") % report.labeled_images,
+            self.host.tr("Objects: %d") % report.objects,
+            self.host.tr("Skipped: %d") % report.skipped,
+            self.host.tr("Errors: %d") % len(report.errors),
+        ]
+        if report.backup_path:
+            details.append(
+                self.host.tr("Backup: %s") % str(report.backup_path)
+            )
+        if report.errors:
+            details.append("")
+            details.extend(report.errors[:5])
+        QtWidgets.QMessageBox.information(
+            self.host,
+            self.host.tr("Import Project"),
+            "\n".join(details),
+        )
+        self.host.import_image_folder(directory, load=True)
+
+    def show_trash_dialog(self):
+        if getattr(self.host, "dataset_repository", None) is None:
+            self.host.status(
+                self.host.tr("Recycle bin is available in dataset mode only.")
+            )
+            return
+        from .widgets.trash_dialog import TrashDialog
+
+        dialog = TrashDialog(self.host, parent=self.host)
+        dialog.exec()
+        if getattr(self.host, "dataset_repository", None) is not None:
+            self.host.import_image_folder(self.host.dataset_root, load=True)
+
+    def _trash_current_image(self):
+        repository = getattr(self.host, "dataset_repository", None)
+        image_id = getattr(self.host, "dataset_image_id", None)
+        if repository is None or image_id is None:
+            self.host.status(self.host.tr("No dataset image is open."))
+            return False
+        image = repository.get_image(image_id)
+        if image is None:
+            return False
+        root = Path(self.host.dataset_root)
+        source = root / image["rel_path"]
+        trash_dir = root / ".trash" / str(image_id)
+        target = trash_dir / source.name
+        if not source.is_file():
+            self.host.error_message(
+                self.host.tr("Error deleting image"),
+                self.host.tr("<b>%s</b> does not exist.") % source,
+            )
+            return False
+        if target.exists():
+            self.host.error_message(
+                self.host.tr("Error deleting image"),
+                self.host.tr("<b>%s</b> already exists.") % target,
+            )
+            return False
+        trash_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            shutil.move(str(source), str(target))
+            repository.delete_image(image_id)
+        except Exception as exc:  # noqa: BLE001 - restore the file on failure
+            if target.exists() and not source.exists():
+                shutil.move(str(target), str(source))
+            self.host.error_message(
+                self.host.tr("Error deleting image"),
+                self.host.tr("<b>%s</b>") % exc,
+            )
+            return False
+        self.host.dataset_image_id = None
+        self._load_database_folder(root, repository, load=True)
+        if self.host.file_list_widget.count() == 0:
+            self.host.reset_state()
+        self.host.status(self.host.tr("Image moved to the recycle bin."))
+        return True
+
     @staticmethod
     def _import_timestamp(value):
         if not isinstance(value, str) or not value:
@@ -774,11 +904,17 @@ class FileSession:
 
     def delete_file(self):
         if getattr(self.host, "dataset_repository", None) is not None:
-            self.host.status(
+            answer = QtWidgets.QMessageBox.question(
+                self.host,
+                self.host.tr("Attention"),
                 self.host.tr(
-                    "Deleting annotations is not available in dataset mode yet."
-                )
+                    "Move this image and its annotation to the recycle bin?"
+                ),
+                QtWidgets.QMessageBox.StandardButton.Yes
+                | QtWidgets.QMessageBox.StandardButton.No,
             )
+            if answer == QtWidgets.QMessageBox.StandardButton.Yes:
+                self._trash_current_image()
             return
         mb = QtWidgets.QMessageBox
         if self.host._config.get("keep_prev", False):
@@ -822,11 +958,17 @@ class FileSession:
 
     def delete_image_file(self):
         if getattr(self.host, "dataset_repository", None) is not None:
-            self.host.status(
+            answer = QtWidgets.QMessageBox.question(
+                self.host,
+                self.host.tr("Attention"),
                 self.host.tr(
-                    "Deleting image files is not available in dataset mode yet."
-                )
+                    "Move this image and its annotation to the recycle bin?"
+                ),
+                QtWidgets.QMessageBox.StandardButton.Yes
+                | QtWidgets.QMessageBox.StandardButton.No,
             )
+            if answer == QtWidgets.QMessageBox.StandardButton.Yes:
+                self._trash_current_image()
             return
         if len(self.host.image_list) < 2:
             return

@@ -5518,6 +5518,86 @@ The image files and their annotation files will NOT be deleted.</translation>
         <source>Current image is not registered in the dataset.</source>
         <translation>Current image is not registered in the dataset.</translation>
     </message>
+    <message>
+        <source>Import Project (X-AnyLabeling)</source>
+        <translation>Import Project (X-AnyLabeling)</translation>
+    </message>
+    <message>
+        <source>Import Project</source>
+        <translation>Import Project</translation>
+    </message>
+    <message>
+        <source>A dataset database already exists in this directory.</source>
+        <translation>A dataset database already exists in this directory.</translation>
+    </message>
+    <message>
+        <source>Skip existing images or replace their annotations?</source>
+        <translation>Skip existing images or replace their annotations?</translation>
+    </message>
+    <message>
+        <source>Skip Existing</source>
+        <translation>Skip Existing</translation>
+    </message>
+    <message>
+        <source>Replace Existing</source>
+        <translation>Replace Existing</translation>
+    </message>
+    <message>
+        <source>Import failed</source>
+        <translation>Import failed</translation>
+    </message>
+    <message>
+        <source>Images: %d</source>
+        <translation>Images: %d</translation>
+    </message>
+    <message>
+        <source>Labeled: %d</source>
+        <translation>Labeled: %d</translation>
+    </message>
+    <message>
+        <source>Objects: %d</source>
+        <translation>Objects: %d</translation>
+    </message>
+    <message>
+        <source>Skipped: %d</source>
+        <translation>Skipped: %d</translation>
+    </message>
+    <message>
+        <source>Errors: %d</source>
+        <translation>Errors: %d</translation>
+    </message>
+    <message>
+        <source>Backup: %s</source>
+        <translation>Backup: %s</translation>
+    </message>
+    <message>
+        <source>Recycle bin is available in dataset mode only.</source>
+        <translation>Recycle bin is available in dataset mode only.</translation>
+    </message>
+    <message>
+        <source>No dataset image is open.</source>
+        <translation>No dataset image is open.</translation>
+    </message>
+    <message>
+        <source>Error deleting image</source>
+        <translation>Error deleting image</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; does not exist.</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; already exists.</translation>
+    </message>
+    <message>
+        <source>Image moved to the recycle bin.</source>
+        <translation>Image moved to the recycle bin.</translation>
+    </message>
+    <message>
+        <source>Move this image and its annotation to the recycle bin?</source>
+        <translation>Move this image and its annotation to the recycle bin?</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -11568,4 +11648,62 @@ Response preview:
         <translation>Browse mode - editing annotations requires login</translation>
     </message>
   </context>
+<context><name>TrashDialog</name>
+    <message>
+        <source>Recycle Bin</source>
+        <translation>Recycle Bin</translation>
+    </message>
+    <message>
+        <source>Image</source>
+        <translation>Image</translation>
+    </message>
+    <message>
+        <source>Deleted at</source>
+        <translation>Deleted at</translation>
+    </message>
+    <message>
+        <source>Restore</source>
+        <translation>Restore</translation>
+    </message>
+    <message>
+        <source>Delete Permanently</source>
+        <translation>Delete Permanently</translation>
+    </message>
+    <message>
+        <source>Empty Recycle Bin</source>
+        <translation>Empty Recycle Bin</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Close</translation>
+    </message>
+    <message>
+        <source>Restore failed</source>
+        <translation>Restore failed</translation>
+    </message>
+    <message>
+        <source>The trashed file is missing: %s</source>
+        <translation>The trashed file is missing: %s</translation>
+    </message>
+    <message>
+        <source>The original path already exists: %s</source>
+        <translation>The original path already exists: %s</translation>
+    </message>
+    <message>
+        <source>Permanently delete this image? This cannot be undone.</source>
+        <translation>Permanently delete this image? This cannot be undone.</translation>
+    </message>
+    <message>
+        <source>Permanently delete every trashed image?</source>
+        <translation>Permanently delete every trashed image?</translation>
+    </message>
+    <message>
+        <source>The database row could not be deleted.</source>
+        <translation>The database row could not be deleted.</translation>
+    </message>
+    <message>
+        <source>Some database rows could not be deleted.</source>
+        <translation>Some database rows could not be deleted.</translation>
+    </message>
+</context>
 </TS>

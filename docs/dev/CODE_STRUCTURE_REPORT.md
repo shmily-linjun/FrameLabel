@@ -1,9 +1,9 @@
 # X-AnyLabeling 代码结构说明（理解与维护）
 
 > 最近核对日期：2026-11-20（Asia/Shanghai）
-> 对应版本：4.3.2+fork.25（fork.19 的 T8 拆分未升版；fork.20 为 SAM 编码器 CPU 串行化与编码输出复制；fork.21 为无边框模块多屏最小化/最大化还原修复；fork.22 为文件表多选批量动作与图片标签并入“图像属性”页；fork.23 为标签管理器并入“类别”页；fork.24 为 T3/P1 数据集存储层接入文件表与单图读写；fork.25 为 T3/P2 搜索、统计与类别页接入 DB）
-> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；fork.21 在真实 Windows 双屏（主屏 100% + 副屏 200%）上用原生消息探测与真实 `MainWindow` 复核窗口行为；fork.22/fork.23 用真实 `MainWindow` 离屏夹具做定向 pytest 与基线导出树对比；fork.24 用 P0 导入器生成 DB 后做离屏 `MainWindow` 打开/保存冒烟，并切回 JSON 目录验证兼容；fork.25 在同一离屏夹具上验证 DB 搜索、统计、类别读取/改名；T3/P0 用 Qt-free 存储层单测验证 schema/导入/往返；其余结论沿用 T8 阶段“基线工作树 vs 重构后”的 pytest 对比与离屏冒烟；各测试包的具体结果见 §16。
-> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8)/fork.20(SAM 编码锁)/fork.21(无边框多屏)/fork.22(文件表多选与图像属性页)/fork.23(标签管理器并入类别页)/fork.24(T3/P1 数据集接入)/fork.25(T3/P2 搜索/统计/类别页) 已改变的结构以本文当前版本说明为准。
+> 对应版本：4.3.2+fork.26（fork.19 的 T8 拆分未升版；fork.20 为 SAM 编码器 CPU 串行化与编码输出复制；fork.21 为无边框模块多屏最小化/最大化还原修复；fork.22 为文件表多选批量动作与图片标签并入“图像属性”页；fork.23 为标签管理器并入“类别”页；fork.24 为 T3/P1 数据集存储层接入文件表与单图读写；fork.25 为 T3/P2 搜索、统计与类别页接入 DB；fork.26 为 T3/P3a 导入项目与回收站）
+> 分析方式：以当前代码为准进行静态阅读、搜索与 AST 统计；fork.21 在真实 Windows 双屏（主屏 100% + 副屏 200%）上用原生消息探测与真实 `MainWindow` 复核窗口行为；fork.22/fork.23 用真实 `MainWindow` 离屏夹具做定向 pytest 与基线导出树对比；fork.24 用 P0 导入器生成 DB 后做离屏 `MainWindow` 打开/保存冒烟，并切回 JSON 目录验证兼容；fork.25 在同一离屏夹具上验证 DB 搜索、统计、类别读取/改名；fork.26 用离屏夹具验证导入建库、回收站移动/恢复；T3/P0 用 Qt-free 存储层单测验证 schema/导入/往返；其余结论沿用 T8 阶段“基线工作树 vs 重构后”的 pytest 对比与离屏冒烟；各测试包的具体结果见 §16。
+> 运行时行为、动态注册、条件导入和实际导入顺序结论可能不完整。上游 4.3.2 的分析内容保留作对照，fork.1/fork.2/fork.4/fork.19(T8)/fork.20(SAM 编码锁)/fork.21(无边框多屏)/fork.22(文件表多选与图像属性页)/fork.23(标签管理器并入类别页)/fork.24(T3/P1 数据集接入)/fork.25(T3/P2 搜索/统计/类别页)/fork.26(T3/P3a 导入/回收站) 已改变的结构以本文当前版本说明为准。
 > 行号锚点：T8 把 `label_widget.py` 从 9507 行降到 1776 行、`LabelingWidget.__init__` 从 2816 行降到 239 行，几乎所有历史行号都已失效；本报告中 `label_widget.py` 的行号均为 T8 第二阶段之后的当前值，定位时优先使用类名和方法名（实现多数已移入 §5.11 的模块）。
 > 规模口径：本报告的行数一律按 `str.splitlines()` 统计（与 `Get-Content | Measure-Object -Line` 的口径不同，后者会少算），早期章节里的 8949/8768 等数字属于旧口径，已在 §1.1 与 §8 更新。
 
@@ -12,14 +12,14 @@
 | 项目 | 结论 |
 |---|---|
 | 项目根目录 | `E:\dev-GitHub\X-AnyLabeling-main` |
-| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.25 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，fork.20 的 SAM 编码锁见 §5.3，fork.21 的无边框多屏修复见 §5.7，fork.22 的文件表多选与“图像属性”页见 §4.3/§5.11，fork.23 的标签管理器并入“类别”页见 §4.3/§5.11，fork.24/fork.25 的 T3 数据集接入见 §5.12，实际提交哈希以 Git 记录为准 |
-| 版本 | 4.3.2+fork.25，见 [app_info.py](../../anylabeling/app_info.py) |
+| Git 基线 | 分析起点为 `main` / `c7c5518`（fork.3 治理提交）；后续 fork.4–fork.26 的结构变化见 §5/§16，T8 重构（fork.19 内、不升版）见 §5.11，fork.20 的 SAM 编码锁见 §5.3，fork.21 的无边框多屏修复见 §5.7，fork.22 的文件表多选与“图像属性”页见 §4.3/§5.11，fork.23 的标签管理器并入“类别”页见 §4.3/§5.11，fork.24–fork.26 的 T3 数据集接入见 §5.12，实际提交哈希以 Git 记录为准 |
+| 版本 | 4.3.2+fork.26，见 [app_info.py](../../anylabeling/app_info.py) |
 | 语言 | Python，`requires-python >=3.11`，见 [pyproject.toml](../../pyproject.toml) |
 | 主要框架 | PyQt6；ONNX/ONNX Runtime 为可选推理依赖 |
 | 构建后端 | setuptools；PyInstaller 用于桌面可执行文件 |
 | 主入口 | `xanylabeling = anylabeling.app:main`；亦支持 `python -m anylabeling.app` |
 | 包构建 | `python -m build --no-isolation`，见 [build_and_publish_pypi.sh](../../scripts/build_and_publish_pypi.sh) |
-| 最近核对日期 | 2026-11-20（T8 两阶段拆分 + fork.20 SAM 编码锁 + fork.21 无边框多屏修复 + fork.22 文件表多选与图像属性页 + fork.23 标签管理器并入类别页 + fork.24 T3/P1 数据集接入 + fork.25 T3/P2 搜索/统计/类别页） |
+| 最近核对日期 | 2026-11-21（T8 两阶段拆分 + fork.20 SAM 编码锁 + fork.21 无边框多屏修复 + fork.22 文件表多选与图像属性页 + fork.23 标签管理器并入类别页 + fork.24 T3/P1 数据集接入 + fork.25 T3/P2 搜索/统计/类别页 + fork.26 T3/P3a 导入/回收站） |
 
 ### 1.1 规模与统计口径
 
@@ -29,7 +29,7 @@
 - `anylabeling/services/auto_labeling/visualgd/model/ops/build` 下 8 个生成 Python 文件；
 - `__pycache__` 缓存。
 
-因此当前统计集合为 **473 个 Python 文件、697 个唯一类名**。T3/P0 新增 `anylabeling/services/dataset/` 7 个应用文件与 `tests/test_dataset_db/` 6 个测试文件（存储层、编解码、导入器、schema 同步、往返与 P1 适配器用例）；P1 未新增应用文件，修改 `file_session.py`/`annotation_editor.py`/`file_list/controller.py`/`label_widget.py`/`repository.py`；未重跑全项目 AST 排名，文件数分母以当前枚举为准。相比 fork.3，新增应用文件来自操作员身份服务包、登录/注册对话框与会话控件、fork.7 的无边框窗口包（`anylabeling/widgets/frameless/` 8 个模块 + `anylabeling/widgets/__init__.py`），以及 T8 从 `label_widget.py` 拆出的 29 个模块（第一阶段：`labeling/actions/` 3、`labeling/file_list/` 4、`labeling/operator/` 2、`auto_labeling_handoff.py`、`constants.py`、`widgets/workspace.py`、`widgets/splitters.py`、`utils/label_text.py`；第二阶段：`annotation_editor`、`file_session`、`object_editor`、`canvas_navigation`、`status`、`appearance`、`label_filters`、`shape_commands`、`draw_modes`、`special_workspaces`、`label_loop`、`relations`、`right_sidebar`、`actions/toolbar`、`widgets/attributes_panel`）；新增测试文件为身份库、归属字段、门禁逻辑、无边框窗口测试与 T3 数据集存储/适配测试。
+因此当前统计集合为 **474 个 Python 文件、698 个唯一类名**。T3 新增 `anylabeling/services/dataset/` 7 个应用文件 + `widgets/trash_dialog.py` 1 个应用文件，与 `tests/test_dataset_db/` 6 个测试文件（存储层、编解码、导入器、schema 同步、往返与 P1/P2 适配器用例）；P1/P2/P3a 修改 `file_session.py`/`annotation_editor.py`/`file_list/controller.py`/`label_widget.py`/`right_sidebar.py`/`file_search.py`/`label_manager.py`/`actions/`/`repository.py`；未重跑全项目 AST 排名，文件数分母以当前枚举为准。相比 fork.3，新增应用文件来自操作员身份服务包、登录/注册对话框与会话控件、fork.7 的无边框窗口包（`anylabeling/widgets/frameless/` 8 个模块 + `anylabeling/widgets/__init__.py`），以及 T8 从 `label_widget.py` 拆出的 29 个模块（第一阶段：`labeling/actions/` 3、`labeling/file_list/` 4、`labeling/operator/` 2、`auto_labeling_handoff.py`、`constants.py`、`widgets/workspace.py`、`widgets/splitters.py`、`utils/label_text.py`；第二阶段：`annotation_editor`、`file_session`、`object_editor`、`canvas_navigation`、`status`、`appearance`、`label_filters`、`shape_commands`、`draw_modes`、`special_workspaces`、`label_loop`、`relations`、`right_sidebar`、`actions/toolbar`、`widgets/attributes_panel`）；新增测试文件为身份库、归属字段、门禁逻辑、无边框窗口测试与 T3 数据集存储/适配测试。
 
 ### 1.2 纳入范围
 
@@ -106,7 +106,7 @@ main() → MainWindow → LabelingWrapper → LabelingWidget
 | 模型存储目录 | 解析自定义/默认模型目录、迁移及旧目录扫描 | [model_storage.py](../../anylabeling/services/auto_labeling/model_storage.py)、[model.py](../../anylabeling/services/auto_labeling/model.py)、[model_manager.py](../../anylabeling/services/auto_labeling/model_manager.py) | `resolve_model_directory()`、`migrate_model_directory()` | 用户配置、文件系统、模型下载 | 支撑 | 本批补充 | 配置目录优先，默认/旧目录用于兼容扫描；迁移遇同名跳过，失败保留旧文件，修改时不能把它当成全量原子迁移 |
 | 画布与通用部件 | 图形编辑、缩放、列表及交互组件 | [canvas.py](../../anylabeling/views/labeling/widgets/canvas.py)、[shape.py](../../anylabeling/views/labeling/shape.py) | `Canvas`、`Shape` | Qt、标注编排 | 核心 | 深入 | `Shape` 同时连接画布、标签列表和文件读写，坐标/字段变更须检查三处一致性 |
 | 标签持久化与转换 | XLABEL JSON 读写及多格式转换 | [label_file.py](../../anylabeling/views/labeling/label_file.py)、[label_converter.py](../../anylabeling/views/labeling/label_converter.py)、[converter.py](../../anylabeling/views/common/converter.py) | `LabelFile.load/save()`、`LabelConverter`、`handle_convert_command()` | Shape、schema、本地文件 | 核心 | 深入 | 保存会规范化矩形并合并 `other_data`；改字段时需检查加载兼容和转换器 |
-| 数据集数据库存储层（T3/P0+P1+P2） | SQLite 建库/事务/备份、XLABEL↔DB 编解码、Repository CRUD、XLABEL 目录导入；P1 文件表/单图读写；P2 搜索/统计/类别页 | [services/dataset/](../../anylabeling/services/dataset)（`connection.py`、`codec.py`、`repository.py`、`importer.py`、`schema.py`） | `DatasetDatabase`、`DatasetRepository`、`ImageAnnotation`、`import_xlabel_folder()`；`DatabaseLabelFile`/`FileSession`/`RightSidebarTabs`/`LabelManagerPanel` 适配 | sqlite3、PIL、`schema.py`、`FileSession`、`AnnotationEditor`、`file_search`、`dataset_statistics` | 支撑（存储） | 新增（T3/P0）；P1/P2 接入 | Qt-free 存储包；P1 由 `FileSession._open_dataset_for_folder/_load_database_folder/_prepare_database_file` 与 `AnnotationEditor._save_database_labels` 调用；P2 用 `statistics_rows()`/`category_counts()`/`rewrite_categories()` 与 `matches_query_label_data()`。schema 常量须与 `docs/dev/db_design_assets/schema.sql` 保持结构一致（`test_schema.py` 守护）；`save_annotation` 按 uuid upsert、缺失对象软删、回收站用 `deleted_at`。导出/训练/回收站/导入向导尚未接入 DB |
+| 数据集数据库存储层（T3/P0–P3a） | SQLite 建库/事务/备份、XLABEL↔DB 编解码、Repository CRUD、XLABEL 目录导入；P1 文件表/单图读写；P2 搜索/统计/类别页；P3a 导入项目/回收站 | [services/dataset/](../../anylabeling/services/dataset)（`connection.py`、`codec.py`、`repository.py`、`importer.py`、`schema.py`）、[trash_dialog.py](../../anylabeling/views/labeling/widgets/trash_dialog.py) | `DatasetDatabase`、`DatasetRepository`、`ImageAnnotation`、`import_xlabel_folder()`；`DatabaseLabelFile`/`FileSession`/`RightSidebarTabs`/`LabelManagerPanel`/`TrashDialog` 适配 | sqlite3、PIL、`schema.py`、`FileSession`、`AnnotationEditor`、`file_search`、`dataset_statistics` | 支撑（存储） | 新增（T3/P0）；P1/P2/P3a 接入 | Qt-free 存储包；P1 由 `FileSession._open_dataset_for_folder/_load_database_folder/_prepare_database_file` 与 `AnnotationEditor._save_database_labels` 调用；P2 用 `statistics_rows()`/`category_counts()`/`rewrite_categories()` 与 `matches_query_label_data()`；P3a 用 `import_xlabel_folder()` 与 `.trash/<image_id>/`。schema 常量须与 `docs/dev/db_design_assets/schema.sql` 保持结构一致（`test_schema.py` 守护）；`save_annotation` 按 uuid upsert、缺失对象软删、回收站用 `deleted_at`。同步/导出/训练尚未接入 DB |
 | 操作员身份与标注归属 | 本地账号库、会话状态、未登录门禁与浏览模式、归属盖章判据、JSON 归属字段 | [identity/](../../anylabeling/services/identity)、[operator/gate.py](../../anylabeling/views/labeling/operator/gate.py)、[operator_dialog.py](../../anylabeling/views/labeling/widgets/operator_dialog.py)、[operator_bar.py](../../anylabeling/views/labeling/widgets/operator_bar.py)、[label_file.py](../../anylabeling/views/labeling/label_file.py)、[batch.py](../../anylabeling/views/labeling/utils/batch.py) | `OperatorStore`、`OperatorService`、`OperatorSession`、`OperatorGate`、`get_operator_service()`、`content_signature()`、`stamp_attribution()` | 配置工作目录、`MainWindow`、`LabelingWidget`、自动标注批量写盘、Qt | 支撑 | T8 复核 | 账号库在系统应用数据目录（与 work_dir 无关），旧路径仅作迁移来源；新增修改类动作必须登记到 `OPERATOR_REQUIRED_ACTIONS`；归属只在内容签名变化时盖章，账号不是安全边界；`OperatorGate.baseline/suppress` 是唯一归属基线状态，不要另建字段 |
 | 自动标注 | 模型配置、下载/加载、推理和结果回传（服务侧）；结果合并、占位清理与“完成对象”兜底（视图侧交接） | [model_manager.py](../../anylabeling/services/auto_labeling/model_manager.py)、[auto_labeling.py](../../anylabeling/views/labeling/widgets/auto_labeling/auto_labeling.py)、[auto_labeling_handoff.py](../../anylabeling/views/labeling/auto_labeling_handoff.py) | `ModelManager`、`AutoLabelingWidget`、`AutoLabelingHandoff` | 配置、模型适配器、标注 UI、画布/标签列表 | 核心 | T8 复核 | 模型 `type`、模型清单、动态类映射和适配器构造参数必须同步；合并规则（replace/追加、关系、flags/tags、占位清理）集中在 `AutoLabelingHandoff`，`LabelingWidget` 只保留同名委托 |
 | 自动训练 | 训练配置、进程启动、事件回传与导出 | [ultralytics_dialog.py](../../anylabeling/views/training/ultralytics_dialog.py)、[trainer.py](../../anylabeling/services/auto_training/ultralytics/trainer.py) | `UltralyticsDialog`、`TrainingManager` | 标注 UI、训练 worker、Ultralytics | 核心 | 深入 | payload、stdout 事件协议和隐藏 CLI 命令是跨进程契约，需成套修改 |
@@ -307,7 +307,7 @@ label_widget.py（9507 行 → 1776 行；LabelingWidget 9118 → 1697 行）
 
 **维护重点：**新增编辑类动作必须同时改 `actions/builder.py` 与 `OperatorGate.OPERATOR_REQUIRED_ACTIONS`；这些控制器**不得 import `label_widget`**（会形成循环），共享常量放 `labeling/constants.py`、`schema.py` 或 `utils/label_text.py`；修改宿主属性/方法名时必须同步对应模块 docstring 的契约表，否则只会在运行时以 `AttributeError` 暴露。
 
-### 5.12 数据集数据库存储层（T3/P0+P1+P2）
+### 5.12 数据集数据库存储层（T3/P0–P3a）
 
 ```text
 <数据集目录>
@@ -357,6 +357,18 @@ DatasetRepository.category_counts() → LabelManagerPanel._collect_labels()
 DatasetRepository.rewrite_categories(image_ids, renames, deletes)
   ─► LabelManagerPanel._rewrite_database()：文件表路径 → image_id
   ─► 重命名合并到目标 category；删除=对象 is_deleted=1
+
+导入/回收站（P3a）：
+FileSession.import_project_dialog()
+  ─► import_xlabel_folder() → import_session + image_file/object/tag/relation
+  ─► 已有库：skip/replace（replace 前 VACUUM INTO 备份）
+  ─► import_image_folder(dir) 打开新库
+
+FileSession._trash_current_image()
+  ─► move <root>/<rel_path> → <root>/.trash/<image_id>/<name>
+  ─► repository.delete_image()：is_deleted=1、deleted_at
+TrashDialog
+  ─► restore_image() + move back；purge_image() + rmtree(.trash/<id>)
 ```
 
 - 连接/事务：`DatasetDatabase`（WAL、`foreign_keys=ON`、`application_id=0x58414C42`、`user_version=1`、`backup_to()`）。
@@ -364,17 +376,17 @@ DatasetRepository.rewrite_categories(image_ids, renames, deletes)
 - 回收站：`delete_image()` 软删并写 `deleted_at`；`restore_image()` 检查原路径冲突；`purge_image()` 物理删除（对象/关系/tags 级联）。
 - 归属：JSON `author` 映射为 `image_file.editor`；`modified_at` 同名；P1 保存仍由 `OperatorGate.prepare_attribution()` 盖章。
 - 导入：默认 `skip`，可 `replace`/`error`；已存在库时先 `VACUUM INTO` 备份；源图片/JSON 不移动、不改写。
-- P1/P2 已接：打开含库目录、文件表、单图读取/保存、划分写库、搜索、统计、类别读取/按范围改名/删除。
-- P2 未接：回收站、导入/同步、导出/训练、项目文件、“checked”持久化；DB 模式仍显示 JSON 口径的旧数据或提示。
+- P1/P2/P3a 已接：打开含库目录、文件表、单图读取/保存、划分写库、搜索、统计、类别读取/按范围改名/删除、XLABEL 导入建库、回收站删除/恢复/清空。
+- P3b 未接：COCO/YOLO/VOC/LabelMe/LabelImg 导入、同步文件数据、导出/训练、项目文件、“checked”持久化；DB 模式仍显示 JSON 口径的旧数据或提示。
 - 测试：`tests/test_dataset_db/`（schema 同步、建库、导入、往返、upsert/软删/恢复、大小写、回收站、P1/P2 适配器）。测试用 `dataset_tmp` 而不是 `tmp_path`：当前 DSH 沙箱下 pytest 以 `mode=0o700` 创建的目录会带 owner-only DACL，导致无法列举。
 
-**维护重点：**schema 以 `anylabeling/services/dataset/schema.py` 为运行时源，`docs/dev/db_design_assets/schema.sql` 是评审/demo 副本；两者结构由 `test_schema.py` 对比，改表必须同步两处。存储层不得 import Qt 或 `views/labeling`，否则会破坏 Qt-free 单测与后续独立导入器。P1 的 `DatabaseLabelFile` 只实现 `FileSession` 需要的字段（`shapes/flags/other_data/image_data/filename/resolved_image_path`），不要把它扩成第二个 `LabelFile`；以 `Shape.to_dict()` 的契约做编解码测试。P2 的 DB 搜索是“每图一次 `load_annotation()`”，大库要改成批量查询；`rewrite_categories()` 只改对象/图片行，不写 editor/modified_at（与类别页既有缺口一致）。DB 模式的 `checked` 只是会话显示，不是持久状态；删除该 UI 前不要把它写进 DB。
+**维护重点：**schema 以 `anylabeling/services/dataset/schema.py` 为运行时源，`docs/dev/db_design_assets/schema.sql` 是评审/demo 副本；两者结构由 `test_schema.py` 对比，改表必须同步两处。存储层不得 import Qt 或 `views/labeling`，否则会破坏 Qt-free 单测与后续独立导入器。P1 的 `DatabaseLabelFile` 只实现 `FileSession` 需要的字段（`shapes/flags/other_data/image_data/filename/resolved_image_path`），不要把它扩成第二个 `LabelFile`；以 `Shape.to_dict()` 的契约做编解码测试。P2 的 DB 搜索是“每图一次 `load_annotation()`”，大库要改成批量查询；`rewrite_categories()` 只改对象/图片行，不写 editor/modified_at（与类别页既有缺口一致）。P3a 的回收站文件布局是 `<root>/.trash/<image_id>/<basename>`，来源 JSON 不移动；删除/恢复必须先移动文件再改 DB（失败回滚文件），不要只改 DB 留下孤儿。DB 模式的 `checked` 只是会话显示，不是持久状态；删除该 UI 前不要把它写进 DB。
 
 ## 6. 模块依赖图
 
 箭头表示已确认的主要组合/调用方向，不是完整 import 清单。
 
-> T3 的 `anylabeling/services/dataset/` 在 P1/P2 已由 `FileSession`/`AnnotationEditor`/`RightSidebarTabs`/`LabelManagerPanel` 调用（打开目录、单图读写、划分、搜索、统计、类别页），但下图仍是 fork.3 的 18 类总览，未重绘；T3 的依赖边以 §5.12 文字为准，全部接入完成后再统一重绘。
+> T3 的 `anylabeling/services/dataset/` 在 P1–P3a 已由 `FileSession`/`AnnotationEditor`/`RightSidebarTabs`/`LabelManagerPanel`/`TrashDialog` 调用（打开目录、单图读写、划分、搜索、统计、类别页、导入、回收站），但下图仍是 fork.3 的 18 类总览，未重绘；T3 的依赖边以 §5.12 文字为准，全部接入完成后再统一重绘。
 
 [![模块依赖图](code_structure_assets/module_dependencies.jpg)](code_structure_assets/module_dependencies.svg)
 
@@ -533,9 +545,10 @@ AST 统计排除 import、类定义本身和字符串，统计构造、继承、
 | `OperatorStore` | [store.py](../../anylabeling/services/identity/store.py) | 本地账号库：注册、认证、管理员改口令/禁用 | `register()`、`authenticate()`、`change_password()`、`set_disabled()`；`name_key` 唯一 | `OperatorService`；测试 9 处 | sqlite3、passwords | 名字大小写不敏感唯一、`none` 保留；账号只禁用不删除，删除会断开已写入的归属 |
 | `OperatorService` | [session.py](../../anylabeling/services/identity/session.py) | 账号库 + 进程级会话，向 UI 广播登录状态 | `store`、`session`、`login()`、`register()`、`current_operator_name` | `LabelingWidget`、`OperatorBar`、`batch.py` | `OperatorStore`、`OperatorSession` | 进程级实例由 `get_operator_service()` 提供；不得持久化登录状态，否则违反“关闭即退出” |
 | `DatasetDatabase` | [services/dataset/connection.py](../../anylabeling/services/dataset/connection.py) | 建库/打开/事务/在线备份；PRAGMA 与 schema 版本 | `create()`、`open()`、`close()`、`transaction()`、`backup_to()`、`table_counts()` | `DatasetRepository`、导入器、测试 | sqlite3、`schema.py` | T3/P0 新增；`create()` 拒绝覆盖非空库；`open()` 校验 `application_id`/`user_version`；WAL 连接必须在每个连接上重设 `foreign_keys` |
-| `DatasetRepository` | [services/dataset/repository.py](../../anylabeling/services/dataset/repository.py) | 数据集/类别/图片/对象/标签/关系/导入批次；回收站 | `add_image()`、`load_annotation()`、`save_annotation()`、`delete_image()`/`restore_image()`/`purge_image()`、`ensure_category()` | 导入器、测试；P1 的 UI 适配层（计划） | `DatasetDatabase`、`codec` | T3/P0 新增；`save_annotation` 按 uuid upsert + 缺失对象软删；`rel_path` 唯一索引 NOCASE；`editor`/`modified_at` 只在调用方声明内容变化时写入 |
+| `DatasetRepository` | [services/dataset/repository.py](../../anylabeling/services/dataset/repository.py) | 数据集/类别/图片/对象/标签/关系/导入批次；回收站；P2 统计/类别批量 | `add_image()`、`load_annotation()`、`save_annotation()`、`delete_image()`/`restore_image()`/`purge_image()`、`ensure_category()`、`image_summaries()`、`statistics_rows()`、`category_counts()`、`rewrite_categories()` | 导入器、`FileSession`、`RightSidebarTabs`、`LabelManagerPanel`、`TrashDialog`、测试 | `DatasetDatabase`、`codec` | T3/P0 新增；`save_annotation` 按 uuid upsert + 缺失对象软删；`rel_path` 唯一索引 NOCASE；`editor`/`modified_at` 只在调用方声明内容变化时写入；`rewrite_categories` 只改对象/图片行，不写归属 |
 | `ImageAnnotation` | [services/dataset/codec.py](../../anylabeling/services/dataset/codec.py) | 一张图的标注载荷（shapes/flags/tags/description/split/relations/extra/归属） | dataclass 字段 | `DatasetRepository`、导入器、测试 | 无（纯数据） | 与 `Shape.to_dict()` 的字段契约对齐；修改 shape 字段时同步 `shape_to_row`/`row_to_shape` 与往返测试 |
 | `DatabaseLabelFile` | [file_session.py](../../anylabeling/views/labeling/file_session.py) | DB 模式的轻量 label-file 载体，让 `load_file` 的公共尾部无需区分 JSON/DB | `filename`、`image_data`、`resolved_image_path`、`shapes`、`flags`、`other_data` | `FileSession` | `Shape`、`ImageAnnotation` | P1 新增；只实现 `FileSession`/`LabelFile` 消费到的字段，不要扩成第二个 `LabelFile`；`filename` 用图片路径，保存由 repository 接管 |
+| `TrashDialog` | [widgets/trash_dialog.py](../../anylabeling/views/labeling/widgets/trash_dialog.py) | 回收站列表：恢复/永久删除/清空；文件移动与 DB 软删/恢复 | `repository`、`root`、`changed`；`refresh()`、`_restore()`、`_purge()`、`_empty()` | `FileSession.show_trash_dialog()` | `DatasetRepository`、`.trash/<image_id>/` | P3a 新增；恢复时先移动文件再改 DB，失败回滚文件；删除前检查原路径冲突；来源 JSON 不随删 |
 | `FramelessWindow` | [window.py](../../anylabeling/widgets/frameless/window.py) | 窗口 chrome：启动形态、标题栏/菜单嵌入、全屏、原生 hit test | `frameless`、`menu_bar`、`title_bar`；`toggle_fullscreen()`、`nativeEvent()` | `MainWindow`；测试 6 处 | Qt、`FrameMenuBar`、`TitleBar`、`window_state` | 启动后不改形态；Windows 原生行为需实机回归；`menuBar()` 覆写必须保留原生模式路径 |
 | `FrameMenuBar` | [menu_bar.py](../../anylabeling/widgets/frameless/menu_bar.py) | 真实 `QMenuBar` 与顶层菜单显隐 | `add_menu()`、`set_menu_visible()`、`visibility_state()`、`menu_visibility_changed` | `FramelessWindow`、`MainWindow`；测试 | Qt | 显隐用 `QAction` 可见性，不要重排菜单；溢出依赖 Qt 内建 extension 按钮 |
 | `FileTableWidget` | [file_list/table.py](../../anylabeling/views/labeling/file_list/table.py) | 六列文件表控件（列宽自适应、右键、多选手势、`Ctrl+A` 全选、QListWidget 兼容表面） | `fill_name_column()`、`count()`、`selectedItems()`、`currentItem()`、`selected_rows()`、`selection_only_gesture()`；配合 `FileTableItem`/`FileNameDelegate` | 由 `FileListController` 创建；直接类名测试引用 0，行为经 `test_file_table.py` 间接覆盖 | Qt、`file_list.constants` | 行/列/排序/批量语义在 `FileListController`，改表格显示时两边都要看；`_auto_fill_name_column`/`_adjusting_columns` 参与列宽持久化判据；`_selection_only_gesture` 是“Ctrl/Shift 只选不打开”的唯一判据，不要改回 `QApplication.keyboardModifiers()`（会被同进程残留键态污染） |
@@ -833,7 +846,7 @@ model_manager.py:14
 - **文件表“只选不打开”只能依据控件自身手势（fork.22）**：`FileTableWidget._selection_only_gesture` 在 Ctrl/Shift 按下与 Ctrl/Shift+导航键时置位，`file_selection_changed()` 只看它。不要改回 `QApplication.keyboardModifiers()`：同进程内其它测试/控件残留的修饰键状态会让导航被误判为批量选择（fork.22 开发中因此让 `test_image_switch` 失败）。
 - **图片标签与图片标志只有“图像属性”页一处 UI（fork.22）**：该页在 `RightSidebarTabs.ALWAYS_VISIBLE_TABS` 中，旧配置里隐藏 `flags` 的项会被丢弃；`FileListController.set_row_tags()` 是“编辑后尚未保存”时的唯一同步点，跳过它会让 `标签` 列与内存数据不一致。
 - **“类别”页的标签管理器仍直接改写标注 JSON（fork.23）**：`LabelManagerPanel._rewrite_files()` 与旧对话框一样用 `json.dump` 落盘，不写 `author`/`modified_at`、不重置 `checked`，与 fork.4 的归属契约不一致；把它当作批量改名的入口时必须知道这一点，修的时候要走 `OperatorGate.prepare_attribution()`。
-- **DB 模式覆盖到 P2（fork.25）**：打开含库目录、文件表、单图读写、划分、搜索、统计、类别读取/按范围改名/删除已接 DB；回收站、导入/同步、导出/训练、项目文件仍按 JSON 或未接。DB 搜索是“每图一次 `load_annotation()`”，大库性能待 P3 批量化；类别批量编辑不写 `editor/modified_at`。`checked` 审核动作与“未审核”导航在 DB 模式下被禁用；`Save As`、删除标注、删除图片、拖入外部文件、修改输出目录被显式阻止。打开含库目录是唯一入口，没有“无库自动创建/导入 JSON”的向导。
+- **DB 模式覆盖到 P3a（fork.26）**：打开含库目录、文件表、单图读写、划分、搜索、统计、类别读取/按范围改名/删除、X-AnyLabeling 导入建库、回收站删除/恢复/清空已接 DB；COCO/YOLO/VOC/LabelMe/LabelImg 导入、同步文件数据、导出/训练、项目文件仍按 JSON 或未接。DB 搜索是“每图一次 `load_annotation()`”，大库性能待 P3b 批量化；类别批量编辑不写 `editor/modified_at`。`checked` 审核动作与“未审核”导航在 DB 模式下被禁用；`Save As`、拖入外部文件、修改输出目录被显式阻止。打开含库目录或“Import Project”是入口；导入冲突仍是整批 skip/replace，不是逐项清单。
 - **DB 模式首行加载依赖选择信号（fork.24/P1）**：`_load_database_folder()` 先设 `_no_selection_slot` 再 `setCurrentRow(0)`，随后显式 `load_file()`；`load_file()` 在目标行不是当前行时会先清空 `host.filename` 再切行，否则首图会被“点击当前文件”判断吞掉。改选择/加载逻辑时要同时验证 DB 与 JSON 两种目录。
 - **“类别”页首次激活会扫描文件列表内所有 JSON（fork.23）**：大目录首次切页可能卡顿；`invalidate()` 只在文件列表增删/排序/清空与新增类别时置位，切页时按需重建，不要在 paint/resize 之类的路径里调用 `rebuild()`。
 - **右侧栏最小宽度受页面 `sizeHint` 影响（fork.23）**：`build_workspace()` 用 `sizeHint * 0.8` 计算最小宽度，五列表格原本会把 220 抬到 315；`LabelManagerPanel` 覆盖了 `sizeHint()`/`minimumSizeHint()` 让表格横向滚动，改列数或控件时要重新验证侧栏可拖窄。
@@ -883,10 +896,10 @@ model_manager.py:14
 - fork.21 的无边框多屏修复（`WM_NCHITTEST` 改 `ScreenToClient` 物理坐标、移除 `WM_GETMINMAXINFO` 覆写）与真实双屏验证；
 - fork.22 的文件表多选（`ExtendedSelection` + 控件级 `Ctrl+A` 拦截 + 手势判据）、批量划分/移除/复制、`标签` 列，以及图片标签并入“图像属性”页（页内标签编辑器 + 标志列表、`ALWAYS_VISIBLE_TABS`、`show_image_tags_editor()`）；
 - fork.23 的标签管理器并入“类别”页（`LabelManagerPanel`、可编辑类别列、`From/To/Go` 提交边界、未登录只读门禁、侧栏最小宽度修正），原 `LabelModifyDialog` 删除；
-- T3/P0+P1+P2 的数据集 SQLite 存储层与接入（`services/dataset/` + `FileSession`/`AnnotationEditor`/`FileListController`/`LabelingWidget`/`RightSidebarTabs`/`LabelManagerPanel`）：8 表 86 列 3 视图、连接/事务/在线备份、XLABEL↔DB 编解码、Repository、XLABEL 目录导入器、打开含库目录、文件表、单图读取/保存、划分写库、搜索、统计、类别读取/按范围改名/删除；回收站/导入/同步/导出/训练**未接入**；
+- T3/P0–P3a 的数据集 SQLite 存储层与接入（`services/dataset/` + `FileSession`/`AnnotationEditor`/`FileListController`/`LabelingWidget`/`RightSidebarTabs`/`LabelManagerPanel`/`TrashDialog`）：8 表 86 列 3 视图、连接/事务/在线备份、XLABEL↔DB 编解码、Repository、XLABEL 目录导入器、打开含库目录、文件表、单图读取/保存、划分写库、搜索、统计、类别读取/按范围改名/删除、导入项目、回收站删除/恢复/清空；COCO/YOLO/VOC/LabelMe/LabelImg 导入、同步、导出/训练**未接入**；
 - **T8（fork.19 内不升版）的 `label_widget.py` 拆分（两阶段）**：第一阶段 `actions/`（动作表 + 菜单 + 工具栏策略）、`file_list/`（表格 + 控制器）、`operator/gate.py`、`auto_labeling_handoff.py`、`widgets/workspace.py`、`widgets/splitters.py`、`utils/label_text.py`、`constants.py`；第二阶段 `annotation_editor.py`、`file_session.py`、`object_editor.py`、`canvas_navigation.py`、`widgets/attributes_panel.py`、`status.py`、`appearance.py`、`label_filters.py`、`shape_commands.py`、`draw_modes.py`、`special_workspaces.py`、`label_loop.py`、`relations.py`、`right_sidebar.py`；`label_widget.py` 9507 → 1776 行，`__init__` 2816 → 239 行；
 - 模块和核心类关系、跨线程/进程/网络边界、引用统计、维护路径、已知问题和风险；
-- 核心类表共 32 类：原 28 类（18 类进入总览图，fork.4 的 2 个身份类与 fork.7 的 2 个窗口类见 §5.6/§5.7，T8 的主要拆分类见 §5.11/§8）；T3 的 `DatasetDatabase`/`DatasetRepository`/`ImageAnnotation`/`DatabaseLabelFile` 见 §5.12/§8（P1 已接单图读写与文件表，不计入原 28 类的引用排名）；
+- 核心类表共 33 类：原 28 类（18 类进入总览图，fork.4 的 2 个身份类与 fork.7 的 2 个窗口类见 §5.6/§5.7，T8 的主要拆分类见 §5.11/§8）；T3 的 `DatasetDatabase`/`DatasetRepository`/`ImageAnnotation`/`DatabaseLabelFile`/`TrashDialog` 见 §5.12/§8（P1–P3a 已接读写/搜索/统计/类别/导入/回收站，不计入原 28 类的引用排名）；
 - 最终统计排除生成文件，依赖循环及扇入/扇出已按同一范围复核。
 
 ### 未覆盖及原因
@@ -897,8 +910,8 @@ model_manager.py:14
 - fork.22 的翻译验证：四语言 `.ts` 新增 10 条（`LabelingWidget` 9 + `SettingsDialog` 1），`scripts/compile_languages.py` 重编 `.qm`（2183 条、0 unfinished）并重建 `resources.py`；从 `:/languages/translations/<lang>.qm` 加载并抽查全部新字符串，四语言均返回预期译文。真实桌面 GUI 交互（Ctrl+单击、右键批量菜单、高 DPI）未执行。
 - fork.23 的定向验证（2026-11-19）：`tests/test_labeling/test_label_manager.py` **12 passed**（行/范围、改名与删除的范围限制、重名与空名拒绝、未登录不可应用、锁定只读会话、显式解锁不写盘、删除后禁用编辑、选中类别作为默认类别、invalidate 重建）；`test_file_table` **27 passed**（新增“类别页托管面板 + Alt+L 切页 + 门禁联动”）；`test_file_table + test_label_manager + test_operator_gate + test_browse_mode` **55 passed**。全量 6 包 **539 passed / 1 skipped / 6 failed / 186 subtests**，失败集合与基线导出树一致（6 条既有测试债）。
 - fork.23 的翻译验证：新增 `LabelManagerPanel` 上下文 22 条、删除废弃的 `LabelModifyDialog` 上下文，重编 `.qm`（2205 条、0 unfinished）并重建 `resources.py`；从资源路径加载并抽查 `Category`/`Go`/`Duplicate category: %s` 等，四语言均返回预期译文。离屏冒烟确认类别页承载面板、`Alt+L` 切页、未登录只读；真实桌面交互未执行。
-- T3/P0+P1+P2 的验证（2026-11-20）：`tests/test_dataset_db` **18 passed**（P0：schema 与设计资产结构一致、8 表 86 列 3 视图、建库/PRAGMA、XLABEL 目录导入与源文件只读、往返、uuid upsert/软删/恢复、NOCASE 唯一、回收站与恢复冲突、坏 JSON 报告；P1：DB 目录检测/文件行、DB 保存写穿 repository；P2：DB 搜索过滤、统计/类别计数、类别重命名+软删）。离屏 `MainWindow` 冒烟（`temporary/p2/smoke_p2.py`，2 图/2 类别）：统计 `classes=('bolt','nut')`、`bolt` train、`nut` val、`total=2`；类别页 `['bolt','nut']`，未登录禁用；`label::bolt` 过滤到 1 行并加载 `a.png`，清空恢复 2 行；类别改名 `bolt→screw` 后重载 DB 为 `['screw']`；结果 `p2 smoke ok`。所用 conda 环境 Python 3.12.14 / SQLite 3.53.4。测试目录使用 `dataset_tmp`（普通 mode 目录）而非 `tmp_path`：当前 DSH 沙箱下 pytest 的 `mode=0o700` 目录带 owner-only DACL，无法列举；这不是产品缺陷。**未执行**：真实桌面点击/快捷键、DB 大目录搜索/统计性能、回收站/导入/同步/导出/训练、打包与全量回归。
-- T3/P1+P2 的翻译验证：四语言 `.ts` 在 P1 新增 14 条，P2 未新增界面文案；`pyside6-lrelease` 重编 `.qm` 各 **2219 条 / 0 unfinished** 并重建 `resources.py`；从 `:/languages/translations/zh_CN.qm` 加载并抽查 `Dataset database: %s`、`Current image is not registered in the dataset.`，均返回预期中文。
+- T3/P0–P3a 的验证（2026-11-21）：`tests/test_dataset_db` **18 passed**（P0：schema 与设计资产结构一致、8 表 86 列 3 视图、建库/PRAGMA、XLABEL 目录导入与源文件只读、往返、uuid upsert/软删/恢复、NOCASE 唯一、回收站与恢复冲突、坏 JSON 报告；P1：DB 目录检测/文件行、DB 保存写穿 repository；P2：DB 搜索过滤、统计/类别计数、类别重命名+软删）。离屏 `MainWindow` 冒烟（`temporary/p3/smoke_p3.py`）：打开 1 图 DB，`_trash_current_image()` 后 DB 行不可见、图片在 `.trash/1/a.png`、来源 `a.json` 仍在；`TrashDialog` 显示 1 行，`_restore()` 后 DB 行恢复、图片回原路径、`.trash` 文件消失；结果 `p3 smoke ok`。所用 conda 环境 Python 3.12.14 / SQLite 3.53.4。测试目录使用 `dataset_tmp`（普通 mode 目录）而非 `tmp_path`：当前 DSH 沙箱下 pytest 的 `mode=0o700` 目录带 owner-only DACL，无法列举；这不是产品缺陷。**未执行**：真实桌面菜单/文件选择/确认框、导入冲突逐项选择、同步/导出/训练、打包与全量回归。
+- T3/P1–P3a 的翻译验证：P1 新增 14 条、P3a 新增 34 条，P2 未新增；`pyside6-lrelease` 重编 `.qm` 各 **2253 条 / 0 unfinished** 并重建 `resources.py`；从 `:/languages/translations/zh_CN.qm` 加载并抽查 `Import Project`、`Move this image and its annotation to the recycle bin?`、`Empty Recycle Bin`，均返回预期中文。
 
 | 测试包 | 基线 | 重构后 | 失败集合 |
 |---|---|---|---|
@@ -927,4 +940,4 @@ model_manager.py:14
 
 ---
 
-**文档自检：**核心类表在 fork.3 的 22 类基础上新增 T8 的拆分类（`FileListController`/`OperatorGate`/`AutoLabelingHandoff`/`AnnotationEditor`/`FileSession` 以及其余控制器，完整清单见 §5.11）；总览图与 SVG/JPG 资源未重绘，新增关系以 §6 Mermaid 与 §9.1 Mermaid 说明为准；所引项目文件均确认存在；T8 两阶段的规模、行号、模块表和验证结果按实际代码与本机实测更新；fork.21 的窗口原生行为按真实双屏实测更新（§5.7），并新增 `WM_GETMINMAXINFO` 守门用例；fork.22 按本批实际代码更新文件表列/选择语义、右侧 tab 名称与“图像属性”页归属、`FileTableWidget`/`FileListController` 接口表、模块行数与 §16 定向验证结果；fork.23 新增 `LabelManagerPanel` 类表行与“类别”页归属说明、`LabelModifyDialog` 删除后的宿主契约、侧栏最小宽度与直接写 JSON 的风险条目、§5.11 模块行数与 §16 验证结果；T3/P0 新增 `services/dataset/` 模块行、§5.12 数据流、`DatasetDatabase`/`DatasetRepository`/`ImageAnnotation` 类表行与 §16 验证结果；T3/P1 把 §5.12 扩为打开目录/单图读写的完整数据流，新增 `DatabaseLabelFile` 类表行、DB 模式已知限制与离屏冒烟结果，并明确搜索/统计/类别页/导出/训练未接；未把未执行的真实桌面/打包验证写成已通过；上帝类口径按用户 2026-11-19 说明收敛为仅 `Canvas`。`docs/开始.md` T8 已标记完成，T3 标记为“进行中（P1）”。
+**文档自检：**核心类表在 fork.3 的 22 类基础上新增 T8 的拆分类（`FileListController`/`OperatorGate`/`AutoLabelingHandoff`/`AnnotationEditor`/`FileSession` 以及其余控制器，完整清单见 §5.11）；总览图与 SVG/JPG 资源未重绘，新增关系以 §6 Mermaid 与 §9.1 Mermaid 说明为准；所引项目文件均确认存在；T8 两阶段的规模、行号、模块表和验证结果按实际代码与本机实测更新；fork.21 的窗口原生行为按真实双屏实测更新（§5.7），并新增 `WM_GETMINMAXINFO` 守门用例；fork.22 按本批实际代码更新文件表列/选择语义、右侧 tab 名称与“图像属性”页归属、`FileTableWidget`/`FileListController` 接口表、模块行数与 §16 定向验证结果；fork.23 新增 `LabelManagerPanel` 类表行与“类别”页归属说明、`LabelModifyDialog` 删除后的宿主契约、侧栏最小宽度与直接写 JSON 的风险条目、§5.11 模块行数与 §16 验证结果；T3/P0 新增 `services/dataset/` 模块行、§5.12 数据流、`DatasetDatabase`/`DatasetRepository`/`ImageAnnotation` 类表行与 §16 验证结果；T3/P1 扩为打开目录/单图读写并新增 `DatabaseLabelFile`；T3/P2 扩为搜索/统计/类别页；T3/P3a 新增导入/回收站数据流、`TrashDialog` 类表行、回收站/导入限制与离屏冒烟结果；未把未执行的真实桌面/打包验证写成已通过；上帝类口径按用户 2026-11-19 说明收敛为仅 `Canvas`。`docs/开始.md` T8 已标记完成，T3 标记为“进行中（P3a）”。

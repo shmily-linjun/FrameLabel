@@ -5516,6 +5516,86 @@ The image files and their annotation files will NOT be deleted.</source>
         <source>Current image is not registered in the dataset.</source>
         <translation>現在の画像はデータセットに登録されていません。</translation>
     </message>
+    <message>
+        <source>Import Project (X-AnyLabeling)</source>
+        <translation>プロジェクトをインポート（X-AnyLabeling）</translation>
+    </message>
+    <message>
+        <source>Import Project</source>
+        <translation>プロジェクトをインポート</translation>
+    </message>
+    <message>
+        <source>A dataset database already exists in this directory.</source>
+        <translation>このディレクトリには既にデータセットデータベースがあります。</translation>
+    </message>
+    <message>
+        <source>Skip existing images or replace their annotations?</source>
+        <translation>既存の画像をスキップしますか、それとも注釈を置き換えますか？</translation>
+    </message>
+    <message>
+        <source>Skip Existing</source>
+        <translation>既存をスキップ</translation>
+    </message>
+    <message>
+        <source>Replace Existing</source>
+        <translation>既存を置き換え</translation>
+    </message>
+    <message>
+        <source>Import failed</source>
+        <translation>インポートに失敗しました</translation>
+    </message>
+    <message>
+        <source>Images: %d</source>
+        <translation>画像: %d</translation>
+    </message>
+    <message>
+        <source>Labeled: %d</source>
+        <translation>注釈あり: %d</translation>
+    </message>
+    <message>
+        <source>Objects: %d</source>
+        <translation>オブジェクト: %d</translation>
+    </message>
+    <message>
+        <source>Skipped: %d</source>
+        <translation>スキップ: %d</translation>
+    </message>
+    <message>
+        <source>Errors: %d</source>
+        <translation>エラー: %d</translation>
+    </message>
+    <message>
+        <source>Backup: %s</source>
+        <translation>バックアップ: %s</translation>
+    </message>
+    <message>
+        <source>Recycle bin is available in dataset mode only.</source>
+        <translation>ごみ箱はデータセットモードでのみ利用できます。</translation>
+    </message>
+    <message>
+        <source>No dataset image is open.</source>
+        <translation>開いているデータセット画像がありません。</translation>
+    </message>
+    <message>
+        <source>Error deleting image</source>
+        <translation>画像の削除に失敗しました</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; は存在しません。</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; は既に存在します。</translation>
+    </message>
+    <message>
+        <source>Image moved to the recycle bin.</source>
+        <translation>画像をごみ箱に移動しました。</translation>
+    </message>
+    <message>
+        <source>Move this image and its annotation to the recycle bin?</source>
+        <translation>この画像と注釈をごみ箱に移動しますか？</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -11566,4 +11646,62 @@ Response preview:
         <translation>ブラウズモード - アノテーションの編集にはログインが必要です</translation>
     </message>
   </context>
+<context><name>TrashDialog</name>
+    <message>
+        <source>Recycle Bin</source>
+        <translation>ごみ箱</translation>
+    </message>
+    <message>
+        <source>Image</source>
+        <translation>画像</translation>
+    </message>
+    <message>
+        <source>Deleted at</source>
+        <translation>削除日時</translation>
+    </message>
+    <message>
+        <source>Restore</source>
+        <translation>復元</translation>
+    </message>
+    <message>
+        <source>Delete Permanently</source>
+        <translation>完全に削除</translation>
+    </message>
+    <message>
+        <source>Empty Recycle Bin</source>
+        <translation>ごみ箱を空にする</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>閉じる</translation>
+    </message>
+    <message>
+        <source>Restore failed</source>
+        <translation>復元に失敗しました</translation>
+    </message>
+    <message>
+        <source>The trashed file is missing: %s</source>
+        <translation>ごみ箱のファイルが見つかりません: %s</translation>
+    </message>
+    <message>
+        <source>The original path already exists: %s</source>
+        <translation>元のパスは既に存在します: %s</translation>
+    </message>
+    <message>
+        <source>Permanently delete this image? This cannot be undone.</source>
+        <translation>この画像を完全に削除しますか？元に戻せません。</translation>
+    </message>
+    <message>
+        <source>Permanently delete every trashed image?</source>
+        <translation>ごみ箱のすべての画像を完全に削除しますか？</translation>
+    </message>
+    <message>
+        <source>The database row could not be deleted.</source>
+        <translation>データベースの行を削除できませんでした。</translation>
+    </message>
+    <message>
+        <source>Some database rows could not be deleted.</source>
+        <translation>一部のデータベース行を削除できませんでした。</translation>
+    </message>
+</context>
 </TS>

@@ -47,6 +47,20 @@ def build_actions(host):  # noqa: C901
         "open",
         host.tr("Open Dir"),
     )
+    import_project = action(
+        host.tr("Import Project (X-AnyLabeling)…"),
+        host.import_project_dialog,
+        None,
+        None,
+        host.tr("Import X-AnyLabeling JSON files into a dataset database"),
+    )
+    show_trash = action(
+        host.tr("Recycle Bin…"),
+        host.show_trash_dialog,
+        None,
+        None,
+        host.tr("Restore or permanently delete trashed images"),
+    )
     open_next_image = action(
         host.tr("Next Image"),
         host.open_next_image,
@@ -1349,6 +1363,8 @@ def build_actions(host):  # noqa: C901
         open=open_,
         open_video=openvideo,
         open_dir=opendir,
+        import_project=import_project,
+        show_trash=show_trash,
         close=close,
         toggle_compare_view=toggle_compare_view,
         delete_file=delete_file,

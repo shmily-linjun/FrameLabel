@@ -6,6 +6,52 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.26 — 2026-11-21
+
+### 1. 背景与原因
+
+P0–P2 已让 DB 目录可打开、可读写、可搜索/统计/改类别，但用户仍没有创建数据库的 UI 入口，也没有删除/恢复。P3 计划包含导入、回收站、同步、导出/训练；本批先落 **P3a：导入项目 + 回收站**，让 DB 模式可被普通用户进入和清理；同步/导出/训练留在 P3b。
+
+### 2. 主要实现与关键细节
+
+- **导入项目**：`文件 → Import Project (X-AnyLabeling)…` 选择目录，调用 P0 `import_xlabel_folder()`；目录已有库时弹“跳过已存在 / 替换已存在 / 取消”，替换前自动 `VACUUM INTO` 备份；完成后显示图片/标注/对象/跳过/错误统计并直接打开数据集。
+- **回收站**：DB 模式删除图片或标注统一为“图片与标注同进退”——图片移到 `<dataset>/.trash/<image_id>/`，DB 行 `is_deleted=1`、`deleted_at`；原来源 JSON 不移动。`TrashDialog` 列出回收站，可恢复（移回 `rel_path` 并清 `deleted_at`）、永久删除、清空；恢复前检查原路径冲突。
+- **动作入口**：File 菜单新增“Import Project (X-AnyLabeling)…”与“Recycle Bin…”；无库时回收站提示仅数据集模式可用。
+- **翻译**：四语言新增 34 条（导入/回收站），重编 `.qm`（各 **2253 条 / 0 unfinished**）并重建 `resources.py`。
+- **版本**：`4.3.2+fork.25` → `4.3.2+fork.26`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/actions/builder.py`、`actions/menus.py`、`file_session.py`、`label_widget.py`、`app_info.py`
+- 新增：`anylabeling/views/labeling/widgets/trash_dialog.py`
+- 翻译资源：`anylabeling/resources/translations/{en_US,zh_CN,ja_JP,ko_KR}.{ts,qm}`、`anylabeling/resources/resources.py`
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`、`docs/dev/数据库设计-讨论稿.md`（代码基线）
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：无库目录可通过菜单导入为 DB 项目；DB 模式可删除到回收站、恢复/永久删除/清空；JSON 模式仍走原 `_delete_` 目录逻辑。
+- **内部接口**：新增 `FileSession.import_project_dialog()/show_trash_dialog()/_trash_current_image()`、`TrashDialog`、`LabelingWidget.import_project_dialog()/show_trash_dialog()`、`actions.import_project/show_trash`。
+- **数据契约**：DB schema 不变；回收站文件布局按 D19（`.trash/<image_id>/`）；来源 JSON 不删。
+- **版本**：`4.3.2+fork.25` → `4.3.2+fork.26`（用户可观察行为变化）。
+
+### 5. 实际验证内容
+
+- `python -m pytest tests/test_dataset_db -q`：**18 passed**（P3 复用 P0 回收站 repository 用例）。
+- 离屏 `MainWindow` 冒烟（`temporary/p3/smoke_p3.py`）：打开 1 图 DB → `FileSession._trash_current_image()` 后 DB 行不可见、图片在 `.trash/1/a.png`、来源 `a.json` 仍在；`TrashDialog` 显示 1 行，`_restore()` 后 DB 行恢复、图片回原路径、`.trash` 文件消失；结果 `p3 smoke ok`。
+- `python -m compileall` 修改模块通过；四语言 `.qm` 各 2253 条 / 0 unfinished。
+- **未执行**：真实桌面菜单/文件选择/确认框、导入冲突逐项选择、同步/导出/训练、打包、全量回归。
+
+### 6. 已知限制与后续事项
+
+- **本批是 P3a**：只做导入（X-AnyLabeling JSON）与回收站；COCO/YOLO/VOC/LabelMe/LabelImg 导入、同步文件数据、导出/训练仍待 P3b。
+- 导入冲突是“整批跳过/整批替换”，不是设计 §10.2 的逐项/批量冲突清单；逐项选择待 P3b。
+- 回收站没有“自动清理天数”配置入口；只支持手动清空；删除/恢复不做来源 JSON 处理（设计 D19）。
+- 导入后的类别顺序没有从 `classes.txt` 种子化（D18 的 P3b）。
+- DB 模式删除/恢复未强制登录门禁（沿用现有删除动作的门禁状态，未额外加 DB 专属限制）。
+- pytest `tmp_path` 仍受本机 DSH 沙箱 `mode=0o700` DACL 限制；本批用 `dataset_tmp` 与离屏冒烟。
+
+---
+
 ## 4.3.2+fork.25 — 2026-11-20
 
 ### 1. 背景与原因

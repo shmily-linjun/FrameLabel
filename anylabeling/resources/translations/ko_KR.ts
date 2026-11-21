@@ -5518,6 +5518,86 @@ The image files and their annotation files will NOT be deleted.</source>
         <source>Current image is not registered in the dataset.</source>
         <translation>현재 이미지가 데이터셋에 등록되어 있지 않습니다.</translation>
     </message>
+    <message>
+        <source>Import Project (X-AnyLabeling)</source>
+        <translation>프로젝트 가져오기(X-AnyLabeling)</translation>
+    </message>
+    <message>
+        <source>Import Project</source>
+        <translation>프로젝트 가져오기</translation>
+    </message>
+    <message>
+        <source>A dataset database already exists in this directory.</source>
+        <translation>이 디렉터리에 이미 데이터셋 데이터베이스가 있습니다.</translation>
+    </message>
+    <message>
+        <source>Skip existing images or replace their annotations?</source>
+        <translation>기존 이미지를 건너뛸까요, 아니면 주석을 바꿀까요?</translation>
+    </message>
+    <message>
+        <source>Skip Existing</source>
+        <translation>기존 건너뛰기</translation>
+    </message>
+    <message>
+        <source>Replace Existing</source>
+        <translation>기존 바꾸기</translation>
+    </message>
+    <message>
+        <source>Import failed</source>
+        <translation>가져오기 실패</translation>
+    </message>
+    <message>
+        <source>Images: %d</source>
+        <translation>이미지: %d</translation>
+    </message>
+    <message>
+        <source>Labeled: %d</source>
+        <translation>주석 있음: %d</translation>
+    </message>
+    <message>
+        <source>Objects: %d</source>
+        <translation>객체: %d</translation>
+    </message>
+    <message>
+        <source>Skipped: %d</source>
+        <translation>건너뜀: %d</translation>
+    </message>
+    <message>
+        <source>Errors: %d</source>
+        <translation>오류: %d</translation>
+    </message>
+    <message>
+        <source>Backup: %s</source>
+        <translation>백업: %s</translation>
+    </message>
+    <message>
+        <source>Recycle bin is available in dataset mode only.</source>
+        <translation>휴지통은 데이터셋 모드에서만 사용할 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>No dataset image is open.</source>
+        <translation>열린 데이터셋 이미지가 없습니다.</translation>
+    </message>
+    <message>
+        <source>Error deleting image</source>
+        <translation>이미지 삭제 실패</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 존재하지 않습니다.</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 이미 존재합니다.</translation>
+    </message>
+    <message>
+        <source>Image moved to the recycle bin.</source>
+        <translation>이미지를 휴지통으로 이동했습니다.</translation>
+    </message>
+    <message>
+        <source>Move this image and its annotation to the recycle bin?</source>
+        <translation>이 이미지와 주석을 휴지통으로 이동할까요?</translation>
+    </message>
 </context><context>
     <name>MainWindow</name>
     <message>
@@ -11568,4 +11648,62 @@ Response preview:
         <translation>찾아보기 모드 - 주석 편집에는 로그인이 필요합니다</translation>
     </message>
   </context>
+<context><name>TrashDialog</name>
+    <message>
+        <source>Recycle Bin</source>
+        <translation>휴지통</translation>
+    </message>
+    <message>
+        <source>Image</source>
+        <translation>이미지</translation>
+    </message>
+    <message>
+        <source>Deleted at</source>
+        <translation>삭제 시각</translation>
+    </message>
+    <message>
+        <source>Restore</source>
+        <translation>복원</translation>
+    </message>
+    <message>
+        <source>Delete Permanently</source>
+        <translation>영구 삭제</translation>
+    </message>
+    <message>
+        <source>Empty Recycle Bin</source>
+        <translation>휴지통 비우기</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>닫기</translation>
+    </message>
+    <message>
+        <source>Restore failed</source>
+        <translation>복원 실패</translation>
+    </message>
+    <message>
+        <source>The trashed file is missing: %s</source>
+        <translation>휴지통 파일이 없습니다: %s</translation>
+    </message>
+    <message>
+        <source>The original path already exists: %s</source>
+        <translation>원래 경로가 이미 존재합니다: %s</translation>
+    </message>
+    <message>
+        <source>Permanently delete this image? This cannot be undone.</source>
+        <translation>이 이미지를 영구 삭제할까요? 되돌릴 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Permanently delete every trashed image?</source>
+        <translation>휴지통의 모든 이미지를 영구 삭제할까요?</translation>
+    </message>
+    <message>
+        <source>The database row could not be deleted.</source>
+        <translation>데이터베이스 행을 삭제할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Some database rows could not be deleted.</source>
+        <translation>일부 데이터베이스 행을 삭제할 수 없습니다.</translation>
+    </message>
+</context>
 </TS>

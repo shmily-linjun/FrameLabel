@@ -1686,6 +1686,12 @@ class LabelingWidget(LabelDialog):
     def import_image_folder(self, dirpath, pattern=None, load=True):
         return FileSession(self).import_image_folder(dirpath, pattern, load)
 
+    def import_project_dialog(self):
+        return FileSession(self).import_project_dialog()
+
+    def show_trash_dialog(self):
+        return FileSession(self).show_trash_dialog()
+
     # -- auto labeling handoff -------------------------------------------
     # The merge/finish rules live in ``auto_labeling_handoff.py``; the widget
     # stays the signal target and delegates the work.
