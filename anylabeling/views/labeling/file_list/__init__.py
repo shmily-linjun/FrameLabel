@@ -1,4 +1,4 @@
-"""Six-column file list of the labeling workspace.
+"""Five-column file list of the labeling workspace.
 
 ``FileListController`` owns the table widget and the row/column rules; the
 ``labeling.label_widget`` module only delegates the public operations.
@@ -15,7 +15,6 @@ from .constants import (
     FILE_COL_NAME_WIDTH,
     FILE_COL_SHAPES,
     FILE_COL_SPLIT,
-    FILE_COL_TAGS,
     FILE_COLUMN_COUNT,
     FILE_COLUMN_WIDTHS,
     FILE_FAILED_COLOR,

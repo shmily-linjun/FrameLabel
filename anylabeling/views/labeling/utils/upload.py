@@ -40,6 +40,9 @@ def _refresh_uploaded_file_items(self):
 def _refresh_after_annotation_upload(self):
     _refresh_uploaded_file_items(self)
     self.load_file(self.filename)
+    panel = getattr(self, "label_manager_widget", None)
+    if panel is not None:
+        panel.invalidate()
 
 
 class UploadPPOCRThread(QThread):
@@ -1666,6 +1669,10 @@ def upload_label_classes_file(self):
         self.label_dialog.label_list.addItems(labels)
         if self.label_dialog._sort_labels:
             self.label_dialog.sort_labels()
+
+        panel = getattr(self, "label_manager_widget", None)
+        if panel is not None:
+            panel.invalidate()
 
         popup = Popup(
             self.tr("Successfully loaded %d labels!") % len(set(labels)),

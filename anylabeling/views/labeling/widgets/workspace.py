@@ -340,23 +340,11 @@ def build_instruction_bar(host):
         host._panel_toggle_icon("sidebar", True)
     )
     host.sidebar_toggle_button.clicked.connect(host.toggle_right_sidebar)
-    # Image tags live in the right-sidebar tab now; this button jumps to that
-    # tab instead of resizing the canvas area.
-    host.image_tags_toggle_button = QtWidgets.QToolButton()
-    host._configure_toggle_button(
-        host.image_tags_toggle_button,
-        toggle_style,
-        host.tr("Edit image tags"),
-    )
-    host.image_tags_toggle_button.setDefaultAction(
-        host.actions.show_image_tags
-    )
-    # These two buttons live in the title bar in frameless mode and are
-    # re-added to the toolbar in native mode (see MainWindow).
-    host.window_control_buttons = (
-        host.sidebar_toggle_button,
-        host.image_tags_toggle_button,
-    )
+    # This button lives in the title bar in frameless mode and is re-added to
+    # the toolbar in native mode (see MainWindow).  The image-tags button was
+    # removed: image tags are edited in the "Image Attributes" tab and the
+    # action stays available through the View menu and its shortcut.
+    host.window_control_buttons = (host.sidebar_toggle_button,)
     host.shortcuts_button = QtWidgets.QToolButton()
     host.shortcuts_button.setIcon(
         get_icon("command", theme["text"], theme["primary"])

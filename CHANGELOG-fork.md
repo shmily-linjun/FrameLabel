@@ -6,6 +6,67 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.31 — 2026-11-22
+
+### 1. 背景与原因
+
+用户提出 5 项界面/交互问题：
+
+1. “编辑图片标签”按钮所在功能已并入右侧“图像属性”页，标题栏中最小化按钮旁的该按钮应删除；
+2. 标题栏右键菜单里的“全屏”应移到标题栏，且进入/退出全屏共用一个按钮；
+3. 文件列表不需要“标签”列；
+4. 无论登录与否，导入图片或新增/删除/修改类别后，右侧“类别”页都不会实时更新，只有点击 `工具 → 标签管理器` 才刷新；
+5. 按文档约定（讨论稿 D7/D18），类别顺序必须可调整，且该顺序是导出类别编号的权威。
+
+前 4 项属于重复入口、信息不完整和隐藏刷新时机的问题；第 5 项落地讨论稿已确认但尚未实现的 `category.sort_index` 排序 UI。
+
+### 2. 主要实现与关键细节
+
+- **标题栏去掉图片标签按钮**：`workspace.build_instruction_bar()` 不再创建 `image_tags_toggle_button`，`window_control_buttons` 只保留右侧栏开关；图片标签入口仍是 `视图 → 图片标签` 与 `Ctrl+Shift+T`。
+- **全屏改为标题栏单按钮**：`MainWindow._install_fullscreen_button()` 用 `FramelessWindow.fullscreen_action`（`F11`/视图菜单共用同一个可勾选 `QAction`）作为标题栏 `QToolButton` 的默认动作；`_sync_fullscreen_button()` 在 `fullscreen_changed` 时切换图标（`expand-view`/`restore-view`）、`全屏/退出全屏` 文案与 tooltip。`TitleBar.build_context_menu()` 删除全屏项；原生窗口模式没有自绘标题栏，按钮回退到工具条。
+- **文件表改回五列**：`file_list/constants.py` 删除 `FILE_COL_TAGS`（`FILE_COLUMN_COUNT` 6 → 5）；`FileListController` 删除标签列构建与 `set_row_tags()`/`_apply_tags_item()`/`build_tags_item()`/`tags_text()`，表头右键与 `show_tags` 配置项同步删除；`LabelingWidget._on_image_tags_changed()` 与 `AutoLabelingHandoff` 不再写文件表；默认配置删除 `file_list.show_tags`。
+- **“类别”页实时刷新**：`LabelManagerPanel.invalidate()` 置脏后，若“类别”页是当前页则启动 120ms 单次定时器合并重建（`_refresh_if_visible()`/`flush_refresh()`），页面隐藏时只置脏、切页时仍由 `ensure_built()` 重建；页面判断改为祖先链（真实布局中面板位于 `labels_panel` 容器内，不是 `QTabWidget` 的直接页面）。重建保留用户已选的 `From`/`To` 范围与当前类别，并在表格单元格编辑中延后重建，避免丢掉正在输入的改名。
+- **新增失效点**：`AnnotationEditor.add_label()`（新类别）、`remove_labels()`（对象删空即隐藏类别）、JSON/DB 两条保存路径；`ObjectEditor.edit_label()`/`batch_edit_labels()`；`ShapeCommands.undo_shape_edit()`；`SpecialWorkspaces.shape_manager()`；`utils.upload` 的类别上传与标注上传后刷新；文件表原有增删/排序/清空仍走 `FileListController.invalidate_label_manager()`。
+- **类别顺序可调整**：`DatasetRepository.category_counts()` 改为 `ORDER BY c.sort_index, c.name`；新增 `set_category_order(names)`——把可见类别的目标顺序放入全量类别的原有槽位后逐行更新 `sort_index`，未知/重复名返回 `False` 且不写库。`LabelManagerPanel` 底部新增 `↑`/`↓` 按钮与 `move_selected_category()`，仅在编辑态且存在 `dataset_repository` 时可用；无对象类别（`object_count == 0`）不再列出，与 JSON 模式“由剩余对象推导类别集合”的口径一致。
+- **翻译**：四语言新增 `Move Up`/`Move Down`/`Category order is stored in the dataset database`/`An error occurred while reordering the categories.`/`Full Screen`/`Exit Full Screen`，删除 `TitleBar` 上下文中已不再使用的全屏两条；重编 `.qm`、重建 `resources.py`。
+- 版本：`4.3.2+fork.30` → `4.3.2+fork.31`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/mainwindow.py`、`anylabeling/widgets/frameless/title_bar.py`、`anylabeling/views/labeling/widgets/workspace.py`、`anylabeling/views/labeling/widgets/label_manager.py`、`anylabeling/views/labeling/file_list/{constants,controller,table,__init__}.py`、`anylabeling/views/labeling/{annotation_editor,object_editor,shape_commands,special_workspaces,label_widget,auto_labeling_handoff}.py`、`anylabeling/views/labeling/utils/upload.py`、`anylabeling/services/dataset/repository.py`、`anylabeling/configs/xanylabeling_config.yaml`、`anylabeling/resources/translations/*`、`anylabeling/resources/resources.py`、`anylabeling/app_info.py`
+- 测试：`tests/test_labeling/test_label_manager.py`（实时刷新、祖先链可见性、范围保留、DB 顺序、上移/下移、无 DB 禁用、无对象类别过滤）、`tests/test_labeling/test_file_table.py`（五列表头、无标签列、标题栏无图片标签按钮、全屏单按钮与右键菜单移除、可见“类别”页自动刷新）、`tests/test_labeling/test_image_tags.py`（不再写文件表）、`tests/test_dataset_db/test_repository.py`（`sort_index` 顺序与 `set_category_order()` 拒绝非法输入）
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.8，新增 §4.5）、`docs/dev/数据库设计-讨论稿.md`（D18 落地说明与代码基线）、`docs/开始.md`（T3 状态）、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：标题栏不再有图片标签按钮；全屏由标题栏单按钮/`F11`/视图菜单三者共用，按钮提示随状态切换，右键菜单不再有全屏；文件表为五列，图片标签只在“图像属性”页；导入图片、增删改对象/类别、保存后“类别”页自动更新且保留文件范围；类别可上移/下移，顺序写入数据集数据库并成为后续导出顺序。
+- **接口**：新增 `DatasetRepository.set_category_order(names)`；`category_counts()` 的顺序由名称改为 `sort_index`；`LabelManagerPanel` 新增 `flush_refresh()`、`move_selected_category()`、`_is_visible_page()`、`_selected_category()`、`_select_category()`、`_update_reorder_buttons()` 及 `move_up_button`/`move_down_button`；删除 `FileListController.set_row_tags()`/`_apply_tags_item()`/`build_tags_item()`/`tags_text()`。
+- **配置**：默认 YAML 删除 `file_list.show_tags`；旧用户配置中的该键不再被读取，也不再写回（未知键按既有策略保留）。
+- **数据/契约**：无 schema 变更；类别顺序写入既有 `category.sort_index`。同一数据集内类别 `sort_index` 相同时仍按名称排序（旧库/外部写入的兜底），本批的上移/下移会把全量顺序规范化为 0..n-1。
+- **兼容性**：纯 JSON 目录没有类别顺序权威，`↑`/`↓` 按钮禁用并说明原因；DB 模式下列表不显示无对象类别（对象被删空后即消失），类别行本身仍保留在库中，后续 `in_class_list`“隐藏类别”能力再区分。
+- **版本**：fork.30 → fork.31。
+
+### 5. 实际验证内容
+
+- `python -m pytest tests/test_dataset_db -q`：**20 passed**（新增 `sort_index` 顺序与 `set_category_order()` 用例）。
+- `python -m pytest tests/test_label_manager.py -q`：**20 passed**（新增实时刷新/可见性/范围保留/DB 顺序/上移下移/无 DB 禁用/无对象过滤 8 条）。
+- `python -m pytest tests/test_file_table.py tests/test_label_manager.py tests/test_image_tags.py tests/test_dataset_db -q`：**82 passed / 4 failed**；4 条失败均为 HEAD 基线同样存在的文件表 DB 模式测试债（`test_file_paths_survive_annotation_status_roles`、`test_import_time_is_persisted_in_sidecar`、`test_split_action_writes_json_and_preserves_existing_keys`、`test_batch_split_applies_to_all_selected_rows`），`test_file_table.py` 新增的五列、标题栏、全屏单按钮与“类别页自动刷新”用例全部通过。
+- 与 HEAD 导出树（`temporary/fork31/baseline`，HEAD = `f31a952`）在同一 shim/环境对比 `tests/test_labeling tests/test_widgets tests/test_dataset_db`：当前树 **331 passed / 11 failed / 53 subtests passed**，基线 **321 passed / 10 failed / 53 subtests passed**；失败集合差异只有已记录的时序抖动 `test_brightness_contrast_updates_are_throttled`，其余 10 条失败（4 条文件表 DB 模式测试债、3 条 `SimpleNamespace` 桩缺方法、1 条上传属性、2 条 subtest）在基线逐条相同。新增 12 个用例均通过。
+- `python -m py_compile` 修改的 Python 文件：通过。
+- `scripts/compile_languages.py`：四语言 `.qm` 各 **2262 条 / 0 unfinished**，`resources.py` 重建（`resources.py` 行尾已归一为 LF）；从 `.qm` 加载并逐条抽查 7 个新字符串，四语言均返回预期译文。
+- **未执行**：真实桌面点击标题栏/全屏/类别上移下移的观感、真实 7553 图数据集的实时刷新耗时、JSON 模式大目录的类别页重建耗时、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- JSON 模式（无数据集数据库）没有类别顺序权威，`↑`/`↓` 禁用；纯 JSON 目录的类别页重建仍会扫描文件列表内全部 JSON，大目录首次切页或新增类别可能卡顿（DB 模式走 `category_counts()`，不受此影响）。
+- “类别”页实时刷新是 120ms 合并 + 可见时才重建；隐藏时只置脏，切页重建。单元格正在编辑时会延后重建，不会丢失输入，但编辑期间的类别变化要等编辑结束后才显示。
+- DB 模式列出的类别按“有活动对象”过滤；被删空对象的类别行保留在库中（`is_deleted=0`），`in_class_list`“隐藏类别”与 classes.txt 种子仍是 P3b，不在本批。
+- DB 模式以库为权威：关闭自动保存时，新画的类别要等保存后才出现在“类别”页；JSON 模式因合并会话登记表可提前显示，两种模式的时机差异属于实现细节。
+- 标题栏全屏按钮图标在启动时按当时主题生成，运行中切换主题不会重绘（与既有侧栏开关行为一致）。
+- 类别页批量改名/删除仍直接改写标注 JSON（JSON 模式）且不写 `author`/`modified_at`，与 fork.4 归属契约的缺口未在本批处理。
+
+---
+
 ## 4.3.2+fork.30 — 2026-11-21
 
 ### 1. 背景与原因

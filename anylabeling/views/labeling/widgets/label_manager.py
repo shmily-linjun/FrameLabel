@@ -29,13 +29,17 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QColorDialog, QTableWidgetItem
 
 from ..logger import logger
-from ..utils.qt import new_icon_path
+from ..utils.qt import new_icon, new_icon_path
 from ..utils.style import get_ok_btn_style, get_spinbox_style
 from .label_dialog import natural_sort_key
 from .popup import Popup
 
 #: Translation context of this panel (its own, not ``LabelingWidget``).
 TRANSLATION_CONTEXT = "LabelManagerPanel"
+
+#: Delay used to coalesce several category changes (a file load can add many
+#: categories) into one rebuild of the visible table.
+REFRESH_DELAY_MS = 120
 
 
 class LabelColorButton(QtWidgets.QWidget):
@@ -100,6 +104,13 @@ class LabelManagerPanel(QtWidgets.QWidget):
         self._editing_enabled = False
         self._dirty = True
         self._built_for = None
+        # Coalesced live refresh: ``invalidate()`` only schedules a rebuild
+        # when the "Classes" tab is the visible page, so a file load that
+        # introduces many categories still rebuilds once.
+        self._refresh_timer = QtCore.QTimer(self)
+        self._refresh_timer.setSingleShot(True)
+        self._refresh_timer.setInterval(REFRESH_DELAY_MS)
+        self._refresh_timer.timeout.connect(self._refresh_if_visible)
         self._build_ui()
 
     def _tr(self, text):
@@ -193,7 +204,36 @@ class LabelManagerPanel(QtWidgets.QWidget):
         range_layout.addWidget(self.to_input)
         range_layout.addWidget(self.range_button)
         range_layout.addStretch(1)
+        # Category order is the export order (``category.sort_index``), so it
+        # is edited here by moving the selected row up/down.
+        self.move_up_button = self._create_reorder_button(
+            "caret-up", self._tr("Move Up"), -1
+        )
+        self.move_down_button = self._create_reorder_button(
+            "caret-down", self._tr("Move Down"), 1
+        )
+        range_layout.addWidget(self.move_up_button)
+        range_layout.addWidget(self.move_down_button)
         layout.addLayout(range_layout)
+        self.table.currentCellChanged.connect(
+            lambda *_args: self._update_reorder_buttons()
+        )
+
+    def _create_reorder_button(self, icon, tooltip, offset):
+        button = QtWidgets.QToolButton(self)
+        button.setIcon(new_icon(icon, "svg"))
+        button.setIconSize(QtCore.QSize(14, 14))
+        button.setFixedSize(24, 22)
+        button.setAutoRaise(True)
+        button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        button.setToolTip(tooltip)
+        button.setAccessibleName(tooltip)
+        button.clicked.connect(
+            lambda _checked=False, step=offset: self.move_selected_category(
+                step
+            )
+        )
+        return button
 
     # ------------------------------------------------------------------
     # Host state helpers
@@ -230,8 +270,45 @@ class LabelManagerPanel(QtWidgets.QWidget):
     # Building the table
     # ------------------------------------------------------------------
     def invalidate(self):
-        """Mark the cached rows stale (file list or labels changed)."""
+        """Mark the cached rows stale (file list or labels changed).
+
+        When the "Classes" tab is the visible page the table is rebuilt after
+        a short delay, so importing images or creating/deleting/renaming a
+        category shows up without clicking the tab again.  Hidden pages only
+        keep the dirty flag and rebuild on their next activation.
+        """
         self._dirty = True
+        if self._is_visible_page():
+            self._refresh_timer.start()
+
+    def _is_visible_page(self):
+        tabs = getattr(self.host, "right_tabs", None)
+        if tabs is None:
+            return self.isVisible()
+        page = tabs.currentWidget()
+        if page is None:
+            return False
+        # The panel is hosted inside a rounded container that is the actual
+        # tab page, so check the ancestor chain instead of identity.
+        return page is self or page.isAncestorOf(self)
+
+    def _refresh_if_visible(self):
+        if not self._dirty or not self._is_visible_page():
+            return
+        if (
+            self.table.state()
+            == QtWidgets.QAbstractItemView.State.EditingState
+        ):
+            # A rename is in progress; rebuild after the editor closes so the
+            # typed text is not thrown away.
+            self._refresh_timer.start()
+            return
+        self.rebuild()
+
+    def flush_refresh(self):
+        """Apply a pending live refresh immediately (used by tests)."""
+        self._refresh_timer.stop()
+        self._refresh_if_visible()
 
     def ensure_built(self):
         files = self._files()
@@ -240,7 +317,11 @@ class LabelManagerPanel(QtWidgets.QWidget):
         self.rebuild()
 
     def rebuild(self):
+        self._refresh_timer.stop()
         files = self._files()
+        previous_rows = self.table.rowCount()
+        previous_range = (self.from_input.value(), self.to_input.value())
+        previous_label = self._selected_category()
         self._built_for = list(files)
         self._dirty = False
         labels = self._collect_labels(files)
@@ -255,17 +336,58 @@ class LabelManagerPanel(QtWidgets.QWidget):
         total = max(1, len(files))
         self.from_input.setMaximum(total)
         self.to_input.setMaximum(total)
-        self.from_input.setValue(1)
-        self.to_input.setValue(total)
+        if (
+            previous_rows
+            and 1 <= previous_range[0] <= total
+            and previous_range[1] <= total
+        ):
+            # Keep the range the user picked; a rebuild triggered by an
+            # annotation change must not silently widen it to every file.
+            self.from_input.setValue(previous_range[0])
+            self.to_input.setValue(previous_range[1])
+        else:
+            self.from_input.setValue(1)
+            self.to_input.setValue(total)
+        if previous_label is not None:
+            self._select_category(previous_label)
         self.table.setEnabled(self._editing_enabled)
         self.range_button.setEnabled(
             self._editing_enabled and bool(labels)
         )
+        self._update_reorder_buttons()
+
+    def _selected_category(self):
+        """Category data of the current row (``None`` without a row)."""
+        row = self.table.currentRow()
+        if row < 0:
+            return None
+        item = self.table.item(row, self.COL_LABEL)
+        if item is None:
+            return None
+        label = item.data(QtCore.Qt.ItemDataRole.UserRole)
+        return label if isinstance(label, str) else None
+
+    def _select_category(self, label):
+        for row in range(self.table.rowCount()):
+            item = self.table.item(row, self.COL_LABEL)
+            if item is None:
+                continue
+            if item.data(QtCore.Qt.ItemDataRole.UserRole) == label:
+                self.table.setCurrentCell(row, self.COL_LABEL)
+                return
 
     def _collect_labels(self, files):
         repository = getattr(self.host, "dataset_repository", None)
         if repository is not None:
-            return [row["name"] for row in repository.category_counts()]
+            # The database is authoritative and already ordered by
+            # ``category.sort_index``.  Categories whose objects are all
+            # deleted are not listed any more, mirroring JSON mode where the
+            # category set is derived from the remaining shapes.
+            return [
+                row["name"]
+                for row in repository.category_counts()
+                if row.get("object_count", 0) > 0
+            ]
         labels = set()
         for image_file in files:
             label_file = self._label_file_for(image_file)
@@ -392,6 +514,69 @@ class LabelManagerPanel(QtWidgets.QWidget):
         )
         self.table.setToolTip(hint)
         self.range_button.setToolTip(hint)
+        self._update_reorder_buttons()
+
+    def _update_reorder_buttons(self):
+        """Enable the up/down buttons only when a move is possible.
+
+        Reordering is persisted through ``DatasetRepository``; without a
+        dataset database there is no authority for the category order, so the
+        buttons explain why they are disabled instead of reordering a table
+        that the next refresh would sort again.
+        """
+        repository = getattr(self.host, "dataset_repository", None)
+        row = self.table.currentRow()
+        rows = self.table.rowCount()
+        can_move = bool(self._editing_enabled and repository is not None)
+        self.move_up_button.setEnabled(can_move and 0 < row < rows)
+        self.move_down_button.setEnabled(can_move and 0 <= row < rows - 1)
+        hint = (
+            self._tr("Category order is stored in the dataset database")
+            if repository is None
+            else ""
+        )
+        for button, title in (
+            (self.move_up_button, self._tr("Move Up")),
+            (self.move_down_button, self._tr("Move Down")),
+        ):
+            tooltip = hint or title
+            button.setToolTip(tooltip)
+            button.setAccessibleName(tooltip)
+
+    def move_selected_category(self, offset):
+        """Move the selected category one row up/down and persist the order."""
+        if not self._editing_enabled:
+            return
+        repository = getattr(self.host, "dataset_repository", None)
+        if repository is None:
+            return
+        row = self.table.currentRow()
+        target = row + int(offset)
+        if row < 0 or not 0 <= target < self.table.rowCount():
+            return
+        names = [
+            self.table.item(index, self.COL_LABEL).data(
+                QtCore.Qt.ItemDataRole.UserRole
+            )
+            for index in range(self.table.rowCount())
+        ]
+        names[row], names[target] = names[target], names[row]
+        try:
+            saved = repository.set_category_order(names)
+        except Exception as error:  # noqa: BLE001 - surfaced as a popup
+            logger.error(f"Failed to reorder categories: {error}")
+            saved = False
+        if not saved:
+            self._error(
+                self._tr(
+                    "An error occurred while reordering the categories."
+                )
+            )
+            return
+        self._dirty = True
+        self.rebuild()
+        self._select_category(names[target])
+        self._update_reorder_buttons()
 
     def selected_label(self):
         """Category of the current row, used as the default for new shapes."""

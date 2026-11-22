@@ -240,13 +240,9 @@ class TitleBar(QtWidgets.QWidget):
             maximize.triggered.connect(host.showMaximized)
         minimize = menu.addAction(self.tr("Minimize"))
         minimize.triggered.connect(host.showMinimized)
-        menu.addSeparator()
-        fullscreen = menu.addAction(
-            self.tr("Exit Full Screen")
-            if host.isFullScreen()
-            else self.tr("Full Screen")
-        )
-        fullscreen.triggered.connect(host.toggle_fullscreen)
+        # Full screen is not part of this menu: the host places a single
+        # toggle in the title bar (and the View menu) instead, so there is no
+        # second entry point that can drift out of sync.
         if self._menu_bar is not None:
             menus = self._menu_bar.top_level_menus()
             if menus:

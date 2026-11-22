@@ -143,9 +143,9 @@ class ImageTagsLabelingWidgetTest(unittest.TestCase):
 
         self.assertEqual(widget.other_data["tags"], ["person"])
         widget.image_tags_widget.set_tags.assert_called_once_with(["person"])
-        widget.files.set_row_tags.assert_called_once_with(
-            "/tmp/image.png", ["person"]
-        )
+        # Tags are no longer mirrored into the file table; the attributes tab
+        # is the only place they are shown.
+        widget.files.set_row_tags.assert_not_called()
         widget.set_dirty.assert_not_called()
         self.assertTrue(widget.other_data["checked"])
         widget._sync_annotation_checked_state.assert_not_called()

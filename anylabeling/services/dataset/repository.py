@@ -251,12 +251,47 @@ class DatasetRepository:
             "FROM category c "
             "LEFT JOIN annotation_object o "
             "  ON o.category_id = c.id AND o.is_deleted = 0 "
-            "WHERE c.dataset_id = ? "
+            "WHERE c.dataset_id = ? AND c.is_deleted = 0 "
             "GROUP BY c.id "
-            "ORDER BY c.name COLLATE NOCASE",
+            "ORDER BY c.sort_index, c.name COLLATE NOCASE",
             (self.dataset_id,),
         )
         return [dict(row) for row in rows]
+
+    def set_category_order(self, names: Iterable[str]) -> bool:
+        """Persist the display order of categories (D7/D18).
+
+        ``names`` is the desired order of the categories that are currently
+        visible; categories missing from the list keep their relative slots
+        (for example categories that only exist in the class dictionary).
+        ``sort_index`` is rewritten for the whole dataset, so later exports
+        read the same order.
+        """
+
+        wanted = [str(name) for name in names]
+        if not wanted or len(set(wanted)) != len(wanted):
+            return False
+        ordered = [row["name"] for row in self.list_categories()]
+        visible = set(wanted)
+        slots = [
+            index
+            for index, name in enumerate(ordered)
+            if name in visible
+        ]
+        if len(slots) != len(wanted):
+            return False
+        result = list(ordered)
+        for slot, name in zip(slots, wanted):
+            result[slot] = name
+        now = _now()
+        with self.db.transaction():
+            for index, name in enumerate(result):
+                self.db.execute(
+                    "UPDATE category SET sort_index = ?, updated_at = ? "
+                    "WHERE dataset_id = ? AND name = ? AND is_deleted = 0",
+                    (index, now, self.dataset_id, name),
+                )
+        return True
 
     def rewrite_categories(
         self,

@@ -5617,6 +5617,14 @@ The image files and their annotation files will NOT be deleted.</source>
 </context><context>
     <name>MainWindow</name>
     <message>
+        <source>Full Screen</source>
+        <translation>全屏</translation>
+    </message>
+    <message>
+        <source>Exit Full Screen</source>
+        <translation>退出全屏</translation>
+    </message>
+    <message>
         <location filename="..\..\views\mainwindow.py" line="176" />
         <location filename="..\..\views\mainwindow.py" line="150" />
         <source>Dock Toolbar at Top</source>
@@ -11562,8 +11570,6 @@ Response preview:
     <message><source>Restore</source><translation>还原</translation></message>
     <message><source>Maximize</source><translation>最大化</translation></message>
     <message><source>Minimize</source><translation>最小化</translation></message>
-    <message><source>Exit Full Screen</source><translation>退出全屏</translation></message>
-    <message><source>Full Screen</source><translation>全屏</translation></message>
     <message><source>Close</source><translation>关闭</translation></message>
     <message><source>Menus</source><translation>菜单显示</translation></message>
 </context>
@@ -11662,6 +11668,22 @@ Response preview:
     <message>
         <source>Browse mode - editing annotations requires login</source>
         <translation>浏览模式 - 编辑标注需要登录</translation>
+    </message>
+    <message>
+        <source>Move Up</source>
+        <translation>上移</translation>
+    </message>
+    <message>
+        <source>Move Down</source>
+        <translation>下移</translation>
+    </message>
+    <message>
+        <source>Category order is stored in the dataset database</source>
+        <translation>类别顺序保存在数据集数据库中</translation>
+    </message>
+    <message>
+        <source>An error occurred while reordering the categories.</source>
+        <translation>调整类别顺序时发生错误。</translation>
     </message>
   </context>
 <context><name>TrashDialog</name>

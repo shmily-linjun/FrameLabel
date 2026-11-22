@@ -17,12 +17,12 @@ from anylabeling.views.labeling.file_list.constants import (
     FILE_COL_NAME,
     FILE_COL_SHAPES,
     FILE_COL_SPLIT,
-    FILE_COL_TAGS,
     FILE_ROW_HEIGHT,
     FILE_ROW_HEIGHT_COMPACT,
 )
 from anylabeling.views.labeling.settings.schema import load_template_config
 from anylabeling.views.labeling.utils.file_meta import SPLIT_NONE, SPLIT_TRAIN
+from anylabeling.views.labeling.widgets.label_manager import REFRESH_DELAY_MS
 from anylabeling.views.mainwindow import MainWindow
 
 
@@ -126,7 +126,7 @@ def test_file_table_columns_rows_and_visibility(window, tmp_path):
 
     table = widget.file_list_widget
     assert isinstance(table, QtWidgets.QTableWidget)
-    assert table.columnCount() == 6
+    assert table.columnCount() == 5
     assert table.count() == 3
     assert widget.fn_to_index[str(first)] == 0
     assert widget._file_path_at(0) == str(first)
@@ -136,7 +136,6 @@ def test_file_table_columns_rows_and_visibility(window, tmp_path):
     assert table.item(0, FILE_COL_INFERENCE).text() == "—"
     assert table.item(0, FILE_COL_SPLIT).text() == "Train"
     assert table.item(1, FILE_COL_SPLIT).text() == "None"
-    assert table.item(0, FILE_COL_TAGS).text() == "—"
 
     flags = table.item(0, FILE_COL_NAME).flags()
     assert not (flags & QtCore.Qt.ItemFlag.ItemIsUserCheckable)
@@ -159,14 +158,6 @@ def test_file_table_columns_rows_and_visibility(window, tmp_path):
     assert not table.isColumnHidden(FILE_COL_IMPORT_TIME)
     table.setColumnWidth(FILE_COL_SPLIT, 77)
     assert widget._config["file_list"]["column_widths"]["4"] == 77
-
-    # The tags column is the only place where tags are visible without
-    # switching to the attributes tab, so it is shown by default.
-    assert not table.isColumnHidden(FILE_COL_TAGS)
-    widget.set_file_column_visible(FILE_COL_TAGS, False)
-    assert table.isColumnHidden(FILE_COL_TAGS)
-    assert widget._config["file_list"]["show_tags"] is False
-    widget.set_file_column_visible(FILE_COL_TAGS, True)
 
 
 def test_import_time_is_persisted_in_sidecar(window, tmp_path):
@@ -833,7 +824,8 @@ def test_classes_tab_hosts_the_label_manager(window, tmp_path):
     assert panel.table.isEnabled() == panel._editing_enabled
 
 
-def test_tags_column_tracks_file_and_live_edits(window, tmp_path):
+def test_file_table_has_no_tags_column(window, tmp_path):
+    """Image tags belong to the attributes tab, not to the file table."""
     app = QtWidgets.QApplication.instance()
     widget = window.labeling_widget.view
     images, first, _second, _third = _make_dataset(tmp_path)
@@ -848,17 +840,19 @@ def test_tags_column_tracks_file_and_live_edits(window, tmp_path):
     widget.dirty = False
     app.processEvents()
     table = widget.file_list_widget
-    row = widget.fn_to_index[str(first)]
-
-    assert table.item(row, FILE_COL_TAGS).text() == "defect, blur"
-    assert table.item(row, FILE_COL_TAGS).toolTip() == "defect, blur"
-
-    # The editor changes the in-memory tags before the file is written, so the
-    # cell must be updated directly instead of re-reading the JSON.
-    widget.files.set_row_tags(str(first), ["defect"])
-    assert table.item(row, FILE_COL_TAGS).text() == "defect"
-    widget.files.set_row_tags(str(first), [])
-    assert table.item(row, FILE_COL_TAGS).text() == "—"
+    headers = [
+        table.horizontalHeaderItem(column).text()
+        for column in range(table.columnCount())
+    ]
+    assert headers == [
+        "Files",
+        "Objects",
+        "Import Time",
+        "Inference",
+        "Split",
+    ]
+    # Tags are still image metadata; the attributes editor owns them.
+    assert widget.image_tags_widget.tags == ["defect", "blur"]
 
 
 def test_attributes_tab_hosts_the_image_tags_editor(window, tmp_path):
@@ -884,10 +878,105 @@ def test_attributes_tab_hosts_the_image_tags_editor(window, tmp_path):
         QtWidgets.QWidget
     )
 
-    # The action behind Ctrl+Shift+T / the title-bar button opens that tab.
+    # The action behind Ctrl+Shift+T / View > Image Tags opens that tab.
     widget.right_tabs.setCurrentWidget(widget.label_list.parentWidget())
     assert widget.right_tabs.currentWidget() is not attributes_page
     widget.actions.show_image_tags.trigger()
     app.processEvents()
     assert widget.right_tabs.currentWidget() is attributes_page
     assert not widget.actions.show_image_tags.isCheckable()
+
+
+def test_title_bar_has_a_fullscreen_toggle_and_no_image_tags_button(window):
+    widget = window.labeling_widget.view
+    # The "Edit image tags" title-bar button was removed; the action remains
+    # available through the View menu and its shortcut.
+    assert not hasattr(widget, "image_tags_toggle_button")
+    title_bar = window.title_bar
+    if title_bar is None:
+        pytest.skip("frameless title bar required")
+    assert title_bar.button("window-control-1") is None
+    button = title_bar.button("window-control-fullscreen")
+    assert button is not None
+    assert button.defaultAction() is window.fullscreen_action
+
+    # Full screen was moved out of the title-bar context menu.
+    texts = [
+        action.text()
+        for action in title_bar.build_context_menu().actions()
+    ]
+    assert "Full Screen" not in texts
+    assert "Exit Full Screen" not in texts
+
+
+def test_fullscreen_toggle_button_reflects_window_state(window):
+    app = QtWidgets.QApplication.instance()
+    title_bar = window.title_bar
+    if title_bar is None:
+        pytest.skip("frameless title bar required")
+    button = title_bar.button("window-control-fullscreen")
+    button.click()
+    app.processEvents()
+    assert window.isFullScreen()
+    assert window.fullscreen_action.isChecked()
+    assert window.fullscreen_action.text() == window.tr("Exit Full Screen")
+    assert button.toolTip() == window.tr("Exit Full Screen")
+
+    button.click()
+    app.processEvents()
+    assert not window.isFullScreen()
+    assert not window.fullscreen_action.isChecked()
+    assert window.fullscreen_action.text() == window.tr("Full Screen")
+
+
+def _extra_rectangle(label="extra", shape_id="extra-shape"):
+    return {
+        "label": label,
+        "score": None,
+        "points": [[1.0, 1.0], [4.0, 1.0], [4.0, 4.0], [1.0, 4.0]],
+        "group_id": None,
+        "difficult": False,
+        "shape_type": "rectangle",
+        "flags": {},
+        "attributes": {},
+        "kie_linking": [],
+        "shape_id": shape_id,
+        "review_status": "pending",
+    }
+
+
+def test_classes_tab_refreshes_live_when_visible(window, tmp_path):
+    """A visible "Classes" tab re-reads categories without Alt+L."""
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+
+    panel = widget.label_manager_widget
+    repository = widget.dataset_repository
+    assert repository is not None
+    widget.right_tabs.setCurrentWidget(panel.parentWidget())
+    app.processEvents()
+    labels_before = [
+        panel.table.item(row, 0).text()
+        for row in range(panel.table.rowCount())
+    ]
+    assert "extra" not in labels_before
+
+    image = repository.find_image(first.name)
+    annotation = repository.load_annotation(image["id"])
+    annotation.shapes.append(_extra_rectangle())
+    repository.save_annotation(image["id"], annotation)
+
+    # The save path invalidates the panel; the visible tab must rebuild by
+    # itself (no Tools > Label manager click, no tab switch).
+    panel.invalidate()
+    QTest.qWait(REFRESH_DELAY_MS + 120)
+    app.processEvents()
+    labels_after = [
+        panel.table.item(row, 0).text()
+        for row in range(panel.table.rowCount())
+    ]
+    assert "extra" in labels_after

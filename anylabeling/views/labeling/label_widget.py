@@ -456,9 +456,6 @@ class LabelingWidget(LabelDialog):
             return
         self.other_data[IMAGE_TAGS_FIELD] = list(tags)
         self.set_dirty()
-        # The editor works on in-memory data until the file is saved, so the
-        # file table cannot read the new tags back from disk yet.
-        self.files.set_row_tags(str(self.image_path), tags)
 
     # -- operator identity ---------------------------------------------------
     # The browse-mode policy and the attribution baseline live in

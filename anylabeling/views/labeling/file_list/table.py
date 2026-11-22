@@ -64,7 +64,7 @@ class FileTableItem(QtWidgets.QTableWidgetItem):
 
 
 class FileTableWidget(QtWidgets.QTableWidget):
-    """Six-column table listing the labeled images of the current folder."""
+    """Five-column table listing the labeled images of the current folder."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

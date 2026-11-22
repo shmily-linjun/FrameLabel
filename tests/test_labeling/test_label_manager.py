@@ -10,13 +10,35 @@ from unittest.mock import Mock, patch
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PyQt6 import QtCore, QtWidgets
+from PyQt6.QtTest import QTest
 
 from anylabeling.views.labeling.widgets.label_manager import (
+    REFRESH_DELAY_MS,
     LabelManagerPanel,
 )
 from anylabeling.views.labeling.widgets.unique_label_qlist_widget import (
     UniqueLabelQListWidget,
 )
+
+
+class FakeCategoryRepository:
+    """Minimal repository surface used by the "Classes" tab."""
+
+    def __init__(self, names):
+        self.names = list(names)
+
+    def category_counts(self):
+        return [
+            {"name": name, "object_count": 1}
+            for name in self.names
+        ]
+
+    def set_category_order(self, names):
+        names = list(names)
+        if not names or any(name not in self.names for name in names):
+            return False
+        self.names = names
+        return True
 
 
 class PanelHost(QtWidgets.QWidget):
@@ -218,6 +240,144 @@ class TestLabelManagerPanel(unittest.TestCase):
         self.panel.invalidate()
         self.panel.ensure_built()
         self.assertEqual(self.panel.table.rowCount(), 2)
+
+    # -- database order ------------------------------------------------
+    def row_labels(self):
+        return [
+            self.panel.table.item(row, 0).text()
+            for row in range(self.panel.table.rowCount())
+        ]
+
+    def test_rows_follow_the_database_category_order(self):
+        self.host.dataset_repository = FakeCategoryRepository(
+            ["dog", "cat"]
+        )
+        self.panel.invalidate()
+        self.panel.ensure_built()
+        self.assertEqual(self.row_labels(), ["dog", "cat"])
+
+    def test_categories_without_objects_are_not_listed(self):
+        repository = FakeCategoryRepository(["cat", "dog"])
+        repository.category_counts = lambda: [
+            {"name": "cat", "object_count": 2},
+            {"name": "dog", "object_count": 0},
+        ]
+        self.host.dataset_repository = repository
+        self.panel.invalidate()
+        self.panel.ensure_built()
+        self.assertEqual(self.row_labels(), ["cat"])
+
+    def test_move_up_persists_the_new_order(self):
+        repository = FakeCategoryRepository(["cat", "dog"])
+        self.host.dataset_repository = repository
+        self.panel.invalidate()
+        self.panel.ensure_built()
+        self.panel.table.setCurrentCell(self.row_of("dog"), 0)
+        self.assertTrue(self.panel.move_up_button.isEnabled())
+        self.panel.move_up_button.click()
+        self.assertEqual(repository.names, ["dog", "cat"])
+        self.assertEqual(self.row_labels(), ["dog", "cat"])
+        self.assertEqual(self.panel._selected_category(), "dog")
+
+    def test_move_down_persists_the_new_order(self):
+        repository = FakeCategoryRepository(["cat", "dog"])
+        self.host.dataset_repository = repository
+        self.panel.invalidate()
+        self.panel.ensure_built()
+        self.panel.table.setCurrentCell(self.row_of("cat"), 0)
+        self.panel.move_down_button.click()
+        self.assertEqual(repository.names, ["dog", "cat"])
+        self.assertEqual(self.row_labels(), ["dog", "cat"])
+
+    def test_reorder_requires_a_dataset_database(self):
+        self.panel.table.setCurrentCell(self.row_of("dog"), 0)
+        self.assertFalse(self.panel.move_up_button.isEnabled())
+        self.assertFalse(self.panel.move_down_button.isEnabled())
+        self.assertIn(
+            "dataset database",
+            self.panel.move_up_button.toolTip(),
+        )
+
+
+class TestLabelManagerLiveRefresh(unittest.TestCase):
+    """The visible "Classes" tab follows category changes without a click."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.app = QtWidgets.QApplication.instance() or QtWidgets.QApplication(
+            []
+        )
+
+    def setUp(self):
+        self.temp = TemporaryDirectory()
+        self.image = Path(self.temp.name) / "image.png"
+        self.label = self.image.with_suffix(".json")
+        self.write_labels(["cat"])
+        self.host = PanelHost([self.image])
+        self.host.right_tabs = QtWidgets.QTabWidget()
+        self.host.right_tabs.addTab(QtWidgets.QWidget(), "Objects")
+        # Match the real workspace: the panel sits inside a rounded container
+        # that is the tab page, so visibility must follow the ancestor chain.
+        self.page = QtWidgets.QWidget()
+        page_layout = QtWidgets.QVBoxLayout(self.page)
+        page_layout.setContentsMargins(0, 0, 0, 0)
+        self.panel = LabelManagerPanel(self.host)
+        page_layout.addWidget(self.panel)
+        self.host.right_tabs.addTab(self.page, "Classes")
+        self.host.right_tabs.setCurrentWidget(self.page)
+        self.panel.set_editing_enabled(True)
+        self.panel.ensure_built()
+
+    def tearDown(self):
+        self.panel.close()
+        self.host.close()
+        self.temp.cleanup()
+
+    def write_labels(self, labels):
+        self.label.write_text(
+            json.dumps(
+                {
+                    "shapes": [
+                        {"label": label, "points": [[0, 0]]}
+                        for label in labels
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    def labels_of_table(self):
+        return [
+            self.panel.table.item(row, 0).text()
+            for row in range(self.panel.table.rowCount())
+        ]
+
+    def test_visible_tab_refreshes_after_a_category_change(self):
+        self.write_labels(["cat", "dog"])
+        self.panel.invalidate()
+        QTest.qWait(REFRESH_DELAY_MS + 120)
+        self.app.processEvents()
+        self.assertEqual(self.labels_of_table(), ["cat", "dog"])
+
+    def test_hidden_tab_only_refreshes_when_activated(self):
+        self.write_labels(["cat", "dog"])
+        self.host.right_tabs.setCurrentIndex(0)
+        self.panel.invalidate()
+        QTest.qWait(REFRESH_DELAY_MS + 120)
+        self.app.processEvents()
+        self.assertEqual(self.labels_of_table(), ["cat"])
+        self.panel.ensure_built()
+        self.assertEqual(self.labels_of_table(), ["cat", "dog"])
+
+    def test_live_refresh_keeps_the_selected_range(self):
+        self.write_labels(["cat"])
+        self.panel.from_input.setValue(1)
+        self.panel.to_input.setValue(1)
+        self.write_labels(["cat", "dog"])
+        self.panel.invalidate()
+        self.panel.flush_refresh()
+        self.assertEqual(self.panel.from_input.value(), 1)
+        self.assertEqual(self.panel.to_input.value(), 1)
 
 
 if __name__ == "__main__":

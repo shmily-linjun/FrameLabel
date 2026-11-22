@@ -5619,6 +5619,14 @@ The image files and their annotation files will NOT be deleted.</source>
 </context><context>
     <name>MainWindow</name>
     <message>
+        <source>Full Screen</source>
+        <translation>전체 화면</translation>
+    </message>
+    <message>
+        <source>Exit Full Screen</source>
+        <translation>전체 화면 종료</translation>
+    </message>
+    <message>
         <location filename="..\..\views\mainwindow.py" line="176" />
         <location filename="..\..\views\mainwindow.py" line="150" />
         <source>Dock Toolbar at Top</source>
@@ -11564,8 +11572,6 @@ Response preview:
     <message><source>Restore</source><translation>이전 크기로</translation></message>
     <message><source>Maximize</source><translation>최대화</translation></message>
     <message><source>Minimize</source><translation>최소화</translation></message>
-    <message><source>Exit Full Screen</source><translation>전체 화면 종료</translation></message>
-    <message><source>Full Screen</source><translation>전체 화면</translation></message>
     <message><source>Close</source><translation>닫기</translation></message>
     <message><source>Menus</source><translation>메뉴 표시</translation></message>
 </context>
@@ -11664,6 +11670,22 @@ Response preview:
     <message>
         <source>Browse mode - editing annotations requires login</source>
         <translation>찾아보기 모드 - 주석 편집에는 로그인이 필요합니다</translation>
+    </message>
+    <message>
+        <source>Move Up</source>
+        <translation>위로 이동</translation>
+    </message>
+    <message>
+        <source>Move Down</source>
+        <translation>아래로 이동</translation>
+    </message>
+    <message>
+        <source>Category order is stored in the dataset database</source>
+        <translation>카테고리 순서는 데이터셋 데이터베이스에 저장됩니다</translation>
+    </message>
+    <message>
+        <source>An error occurred while reordering the categories.</source>
+        <translation>카테고리 순서를 변경하는 중 오류가 발생했습니다.</translation>
     </message>
   </context>
 <context><name>TrashDialog</name>

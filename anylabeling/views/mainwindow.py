@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
 from ..app_info import __appname__
 from ..widgets.frameless import FramelessWindow, window_state
 from .labeling.label_wrapper import LabelingWrapper
+from .labeling.pointcloud.icons import get_icon
 from .labeling.utils.theme import get_theme
 from .labeling.widgets.toolbar import ToolBarScrollArea
 
@@ -182,6 +183,7 @@ class MainWindow(FramelessWindow):
         if app_instance is not None:
             app_instance.installEventFilter(self._status_tip_filter)
         self._install_operator_chrome()
+        self._install_fullscreen_button()
         self._restore_menu_visibility()
         self._restore_window_geometry()
 
@@ -193,6 +195,56 @@ class MainWindow(FramelessWindow):
             return
         view_menu.addSeparator()
         view_menu.addAction(self.fullscreen_action)
+
+    def _install_fullscreen_button(self):
+        """Place the single full-screen toggle in the window chrome.
+
+        Frameless mode puts it in the title bar next to the window controls;
+        native mode falls back to the labeling toolbar.  One checkable action
+        drives both the button and the View menu entry, so the two never
+        disagree about the current state.
+        """
+        button = QtWidgets.QToolButton(self)
+        button.setObjectName("FramelessTitleButton")
+        button.setToolButtonStyle(
+            QtCore.Qt.ToolButtonStyle.ToolButtonIconOnly
+        )
+        button.setCursor(QtCore.Qt.CursorShape.PointingHandCursor)
+        button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        button.setFixedSize(30, 24)
+        button.setDefaultAction(self.fullscreen_action)
+        self._fullscreen_button = button
+        self._sync_fullscreen_button(self.isFullScreen())
+        if self.frameless:
+            self.add_title_widget(button, key="window-control-fullscreen")
+        else:
+            toolbar = getattr(self, "_toolbar", None)
+            if toolbar is not None:
+                action = QtWidgets.QWidgetAction(self)
+                action.setDefaultWidget(button)
+                toolbar.addAction(action)
+        self.fullscreen_changed.connect(self._sync_fullscreen_button)
+
+    def _sync_fullscreen_button(self, fullscreen: bool):
+        """Reflect the full-screen state in the shared action's icon/text."""
+        theme = get_theme()
+        icon = get_icon(
+            "restore-view" if fullscreen else "expand-view",
+            theme["text"],
+            theme["primary"],
+        )
+        text = (
+            self.tr("Exit Full Screen")
+            if fullscreen
+            else self.tr("Full Screen")
+        )
+        self.fullscreen_action.setIcon(icon)
+        self.fullscreen_action.setText(text)
+        self.fullscreen_action.setToolTip(text)
+        button = getattr(self, "_fullscreen_button", None)
+        if button is not None:
+            button.setAccessibleName(text)
+            button.setToolTip(text)
 
     def _restore_menu_visibility(self):
         state = self.settings.value(

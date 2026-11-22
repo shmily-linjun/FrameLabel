@@ -5617,6 +5617,14 @@ The image files and their annotation files will NOT be deleted.</source>
 </context><context>
     <name>MainWindow</name>
     <message>
+        <source>Full Screen</source>
+        <translation>全画面</translation>
+    </message>
+    <message>
+        <source>Exit Full Screen</source>
+        <translation>全画面を終了</translation>
+    </message>
+    <message>
         <location filename="..\..\views\mainwindow.py" line="176" />
         <location filename="..\..\views\mainwindow.py" line="150" />
         <source>Dock Toolbar at Top</source>
@@ -11562,8 +11570,6 @@ Response preview:
     <message><source>Restore</source><translation>元に戻す</translation></message>
     <message><source>Maximize</source><translation>最大化</translation></message>
     <message><source>Minimize</source><translation>最小化</translation></message>
-    <message><source>Exit Full Screen</source><translation>全画面を終了</translation></message>
-    <message><source>Full Screen</source><translation>全画面</translation></message>
     <message><source>Close</source><translation>閉じる</translation></message>
     <message><source>Menus</source><translation>メニュー表示</translation></message>
 </context>
@@ -11662,6 +11668,22 @@ Response preview:
     <message>
         <source>Browse mode - editing annotations requires login</source>
         <translation>ブラウズモード - アノテーションの編集にはログインが必要です</translation>
+    </message>
+    <message>
+        <source>Move Up</source>
+        <translation>上へ移動</translation>
+    </message>
+    <message>
+        <source>Move Down</source>
+        <translation>下へ移動</translation>
+    </message>
+    <message>
+        <source>Category order is stored in the dataset database</source>
+        <translation>カテゴリ順はデータセットデータベースに保存されます</translation>
+    </message>
+    <message>
+        <source>An error occurred while reordering the categories.</source>
+        <translation>カテゴリ順の変更中にエラーが発生しました。</translation>
     </message>
   </context>
 <context><name>TrashDialog</name>

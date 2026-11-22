@@ -32,6 +32,12 @@ class ObjectEditor:
     def __init__(self, host):
         self.host = host
 
+    def _invalidate_label_manager(self):
+        """Refresh the "Classes" tab after a category rename/create."""
+        panel = getattr(self.host, "label_manager_widget", None)
+        if panel is not None:
+            panel.invalidate()
+
     @staticmethod
     def _shape_lock_key(shape):
         return (
@@ -396,6 +402,7 @@ class ObjectEditor:
 
         self.host.set_dirty()
         self.host._refresh_shape_filters()
+        self._invalidate_label_manager()
 
     def edit_label(self, item=None):
         if item and not isinstance(item, LabelListWidgetItem):
@@ -484,6 +491,7 @@ class ObjectEditor:
             item.setText(format_label_list_text(shape.label, shape.group_id))
         self.host.set_dirty()
         self.host._refresh_shape_filters()
+        self._invalidate_label_manager()
 
     def shape_selection_changed(self, selected_shapes):
         if selected_shapes and self.host.canvas.selected_relation is not None:

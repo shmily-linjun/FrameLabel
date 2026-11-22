@@ -35,6 +35,12 @@ class AnnotationEditor:
     def __init__(self, host):
         self.host = host
 
+    def _invalidate_label_manager(self):
+        """Refresh the "Classes" tab after the category set changed."""
+        panel = getattr(self.host, "label_manager_widget", None)
+        if panel is not None:
+            panel.invalidate()
+
     def add_label(self, shape, update_last_label=True, refresh_filters=True):
         if shape.label in self.host.unique_label_list.lock_states:
             shape.locked = self.host.unique_label_list.lock_states[shape.label]
@@ -53,9 +59,7 @@ class AnnotationEditor:
             self.host.unique_label_list.set_item_label(
                 item, shape.label, rgb, LABEL_OPACITY
             )
-            panel = getattr(self.host, "label_manager_widget", None)
-            if panel is not None:
-                panel.invalidate()
+            self._invalidate_label_manager()
 
         if shape.label not in self.host.label_info:
             rgb = self.host._get_rgb_by_label(shape.label)
@@ -163,6 +167,9 @@ class AnnotationEditor:
         for shape in shapes:
             item = self.host.label_list.find_item_by_shape(shape)
             self.host.label_list.remove_item(item)
+        # Deleting the last object of a category also removes that category
+        # from the "Classes" tab, so the table must be re-read.
+        self._invalidate_label_manager()
         self.host._refresh_shape_filters()
 
     def load_shapes(self, shapes, replace=True, update_last_label=True):
@@ -241,6 +248,8 @@ class AnnotationEditor:
             self.host.operator_gate.baseline = signature
             self.host.actions.save.setIcon(utils.new_icon("save-check"))
             self.host._update_file_row_after_save(len(shapes))
+            # The new categories only reach the JSON file now.
+            self._invalidate_label_manager()
             # disable allows next and previous image to proceed
             # self.filename = filename
             return True
@@ -292,6 +301,9 @@ class AnnotationEditor:
         self.host.actions.save.setIcon(utils.new_icon("save-check"))
         self.host._update_file_row_after_save(len(shapes))
         self.host._refresh_statistics_if_visible()
+        # ``save_annotation`` creates the categories in the database; the
+        # visible "Classes" tab must re-read them right away.
+        self._invalidate_label_manager()
         return True
 
     def new_shape(self):

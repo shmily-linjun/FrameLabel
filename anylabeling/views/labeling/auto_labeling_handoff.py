@@ -172,7 +172,6 @@ class AutoLabelingHandoff:
             if tags_changed:
                 self.host.other_data[IMAGE_TAGS_FIELD] = tags
             self.host.image_tags_widget.set_tags(tags)
-            self.host.files.set_row_tags(str(self.host.image_path), tags)
 
         if annotations_changed or tags_changed:
             self.host.other_data[CHECKED_FIELD] = False

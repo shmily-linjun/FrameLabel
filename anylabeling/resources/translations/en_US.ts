@@ -5619,6 +5619,14 @@ The image files and their annotation files will NOT be deleted.</translation>
 </context><context>
     <name>MainWindow</name>
     <message>
+        <source>Full Screen</source>
+        <translation>Full Screen</translation>
+    </message>
+    <message>
+        <source>Exit Full Screen</source>
+        <translation>Exit Full Screen</translation>
+    </message>
+    <message>
         <location filename="..\..\views\mainwindow.py" line="176" />
         <location filename="..\..\views\mainwindow.py" line="150" />
         <source>Dock Toolbar at Top</source>
@@ -11564,8 +11572,6 @@ Response preview:
     <message><source>Restore</source><translation>Restore</translation></message>
     <message><source>Maximize</source><translation>Maximize</translation></message>
     <message><source>Minimize</source><translation>Minimize</translation></message>
-    <message><source>Exit Full Screen</source><translation>Exit Full Screen</translation></message>
-    <message><source>Full Screen</source><translation>Full Screen</translation></message>
     <message><source>Close</source><translation>Close</translation></message>
     <message><source>Menus</source><translation>Menus</translation></message>
 </context>
@@ -11664,6 +11670,22 @@ Response preview:
     <message>
         <source>Browse mode - editing annotations requires login</source>
         <translation>Browse mode - editing annotations requires login</translation>
+    </message>
+    <message>
+        <source>Move Up</source>
+        <translation>Move Up</translation>
+    </message>
+    <message>
+        <source>Move Down</source>
+        <translation>Move Down</translation>
+    </message>
+    <message>
+        <source>Category order is stored in the dataset database</source>
+        <translation>Category order is stored in the dataset database</translation>
+    </message>
+    <message>
+        <source>An error occurred while reordering the categories.</source>
+        <translation>An error occurred while reordering the categories.</translation>
     </message>
   </context>
 <context><name>TrashDialog</name>

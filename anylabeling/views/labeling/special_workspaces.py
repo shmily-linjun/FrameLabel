@@ -88,6 +88,9 @@ class SpecialWorkspaces:
         if result == QtWidgets.QDialog.DialogCode.Accepted:
             if modify_shape_dialog.need_reload and self.host.filename:
                 self.host.load_file(self.host.filename)
+            panel = getattr(self.host, "label_manager_widget", None)
+            if panel is not None:
+                panel.invalidate()
 
     def open_chatbot(self):
         dialog = ChatbotDialog(self.host)

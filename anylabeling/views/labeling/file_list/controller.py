@@ -1,6 +1,6 @@
 """Controller for the labeling file list.
 
-The controller owns the six-column file table, its row index, sorting and
+The controller owns the five-column file table, its row index, sorting and
 column layout, thumbnails, the per-row split/checked decorations and the
 multi-row commands.  It is deliberately separate from
 :class:`anylabeling.views.labeling.label_widget.LabelingWidget` so the
@@ -51,7 +51,6 @@ from .constants import (
     FILE_COL_NAME,
     FILE_COL_SHAPES,
     FILE_COL_SPLIT,
-    FILE_COL_TAGS,
     FILE_COL_NAME_WIDTH,
     FILE_COLUMN_COUNT,
     FILE_COLUMN_WIDTHS,
@@ -110,7 +109,6 @@ class FileListController:
                 host.tr("Import Time"),
                 host.tr("Inference"),
                 host.tr("Split"),
-                host.tr("Tags"),
             ]
         )
         table.setSelectionBehavior(
@@ -267,14 +265,12 @@ class FileListController:
         split_item = FileTableItem(
             self.split_text(split), sort_key=SPLIT_KEYS.index(split)
         )
-        tags_item = self.build_tags_item(meta.tags)
         cells = [
             name_item,
             shapes_item,
             time_item,
             inference_item,
             split_item,
-            tags_item,
         ]
         row_flags = (
             QtCore.Qt.ItemFlag.ItemIsEnabled
@@ -283,21 +279,6 @@ class FileListController:
         for cell in cells:
             cell.setFlags(row_flags)
         return cells
-
-    @staticmethod
-    def tags_text(tags):
-        """Format image tags for the file table (``"—"`` when empty)."""
-        values = [str(tag) for tag in tags or ()]
-        return ", ".join(values) if values else "—"
-
-    def build_tags_item(self, tags):
-        text = self.tags_text(tags)
-        item = FileTableItem(
-            text, sort_key="" if text == "—" else text.lower()
-        )
-        if text != "—":
-            item.setToolTip(text)
-        return item
 
     def append_row(self, file, label_file=None):
         row = self.table.rowCount()
@@ -379,28 +360,6 @@ class FileListController:
         time_item = self.table.item(row, FILE_COL_IMPORT_TIME)
         if time_item is not None:
             time_item.setText(format_import_time(meta.import_time))
-        self._apply_tags_item(
-            self.table.item(row, FILE_COL_TAGS), meta.tags
-        )
-
-    def _apply_tags_item(self, item, tags):
-        if item is None:
-            return
-        text = self.tags_text(tags)
-        item.setText(text)
-        item.setData(FILE_SORT_ROLE, "" if text == "—" else text.lower())
-        item.setToolTip("" if text == "—" else text)
-
-    def set_row_tags(self, path, tags):
-        """Update the tags cell of ``path`` without re-reading the file.
-
-        The image tags editor works on in-memory data until the file is saved,
-        so the file table cannot take the tags from disk in that window.
-        """
-        row = self.row_of(str(path))
-        if row is None:
-            return
-        self._apply_tags_item(self.table.item(row, FILE_COL_TAGS), tags)
 
     def rebuild_index(self):
         mapping = {}
@@ -609,7 +568,6 @@ class FileListController:
             (FILE_COL_IMPORT_TIME, "show_import_time"),
             (FILE_COL_INFERENCE, "show_inference"),
             (FILE_COL_SPLIT, "show_split"),
-            (FILE_COL_TAGS, "show_tags"),
         ):
             self.table.setColumnHidden(
                 column, not self.option(key, True)
@@ -661,7 +619,6 @@ class FileListController:
             FILE_COL_IMPORT_TIME: "show_import_time",
             FILE_COL_INFERENCE: "show_inference",
             FILE_COL_SPLIT: "show_split",
-            FILE_COL_TAGS: "show_tags",
         }.get(column)
         if key:
             section = self.host._config.setdefault("file_list", {})
@@ -695,7 +652,6 @@ class FileListController:
             (FILE_COL_IMPORT_TIME, self.host.tr("Import Time")),
             (FILE_COL_INFERENCE, self.host.tr("Inference")),
             (FILE_COL_SPLIT, self.host.tr("Split")),
-            (FILE_COL_TAGS, self.host.tr("Tags")),
         )
         for column, title in columns:
             action = menu.addAction(title)

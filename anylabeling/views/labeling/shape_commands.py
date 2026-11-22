@@ -36,6 +36,10 @@ class ShapeCommands:
         self.host.load_shapes(self.host.canvas.shapes, update_last_label=False)
         self.host.actions.undo.setEnabled(self.host.canvas.is_shape_restorable)
         self.host.set_dirty()
+        # Undo may bring back a category that was deleted from the session.
+        panel = getattr(self.host, "label_manager_widget", None)
+        if panel is not None:
+            panel.invalidate()
 
     def copy_shape_coordinates(self):
         item = self.host.current_item()

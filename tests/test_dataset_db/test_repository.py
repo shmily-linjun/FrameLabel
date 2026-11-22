@@ -239,6 +239,45 @@ def test_statistics_and_category_counts(dataset_tmp):
         database.close()
 
 
+def test_category_order_follows_sort_index(dataset_tmp):
+    database, repository = make_repository(dataset_tmp)
+    try:
+        image_id = repository.add_image("images/order.png")
+        repository.save_annotation(
+            image_id,
+            ImageAnnotation(
+                shapes=[
+                    rectangle("bolt", "s1"),
+                    polygon("nut", "s2"),
+                    rectangle("washer", "s3"),
+                ]
+            ),
+        )
+        # New categories are appended in first-use order.
+        assert [
+            row["name"] for row in repository.category_counts()
+        ] == ["bolt", "nut", "washer"]
+
+        assert repository.set_category_order(
+            ["washer", "bolt", "nut"]
+        ) is True
+        assert [
+            row["name"] for row in repository.category_counts()
+        ] == ["washer", "bolt", "nut"]
+        assert [
+            row["name"] for row in repository.list_categories()
+        ] == ["washer", "bolt", "nut"]
+
+        # Unknown or duplicated names are rejected without a partial write.
+        assert repository.set_category_order(["bolt", "ghost"]) is False
+        assert repository.set_category_order(["bolt", "bolt"]) is False
+        assert [
+            row["name"] for row in repository.category_counts()
+        ] == ["washer", "bolt", "nut"]
+    finally:
+        database.close()
+
+
 def test_image_summaries_and_split_update(dataset_tmp):
     database, repository = make_repository(dataset_tmp)
     try:

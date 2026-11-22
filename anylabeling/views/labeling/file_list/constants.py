@@ -1,6 +1,6 @@
 """Column layout, colors and item roles of the labeling file table.
 
-These values describe the six-column file table only.  Keeping them in a
+These values describe the five-column file table only.  Keeping them in a
 small module lets the table widget, the controller and the labeling widget
 share one source of truth without importing the (very large) main widget.
 """
@@ -16,8 +16,7 @@ FILE_COL_SHAPES = 1
 FILE_COL_IMPORT_TIME = 2
 FILE_COL_INFERENCE = 3
 FILE_COL_SPLIT = 4
-FILE_COL_TAGS = 5
-FILE_COLUMN_COUNT = 6
+FILE_COLUMN_COUNT = 5
 FILE_COL_NAME_WIDTH = 200
 FILE_COL_NAME_MIN_WIDTH = 120
 FILE_COLUMN_WIDTHS = {
@@ -25,7 +24,6 @@ FILE_COLUMN_WIDTHS = {
     FILE_COL_IMPORT_TIME: 128,
     FILE_COL_INFERENCE: 64,
     FILE_COL_SPLIT: 56,
-    FILE_COL_TAGS: 96,
 }
 
 FILE_ROW_HEIGHT = 36
