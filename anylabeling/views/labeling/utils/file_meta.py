@@ -16,6 +16,13 @@ import tempfile
 from typing import Union
 
 from anylabeling.app_info import __version__
+from anylabeling.services.identity.attribution import (
+    AUTHOR_FIELD,
+    AUTHOR_NONE,
+    MODIFIED_AT_FIELD,
+    format_timestamp,
+    normalize_author,
+)
 
 from .image import get_pil_img_dim
 from .image_tags import normalize_image_tags
@@ -203,6 +210,44 @@ def write_split(label_file, split, image_path=None):
         data = _build_minimal_label_file(image_path, split)
 
     data["split"] = split
+    return _atomic_write_json(path, data)
+
+
+def write_tags(
+    label_file,
+    tags,
+    image_path=None,
+    author=None,
+    modified_at=None,
+):
+    """Store ``tags`` in ``label_file`` and return whether it was written.
+
+    Existing annotation files are updated in place (every other key is
+    preserved); a missing file is created as a minimal loadable label file from
+    ``image_path``.  ``author``/``modified_at`` are written only when a real
+    operator name is passed, because image tags are a content change under the
+    attribution contract (fork.4); callers must not invent an author.
+    """
+    path = _to_path(label_file)
+    if not path:
+        return False
+
+    if osp.exists(path):
+        data = _load_json(path)
+        if not isinstance(data, dict):
+            return False
+    else:
+        data = _build_minimal_label_file(image_path, SPLIT_NONE)
+
+    data["tags"] = list(
+        normalize_image_tags(
+            list(tags) if isinstance(tags, (list, tuple)) else []
+        )
+    )
+    name = normalize_author(author)
+    if name != AUTHOR_NONE:
+        data[AUTHOR_FIELD] = name
+        data[MODIFIED_AT_FIELD] = modified_at or format_timestamp()
     return _atomic_write_json(path, data)
 
 

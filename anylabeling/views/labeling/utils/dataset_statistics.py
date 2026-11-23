@@ -74,7 +74,7 @@ COLUMN_CLASS = 0
 #: Column indices of the split columns (in :data:`SPLIT_ORDER` order).
 COLUMN_SPLITS = tuple(range(1, len(SPLIT_ORDER) + 1))
 
-#: Column index of the totals column (not clickable).
+#: Column index of the totals column.
 COLUMN_TOTAL = len(SPLIT_ORDER) + 1
 
 #: Number of columns of the table, including the class column.
@@ -88,7 +88,8 @@ COLUMN_HEADERS = (
 )
 
 #: ``split_index`` sentinel used by :func:`filter_for_cell` for the totals
-#: column, which is not clickable.
+#: column (class/objectless rows filter by their own kind, the totals row
+#: clears every filter).
 SPLIT_INDEX_TOTAL = len(SPLIT_ORDER)
 
 # -- row kinds used by :func:`filter_for_cell` ---------------------------
@@ -107,11 +108,15 @@ class StatisticsFilter:
         split: Canonical split key (``none``/``train``/``val``/``test``) or
             ``None`` for "any split".
         objectless: When true the filter targets images without objects.
+        all_images: Clicking the totals row/column intersection (or the
+            "Total" row label) clears every filter and shows the whole file
+            list.
     """
 
     label: Optional[str] = None
     split: Optional[str] = None
     objectless: bool = False
+    all_images: bool = False
 
 
 @dataclass(frozen=True)
@@ -295,20 +300,32 @@ def filter_for_cell(
         class_index: Index into ``table.classes`` (class rows only).
         split_index: ``None`` for the class-name column, ``0 .. len(splits)-1``
             for a split column, :data:`SPLIT_INDEX_TOTAL` for the totals
-            column (never clickable).
+            column.
 
     Returns:
-        A :class:`StatisticsFilter`, or ``None`` for the totals row and the
-        totals column (which are deliberately not clickable).
+        A :class:`StatisticsFilter` for every clickable cell:
+
+        * class rows: the class (plus the split, except in the total column);
+        * objectless rows: the objectless filter (plus the split);
+        * the totals row: the split of that column, and ``all_images`` for the
+          totals column and for the "Total" row label;
+        * the bottom-right cell: ``all_images`` (clear every filter).
     """
-    if table is None or row_kind == ROW_KIND_TOTAL:
+    if table is None:
         return None
-    if split_index is not None:
-        if split_index == SPLIT_INDEX_TOTAL:
-            return None
+    if row_kind == ROW_KIND_TOTAL:
+        if split_index is None or split_index == SPLIT_INDEX_TOTAL:
+            return StatisticsFilter(all_images=True)
         if not 0 <= split_index < len(SPLIT_ORDER):
             return None
-        split = SPLIT_ORDER[split_index]
+        return StatisticsFilter(split=SPLIT_ORDER[split_index])
+    if split_index is not None:
+        if split_index == SPLIT_INDEX_TOTAL:
+            split = None
+        elif 0 <= split_index < len(SPLIT_ORDER):
+            split = SPLIT_ORDER[split_index]
+        else:
+            return None
     else:
         split = None
 

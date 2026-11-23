@@ -3136,6 +3136,50 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Set Tags…</source>
+        <translation>태그 설정…</translation>
+    </message>
+    <message>
+        <source>Set Image Tags</source>
+        <translation>이미지 태그 설정</translation>
+    </message>
+    <message>
+        <source>Apply tags to the selected images (%d):</source>
+        <translation>선택한 이미지(%d개)에 태그 적용:</translation>
+    </message>
+    <message>
+        <source>Tags (comma separated)</source>
+        <translation>태그(쉼표로 구분)</translation>
+    </message>
+    <message>
+        <source>tag1, tag2</source>
+        <translation>예: 결함, 흐림</translation>
+    </message>
+    <message>
+        <source>Add to existing tags</source>
+        <translation>기존 태그에 추가</translation>
+    </message>
+    <message>
+        <source>Replace existing tags</source>
+        <translation>기존 태그 바꾸기</translation>
+    </message>
+    <message>
+        <source>Remove all image tags from %d files?</source>
+        <translation>%d개 이미지에서 모든 이미지 태그를 제거할까요?</translation>
+    </message>
+    <message>
+        <source>Failed to update tags for %d files</source>
+        <translation>%d개 이미지의 태그를 업데이트하지 못했습니다</translation>
+    </message>
+    <message>
+        <source>Tags updated for %d files</source>
+        <translation>%d개 이미지의 태그를 업데이트했습니다</translation>
+    </message>
+    <message>
+        <source>Tags unchanged for %d files</source>
+        <translation>%d개 이미지의 태그가 변경되지 않았습니다</translation>
+    </message>
+    <message>
         <location filename="..\..\views\labeling\label_widget.py" line="477" />
         <source>Search files...</source>
         <translation>파일 검색...</translation>

@@ -6,6 +6,67 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.32 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈 3 项问题：
+
+1. 文件表右键菜单没有批量标签，无法给一批图片赋予相同的 `tags`；
+2. 软件刚启动（无数据）时停留在“对象”“统计”等非“类别”标签页，随后导入图片/打开文件夹，切到“类别”页不会更新；
+3. “统计”页的 `合计` 行、`合计` 列以及 `(合计, 合计)` 单元格无法点击筛选。
+
+第 1 项是功能缺口；第 2 项是 fork.31 修复的遗漏——切页钩子仍用“tab page 就是面板控件”的同一性判断，而真实页是 `labels_panel` 容器，导致隐藏期间的脏标记在切页时没有被消费；第 3 项是统计表把合计行列硬编码为不可点击。
+
+### 2. 主要实现与关键细节
+
+- **批量图片标签**：
+  - 文件表右键新增 `Set Tags…`（[controller.py](../../anylabeling/views/labeling/file_list/controller.py) 的 `set_tags_rows()`），对多选行生效；菜单项图标复用 `tag.svg`。
+  - 新增 [BatchTagsDialog](../../anylabeling/views/labeling/file_list/tags_dialog.py)：逗号分隔输入 + “追加到现有标签 / 替换现有标签”两种模式；替换且输入为空时二次确认清空。
+  - 新增 Qt-free 的 [batch_tags.py](../../anylabeling/views/labeling/utils/batch_tags.py)：`merge_image_tags()` 负责追加去重/替换；`apply_image_tags()` 走两条写入路径——DB 模式 `repository.find_image() → load_annotation() → save_annotation(editor, modified_at)`，JSON 模式 `read_file_meta() → write_tags()`；未变化的图片不重写、不重复盖章；返回 `updated/unchanged/failed` 与 `tags_by_path`。
+  - [file_meta.py](../../anylabeling/views/labeling/utils/file_meta.py) 新增 `write_tags()`：保留其它键、原子替换、缺失时创建可加载的最小标注文件，并按归属契约写入 `author`/`modified_at`。
+  - 图片标签属于内容修改，入口点击时通过 `host._ensure_operator()` 要求登录；当前打开的图片若在范围内，`other_data` 与“图像属性”页同步刷新；数量结果写入状态栏。
+- **“类别”页切页刷新**：`RightSidebarTabs._on_right_tab_changed()` 改为“同一性 + 祖先链”判断（`page is label_manager_widget or page.isAncestorOf(...)`），与 `LabelManagerPanel._is_visible_page()` 保持一致；启动停在其他页→导入→切到“类别”页会走 `ensure_built()` 重建。
+- **统计合计可点击**：`StatisticsFilter` 新增 `all_images` 字段；`filter_for_cell()` 新语义——合计行×划分列 → `split`，类别行×合计列 → `label`，无对象行×合计列 → `objectless`，合计行标签与右下角 → `all_images=True`；`RightSidebarTabs._on_statistics_filter_requested()` 收到 `all_images` 时清空搜索框并刷新列表；`Class`/`Total` 表头仍不可点击。
+- **翻译**：`LabelingWidget` 上下文新增 11 条（菜单项、对话框标题/说明/占位符/模式、清空确认、三条状态提示），复用已有的 `OK`/`Cancel`；重编 `.qm`、重建 `resources.py`。
+- 版本：`4.3.2+fork.31` → `4.3.2+fork.32`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/file_list/controller.py`、`anylabeling/views/labeling/right_sidebar.py`、`anylabeling/views/labeling/utils/file_meta.py`、`anylabeling/views/labeling/utils/dataset_statistics.py`、`anylabeling/views/labeling/widgets/statistics_table.py`、`anylabeling/resources/translations/*`、`anylabeling/resources/resources.py`、`anylabeling/app_info.py`
+- 新增：`anylabeling/views/labeling/file_list/tags_dialog.py`、`anylabeling/views/labeling/utils/batch_tags.py`
+- 测试：`tests/test_dataset_db/test_batch_tags.py`（新增 8 条）、`tests/test_labeling/test_file_table.py`（新增启动后切页刷新、批量标签写入选行/当前图片同步、统计合计清空/设置搜索 3 条）、`tests/test_utils/test_dataset_statistics.py`、`tests/test_widgets/test_statistics_table.py`（合计语义）
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.9，§4.5 扩充）、`docs/开始.md`（T3）、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：文件表右键可批量设置图片标签（追加/替换，空替换需确认）；启动停留在其他标签页、导入后切到“类别”页即为最新；统计页的合计行/合计列/右下角均可点击，右下角清空搜索。
+- **接口**：新增 `FileListController.set_tags_rows()`、`BatchTagsDialog`、`merge_image_tags()`、`apply_image_tags()`、`file_meta.write_tags()`；`StatisticsFilter` 新增 `all_images`；`filter_for_cell()` 的返回语义变化（合计不再返回 `None`）。
+- **数据/契约**：无 schema 变更；批量标签写 `image_tag` 或标注 JSON 的 `tags`，并按 fork.4 契约盖章 `author`/`modified_at`；JSON 模式对没有标注文件的图片会创建一个只含标签/作者的最小文件。
+- **兼容性**：菜单项与对话框文案复用 `LabelingWidget` 翻译上下文；`Set Tags…` 不新增全局 `QAction`，因此不需要登记到 `OPERATOR_REQUIRED_ACTIONS`，但点击时必须调用 `_ensure_operator()`。
+- **版本**：fork.31 → fork.32。
+
+### 5. 实际验证内容
+
+- `python -m pytest tests/test_dataset_db/test_batch_tags.py -q`：**8 passed**（追加/替换/清空、盖章、未变化不重写、缺失文件建档、坏 JSON 失败、DB 未知图失败、DB 合并与 `editor`/`modified_at`）。
+- `python -m pytest tests/test_utils/test_dataset_statistics.py tests/test_widgets/test_statistics_table.py -q`：**39 passed**（合计行/列/右下角语义与点击载荷）。
+- `python -m pytest tests/test_labeling/test_file_table.py -q`：**30 passed / 4 failed**；4 条失败与 HEAD 基线逐条相同（文件表 DB 模式测试债）；新增的“启动后切到类别页会重建”“批量标签写入选行并同步当前图片”“统计合计清空/设置搜索”“批量标签对话框解析”均通过。
+- `python -m pytest tests/test_utils/test_file_meta.py tests/test_labeling/test_image_tags.py tests/test_labeling/test_operator_gate.py tests/test_dataset_db -q`：**73 passed**。
+- 与 HEAD 导出树（`temporary/fork31/baseline`，HEAD `f31a952`）同环境对比 `tests/test_labeling tests/test_widgets tests/test_dataset_db`：当前树 **345 passed / 11 failed / 53 subtests passed**，基线 **321 passed / 10 failed / 53 subtests passed**；失败集合唯一差异仍是已记录的时序抖动 `test_brightness_contrast_updates_are_throttled`，其余 10 条（4 条文件表 DB 模式测试债、3 条 `SimpleNamespace` 桩缺方法、1 条上传属性、2 条 subtest）与基线逐条相同；fork.31+fork.32 新增的 24 个用例全部通过。
+- `python -m py_compile` 修改与新增文件：通过。
+- `scripts/compile_languages.py`：四语言 `.qm` 各 **2273 条 / 0 unfinished**，`resources.py` 重建；从 `.qm` 加载并抽查 11 个新字符串，四语言均返回预期译文。
+- **未执行**：真实桌面右键/弹窗/输入法观感、大批量（上千图）标签写入耗时、真实数据库 + 真实图片的批量标签冒烟、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- DB 模式批量标签对每张图调用一次 `save_annotation()`（独立事务），会重写该图对象/关系行；上千图批量写会较慢，后续可合并为单事务批量接口。
+- 批量写入读取的是已保存内容：当前图片未保存的形状不会被并入批量写；标签变化后当前图片只同步标签，不改变其脏标记。
+- 批量标签只支持“追加”和“整组替换”，不支持在一次操作中按标签增删；需要精细修改时仍用“图像属性”页。
+- 文件表不再有 `标签` 列，批量结果只能通过状态栏数量、当前图片的“图像属性”页或搜索/筛选确认。
+- “统计”页右下角会清空用户手动输入的搜索条件（这是“显示全部图片”的语义）；`Class`/`Total` 表头仍不可点击。
+
+---
+
 ## 4.3.2+fork.31 — 2026-11-22
 
 ### 1. 背景与原因

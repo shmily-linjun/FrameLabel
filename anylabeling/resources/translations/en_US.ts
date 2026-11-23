@@ -3136,6 +3136,50 @@ Continue?</translation>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Set Tags…</source>
+        <translation>Set Tags…</translation>
+    </message>
+    <message>
+        <source>Set Image Tags</source>
+        <translation>Set Image Tags</translation>
+    </message>
+    <message>
+        <source>Apply tags to the selected images (%d):</source>
+        <translation>Apply tags to the selected images (%d):</translation>
+    </message>
+    <message>
+        <source>Tags (comma separated)</source>
+        <translation>Tags (comma separated)</translation>
+    </message>
+    <message>
+        <source>tag1, tag2</source>
+        <translation>tag1, tag2</translation>
+    </message>
+    <message>
+        <source>Add to existing tags</source>
+        <translation>Add to existing tags</translation>
+    </message>
+    <message>
+        <source>Replace existing tags</source>
+        <translation>Replace existing tags</translation>
+    </message>
+    <message>
+        <source>Remove all image tags from %d files?</source>
+        <translation>Remove all image tags from %d files?</translation>
+    </message>
+    <message>
+        <source>Failed to update tags for %d files</source>
+        <translation>Failed to update tags for %d files</translation>
+    </message>
+    <message>
+        <source>Tags updated for %d files</source>
+        <translation>Tags updated for %d files</translation>
+    </message>
+    <message>
+        <source>Tags unchanged for %d files</source>
+        <translation>Tags unchanged for %d files</translation>
+    </message>
+    <message>
         <location filename="..\..\views\labeling\label_widget.py" line="477" />
         <source>Search files...</source>
         <translation>Search files...</translation>

@@ -398,30 +398,34 @@ def test_filter_for_objectless_cells():
     ) == StatisticsFilter(label=None, split=None, objectless=True)
 
 
-def test_totals_rows_and_columns_are_not_clickable():
+def test_totals_row_and_column_are_clickable():
     table = build_class_split_table(_make_entries())
 
-    assert (
-        filter_for_cell(table, ROW_KIND_TOTAL, class_index=0, split_index=0)
-        is None
-    )
-    assert (
-        filter_for_cell(
-            table,
-            ROW_KIND_CLASS,
-            class_index=0,
-            split_index=SPLIT_INDEX_TOTAL,
-        )
-        is None
-    )
-    assert (
-        filter_for_cell(
-            table,
-            ROW_KIND_OBJECTLESS,
-            split_index=SPLIT_INDEX_TOTAL,
-        )
-        is None
-    )
+    # Totals row: per-split filter; the row label and the bottom-right cell
+    # clear every filter.
+    assert filter_for_cell(
+        table, ROW_KIND_TOTAL, class_index=0, split_index=1
+    ) == StatisticsFilter(split=SPLIT_VAL)
+    assert filter_for_cell(
+        table, ROW_KIND_TOTAL, class_index=0, split_index=SPLIT_INDEX_TOTAL
+    ) == StatisticsFilter(all_images=True)
+    assert filter_for_cell(
+        table, ROW_KIND_TOTAL, class_index=0, split_index=None
+    ) == StatisticsFilter(all_images=True)
+
+    # Totals column: a class row filters by class only, the objectless row by
+    # objectless only.
+    assert filter_for_cell(
+        table,
+        ROW_KIND_CLASS,
+        class_index=0,
+        split_index=SPLIT_INDEX_TOTAL,
+    ) == StatisticsFilter(label="car", split=None)
+    assert filter_for_cell(
+        table,
+        ROW_KIND_OBJECTLESS,
+        split_index=SPLIT_INDEX_TOTAL,
+    ) == StatisticsFilter(label=None, split=None, objectless=True)
 
 
 def test_filter_for_invalid_arguments_returns_none():

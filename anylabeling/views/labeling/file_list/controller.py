@@ -19,6 +19,11 @@ The host object passed to the constructor must provide this small surface
 * ``import_files_dialog()`` / ``open_folder_dialog()``;
 * ``_annotation_checked_text()`` -- localized review status;
 * ``_refresh_statistics_if_visible()`` / ``update_browse_actions()``;
+* ``_ensure_operator()`` / ``operator_service`` -- batch image-tag writes need
+  a logged-in operator (tags are content under the attribution contract);
+* ``image_path`` / ``other_data`` / ``image_tags_widget`` -- refresh the open
+  image after a batch tag change;
+* ``dataset_repository`` / ``dataset_root`` -- DB mode tag writes;
 * ``_no_selection_slot`` -- re-entrancy guard for selection changes;
 * ``_ui_scale`` -- current interface scale used for row height.
 
@@ -32,7 +37,10 @@ import os.path as osp
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from ....services.identity.attribution import format_timestamp
 from .. import utils
+from ..schema import IMAGE_TAGS_FIELD
+from ..utils.batch_tags import apply_image_tags
 from ..utils.file_meta import (
     SPLIT_KEYS,
     SPLIT_NONE,
@@ -44,6 +52,7 @@ from ..utils.file_meta import (
 )
 from ..utils.style import get_file_table_style
 from ..utils.thumbnail import THUMBNAIL_SIZE, ThumbnailLoader
+from .tags_dialog import BatchTagsDialog
 from .constants import (
     FILE_CHECKED_COLOR,
     FILE_COL_IMPORT_TIME,
@@ -682,6 +691,7 @@ class FileListController:
         split_actions = {}
         copy_name_action = None
         copy_path_action = None
+        tags_action = None
         thumbnail_action = None
         remove_action = None
         if targets:
@@ -717,6 +727,9 @@ class FileListController:
                 split_group.addAction(split_action)
                 split_actions[split_action] = split_key
 
+            tags_action = menu.addAction(
+                utils.new_icon("tag", "svg"), host.tr("Set Tags…")
+            )
             menu.addSeparator()
             thumbnail_action = menu.addAction(
                 host.tr("Hide Thumbnails")
@@ -746,6 +759,8 @@ class FileListController:
             )
         elif chosen is copy_path_action:
             host.copy_file_path("\n".join(paths))
+        elif chosen is tags_action:
+            self.set_tags_rows(targets)
         elif chosen is thumbnail_action:
             self.set_thumbnails_visible(not self._show_thumbnails)
         elif chosen is remove_action:
@@ -831,6 +846,96 @@ class FileListController:
             host.tr("Split of %d files set to %s")
             % (updated, self.split_text(split))
         )
+
+    def set_tags_rows(self, rows):
+        """Apply one image-tag list to every row ("Set Tags…" menu entry).
+
+        Image tags are content under the attribution contract, so the write
+        needs a logged-in operator; the dialog lets the user add tags to the
+        existing list or replace it.  Unchanged images are skipped.
+        """
+        host = self.host
+        targets = [
+            row
+            for row in dict.fromkeys(rows)
+            if 0 <= row < self.table.rowCount()
+        ]
+        paths = [self.path_at(row) for row in targets]
+        paths = [path for path in paths if path]
+        if not paths:
+            return
+        ensure_operator = getattr(host, "_ensure_operator", None)
+        if ensure_operator is not None and not ensure_operator():
+            return
+        dialog = BatchTagsDialog(len(paths), host, translate=host.tr)
+        if (
+            dialog.exec()
+            != QtWidgets.QDialog.DialogCode.Accepted
+        ):
+            return
+        tags = dialog.tags()
+        replace = dialog.replace()
+        if replace and not tags:
+            answer = QtWidgets.QMessageBox.question(
+                host,
+                host.tr("Set Image Tags"),
+                host.tr("Remove all image tags from %d files?")
+                % len(paths),
+                QtWidgets.QMessageBox.StandardButton.Yes
+                | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.No,
+            )
+            if answer != QtWidgets.QMessageBox.StandardButton.Yes:
+                return
+        service = getattr(host, "operator_service", None)
+        session = getattr(service, "session", None)
+        author = (
+            session.operator_name
+            if session is not None and session.is_logged_in
+            else ""
+        )
+        result = apply_image_tags(
+            paths,
+            tags,
+            replace=replace,
+            repository=getattr(host, "dataset_repository", None),
+            dataset_root=getattr(host, "dataset_root", None),
+            output_dir=host.output_dir,
+            author=author or None,
+            modified_at=format_timestamp(),
+        )
+        self._sync_open_image_tags(result)
+        if result.failed:
+            host.status(
+                host.tr("Failed to update tags for %d files")
+                % len(result.failed)
+            )
+        elif result.updated:
+            host.status(
+                host.tr("Tags updated for %d files")
+                % len(result.updated)
+            )
+        else:
+            host.status(
+                host.tr("Tags unchanged for %d files")
+                % len(result.unchanged)
+            )
+
+    def _sync_open_image_tags(self, result):
+        """Refresh the open image when the batch included it."""
+        host = self.host
+        image_path = getattr(host, "image_path", None)
+        if not image_path or not result.tags_by_path:
+            return
+        current = osp.normcase(osp.abspath(str(image_path)))
+        for path, tags in result.tags_by_path.items():
+            if osp.normcase(osp.abspath(path)) != current:
+                continue
+            host.other_data[IMAGE_TAGS_FIELD] = list(tags)
+            widget = getattr(host, "image_tags_widget", None)
+            if widget is not None:
+                widget.set_tags(tags)
+            return
 
     def remove_row(self, row):
         self.remove_rows([row])

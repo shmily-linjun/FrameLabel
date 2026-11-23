@@ -3135,6 +3135,50 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Set Tags…</source>
+        <translation>设置标签…</translation>
+    </message>
+    <message>
+        <source>Set Image Tags</source>
+        <translation>设置图片标签</translation>
+    </message>
+    <message>
+        <source>Apply tags to the selected images (%d):</source>
+        <translation>将标签应用到选中的图片（%d 张）：</translation>
+    </message>
+    <message>
+        <source>Tags (comma separated)</source>
+        <translation>标签（以逗号分隔）</translation>
+    </message>
+    <message>
+        <source>tag1, tag2</source>
+        <translation>例如：缺陷, 模糊</translation>
+    </message>
+    <message>
+        <source>Add to existing tags</source>
+        <translation>添加到现有标签</translation>
+    </message>
+    <message>
+        <source>Replace existing tags</source>
+        <translation>替换现有标签</translation>
+    </message>
+    <message>
+        <source>Remove all image tags from %d files?</source>
+        <translation>从 %d 张图片中移除全部图片标签？</translation>
+    </message>
+    <message>
+        <source>Failed to update tags for %d files</source>
+        <translation>%d 张图片的标签更新失败</translation>
+    </message>
+    <message>
+        <source>Tags updated for %d files</source>
+        <translation>已更新 %d 张图片的标签</translation>
+    </message>
+    <message>
+        <source>Tags unchanged for %d files</source>
+        <translation>%d 张图片的标签未变化</translation>
+    </message>
+    <message>
         <location filename="..\..\views\labeling\label_widget.py" line="477" />
         <source>Search files...</source>
         <translation>搜索文件...</translation>

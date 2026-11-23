@@ -129,8 +129,13 @@ class RightSidebarTabs:
 
     def _on_right_tab_changed(self, _index):
         page = self.host.right_tabs.currentWidget()
-        if page is getattr(self.host, "label_manager_widget", None):
-            page.ensure_built()
+        label_manager = getattr(self.host, "label_manager_widget", None)
+        if label_manager is not None and page is not None and (
+            page is label_manager or page.isAncestorOf(label_manager)
+        ):
+            # The panel is hosted inside the rounded container that is the
+            # actual tab page, so an identity check alone would never match.
+            label_manager.ensure_built()
             return
         if page is getattr(self.host, "statistics_table", None):
             self.host._refresh_statistics()
@@ -165,6 +170,12 @@ class RightSidebarTabs:
 
     def _on_statistics_filter_requested(self, statistics_filter):
         """Turn a statistics-table click into a search query."""
+        if statistics_filter.all_images:
+            # The totals cell is the "show everything" affordance: clear the
+            # query instead of writing an empty filter.
+            self.host.file_search.clear()
+            self.host.file_search_changed()
+            return
         parts = []
         if statistics_filter.objectless:
             parts.append("shape::0")

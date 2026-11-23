@@ -7,8 +7,10 @@ Renders the aggregation produced by
 * one row per class, then the ``(No objects)`` row, then the ``Total`` row.
 
 The table is read-only.  Clicking a cell emits :attr:`filter_requested` with
-a :class:`~...dataset_statistics.StatisticsFilter` payload; the totals row and
-the totals column are not clickable.  ``label_widget`` is expected to turn the
+a :class:`~...dataset_statistics.StatisticsFilter` payload.  All data cells are
+clickable: a class/objectless row filters by that kind (plus the split column),
+the totals row filters by split, the totals column filters by class, and the
+bottom-right totals cell clears every filter.  ``label_widget`` turns the
 payload into a search query.
 """
 

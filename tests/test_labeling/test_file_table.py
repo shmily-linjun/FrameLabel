@@ -1,6 +1,7 @@
 import copy
 import json
 import os
+from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -21,6 +22,9 @@ from anylabeling.views.labeling.file_list.constants import (
     FILE_ROW_HEIGHT_COMPACT,
 )
 from anylabeling.views.labeling.settings.schema import load_template_config
+from anylabeling.views.labeling.utils.dataset_statistics import (
+    StatisticsFilter,
+)
 from anylabeling.views.labeling.utils.file_meta import SPLIT_NONE, SPLIT_TRAIN
 from anylabeling.views.labeling.widgets.label_manager import REFRESH_DELAY_MS
 from anylabeling.views.mainwindow import MainWindow
@@ -980,3 +984,118 @@ def test_classes_tab_refreshes_live_when_visible(window, tmp_path):
         for row in range(panel.table.rowCount())
     ]
     assert "extra" in labels_after
+
+
+def test_classes_tab_builds_when_activated_after_import(window, tmp_path):
+    """Startup on another tab + import must still fill "Classes" on switch."""
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    panel = widget.label_manager_widget
+    # A fresh window starts on the "Objects" tab and never builds the table.
+    assert widget.right_tabs.currentWidget() is not panel.parentWidget()
+    assert panel.table.rowCount() == 0
+
+    images, _first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.right_tabs.setCurrentIndex(0)
+    app.processEvents()
+    assert panel.table.rowCount() == 0
+
+    widget.show_right_tab("labels")
+    app.processEvents()
+    labels = [
+        panel.table.item(row, 0).text()
+        for row in range(panel.table.rowCount())
+    ]
+    assert labels == ["object_0", "object_1", "object_2"]
+
+
+def test_batch_tags_applies_to_selected_rows(
+    window, tmp_path, monkeypatch
+):
+    """The file-list "Set Tags…" entry writes every selected image."""
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, first, second, third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    widget.dirty = False
+    app.processEvents()
+    repository = widget.dataset_repository
+    assert repository is not None
+
+    class FakeDialog:
+        def __init__(self, _count, _parent=None, translate=None):
+            pass
+
+        def exec(self):
+            return QtWidgets.QDialog.DialogCode.Accepted
+
+        def tags(self):
+            return ["defect", "blur"]
+
+        def replace(self):
+            return True
+
+    import anylabeling.views.labeling.file_list.controller as controller_module
+
+    monkeypatch.setattr(controller_module, "BatchTagsDialog", FakeDialog)
+    monkeypatch.setattr(widget, "_ensure_operator", lambda: True)
+    monkeypatch.setattr(
+        widget,
+        "operator_service",
+        SimpleNamespace(
+            session=SimpleNamespace(
+                operator_name="tester", is_logged_in=True
+            )
+        ),
+    )
+
+    widget.files.set_tags_rows(
+        [widget.fn_to_index[str(first)], widget.fn_to_index[str(second)]]
+    )
+
+    def tags_of(path):
+        image = repository.find_image(path.name)
+        return repository.load_annotation(image["id"]).tags
+
+    assert tags_of(first) == ["defect", "blur"]
+    assert tags_of(second) == ["defect", "blur"]
+    assert tags_of(third) == []
+    # The open image (first row) is refreshed in memory too.
+    assert widget.other_data["tags"] == ["defect", "blur"]
+    assert widget.image_tags_widget.tags == ["defect", "blur"]
+
+
+def test_statistics_totals_clear_or_set_filters(window):
+    """Totals cells must drive the search bar like the other cells."""
+    widget = window.labeling_widget.view
+    widget.file_search.setText("label::object_0")
+    widget.statistics_table.filter_requested.emit(
+        StatisticsFilter(all_images=True)
+    )
+    assert widget.file_search.text() == ""
+
+    widget.statistics_table.filter_requested.emit(
+        StatisticsFilter(split="train")
+    )
+    assert widget.file_search.text() == "split::train"
+
+    widget.file_search.clear()
+    widget.statistics_table.filter_requested.emit(
+        StatisticsFilter(label="object_0")
+    )
+    assert widget.file_search.text() == "label::object_0"
+
+
+def test_batch_tags_dialog_parses_tags_and_mode(window):
+    from anylabeling.views.labeling.file_list.tags_dialog import (
+        BatchTagsDialog,
+    )
+
+    dialog = BatchTagsDialog(3, translate=lambda text: text)
+    dialog.tags_edit.setText(" defect, blur ,defect ")
+    assert dialog.tags() == ["defect", "blur"]
+    assert dialog.replace() is False
+    dialog.mode_combo.setCurrentIndex(1)
+    assert dialog.replace() is True
+    dialog.close()

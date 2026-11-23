@@ -3135,6 +3135,50 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Set Tags…</source>
+        <translation>タグを設定…</translation>
+    </message>
+    <message>
+        <source>Set Image Tags</source>
+        <translation>画像タグを設定</translation>
+    </message>
+    <message>
+        <source>Apply tags to the selected images (%d):</source>
+        <translation>選択した画像（%d 枚）にタグを適用:</translation>
+    </message>
+    <message>
+        <source>Tags (comma separated)</source>
+        <translation>タグ（カンマ区切り）</translation>
+    </message>
+    <message>
+        <source>tag1, tag2</source>
+        <translation>例: 欠陥, ぼけ</translation>
+    </message>
+    <message>
+        <source>Add to existing tags</source>
+        <translation>既存のタグに追加</translation>
+    </message>
+    <message>
+        <source>Replace existing tags</source>
+        <translation>既存のタグを置き換え</translation>
+    </message>
+    <message>
+        <source>Remove all image tags from %d files?</source>
+        <translation>%d 枚の画像からすべての画像タグを削除しますか？</translation>
+    </message>
+    <message>
+        <source>Failed to update tags for %d files</source>
+        <translation>%d 枚の画像のタグを更新できませんでした</translation>
+    </message>
+    <message>
+        <source>Tags updated for %d files</source>
+        <translation>%d 枚の画像のタグを更新しました</translation>
+    </message>
+    <message>
+        <source>Tags unchanged for %d files</source>
+        <translation>%d 枚の画像のタグは変更されていません</translation>
+    </message>
+    <message>
         <location filename="..\..\views\labeling\label_widget.py" line="477" />
         <source>Search files...</source>
         <translation>ファイルを検索...</translation>

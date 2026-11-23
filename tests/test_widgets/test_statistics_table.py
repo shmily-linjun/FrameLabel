@@ -199,17 +199,27 @@ class StatisticsTableTest(unittest.TestCase):
             StatisticsFilter(split=None, objectless=True),
         ]
 
-    def test_totals_are_not_clickable(self):
+    def test_totals_row_and_column_are_clickable(self):
         total_row = len(self.widget.statistics.classes) + 1
         for column in range(self.widget.columnCount()):
             self._click_cell(total_row, column)
         # totals column of every class/objectless row
         for row in range(total_row):
             self._click_cell(row, 5)
-        # class-name header and totals header
+        # class-name header and totals header stay non-clickable
         self._click_header(0)
         self._click_header(5)
-        assert self.filters == []
+        assert self.filters == [
+            StatisticsFilter(all_images=True),
+            StatisticsFilter(split=SPLIT_TRAIN),
+            StatisticsFilter(split=SPLIT_VAL),
+            StatisticsFilter(split=SPLIT_TEST),
+            StatisticsFilter(split=SPLIT_NONE),
+            StatisticsFilter(all_images=True),
+            StatisticsFilter(label="car"),
+            StatisticsFilter(label="person"),
+            StatisticsFilter(objectless=True),
+        ]
 
     def test_cell_filter_api(self):
         assert self.widget.cell_filter(0, 1) == StatisticsFilter(
@@ -218,8 +228,18 @@ class StatisticsTableTest(unittest.TestCase):
         assert self.widget.cell_filter(0, 0) == StatisticsFilter(
             label="car", split=None
         )
-        assert self.widget.cell_filter(0, 5) is None
-        assert self.widget.cell_filter(3, 1) is None
+        assert self.widget.cell_filter(0, 5) == StatisticsFilter(
+            label="car"
+        )
+        assert self.widget.cell_filter(3, 1) == StatisticsFilter(
+            split=SPLIT_TRAIN
+        )
+        assert self.widget.cell_filter(3, 5) == StatisticsFilter(
+            all_images=True
+        )
+        assert self.widget.cell_filter(3, 0) == StatisticsFilter(
+            all_images=True
+        )
         assert self.widget.cell_filter(-1, 1) is None
         assert self.widget.cell_filter(0, 99) is None
         assert self.widget.header_filter(1) == StatisticsFilter(
