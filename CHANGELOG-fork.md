@@ -6,6 +6,69 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.41 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈 2 项：
+
+1. 类别“批量导入”的表头覆盖按钮会与表头重合，方案不可用；
+2. fork.40 的文件表右键菜单没有“移动到文件夹…”（此前只给了方案，未实现）。
+
+### 2. 主要实现与关键细节
+
+- **类别批量导入入口改到右侧标签栏右上角**：
+  - 删除 `LabelManagerPanel` 内覆盖 `QHeaderView` 的按钮与 `eventFilter`；
+  - 在 `workspace.py` 创建 `host.category_import_button`，用
+    `right_tabs.setCornerWidget(..., Qt.Corner.TopRightCorner)` 放到 Classes
+    标签栏右上角；
+  - `RightSidebarTabs._on_right_tab_changed()` 只在 Classes 页显示该按钮；
+  - 按钮仍调用 `LabelManagerPanel.import_categories()`，`set_editing_enabled()`
+    同步禁用/启用。
+- **文件表“移动到文件夹…”**：
+  - 右键菜单在“设置标签…”之后新增“移动到文件夹…”（folder-tree 图标）；
+  - 仅允许选择当前数据集根目录内的文件夹；目标同名文件存在时中止；
+  - 逐项移动图片 + 同名 JSON（`output_dir` 路径相同时 JSON 不移动）；
+  - DB 模式调用新增 `DatasetRepository.move_image()` 更新
+    `rel_path`/`file_name`/`ext`；移动文件或 DB 更新失败时回滚文件，保留原行；
+  - 成功后更新文件表路径、`fn_to_index`、`_import_times`、标签库路径、缩略图；
+    当前图片会重新加载；失败项在状态栏报告。
+  - 移动前如当前图片有未保存修改，先走 `may_continue()`；并要求登录
+    `_ensure_operator()`。
+- 翻译：新增“移动到文件夹…”等 5 条；`.qm` 各 2315 条。
+- 版本：4.3.2+fork.40 → 4.3.2+fork.41。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/widgets/workspace.py`、`right_sidebar.py`、`widgets/label_manager.py`、`file_list/controller.py`、`services/dataset/repository.py`、`resources/translations/*`、`app_info.py`
+- 测试：`tests/test_labeling/test_file_table.py`（按钮显示/隐藏、移动图片+JSON+DB）
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.18）、`docs/dev/数据库设计-讨论稿.md`、`docs/开始.md`、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：Classes 页标签栏右上角出现导入图标（切到其他页隐藏），不再遮挡表头；文件表右键出现“移动到文件夹…”，移动后图片/JSON/DB/文件表同步。
+- **接口**：`FileListController.move_rows_to_folder()`/`_move_one_file()`/`_update_row_path()`；`DatasetRepository.move_image()`；`host.category_import_button`。
+- **数据**：`rel_path`/`file_name` 更新；无 schema 变更；移动只允许数据集根内，避免产生外部悬空行。
+- **版本**：fork.40 → fork.41。
+
+### 5. 实际验证内容
+
+- `test_category_import_button_is_shown_on_classes_tab`：Classes 页可见、切到 Objects 隐藏。
+- `test_move_to_folder_updates_db_and_file_table`：图片+JSON 移动到 `moved/`，文件表路径更新，DB 新 `rel_path` 可查、旧路径消失。
+- 最终回归同集合分两组：`test_labeling` **254 passed / 10 failed / 51 subtests**；其余 **290 passed / 1 failed / 105 subtests**；合计 **544 passed / 11 failed / 156 subtests**，10 条与 HEAD 基线逐条相同，第 11 条为已知 `test_brightness_contrast_updates_are_throttled` 时序抖动。
+- 四语言 `.qm` 各 **2315 条 / 0 unfinished**；`resources.py` 无 diff。
+- **未执行**：真实桌面右键移动/标签栏按钮位置观感、多文件移动冲突、跨卷移动、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 移动只允许数据集根目录内；移动到数据集外仍需“移出数据集/移除记录”的独立动作，未实现。
+- 多选移动中同名冲突逐项失败，不做自动改名。
+- JSON 模式移动可跨目录；文件表保留新路径，但重新打开当前文件夹时，移出该文件夹的图片不会自动出现。
+- 标签栏右上角按钮是 QTabWidget corner widget；若同时隐藏多个 tab，位置随标签栏宽度变化。
+- 移动 API 未写 `editor/modified_at`（文件组织操作，不属于标注内容修改）。
+
+---
+
 ## 4.3.2+fork.40 — 2026-11-23
 
 ### 1. 背景与原因

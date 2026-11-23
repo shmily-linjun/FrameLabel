@@ -35,6 +35,7 @@ reports an extending press through ``selection_only_gesture()`` and
 
 import os
 import os.path as osp
+import shutil
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -678,6 +679,7 @@ class FileListController:
         copy_name_action = None
         copy_path_action = None
         tags_action = None
+        move_action = None
         thumbnail_action = None
         remove_action = None
         if targets:
@@ -716,6 +718,10 @@ class FileListController:
             tags_action = menu.addAction(
                 utils.new_icon("tag", "svg"), host.tr("Set Tags…")
             )
+            move_action = menu.addAction(
+                utils.new_icon("folder-tree", "svg"),
+                host.tr("Move to Folder…"),
+            )
             menu.addSeparator()
             thumbnail_action = menu.addAction(
                 host.tr("Hide Thumbnails")
@@ -747,6 +753,8 @@ class FileListController:
             host.copy_file_path("\n".join(paths))
         elif chosen is tags_action:
             self.set_tags_rows(targets)
+        elif chosen is move_action:
+            self.move_rows_to_folder(targets)
         elif chosen is thumbnail_action:
             self.set_thumbnails_visible(not self._show_thumbnails)
         elif chosen is remove_action:
@@ -1014,6 +1022,150 @@ class FileListController:
         invalidate_tags = getattr(host, "_invalidate_tag_library", None)
         if invalidate_tags is not None:
             invalidate_tags()
+
+    def move_rows_to_folder(self, rows):
+        """Move selected images and sidecars inside the dataset root."""
+        host = self.host
+        targets = sorted(
+            {row for row in rows if 0 <= row < self.table.rowCount()}
+        )
+        if not targets:
+            return
+        paths = [self.path_at(row) for row in targets]
+        paths = [path for path in paths if path]
+        if not paths:
+            return
+        if str(host.filename) in paths:
+            may_continue = getattr(host, "may_continue", None)
+            if may_continue is not None and not may_continue():
+                return
+        ensure_operator = getattr(host, "_ensure_operator", None)
+        if ensure_operator is not None and not ensure_operator():
+            return
+        destination = QtWidgets.QFileDialog.getExistingDirectory(
+            host,
+            host.tr("Move to Folder"),
+            osp.dirname(paths[0]),
+            QtWidgets.QFileDialog.Option.DontUseNativeDialog,
+        )
+        if not destination:
+            return
+        destination = osp.abspath(destination)
+        root = getattr(host, "dataset_root", None) or getattr(
+            host, "last_open_dir", None
+        )
+        if root:
+            root = osp.abspath(root)
+            try:
+                inside = (
+                    osp.commonpath([root, destination]) == root
+                )
+            except ValueError:
+                inside = False
+            if not inside:
+                host.error_message(
+                    host.tr("Move to Folder"),
+                    host.tr(
+                        "Choose a folder inside the current dataset "
+                        "directory."
+                    ),
+                )
+                return
+
+        moved = 0
+        failed = []
+        for row, path in zip(targets, paths):
+            try:
+                self._move_one_file(row, path, destination)
+                moved += 1
+            except Exception as error:  # noqa: BLE001 - per-file report
+                logger.error("Failed to move %s: %s", path, error)
+                failed.append(osp.basename(path))
+        if failed:
+            host.status(
+                host.tr("Failed to move: %s") % ", ".join(failed[:3])
+            )
+        elif moved:
+            host.status(
+                host.tr("Moved %d files") % moved
+            )
+
+    def _move_one_file(self, row, path, destination):
+        host = self.host
+        new_path = osp.join(destination, osp.basename(path))
+        if osp.normcase(osp.abspath(path)) == osp.normcase(
+            osp.abspath(new_path)
+        ):
+            return
+        if osp.exists(new_path):
+            raise FileExistsError(new_path)
+        old_label = self.label_file_for(path)
+        new_label = self.label_file_for(new_path)
+        if (
+            old_label != new_label
+            and osp.exists(old_label)
+            and osp.exists(new_label)
+        ):
+            raise FileExistsError(new_label)
+        shutil.move(path, new_path)
+        label_moved = False
+        try:
+            if old_label != new_label and osp.exists(old_label):
+                shutil.move(old_label, new_label)
+                label_moved = True
+            repository = getattr(host, "dataset_repository", None)
+            root = getattr(host, "dataset_root", None)
+            if repository is not None and root:
+                old_rel = osp.relpath(
+                    path, root
+                ).replace(os.sep, "/")
+                new_rel = osp.relpath(
+                    new_path, root
+                ).replace(os.sep, "/")
+                image = repository.find_image(old_rel)
+                if image is None:
+                    raise FileNotFoundError(old_rel)
+                repository.move_image(image["id"], new_rel)
+        except Exception:
+            if label_moved:
+                shutil.move(new_label, old_label)
+            shutil.move(new_path, path)
+            raise
+        self._update_row_path(row, path, new_path)
+
+    def _update_row_path(self, row, old_path, new_path):
+        host = self.host
+        item = self.table.item(row, FILE_COL_NAME)
+        if item is not None:
+            checked = item.data(QtCore.Qt.ItemDataRole.UserRole)
+            item.setText(new_path)
+            item.setData(FILE_PATH_ROLE, new_path)
+            item.setToolTip(
+                f"{new_path}\n{host._annotation_checked_text(checked)}"
+            )
+        if self.fn_to_index.get(old_path) == row:
+            self.fn_to_index.pop(old_path, None)
+            self.fn_to_index[new_path] = row
+        if old_path in self._import_times:
+            self._import_times[new_path] = self._import_times.pop(old_path)
+        all_paths = getattr(host, "_tag_library_all_paths", None)
+        if all_paths:
+            host._tag_library_all_paths = [
+                new_path
+                if osp.normcase(osp.abspath(str(item))) ==
+                osp.normcase(osp.abspath(old_path))
+                else item
+                for item in all_paths
+            ]
+        if str(host.filename) == str(old_path):
+            host.filename = None
+            host.image_path = new_path
+            host.load_file(new_path)
+        invalidate_tags = getattr(host, "_invalidate_tag_library", None)
+        if invalidate_tags is not None:
+            invalidate_tags()
+        self._thumbnail_loader.clear()
+        self._schedule_thumbnail_scan()
 
     def remove_missing_path(self, path):
         """Remove a file whose image is gone, without a second prompt."""

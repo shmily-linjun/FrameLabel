@@ -3140,6 +3140,26 @@ Continue?</translation>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Move to Folder…</source>
+        <translation>Move to Folder…</translation>
+    </message>
+    <message>
+        <source>Move to Folder</source>
+        <translation>Move to Folder</translation>
+    </message>
+    <message>
+        <source>Choose a folder inside the current dataset directory.</source>
+        <translation>Choose a folder inside the current dataset directory.</translation>
+    </message>
+    <message>
+        <source>Failed to move: %s</source>
+        <translation>Failed to move: %s</translation>
+    </message>
+    <message>
+        <source>Moved %d files</source>
+        <translation>Moved %d files</translation>
+    </message>
+    <message>
         <source>File Not Found</source>
         <translation>File Not Found</translation>
     </message>

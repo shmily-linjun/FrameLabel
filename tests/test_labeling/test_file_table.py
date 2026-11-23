@@ -1170,6 +1170,43 @@ def test_object_column_has_no_status_circle(window, tmp_path):
     assert item.text() == "3"
 
 
+def test_move_to_folder_updates_db_and_file_table(
+    window, tmp_path, monkeypatch
+):
+    widget = window.labeling_widget.view
+    images, first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    destination = images / "moved"
+    destination.mkdir()
+    monkeypatch.setattr(
+        QtWidgets.QFileDialog,
+        "getExistingDirectory",
+        staticmethod(lambda *args, **kwargs: str(destination)),
+    )
+    monkeypatch.setattr(widget, "_ensure_operator", lambda: True)
+
+    widget.files.move_rows_to_folder([widget.fn_to_index[str(first)]])
+
+    new_path = destination / first.name
+    assert new_path.is_file()
+    assert not first.exists()
+    assert new_path.with_suffix(".json").is_file()
+    assert str(new_path) in widget.fn_to_index
+    repository = widget.dataset_repository
+    assert repository is not None
+    assert repository.find_image("moved/" + first.name) is not None
+    assert repository.find_image(first.name) is None
+
+
+def test_category_import_button_is_shown_on_classes_tab(window):
+    widget = window.labeling_widget.view
+    button = widget.category_import_button
+    widget.show_right_tab("labels")
+    assert button.isVisible()
+    widget.show_right_tab("objects")
+    assert not button.isVisible()
+
+
 def test_folder_open_always_creates_database(window, tmp_path):
     widget = window.labeling_widget.view
     images, _first, _second, _third = _make_dataset(tmp_path)

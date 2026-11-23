@@ -458,6 +458,25 @@ class DatasetRepository:
                     changed += image_changed
         return changed
 
+    def move_image(self, image_id: int, rel_path: str) -> bool:
+        """Move an image row to a new relative path inside the dataset."""
+        value = _normalize_rel_path(rel_path)
+        image = self.get_image(image_id)
+        if image is None:
+            return False
+        conflict = self.find_image(value)
+        if conflict is not None and int(conflict["id"]) != int(image_id):
+            raise DatasetConflictError(
+                f"cannot move image to {value}: path is already active"
+            )
+        path = Path(value)
+        self.db.execute(
+            "UPDATE image_file SET rel_path = ?, file_name = ?, ext = ?, "
+            "updated_at = ? WHERE id = ?",
+            (value, path.name, path.suffix.lower(), _now(), image_id),
+        )
+        return True
+
     def get_image(
         self, image_id: int, *, include_deleted: bool = False
     ) -> dict[str, Any] | None:

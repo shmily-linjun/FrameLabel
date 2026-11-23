@@ -190,24 +190,6 @@ class LabelManagerPanel(QtWidgets.QWidget):
         )
         layout.addWidget(self.table, 1)
 
-        self.import_button = QtWidgets.QToolButton(
-            self.table.horizontalHeader()
-        )
-        self.import_button.setAutoRaise(True)
-        self.import_button.setFixedSize(22, 22)
-        self.import_button.setIcon(new_icon("clipboard-paste", "svg"))
-        self.import_button.setIconSize(QtCore.QSize(14, 14))
-        self.import_button.setToolTip(
-            self._tr("Batch import categories…")
-        )
-        self.import_button.setAccessibleName(
-            self._tr("Batch import categories…")
-        )
-        self.import_button.clicked.connect(self.import_categories)
-        self.table.horizontalHeader().installEventFilter(self)
-        self.table.installEventFilter(self)
-        self._position_import_button()
-
         range_layout = QtWidgets.QHBoxLayout()
         range_layout.setContentsMargins(2, 0, 2, 1)
         range_layout.setSpacing(3)
@@ -249,24 +231,6 @@ class LabelManagerPanel(QtWidgets.QWidget):
         self.table.currentCellChanged.connect(
             lambda *_args: self._update_reorder_buttons()
         )
-
-    def _position_import_button(self):
-        header = self.table.horizontalHeader()
-        visible_width = min(header.width(), self.table.viewport().width())
-        self.import_button.move(
-            max(0, visible_width - self.import_button.width() - 2),
-            max(0, (header.height() - self.import_button.height()) // 2),
-        )
-        self.import_button.raise_()
-
-    def eventFilter(self, watched, event):
-        header = self.table.horizontalHeader()
-        if watched in (header, self.table) and event.type() in (
-            QtCore.QEvent.Type.Resize,
-            QtCore.QEvent.Type.Show,
-        ):
-            self._position_import_button()
-        return super().eventFilter(watched, event)
 
     def import_categories(self):
         """Append pasted category names to the dataset vocabulary."""
@@ -602,7 +566,9 @@ class LabelManagerPanel(QtWidgets.QWidget):
         self.range_button.setEnabled(
             self._editing_enabled and self.table.rowCount() > 0
         )
-        self.import_button.setEnabled(self._editing_enabled)
+        import_button = getattr(self.host, "category_import_button", None)
+        if import_button is not None:
+            import_button.setEnabled(self._editing_enabled)
         hint = (
             ""
             if self._editing_enabled

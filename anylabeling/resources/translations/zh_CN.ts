@@ -3139,6 +3139,26 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Move to Folder…</source>
+        <translation>移动到文件夹…</translation>
+    </message>
+    <message>
+        <source>Move to Folder</source>
+        <translation>移动到文件夹</translation>
+    </message>
+    <message>
+        <source>Choose a folder inside the current dataset directory.</source>
+        <translation>请选择当前数据集目录内的文件夹。</translation>
+    </message>
+    <message>
+        <source>Failed to move: %s</source>
+        <translation>移动失败：%s</translation>
+    </message>
+    <message>
+        <source>Moved %d files</source>
+        <translation>已移动 %d 个文件</translation>
+    </message>
+    <message>
         <source>File Not Found</source>
         <translation>文件不存在</translation>
     </message>

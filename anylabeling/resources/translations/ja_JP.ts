@@ -3139,6 +3139,26 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Move to Folder…</source>
+        <translation>フォルダへ移動…</translation>
+    </message>
+    <message>
+        <source>Move to Folder</source>
+        <translation>フォルダへ移動</translation>
+    </message>
+    <message>
+        <source>Choose a folder inside the current dataset directory.</source>
+        <translation>現在のデータセットディレクトリ内のフォルダを選択してください。</translation>
+    </message>
+    <message>
+        <source>Failed to move: %s</source>
+        <translation>移動に失敗しました：%s</translation>
+    </message>
+    <message>
+        <source>Moved %d files</source>
+        <translation>%d 個のファイルを移動しました</translation>
+    </message>
+    <message>
         <source>File Not Found</source>
         <translation>ファイルが見つかりません</translation>
     </message>

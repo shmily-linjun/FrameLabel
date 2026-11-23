@@ -130,6 +130,18 @@ class RightSidebarTabs:
     def _on_right_tab_changed(self, _index):
         page = self.host.right_tabs.currentWidget()
         label_manager = getattr(self.host, "label_manager_widget", None)
+        import_button = getattr(
+            self.host, "category_import_button", None
+        )
+        if import_button is not None:
+            import_button.setVisible(
+                label_manager is not None
+                and page is not None
+                and (
+                    page is label_manager
+                    or page.isAncestorOf(label_manager)
+                )
+            )
         if label_manager is not None and page is not None and (
             page is label_manager or page.isAncestorOf(label_manager)
         ):

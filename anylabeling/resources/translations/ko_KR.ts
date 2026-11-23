@@ -3140,6 +3140,26 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Move to Folder…</source>
+        <translation>폴더로 이동…</translation>
+    </message>
+    <message>
+        <source>Move to Folder</source>
+        <translation>폴더로 이동</translation>
+    </message>
+    <message>
+        <source>Choose a folder inside the current dataset directory.</source>
+        <translation>현재 데이터세트 디렉터리 내의 폴더를 선택하세요.</translation>
+    </message>
+    <message>
+        <source>Failed to move: %s</source>
+        <translation>이동 실패: %s</translation>
+    </message>
+    <message>
+        <source>Moved %d files</source>
+        <translation>%d개 파일을 이동했습니다</translation>
+    </message>
+    <message>
         <source>File Not Found</source>
         <translation>파일을 찾을 수 없음</translation>
     </message>

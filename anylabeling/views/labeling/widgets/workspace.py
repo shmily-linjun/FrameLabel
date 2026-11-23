@@ -13,7 +13,7 @@ import functools
 import os.path as osp
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import (
     QFrame,
     QGridLayout,
@@ -21,6 +21,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QScrollArea,
     QTabWidget,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -590,6 +591,32 @@ def build_workspace(host, scroll_area, instruction_layout):
     )
     host._rebuild_right_tabs()
     host.right_tabs.currentChanged.connect(host._on_right_tab_changed)
+
+    # Category import belongs to the "Classes" tab, not to a table header or
+    # a separate toolbar row.  Put it in the tab bar corner and show it only
+    # while that tab is active.
+    host.category_import_button = QToolButton(host.right_tabs)
+    host.category_import_button.setAutoRaise(True)
+    host.category_import_button.setFixedSize(22, 22)
+    host.category_import_button.setIcon(
+        utils.new_icon("clipboard-paste", "svg")
+    )
+    host.category_import_button.setIconSize(QSize(14, 14))
+    host.category_import_button.setToolTip(
+        host.label_manager_widget._tr("Batch import categories…")
+    )
+    host.category_import_button.setAccessibleName(
+        host.label_manager_widget._tr("Batch import categories…")
+    )
+    host.category_import_button.clicked.connect(
+        host.label_manager_widget.import_categories
+    )
+    host.right_tabs.setCornerWidget(
+        host.category_import_button, Qt.Corner.TopRightCorner
+    )
+    host.category_import_button.setVisible(
+        host.right_tabs.currentWidget() is labels_panel
+    )
 
     # ---- File table panel (search bar + image table, no dock wrapper)
     files_panel = RoundedPanel()
