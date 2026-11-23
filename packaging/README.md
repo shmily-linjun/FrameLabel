@@ -2,6 +2,8 @@
 
 Build from the repository root on the target operating system with the matching Python dependencies installed. Use Bash, or Git Bash on Windows.
 
+For a reproducible CPU/GPU Conda environment on another machine, use [`environment-cpu.yml`](../environment-cpu.yml) / [`environment-gpu.yml`](../environment-gpu.yml); detailed steps are in [`docs/dev/打包环境-conda.md`](../docs/dev/打包环境-conda.md).
+
 ## Build
 
 ```bash

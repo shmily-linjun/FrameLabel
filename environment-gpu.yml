@@ -1,0 +1,37 @@
+# X-AnyLabeling GPU build environment (default: CUDA 12.x + cuDNN 9.x)
+#
+# 用法（必须在项目根目录执行；`-e .` 需要当前目录就是仓库根）：
+#   conda env create -f environment-gpu.yml
+#   conda activate xanylabeling-gpu
+#   python -c "import onnxruntime as ort; print(ort.get_available_providers())"
+#
+# 预期能看到 CUDAExecutionProvider（同时保留 CPUExecutionProvider 作为回退）。
+#
+# GPU 前提（conda 不负责显卡驱动，也不在本文件里锁定 CUDA Toolkit）：
+#   1. 安装 NVIDIA 驱动（建议 550+，以 ONNX Runtime 文档为准）；
+#   2. 安装 CUDA 12.x Runtime 和 cuDNN 9.x；
+#   3. 把 CUDA 的 bin 和 cuDNN 的 bin 加入 PATH；
+#   4. 确认 `nvidia-smi` 正常，再运行上面的 Python 验证命令。
+#
+# 换 CUDA 版本时只改下面这一行：
+#   - `-e .[gpu,dev]`      CUDA 12.x（默认，onnxruntime-gpu >=1.18.1,<1.27）
+#   - `-e .[gpu-cu13,dev]` CUDA 13.x（onnxruntime-gpu >=1.27,<1.28）
+#   - `-e .[gpu-cu11,dev]` CUDA 11.x（onnxruntime-gpu >=1.15,<1.19，numpy<2）
+# 改完后必须重建环境，不要在同一环境里混装多个 onnxruntime 发行版。
+#
+# 注意：GPU 版 exe 仍依赖目标机的 CUDA/cuDNN 运行库；如果需要真正的
+# “复制即可运行”，需要把 CUDA/cuDNN DLL 一并打包，或改用 CPU 版 exe。
+
+name: xanylabeling-gpu
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.12
+  - pip>=24.1
+  - setuptools>=77
+  - wheel
+
+  - pip:
+      - -e .[gpu,dev]

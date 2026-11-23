@@ -1,0 +1,29 @@
+# X-AnyLabeling CPU build environment
+#
+# 用法（必须在项目根目录执行；`-e .` 需要当前目录就是仓库根）：
+#   conda env create -f environment-cpu.yml
+#   conda activate xanylabeling-cpu
+#   python -c "import onnxruntime as ort; print(ort.get_available_providers())"
+#
+# 预期只看到 CPUExecutionProvider；这个环境不会安装 CUDA/cuDNN，
+# 适合在无显卡机器上构建/运行 CPU 版 exe。
+#
+# 说明：
+#   - `-e .[cpu,dev]` 同时安装项目本体、CPU ONNX Runtime、PyInstaller、
+#     PySide6（提供 pyside6-lrelease）和测试工具；
+#   - 不要在同一个环境中再安装 onnxruntime-gpu；
+#   - 如果换了源码目录，需要重新执行一次 pip 的 editable 安装（见 docs/dev/打包环境-conda.md）。
+
+name: xanylabeling-cpu
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.12
+  - pip>=24.1
+  - setuptools>=77
+  - wheel
+
+  - pip:
+      - -e .[cpu,dev]

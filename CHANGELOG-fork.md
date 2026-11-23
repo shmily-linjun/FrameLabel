@@ -6,6 +6,54 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.45 — 2026-11-23
+
+### 1. 背景与原因
+
+用户需要把项目编译为可单独运行的 exe，并在另一台电脑上快速配置 CPU/GPU 两套 Conda 环境。
+
+### 2. 主要实现与关键细节
+
+- 新增根目录 [`environment-cpu.yml`](environment-cpu.yml)：
+  - `python=3.12`、`pip>=24.1`、`setuptools>=77`、`wheel`；
+  - pip 安装 `-e .[cpu,dev]`，包含 CPU ONNX Runtime、PyInstaller、PySide6/pyside6-lrelease、pytest。
+- 新增根目录 [`environment-gpu.yml`](environment-gpu.yml)：
+  - 同样的 Python/打包工具；
+  - pip 安装 `-e .[gpu,dev]`，默认 CUDA 12.x + cuDNN 9.x；
+  - 注释说明切换 `gpu-cu13` / `gpu-cu11` 的方式，以及 CUDA/cuDNN 需在系统安装。
+- 新增 [`docs/dev/打包环境-conda.md`](docs/dev/打包环境-conda.md)：创建、验证、构建、更新、GPU 排错、单文件 exe/安装包区别。
+- `packaging/README.md` 与 `docs/user/zh_cn/get_started.md` 增加环境文件入口。
+- 版本：4.3.2+fork.44 → 4.3.2+fork.45。
+
+### 3. 涉及模块与文件
+
+- 新增：`environment-cpu.yml`、`environment-gpu.yml`、`docs/dev/打包环境-conda.md`
+- 修改：`packaging/README.md`、`docs/user/zh_cn/get_started.md`、`docs/开始.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`anylabeling/app_info.py`
+- 未修改运行时代码。
+
+### 4. 行为、接口与兼容性影响
+
+- 新电脑在仓库根目录执行 `conda env create -f environment-cpu.yml`（或 `environment-gpu.yml`）即可创建打包环境；
+- CPU 环境只有 CPU ONNX Runtime，GPU 环境只有 `onnxruntime-gpu`，两者不要混装；
+- GPU 环境仍依赖系统 NVIDIA 驱动、CUDA 12.x Runtime、cuDNN 9.x 和 `PATH`；GPU exe 不是完全绿色包；
+- 版本：fork.44 → fork.45。
+
+### 5. 实际验证内容
+
+- 两份 YAML 用 PyYAML 解析通过，确认 `name`/`channels`/`dependencies`/`pip` 结构及 extras；
+- 未在干净机器执行 `conda env create`，未安装依赖，未实际 PyInstaller 打包；
+- 运行时代码未变，沿用 fork.44 的回归结果（**551 passed / 10 failed / 156 subtests**，10 条为基线已知失败）。
+
+### 6. 已知限制与后续事项
+
+- `-e .` 要求从仓库根目录执行；换源码目录后需重新 `pip install -e`；
+- 环境文件只保留下界、不锁死所有版本；发布前建议 `pip freeze` 留档；
+- Conda 文件不安装 CUDA/cuDNN，也不安装 Inno Setup；GPU 构建前需按文档准备；
+- CUDA 12 是默认 GPU 目标，CUDA 11/13 需修改 extra 并重建环境；
+- GPU 单文件 exe 仍需目标机 CUDA/cuDNN 运行库；只追求绿色运行优先 CPU 版。
+
+---
+
 ## 4.3.2+fork.44 — 2026-11-23
 
 ### 1. 背景与原因

@@ -297,6 +297,8 @@ set PYTHONPATH=C:\path\to\X-AnyLabeling
 
 为了方便用户在不同平台上运行 `X-AnyLabeling`，该工具提供了打包和编译的说明以及相关注意事项。执行对应打包命令前，请先安装目标运行环境的依赖选项。
 
+需要在一台新电脑上快速配置 CPU/GPU 打包环境时，可直接使用仓库根目录的 [`environment-cpu.yml`](../../../environment-cpu.yml) / [`environment-gpu.yml`](../../../environment-gpu.yml)，详细步骤见 [`docs/dev/打包环境-conda.md`](../../dev/打包环境-conda.md)。
+
 ### 3.1 注意事项
 
 - **验证 GPU 环境**：如果编译 GPU 版本，请先激活相应的 GPU 运行环境，并执行 `pip list | grep onnxruntime-gpu` 以确保其正确安装。
