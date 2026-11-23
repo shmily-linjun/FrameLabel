@@ -6,6 +6,69 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.44 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈 YOLO 分割导出不符合设计要求：
+
+1. 数据集已划分 `train/val/test/none`，导出目录必须按四个划分区分；
+2. 没有生成官方训练方法需要的 `.yaml` 配置文件。
+
+### 2. 主要实现与关键细节
+
+- **YOLO 检测/分割/旋转框导出改为划分目录**：
+  - `<export_root>/images/{train,val,test,none}/...`
+  - `<export_root>/labels/{train,val,test,none}/...`
+  - 即使某个划分没有图片，也创建对应空目录；
+  - 保留图片在源目录下的相对子目录（嵌套目录不会丢失）。
+- **split 来源**：
+  - DB 模式以 `image_file.split` 为权威，`DatasetRepository.find_image()` 查询；
+  - JSON 模式读取标注 `split`，缺失/非法归 `none`；
+  - `none` 单独导出，不参与训练。
+- **生成 `data.yaml`**：
+  - `path` 为导出根目录绝对路径；
+  - `train: images/train`、`val: images/val`、`test: images/test`；
+  - `nc` 与 `names`（按“类别”页 `category.sort_index` 顺序）；
+  - `none` 不写入训练键，文件末尾注释说明。
+- **默认导出根目录**：图片目录同级 `yolo_dataset`（避免旧 `labels` 平铺造成 `labels/labels`）。
+- **UI**：导出对话框增加说明“图片与标签写入 train/val/test/none 子目录并生成 data.yaml”。
+- **范围**：`hbb`/`obb`/`seg` 使用新契约；`pose` 仍使用关键点 YAML 和旧目录结构，未套用。
+- 翻译：新增导出说明 1 条；四语言 `.qm` 各 2326 条。
+- 版本：4.3.2+fork.43 → 4.3.2+fork.44。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/utils/export.py`、`resources/translations/*`、`app_info.py`
+- 测试：`tests/test_utils/test_export.py`（划分目录、data.yaml、DB split 优先、嵌套目录）
+- 文档：本文件、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.21）、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：检测/分割/旋转框导出的目录从平铺 `labels/*.txt` 变为 `images/<split>` + `labels/<split>`，根目录多出 `data.yaml`；默认根目录改为 `yolo_dataset`。
+- **接口**：`_get_yolo_export_files(..., split_by_image=None)`；`_yolo_split_for_image()`；`_write_yolo_data_yaml()`；`YOLO_SPLITS`。
+- **数据**：不修改数据库；split 从 DB 读取，不写回。
+- **兼容性**：旧平铺目录不再生成，属于破坏性变更；`pose` 暂不受影响。
+
+### 5. 实际验证内容
+
+- `test_yolo_seg_export_uses_split_directories_and_data_yaml`：train/val/none 三张图分别落到对应目录，四个空目录存在，`data.yaml` 的 `names`/`path`/`train`/`val`/`test` 正确。
+- `test_yolo_split_prefers_database_over_json`：DB 返回 `val`、JSON 为 `train` 时使用 `val`。
+- `test_yolo_export_preserves_nested_directories`：hbb/obb/seg 新布局，pose 旧布局。
+- `tests/test_utils`：**172 passed**；其余非 pointcloud 组：**295 passed / 0 failed / 105 subtests**；`test_labeling` 沿用 **256 passed / 10 failed / 51 subtests**；合计 **551 passed / 10 failed / 156 subtests**，10 条与 HEAD 基线相同。
+- 四语言 `.qm` 各 **2326 条 / 0 unfinished**；`resources.py` 无 diff。
+- **未执行**：真实 Ultralytics 训练读取生成的 `data.yaml`、真实 DB 大数据集导出、桌面观感、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 旧平铺布局不再生成；如需兼容旧结构，需要后续加显式开关，而不是静默双写。
+- `none` 不进入 `data.yaml` 的训练键，只作为独立目录保留；训练前需要人工确认是否忽略。
+- `pose` 未套用本契约；若后续统一，需要补 `kpt_shape` 和关键点 YAML。
+- `data.yaml` 的 `path` 是绝对路径；移动导出目录后需要改路径。
+- 数据集划分仍以 DB 为准；JSON 模式的 `split` 只做兜底。
+
+---
+
 ## 4.3.2+fork.43 — 2026-11-23
 
 ### 1. 背景与原因

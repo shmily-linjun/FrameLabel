@@ -3139,6 +3139,10 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Images and labels are written to train/val/test/none subdirectories; data.yaml is generated.</source>
+        <translation>画像とラベルは train/val/test/none サブディレクトリに書き込まれ、data.yaml が生成されます。</translation>
+    </message>
+    <message>
         <source>Training Result Analysis</source>
         <translation>トレーニング結果分析</translation>
     </message>

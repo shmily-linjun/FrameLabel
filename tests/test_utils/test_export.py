@@ -1,5 +1,9 @@
+import json
 import os
+from pathlib import Path
 from unittest import mock
+
+import yaml
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -9,9 +13,11 @@ from PyQt6 import QtWidgets
 from anylabeling.views.labeling.utils.export import (
     _add_export_options,
     _export_mask_files,
+    _get_yolo_export_files,
     _skip_export_status,
     _show_yolo_export_error,
     _validate_yolo_export_path,
+    _yolo_split_for_image,
     export_yolo_annotation,
     export_voc_annotation,
 )
@@ -203,6 +209,119 @@ def test_yolo_export_reports_failed_image(tmp_path):
     app.processEvents()
 
 
+def test_yolo_split_export_strips_dataset_images_prefix(tmp_path):
+    dataset_root = tmp_path / "dataset"
+    image = dataset_root / "images" / "a.png"
+    image.parent.mkdir(parents=True)
+    image.touch()
+    export_files = _get_yolo_export_files(
+        [str(image)],
+        str(dataset_root),
+        str(tmp_path / "yolo_dataset"),
+        {str(image): "train"},
+    )
+    _src, label, image_dst = export_files[0]
+    assert label.endswith(
+        os.path.join("labels", "train", "a.txt")
+    )
+    assert image_dst.endswith(
+        os.path.join("images", "train", "a.png")
+    )
+
+
+def test_yolo_split_prefers_database_over_json(tmp_path):
+    image = tmp_path / "images" / "a.png"
+    image.parent.mkdir()
+    image.touch()
+    label = image.with_suffix(".json")
+    label.write_text('{"split": "train"}', encoding="utf-8")
+    host = mock.Mock()
+    host.dataset_root = str(tmp_path)
+    host.dataset_repository.find_image.return_value = {"split": "val"}
+    converter = mock.Mock()
+    converter.read_json.return_value = {"split": "train"}
+
+    assert (
+        _yolo_split_for_image(host, str(image), str(label), converter)
+        == "val"
+    )
+
+
+def test_yolo_seg_export_uses_split_directories_and_data_yaml(tmp_path):
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+    image_dir = tmp_path / "images"
+    image_dir.mkdir()
+    images = []
+    splits = ("train", "val", "none")
+    for name, split in zip(("a.png", "b.png", "c.png"), splits):
+        image = image_dir / name
+        image.touch()
+        image.with_suffix(".json").write_text(
+            json.dumps({"split": split, "shapes": []}),
+            encoding="utf-8",
+        )
+        images.append(str(image))
+
+    widget = QtWidgets.QWidget()
+    widget.filename = images[0]
+    widget.image_list = images
+    widget.last_open_dir = str(image_dir)
+    widget.output_dir = None
+    widget.may_continue = mock.Mock(return_value=True)
+    converter = mock.Mock()
+    converter.custom_to_yolo.return_value = False
+    converter.classes = ["cat", "dog"]
+
+    def write_label(_src, dst, *_args, **_kwargs):
+        Path(dst).parent.mkdir(parents=True, exist_ok=True)
+        Path(dst).write_text("0 0.5 0.5 0.2 0.2\n", encoding="utf-8")
+        return False
+
+    converter.custom_to_yolo.side_effect = write_label
+    converter.read_json.side_effect = lambda path: json.loads(
+        Path(path).read_text(encoding="utf-8")
+    )
+
+    with (
+        mock.patch.object(
+            QtWidgets.QFileDialog,
+            "getOpenFileName",
+            return_value=(str(tmp_path / "classes.txt"), ""),
+        ),
+        mock.patch.object(QtWidgets.QDialog, "exec", return_value=1),
+        mock.patch.object(
+            QtWidgets.QCheckBox,
+            "isChecked",
+            side_effect=(True, False, False, False, False),
+        ),
+        mock.patch(
+            "anylabeling.views.labeling.utils.export.LabelConverter",
+            return_value=converter,
+        ),
+        mock.patch("anylabeling.views.labeling.utils.export.Popup"),
+    ):
+        export_yolo_annotation(widget, "seg")
+
+    save_path = tmp_path / "yolo_dataset"
+    for split in ("train", "val", "test", "none"):
+        assert (save_path / "images" / split).is_dir()
+        assert (save_path / "labels" / split).is_dir()
+    assert (save_path / "images" / "train" / "a.png").is_file()
+    assert (save_path / "labels" / "train" / "a.txt").is_file()
+    assert (save_path / "images" / "val" / "b.png").is_file()
+    assert (save_path / "images" / "none" / "c.png").is_file()
+    data = yaml.safe_load(
+        (save_path / "data.yaml").read_text(encoding="utf-8")
+    )
+    assert Path(data["path"]) == save_path
+    assert data["train"] == "images/train"
+    assert data["val"] == "images/val"
+    assert data["test"] == "images/test"
+    assert data["names"] == {0: "cat", 1: "dog"}
+    widget.close()
+    app.processEvents()
+
+
 @pytest.mark.parametrize("mode", ["hbb", "obb", "seg", "pose"])
 def test_yolo_export_preserves_nested_directories(tmp_path, mode):
     app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
@@ -227,6 +346,7 @@ def test_yolo_export_preserves_nested_directories(tmp_path, mode):
     widget.may_continue = mock.Mock(return_value=True)
     converter = mock.Mock()
     converter.custom_to_yolo.return_value = False
+    converter.classes = ["person"]
     converter.read_json.return_value = {
         "imageWidth": 100,
         "imageHeight": 100,
@@ -251,28 +371,38 @@ def test_yolo_export_preserves_nested_directories(tmp_path, mode):
     ):
         export_yolo_annotation(widget, mode)
 
-    save_path = tmp_path / "labels"
+    save_path = tmp_path / "yolo_dataset"
+    if mode in ("hbb", "obb", "seg"):
+        label_root = save_path / "labels" / "none"
+        image_root = save_path / "images" / "none"
+    else:
+        label_root = save_path
+        image_root = save_path
     expected_calls = [
         mock.call(
             str(first_image.with_suffix(".json")),
-            str(save_path / "first" / "image.txt"),
+            str(label_root / "first" / "image.txt"),
             mode,
             skip_empty_files=False,
             obb_boundary_policy="keep",
         ),
         mock.call(
             str(second_image.with_suffix(".json")),
-            str(save_path / "second" / "image.txt"),
+            str(label_root / "second" / "image.txt"),
             mode,
             skip_empty_files=False,
             obb_boundary_policy="keep",
         ),
     ]
     assert converter.custom_to_yolo.call_args_list == expected_calls
-    assert (save_path / "first").is_dir()
-    assert (save_path / "second").is_dir()
-    assert (save_path / "first" / "image.png").is_file()
-    assert (save_path / "second" / "image.png").is_file()
+    assert (label_root / "first").is_dir()
+    assert (label_root / "second").is_dir()
+    assert (image_root / "first" / "image.png").is_file()
+    assert (image_root / "second" / "image.png").is_file()
+    if mode in ("hbb", "obb", "seg"):
+        assert (save_path / "data.yaml").is_file()
+    else:
+        assert not (save_path / "data.yaml").exists()
     widget.close()
     app.processEvents()
 
@@ -321,7 +451,7 @@ def test_yolo_export_rejects_conflicting_label_paths(tmp_path):
     assert str(first_image) in str(error)
     assert str(second_image) in str(error)
     converter.custom_to_yolo.assert_not_called()
-    assert not (tmp_path / "labels").exists()
+    assert not (tmp_path / "yolo_dataset").exists()
     widget.close()
     app.processEvents()
 
@@ -464,7 +594,7 @@ def test_export_skips_selected_status_and_image(tmp_path, export_format):
         if export_format == "yolo":
             export_yolo_annotation(widget, "hbb")
             converter.custom_to_yolo.assert_called_once()
-            output_dir = tmp_path / "labels"
+            output_dir = tmp_path / "yolo_dataset" / "images" / "none"
         else:
             export_voc_annotation(widget, "hbb")
             converter.custom_to_voc.assert_called_once()

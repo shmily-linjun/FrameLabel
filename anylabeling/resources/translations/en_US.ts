@@ -3140,6 +3140,10 @@ Continue?</translation>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Images and labels are written to train/val/test/none subdirectories; data.yaml is generated.</source>
+        <translation>Images and labels are written to train/val/test/none subdirectories; data.yaml is generated.</translation>
+    </message>
+    <message>
         <source>Training Result Analysis</source>
         <translation>Training Result Analysis</translation>
     </message>

@@ -3139,6 +3139,10 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Images and labels are written to train/val/test/none subdirectories; data.yaml is generated.</source>
+        <translation>图片与标签将写入 train/val/test/none 子目录，并生成 data.yaml。</translation>
+    </message>
+    <message>
         <source>Training Result Analysis</source>
         <translation>训练结果分析</translation>
     </message>

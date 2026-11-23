@@ -622,7 +622,18 @@ X-AnyLabeling 支持导入和导出 YOLO 目标检测、实例分割、旋转框
 2. 上传准备好的配置文件。
 3. 根据需求勾选对应选项，点击确定即可。
 
-导出路径默认保存在当前图片目录的同级目录下的 `labels` 文件夹内。
+导出路径默认保存在当前图片目录的同级目录下的 `yolo_dataset` 文件夹内。
+
+检测/分割/旋转框导出会按数据划分生成：
+
+```text
+yolo_dataset/
+  images/{train,val,test,none}/
+  labels/{train,val,test,none}/
+  data.yaml
+```
+
+`data.yaml` 包含 `path`（导出根目录绝对路径）、`train`、`val`、`test`、`nc` 和按“类别”页顺序生成的 `names`；`none`（未划分）单独放在 `images/none`/`labels/none`，不参与训练，配置中以注释说明。YOLO Pose 仍使用原有目录结构。
 
 > YOLO 标签文件样式可参考 [demo.txt](../../../assets/labels/demo.txt)。
 

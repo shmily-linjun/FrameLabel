@@ -3140,6 +3140,10 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Images and labels are written to train/val/test/none subdirectories; data.yaml is generated.</source>
+        <translation>이미지와 라벨은 train/val/test/none 하위 디렉터리에 기록되고 data.yaml이 생성됩니다.</translation>
+    </message>
+    <message>
         <source>Training Result Analysis</source>
         <translation>학습 결과 분석</translation>
     </message>

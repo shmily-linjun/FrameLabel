@@ -5,6 +5,8 @@ import pathlib
 import shutil
 import time
 
+import yaml
+
 from PyQt6 import QtWidgets
 from PyQt6.QtCore import QCoreApplication, Qt, QThread, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -22,6 +24,7 @@ from anylabeling.views.labeling.logger import logger
 from anylabeling.views.labeling.widgets import Popup
 from anylabeling.views.labeling.utils.qt import new_icon_path
 from anylabeling.views.labeling.utils.style import *
+from anylabeling.views.labeling.utils.dataset_statistics import normalize_split
 
 
 class ExportThread(QThread):
@@ -200,9 +203,25 @@ def _validate_yolo_export_path(source_root, save_path):
         )
 
 
-def _get_yolo_export_files(image_list, source_root, save_path):
+def _strip_images_prefix(relative_path):
+    """Drop a leading ``images`` component from a dataset-relative path.
+
+    When the loaded folder is the dataset root, image paths are relative to
+    that root (``images/foo.jpg``); the YOLO layout already adds ``images``,
+    so keeping the component would produce ``images/train/images/foo.jpg``.
+    """
+    parts = relative_path.replace("/", os.sep).split(os.sep)
+    if len(parts) > 1 and parts[0].lower() == "images":
+        return osp.join(*parts[1:])
+    return relative_path
+
+
+def _get_yolo_export_files(
+    image_list, source_root, save_path, split_by_image=None
+):
     export_files = []
     label_destinations = {}
+    split_layout = split_by_image is not None
     for image_file in image_list:
         try:
             relative_image_path = osp.relpath(image_file, source_root)
@@ -213,7 +232,18 @@ def _get_yolo_export_files(image_list, source_root, save_path):
             or relative_image_path.startswith(osp.pardir + osp.sep)
         ):
             relative_image_path = osp.basename(image_file)
-        relative_label_path = osp.splitext(relative_image_path)[0] + ".txt"
+        relative_image_path = _strip_images_prefix(relative_image_path)
+        relative_label_path = (
+            osp.splitext(relative_image_path)[0] + ".txt"
+        )
+        if split_layout:
+            split = split_by_image.get(image_file, "none")
+            relative_label_path = osp.join(
+                "labels", split, relative_label_path
+            )
+            relative_image_path = osp.join(
+                "images", split, relative_image_path
+            )
         destination_key = osp.normcase(osp.normpath(relative_label_path))
         if destination_key in label_destinations:
             raise ValueError(
@@ -230,6 +260,67 @@ def _get_yolo_export_files(image_list, source_root, save_path):
             )
         )
     return export_files
+
+
+YOLO_SPLITS = ("train", "val", "test", "none")
+
+
+def _yolo_split_for_image(host, image_file, label_file, converter):
+    """Return the dataset split for one image.
+
+    A database dataset stores the authoritative split in
+    ``image_file.split``; JSON folders store it in the annotation.  Missing
+    or malformed metadata falls back to ``none``.
+    """
+    repository = getattr(host, "dataset_repository", None)
+    dataset_root = getattr(host, "dataset_root", None)
+    if repository is not None and dataset_root:
+        try:
+            relative = osp.relpath(image_file, dataset_root).replace(
+                os.sep, "/"
+            )
+            row = repository.find_image(relative)
+        except (OSError, ValueError):
+            row = None
+        if row is not None:
+            return normalize_split(row.get("split"))
+
+    if osp.exists(label_file):
+        try:
+            data = converter.read_json(label_file)
+        except Exception:  # noqa: BLE001 - split must not block export
+            data = None
+        if isinstance(data, dict):
+            return normalize_split(data.get("split"))
+    return "none"
+
+
+def _write_yolo_data_yaml(save_path, classes):
+    """Write the Ultralytics ``data.yaml`` for a split-aware export."""
+    if not isinstance(classes, (list, tuple)):
+        classes = ()
+    names = {
+        index: str(name)
+        for index, name in enumerate(classes)
+    }
+    payload = {
+        "path": osp.abspath(save_path),
+        "train": "images/train",
+        "val": "images/val",
+        "test": "images/test",
+        "nc": len(names),
+        "names": names,
+    }
+    text = yaml.safe_dump(
+        payload, allow_unicode=True, sort_keys=False
+    )
+    text += (
+        "# none: images/none (unassigned images; not used for training)\n"
+    )
+    with open(
+        osp.join(save_path, "data.yaml"), "w", encoding="utf-8"
+    ) as stream:
+        stream.write(text)
 
 
 def _add_export_options(layout):
@@ -362,7 +453,9 @@ def export_yolo_annotation(self, mode):
     path_input_layout.setSpacing(8)
 
     path_edit = QtWidgets.QLineEdit()
-    path_edit.setText(osp.realpath(osp.join(source_root, "..", "labels")))
+    path_edit.setText(
+        osp.realpath(osp.join(source_root, "..", "yolo_dataset"))
+    )
     path_edit.setPlaceholderText(
         QCoreApplication.translate("LabelingWidget", "Select Export Directory")
     )
@@ -388,6 +481,16 @@ def export_yolo_annotation(self, mode):
     path_input_layout.addWidget(path_button)
     path_layout.addLayout(path_input_layout)
     layout.addLayout(path_layout)
+    if mode in ("hbb", "obb", "seg"):
+        split_note = QtWidgets.QLabel(
+            QCoreApplication.translate(
+                "LabelingWidget",
+                "Images and labels are written to train/val/test/none "
+                "subdirectories; data.yaml is generated.",
+            )
+        )
+        split_note.setWordWrap(True)
+        layout.addWidget(split_note)
 
     options = _add_export_options(layout)
 
@@ -426,9 +529,6 @@ def export_yolo_annotation(self, mode):
 
     try:
         _validate_yolo_export_path(source_root, save_path)
-        export_files = _get_yolo_export_files(
-            image_list, source_root, save_path
-        )
     except ValueError as error:
         _show_yolo_export_error(self, None, error)
         return
@@ -437,6 +537,24 @@ def export_yolo_annotation(self, mode):
         label_file_name = osp.splitext(osp.basename(image_file))[0] + ".json"
         label_dir = self.output_dir or osp.dirname(image_file)
         return osp.join(label_dir, label_file_name)
+
+    split_layout = mode in ("hbb", "obb", "seg")
+    split_by_image = None
+    if split_layout:
+        split_by_image = {
+            image_file: _yolo_split_for_image(
+                self, image_file, get_label_file(image_file), converter
+            )
+            for image_file in image_list
+        }
+
+    try:
+        export_files = _get_yolo_export_files(
+            image_list, source_root, save_path, split_by_image
+        )
+    except ValueError as error:
+        _show_yolo_export_error(self, None, error)
+        return
 
     obb_boundary_policy = "keep"
     if mode == "obb":
@@ -539,6 +657,15 @@ def export_yolo_annotation(self, mode):
     else:
         os.makedirs(save_path)
 
+    if split_layout:
+        for split in YOLO_SPLITS:
+            os.makedirs(
+                osp.join(save_path, "images", split), exist_ok=True
+            )
+            os.makedirs(
+                osp.join(save_path, "labels", split), exist_ok=True
+            )
+
     progress_dialog = QProgressDialog(
         QCoreApplication.translate("LabelingWidget", "Exporting..."),
         QCoreApplication.translate("LabelingWidget", "Cancel"),
@@ -589,6 +716,10 @@ def export_yolo_annotation(self, mode):
 
         current_image_file = None
         progress_dialog.close()
+        if split_layout:
+            _write_yolo_data_yaml(
+                save_path, getattr(converter, "classes", ())
+            )
         template = QCoreApplication.translate(
             "LabelingWidget",
             "Exporting annotations successfully!\n"
