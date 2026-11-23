@@ -3140,6 +3140,58 @@ Continue?</translation>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Batch Set Image Tags</source>
+        <translation>Batch Set Image Tags</translation>
+    </message>
+    <message>
+        <source>Replace a specific tag</source>
+        <translation>Replace a specific tag</translation>
+    </message>
+    <message>
+        <source>Delete all image tags</source>
+        <translation>Delete all image tags</translation>
+    </message>
+    <message>
+        <source>Tags to add (comma separated)</source>
+        <translation>Tags to add (comma separated)</translation>
+    </message>
+    <message>
+        <source>Tag to replace</source>
+        <translation>Tag to replace</translation>
+    </message>
+    <message>
+        <source>Replace with (comma separated)</source>
+        <translation>Replace with (comma separated)</translation>
+    </message>
+    <message>
+        <source>Select or type the tag to replace</source>
+        <translation>Select or type the tag to replace</translation>
+    </message>
+    <message>
+        <source>Add from tag library…</source>
+        <translation>Add from tag library…</translation>
+    </message>
+    <message>
+        <source>This removes every image tag from %d images.</source>
+        <translation>This removes every image tag from %d images.</translation>
+    </message>
+    <message>
+        <source>Enter at least one tag.</source>
+        <translation>Enter at least one tag.</translation>
+    </message>
+    <message>
+        <source>Select the tag to replace.</source>
+        <translation>Select the tag to replace.</translation>
+    </message>
+    <message>
+        <source>Enter the replacement tag.</source>
+        <translation>Enter the replacement tag.</translation>
+    </message>
+    <message>
+        <source>Delete all image tags from %d files?</source>
+        <translation>Delete all image tags from %d files?</translation>
+    </message>
+    <message>
         <source>Tag Library</source>
         <translation>Tag Library</translation>
     </message>

@@ -6,6 +6,68 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.37 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈 3 项：
+
+1. “设置图片标签”窗口未与“图像属性 → 标签库”联动；
+2. “替换现有标签”当前是“删除所有标签再加入新标签”，不符合“把图片中的 xxx 替换为 yyy”的语义；
+3. 由于 2 的调整，combobox 需要新增“批量删除所有标签”选项；
+4. 该窗口应更名为“批量设置图片标签”。
+
+第 2 项根因：fork.32 的 `apply_image_tags(replace=True)` 把目标标签列表当作整组覆盖，导致不相关标签被清空。第 1 项属于对话框没有读取标签库词表。
+
+### 2. 主要实现与关键细节
+
+- **三种批量模式**（[batch_tags.py](../../anylabeling/views/labeling/utils/batch_tags.py)）：
+  - `add`：追加标签、去重；
+  - `replace`：必须提供 `old_tags`，只处理包含旧标签的图片：移除旧标签、追加新标签，**其它标签保留**；不含旧标签的图片保持不变（不会退化成批量添加）；
+  - `delete_all`：清空全部图片标签，控制器在执行前二次确认。
+- **对话框重构**（[tags_dialog.py](../../anylabeling/views/labeling/file_list/tags_dialog.py)）：
+  - 标题改为“批量设置图片标签”（Batch Set Image Tags）；
+  - 模式下拉三种；`QStackedWidget` 分别显示“要添加的标签”“要替换的标签 + 替换为”“删除全部”警示；
+  - “从标签库添加…”下拉从当前文件夹/数据集词表取标签，追加到输入框，解决“未联动”；
+  - 替换模式的旧标签是可选可编辑下拉，新标签支持标签库下拉；提交前校验至少一个标签/旧标签/新标签。
+- **控制器**（[controller.py](../../anylabeling/views/labeling/file_list/controller.py)）：
+  - 打开对话框前 `_refresh_tag_library()`，把 `_tag_library_entries` 的标签名传入；
+  - 读取 `dialog.mode()/tags()/old_tags()`，删除全部先确认，替换缺旧标签不执行；
+  - `apply_image_tags(..., mode=..., old_tags=...)`。
+- **测试**：`merge_image_tags`/`apply_image_tags` 的 JSON/DB 用例改为 mode/old_tags；新增替换保留其它标签、不含旧标签 unchanged、删除全部、DB 集成替换；对话框测试三种模式与解析。
+- 翻译：新增 13 条（标题/三种模式/输入标签/校验/删除确认/标签库下拉），重编 `.qm`。
+- 版本：`4.3.2+fork.36` → `4.3.2+fork.37`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/utils/batch_tags.py`、`anylabeling/views/labeling/file_list/tags_dialog.py`、`anylabeling/views/labeling/file_list/controller.py`、`anylabeling/resources/translations/*`、`anylabeling/app_info.py`
+- 测试：`tests/test_dataset_db/test_batch_tags.py`、`tests/test_labeling/test_file_table.py`
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.14）、`docs/dev/数据库设计-讨论稿.md`、`docs/开始.md`、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：批量对话框标题为“批量设置图片标签”；替换指定标签不再清空其它标签；不含旧标签的图片不改变；新增“删除所有图片标签”模式；标签输入可从标签库选择。
+- **接口**：`merge_image_tags(existing, tags, mode, old_tags)`；`apply_image_tags(..., mode=..., old_tags=...)`；`BatchTagsDialog.mode()/old_tags()/tags()`；`BatchTagsDialog` 构造增加 `library_tags` 参数。
+- **数据/契约**：无 schema 变更；仍是“内容变化才写盘/盖章”，未变化图片跳过；删除全部需确认。
+- **版本**：fork.36 → fork.37。
+
+### 5. 实际验证内容
+
+- `tests/test_dataset_db/test_batch_tags.py`：**12 passed**（添加、替换指定标签保留其它标签、不含旧标签 unchanged、删除全部、JSON 归属、DB 合并/替换、坏文件/未知图）。
+- `tests/test_labeling/test_file_table.py`：批量替换集成用例在 DB 中验证 `["keep","old"] → ["keep","new"]`、`["old"] → ["new"]`、未选中图片不变；对话框三模式/旧新标签解析通过。
+- 本轮 `tests/test_labeling tests/test_widgets tests/test_dataset_db tests/test_config tests/test_utils/test_tag_library.py tests/test_utils/test_file_search.py`：**395 passed / 11 failed / 149 subtests**；失败集合与 HEAD 基线逐条相同（唯一差异仍是时序抖动 `test_brightness_contrast_updates_are_throttled`）。
+- 四语言 `.qm` 各 **2299 条 / 0 unfinished**；`resources.py` 仍无 diff（fork.36 的 `--no-resources` 流程）。
+- **未执行**：真实桌面三种模式/标签库下拉/删除确认观感、超大批量替换性能、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 替换模式只做“移除旧标签 + 追加新标签”，不是任意多对多映射（例如 a→x 且 b→y 的成对映射）；需要时可按逗号输入多旧/多新标签，统一移除/追加。
+- 标签库下拉列出文件夹/数据集全部标签；替换旧标签下拉没有按“选中图片中实际存在的标签”预过滤，选中不存在标签会得到 “unchanged” 结果。
+- 删除全部仍会逐图保存（DB 每图一个事务），大批量较慢；后续可做单事务批量接口。
+- 发布前仍需运行不带 `--no-resources` 的 `compile_languages.py`，把 2299 条翻译嵌入 `resources.py`。
+
+---
+
 ## 4.3.2+fork.36 — 2026-11-23
 
 ### 1. 背景与原因

@@ -1,7 +1,7 @@
-"""Apply one image-tag list to several images (fork.32).
+"""Apply a batch tag operation to several images (fork.32/fork.37).
 
-The file-list context menu lets the user tag a batch of images with the same
-values.  This module owns the merge rule and the two write paths:
+The file-list context menu lets the user tag a batch of images.  This module
+owns the merge rules and the two write paths:
 
 * database mode goes through :class:`DatasetRepository`, so tags land in
   ``image_tag`` and the image row is stamped with the operator;
@@ -18,6 +18,10 @@ import os.path as osp
 
 from .file_meta import read_file_meta, write_tags
 from .image_tags import normalize_image_tags
+
+MODE_ADD = "add"
+MODE_REPLACE = "replace"
+MODE_DELETE_ALL = "delete_all"
 
 
 @dataclass
@@ -38,40 +42,64 @@ class BatchTagsResult:
         return len(self.updated)
 
 
-def merge_image_tags(existing, tags, replace):
+def merge_image_tags(existing, tags, mode=MODE_ADD, old_tags=()):
     """Return the tag list an image should end up with.
 
-    ``replace`` sets exactly ``tags``; otherwise the incoming tags are appended
-    to the existing ones without duplicates.  Input order is preserved.
+    ``mode`` is one of:
+
+    * ``add`` -- append ``tags`` without duplicates;
+    * ``replace`` -- remove every tag in ``old_tags`` and append ``tags``;
+      images that do not carry any of ``old_tags`` stay unchanged;
+    * ``delete_all`` -- return an empty list.
+
+    Input order is preserved.  The ``replace`` mode deliberately does not add
+    ``tags`` to images that never had the old tag: a batch replace must not
+    turn into a batch add.
     """
+    current = normalize_image_tags(
+        list(existing) if isinstance(existing, (list, tuple)) else []
+    )
     incoming = normalize_image_tags(
         list(tags) if isinstance(tags, (list, tuple)) else []
     )
-    if replace:
-        return incoming
-    merged = normalize_image_tags(
-        list(existing) if isinstance(existing, (list, tuple)) else []
-    )
+    if mode == MODE_DELETE_ALL:
+        return []
+    if mode == MODE_REPLACE:
+        replacements = normalize_image_tags(
+            list(old_tags) if isinstance(old_tags, (list, tuple)) else []
+        )
+        if not replacements or not any(
+            tag in current for tag in replacements
+        ):
+            return current
+        if set(incoming) == set(replacements):
+            return current
+        keep = set(incoming)
+        target = [
+            tag for tag in current if tag not in replacements or tag in keep
+        ]
+    else:
+        target = list(current)
     for tag in incoming:
-        if tag not in merged:
-            merged.append(tag)
-    return merged
+        if tag not in target:
+            target.append(tag)
+    return target
 
 
 def apply_image_tags(
     paths,
     tags,
     *,
-    replace,
+    mode=MODE_ADD,
+    old_tags=(),
     repository=None,
     dataset_root=None,
     output_dir=None,
     author=None,
     modified_at=None,
 ):
-    """Apply ``tags`` to every image in ``paths`` and report the outcome.
+    """Apply a batch tag operation to every image in ``paths``.
 
-    ``replace=False`` appends the tags to each image's existing tags.
     Unchanged images are not rewritten and therefore not re-stamped.
     """
     result = BatchTagsResult()
@@ -82,7 +110,8 @@ def apply_image_tags(
                 repository,
                 image_path,
                 tags,
-                replace,
+                mode,
+                old_tags,
                 dataset_root=dataset_root,
                 author=author,
                 modified_at=modified_at,
@@ -91,7 +120,8 @@ def apply_image_tags(
             outcome, target = _write_json(
                 image_path,
                 tags,
-                replace,
+                mode,
+                old_tags,
                 output_dir=output_dir,
                 author=author,
                 modified_at=modified_at,
@@ -111,7 +141,8 @@ def _write_database(
     repository,
     path,
     tags,
-    replace,
+    mode,
+    old_tags,
     *,
     dataset_root,
     author,
@@ -123,7 +154,7 @@ def _write_database(
     try:
         annotation = repository.load_annotation(image["id"])
         current = normalize_image_tags(list(annotation.tags or []))
-        target = merge_image_tags(current, tags, replace)
+        target = merge_image_tags(current, tags, mode, old_tags)
         if target == current:
             return "unchanged", target
         annotation.tags = target
@@ -141,7 +172,8 @@ def _write_database(
 def _write_json(
     path,
     tags,
-    replace,
+    mode,
+    old_tags,
     *,
     output_dir,
     author,
@@ -152,7 +184,7 @@ def _write_json(
         current = normalize_image_tags(
             list(read_file_meta(path, label_file).tags or [])
         )
-        target = merge_image_tags(current, tags, replace)
+        target = merge_image_tags(current, tags, mode, old_tags)
         if target == current:
             return "unchanged", target
         written = write_tags(

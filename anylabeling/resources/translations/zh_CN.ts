@@ -3139,6 +3139,58 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Batch Set Image Tags</source>
+        <translation>批量设置图片标签</translation>
+    </message>
+    <message>
+        <source>Replace a specific tag</source>
+        <translation>替换指定标签</translation>
+    </message>
+    <message>
+        <source>Delete all image tags</source>
+        <translation>删除所有图片标签</translation>
+    </message>
+    <message>
+        <source>Tags to add (comma separated)</source>
+        <translation>要添加的标签（以逗号分隔）</translation>
+    </message>
+    <message>
+        <source>Tag to replace</source>
+        <translation>要替换的标签</translation>
+    </message>
+    <message>
+        <source>Replace with (comma separated)</source>
+        <translation>替换为（以逗号分隔）</translation>
+    </message>
+    <message>
+        <source>Select or type the tag to replace</source>
+        <translation>选择或输入要替换的标签</translation>
+    </message>
+    <message>
+        <source>Add from tag library…</source>
+        <translation>从标签库添加…</translation>
+    </message>
+    <message>
+        <source>This removes every image tag from %d images.</source>
+        <translation>将从 %d 张图片中移除全部图片标签。</translation>
+    </message>
+    <message>
+        <source>Enter at least one tag.</source>
+        <translation>请至少输入一个标签。</translation>
+    </message>
+    <message>
+        <source>Select the tag to replace.</source>
+        <translation>请选择要替换的标签。</translation>
+    </message>
+    <message>
+        <source>Enter the replacement tag.</source>
+        <translation>请输入替换后的标签。</translation>
+    </message>
+    <message>
+        <source>Delete all image tags from %d files?</source>
+        <translation>从 %d 张图片中删除全部图片标签？</translation>
+    </message>
+    <message>
         <source>Tag Library</source>
         <translation>标签库</translation>
     </message>

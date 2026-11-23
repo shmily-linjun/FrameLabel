@@ -3140,6 +3140,58 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Batch Set Image Tags</source>
+        <translation>이미지 태그 일괄 설정</translation>
+    </message>
+    <message>
+        <source>Replace a specific tag</source>
+        <translation>특정 태그 바꾸기</translation>
+    </message>
+    <message>
+        <source>Delete all image tags</source>
+        <translation>모든 이미지 태그 삭제</translation>
+    </message>
+    <message>
+        <source>Tags to add (comma separated)</source>
+        <translation>추가할 태그(쉼표로 구분)</translation>
+    </message>
+    <message>
+        <source>Tag to replace</source>
+        <translation>바꿀 태그</translation>
+    </message>
+    <message>
+        <source>Replace with (comma separated)</source>
+        <translation>바꿀 내용(쉼표로 구분)</translation>
+    </message>
+    <message>
+        <source>Select or type the tag to replace</source>
+        <translation>바꿀 태그를 선택하거나 입력</translation>
+    </message>
+    <message>
+        <source>Add from tag library…</source>
+        <translation>태그 라이브러리에서 추가…</translation>
+    </message>
+    <message>
+        <source>This removes every image tag from %d images.</source>
+        <translation>%d개 이미지에서 모든 이미지 태그를 제거합니다.</translation>
+    </message>
+    <message>
+        <source>Enter at least one tag.</source>
+        <translation>태그를 하나 이상 입력하세요.</translation>
+    </message>
+    <message>
+        <source>Select the tag to replace.</source>
+        <translation>바꿀 태그를 선택하세요.</translation>
+    </message>
+    <message>
+        <source>Enter the replacement tag.</source>
+        <translation>바꿀 태그를 입력하세요.</translation>
+    </message>
+    <message>
+        <source>Delete all image tags from %d files?</source>
+        <translation>%d개 이미지에서 모든 이미지 태그를 삭제할까요?</translation>
+    </message>
+    <message>
         <source>Tag Library</source>
         <translation>태그 라이브러리</translation>
     </message>

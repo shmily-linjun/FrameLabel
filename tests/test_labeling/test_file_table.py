@@ -1027,17 +1027,22 @@ def test_batch_tags_applies_to_selected_rows(
     assert repository is not None
 
     class FakeDialog:
-        def __init__(self, _count, _parent=None, translate=None):
+        def __init__(
+            self, _count, _library=None, _parent=None, translate=None
+        ):
             pass
 
         def exec(self):
             return QtWidgets.QDialog.DialogCode.Accepted
 
+        def mode(self):
+            return "add"
+
         def tags(self):
             return ["defect", "blur"]
 
-        def replace(self):
-            return True
+        def old_tags(self):
+            return []
 
     import anylabeling.views.labeling.file_list.controller as controller_module
 
@@ -1067,6 +1072,67 @@ def test_batch_tags_applies_to_selected_rows(
     # The open image (first row) is refreshed in memory too.
     assert widget.other_data["tags"] == ["defect", "blur"]
     assert widget.image_tags_widget.tags == ["defect", "blur"]
+
+
+def test_batch_tags_replaces_only_the_specified_tag(
+    window, tmp_path, monkeypatch
+):
+    widget = window.labeling_widget.view
+    images, first, second, third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    repository = widget.dataset_repository
+    assert repository is not None
+
+    def annotation_of(path):
+        image = repository.find_image(path.name)
+        return image["id"], repository.load_annotation(image["id"])
+
+    first_id, first_annotation = annotation_of(first)
+    first_annotation.tags = ["keep", "old"]
+    repository.save_annotation(first_id, first_annotation)
+    second_id, second_annotation = annotation_of(second)
+    second_annotation.tags = ["old"]
+    repository.save_annotation(second_id, second_annotation)
+
+    class FakeDialog:
+        def __init__(
+            self, _count, _library=None, _parent=None, translate=None
+        ):
+            pass
+
+        def exec(self):
+            return QtWidgets.QDialog.DialogCode.Accepted
+
+        def mode(self):
+            return "replace"
+
+        def tags(self):
+            return ["new"]
+
+        def old_tags(self):
+            return ["old"]
+
+    import anylabeling.views.labeling.file_list.controller as controller_module
+
+    monkeypatch.setattr(controller_module, "BatchTagsDialog", FakeDialog)
+    monkeypatch.setattr(widget, "_ensure_operator", lambda: True)
+    monkeypatch.setattr(
+        widget.operator_gate,
+        "service",
+        SimpleNamespace(
+            session=SimpleNamespace(
+                operator_name="tester", is_logged_in=True
+            )
+        ),
+    )
+
+    widget.files.set_tags_rows(
+        [widget.fn_to_index[str(first)], widget.fn_to_index[str(second)]]
+    )
+
+    assert annotation_of(first)[1].tags == ["keep", "new"]
+    assert annotation_of(second)[1].tags == ["new"]
+    assert annotation_of(third)[1].tags == []
 
 
 def test_statistics_totals_clear_or_set_filters(window):
@@ -1245,10 +1311,21 @@ def test_batch_tags_dialog_parses_tags_and_mode(window):
         BatchTagsDialog,
     )
 
-    dialog = BatchTagsDialog(3, translate=lambda text: text)
+    dialog = BatchTagsDialog(
+        3, ["defect", "blur"], translate=lambda text: text
+    )
     dialog.tags_edit.setText(" defect, blur ,defect ")
     assert dialog.tags() == ["defect", "blur"]
-    assert dialog.replace() is False
+    assert dialog.mode() == "add"
+
     dialog.mode_combo.setCurrentIndex(1)
-    assert dialog.replace() is True
+    dialog.old_tag_combo.setCurrentText("defect")
+    dialog.new_tags_edit.setText("new, defect")
+    assert dialog.mode() == "replace"
+    assert dialog.old_tags() == ["defect"]
+    assert dialog.tags() == ["new", "defect"]
+
+    dialog.mode_combo.setCurrentIndex(2)
+    assert dialog.mode() == "delete_all"
+    assert dialog.tags() == []
     dialog.close()

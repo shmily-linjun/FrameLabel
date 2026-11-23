@@ -40,7 +40,11 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from ....services.identity.attribution import format_timestamp
 from .. import utils
 from ..schema import IMAGE_TAGS_FIELD
-from ..utils.batch_tags import apply_image_tags
+from ..utils.batch_tags import (
+    MODE_DELETE_ALL,
+    MODE_REPLACE,
+    apply_image_tags,
+)
 from ..utils.file_meta import (
     SPLIT_KEYS,
     SPLIT_NONE,
@@ -847,19 +851,31 @@ class FileListController:
         ensure_operator = getattr(host, "_ensure_operator", None)
         if ensure_operator is not None and not ensure_operator():
             return
-        dialog = BatchTagsDialog(len(paths), host, translate=host.tr)
+        refresh_tags = getattr(host, "_refresh_tag_library", None)
+        if refresh_tags is not None:
+            refresh_tags()
+        library_tags = [
+            tag
+            for tag, _count in (
+                getattr(host, "_tag_library_entries", None) or []
+            )
+        ]
+        dialog = BatchTagsDialog(
+            len(paths), library_tags, host, translate=host.tr
+        )
         if (
             dialog.exec()
             != QtWidgets.QDialog.DialogCode.Accepted
         ):
             return
+        mode = dialog.mode()
         tags = dialog.tags()
-        replace = dialog.replace()
-        if replace and not tags:
+        old_tags = dialog.old_tags()
+        if mode == MODE_DELETE_ALL:
             answer = QtWidgets.QMessageBox.question(
                 host,
-                host.tr("Set Image Tags"),
-                host.tr("Remove all image tags from %d files?")
+                host.tr("Batch Set Image Tags"),
+                host.tr("Delete all image tags from %d files?")
                 % len(paths),
                 QtWidgets.QMessageBox.StandardButton.Yes
                 | QtWidgets.QMessageBox.StandardButton.No,
@@ -867,6 +883,8 @@ class FileListController:
             )
             if answer != QtWidgets.QMessageBox.StandardButton.Yes:
                 return
+        elif mode == MODE_REPLACE and not old_tags:
+            return
         service = getattr(host, "operator_service", None)
         session = getattr(service, "session", None)
         author = (
@@ -877,7 +895,8 @@ class FileListController:
         result = apply_image_tags(
             paths,
             tags,
-            replace=replace,
+            mode=mode,
+            old_tags=old_tags,
             repository=getattr(host, "dataset_repository", None),
             dataset_root=getattr(host, "dataset_root", None),
             output_dir=host.output_dir,

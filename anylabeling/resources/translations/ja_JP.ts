@@ -3139,6 +3139,58 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Batch Set Image Tags</source>
+        <translation>画像タグを一括設定</translation>
+    </message>
+    <message>
+        <source>Replace a specific tag</source>
+        <translation>特定のタグを置き換え</translation>
+    </message>
+    <message>
+        <source>Delete all image tags</source>
+        <translation>すべての画像タグを削除</translation>
+    </message>
+    <message>
+        <source>Tags to add (comma separated)</source>
+        <translation>追加するタグ（カンマ区切り）</translation>
+    </message>
+    <message>
+        <source>Tag to replace</source>
+        <translation>置き換えるタグ</translation>
+    </message>
+    <message>
+        <source>Replace with (comma separated)</source>
+        <translation>置き換え後（カンマ区切り）</translation>
+    </message>
+    <message>
+        <source>Select or type the tag to replace</source>
+        <translation>置き換えるタグを選択または入力</translation>
+    </message>
+    <message>
+        <source>Add from tag library…</source>
+        <translation>タグライブラリから追加…</translation>
+    </message>
+    <message>
+        <source>This removes every image tag from %d images.</source>
+        <translation>%d 枚の画像からすべての画像タグを削除します。</translation>
+    </message>
+    <message>
+        <source>Enter at least one tag.</source>
+        <translation>タグを1つ以上入力してください。</translation>
+    </message>
+    <message>
+        <source>Select the tag to replace.</source>
+        <translation>置き換えるタグを選択してください。</translation>
+    </message>
+    <message>
+        <source>Enter the replacement tag.</source>
+        <translation>置き換え後のタグを入力してください。</translation>
+    </message>
+    <message>
+        <source>Delete all image tags from %d files?</source>
+        <translation>%d 枚の画像からすべての画像タグを削除しますか？</translation>
+    </message>
+    <message>
         <source>Tag Library</source>
         <translation>タグライブラリ</translation>
     </message>

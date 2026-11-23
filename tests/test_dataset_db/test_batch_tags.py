@@ -6,6 +6,9 @@ from anylabeling.services.dataset.codec import ImageAnnotation
 from anylabeling.services.dataset.connection import DatasetDatabase
 from anylabeling.services.dataset.repository import DatasetRepository
 from anylabeling.views.labeling.utils.batch_tags import (
+    MODE_ADD,
+    MODE_DELETE_ALL,
+    MODE_REPLACE,
     apply_image_tags,
     merge_image_tags,
 )
@@ -45,17 +48,37 @@ def _make_repository(root):
 
 # -- merge rule ----------------------------------------------------------
 def test_merge_adds_only_missing_tags_and_keeps_order():
-    assert merge_image_tags(["a", "b"], ["b", "c"], False) == [
+    assert merge_image_tags(["a", "b"], ["b", "c"]) == [
         "a",
         "b",
         "c",
     ]
-    assert merge_image_tags(["a"], ["a"], False) == ["a"]
+    assert merge_image_tags(["a"], ["a"]) == ["a"]
 
 
-def test_merge_replaces_and_normalizes():
-    assert merge_image_tags(["a", "b"], ["c", " c ", ""], True) == ["c"]
-    assert merge_image_tags(["a"], [], True) == []
+def test_merge_replaces_specific_tags_only_when_present():
+    assert merge_image_tags(
+        ["a", "b"], ["c"], MODE_REPLACE, ["b"]
+    ) == ["a", "c"]
+    assert merge_image_tags(
+        ["a", "b"], [], MODE_REPLACE, ["a"]
+    ) == ["b"]
+    # Images without the old tag are not turned into "add" targets.
+    assert merge_image_tags(
+        ["a"], ["c"], MODE_REPLACE, ["b"]
+    ) == ["a"]
+    assert merge_image_tags(
+        ["a", "c"], ["c"], MODE_REPLACE, ["a"]
+    ) == ["c"]
+    # Replacing a tag with itself must not reorder or rewrite the image.
+    assert merge_image_tags(
+        ["a", "b"], ["a"], MODE_REPLACE, ["a"]
+    ) == ["a", "b"]
+
+
+def test_merge_delete_all():
+    assert merge_image_tags(["a", "b"], [], MODE_DELETE_ALL) == []
+    assert merge_image_tags([], [], MODE_DELETE_ALL) == []
 
 
 # -- JSON mode -----------------------------------------------------------
@@ -66,7 +89,6 @@ def test_add_mode_merges_and_stamps_attribution(dataset_tmp):
     result = apply_image_tags(
         [image],
         ["new", "old"],
-        replace=False,
         author=AUTHOR,
         modified_at=STAMP,
     )
@@ -80,12 +102,53 @@ def test_add_mode_merges_and_stamps_attribution(dataset_tmp):
     assert data["modified_at"] == STAMP
 
 
-def test_replace_mode_can_clear_all_tags(dataset_tmp):
+def test_replace_mode_swaps_one_tag_and_keeps_others(dataset_tmp):
+    image = _image(dataset_tmp)
+    label = _label(image, tags=["keep", "old"])
+
+    result = apply_image_tags(
+        [image],
+        ["new"],
+        mode=MODE_REPLACE,
+        old_tags=["old"],
+        author=AUTHOR,
+        modified_at=STAMP,
+    )
+
+    assert result.updated == [str(image)]
+    data = json.loads(label.read_text(encoding="utf-8"))
+    assert data["tags"] == ["keep", "new"]
+    assert data["author"] == AUTHOR
+
+
+def test_replace_mode_skips_images_without_the_old_tag(dataset_tmp):
+    image = _image(dataset_tmp)
+    label = _label(image, tags=["keep"])
+    before = label.read_bytes()
+
+    result = apply_image_tags(
+        [image],
+        ["new"],
+        mode=MODE_REPLACE,
+        old_tags=["missing"],
+        author=AUTHOR,
+        modified_at=STAMP,
+    )
+
+    assert result.unchanged == [str(image)]
+    assert label.read_bytes() == before
+
+
+def test_delete_all_mode_clears_tags(dataset_tmp):
     image = _image(dataset_tmp)
     label = _label(image, tags=["a", "b"])
 
     result = apply_image_tags(
-        [image], [], replace=True, author=AUTHOR, modified_at=STAMP
+        [image],
+        [],
+        mode=MODE_DELETE_ALL,
+        author=AUTHOR,
+        modified_at=STAMP,
     )
 
     assert result.updated == [str(image)]
@@ -100,7 +163,10 @@ def test_unchanged_image_is_not_rewritten(dataset_tmp):
     before = label.read_bytes()
 
     result = apply_image_tags(
-        [image], ["a"], replace=True, author=AUTHOR, modified_at=STAMP
+        [image],
+        ["a"],
+        author=AUTHOR,
+        modified_at=STAMP,
     )
 
     assert result.updated == []
@@ -112,7 +178,10 @@ def test_missing_label_file_is_created(dataset_tmp):
     image = _image(dataset_tmp)
 
     result = apply_image_tags(
-        [image], ["defect"], replace=True, author=AUTHOR, modified_at=STAMP
+        [image],
+        ["defect"],
+        author=AUTHOR,
+        modified_at=STAMP,
     )
 
     assert result.updated == [str(image)]
@@ -131,7 +200,10 @@ def test_malformed_label_file_is_reported_and_not_overwritten(dataset_tmp):
     label.write_text("{not json", encoding="utf-8")
 
     result = apply_image_tags(
-        [image], ["defect"], replace=True, author=AUTHOR, modified_at=STAMP
+        [image],
+        ["defect"],
+        author=AUTHOR,
+        modified_at=STAMP,
     )
 
     assert result.failed == [str(image)]
@@ -162,7 +234,6 @@ def test_database_mode_merges_and_stamps(dataset_tmp):
         result = apply_image_tags(
             [image],
             ["new"],
-            replace=False,
             repository=repository,
             dataset_root=str(dataset_tmp),
             author=AUTHOR,
@@ -182,7 +253,6 @@ def test_database_mode_merges_and_stamps(dataset_tmp):
         again = apply_image_tags(
             [image],
             ["new"],
-            replace=False,
             repository=repository,
             dataset_root=str(dataset_tmp),
             author=AUTHOR,
@@ -201,7 +271,6 @@ def test_database_mode_unknown_image_is_reported(dataset_tmp):
         result = apply_image_tags(
             [image],
             ["defect"],
-            replace=True,
             repository=repository,
             dataset_root=str(dataset_tmp),
             author=AUTHOR,
