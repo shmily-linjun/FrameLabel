@@ -111,9 +111,21 @@ class PoseClassError(ValueError):
 
 
 class LabelConverter:
-    def __init__(self, classes_file=None, pose_cfg_file=None):
+    def __init__(
+        self, classes_file=None, pose_cfg_file=None, classes=None
+    ):
         self.classes = []
-        if classes_file:
+        if classes is not None:
+            # Dataset categories are already in the user-visible order
+            # (``category.sort_index``); do not re-sort or require classes.txt.
+            seen = set()
+            for name in classes:
+                value = str(name).strip()
+                if value and value not in seen:
+                    seen.add(value)
+                    self.classes.append(value)
+            logger.info(f"Loading dataset classes: {self.classes}")
+        elif classes_file:
             self.classes = self.read_lines(classes_file)
             logger.info(f"Loading classes: {self.classes}")
 

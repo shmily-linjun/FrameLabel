@@ -6,6 +6,59 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.38 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈 2 个已确认的缺陷：
+
+1. 导出项目时仍要求选择 `classes.txt`；而“类别”页已能调整 `category.sort_index`，外部 classes 文件与界面顺序可能不一致；
+2. “类别”页底部 `From [ ] To [ ] [Go] [↑] [↓]` 中两个 `QSpinBox` 和 `Go` 按钮过高/过宽，与 24×22 的上下移按钮及界面字体不协调。
+
+另有两项设计问题（批量导入类别、移动图片到其他文件夹）本轮只给出方案，未改代码。
+
+### 2. 主要实现与关键细节
+
+- **DB 模式导出使用“类别”页顺序**：
+  - 新增 `export.py::_dataset_category_names(host)`：有 `dataset_repository` 时读取 `category_counts()` 中 `object_count > 0` 的类别，顺序与“类别”页完全一致；异常时返回空列表并保留旧回退。
+  - `LabelConverter` 增加 `classes=` 参数，按传入顺序去重，不读文件、不重排。
+  - 已接入 YOLO hbb/obb/seg、COCO rectangle/polygon、DOTA、MOT/MOTS/ODVG：DB 模式不再弹 `classes.txt`；纯 JSON 目录仍保留原来的文件选择。YOLO/COCO Pose 仍选择关键点 YAML（其中含类别/关键点定义）。
+- **“类别”页范围行紧凑化**：
+  - 新增 `get_compact_spinbox_style()` 与 `get_compact_ok_btn_style()`（12px 字体、22px 高、圆角 4px）；
+  - `from_input`/`to_input` 固定 48×22，`Go` 高 22、最大宽 48，`From`/`To` 标签字号 12px；与 24×22 的上下移按钮同高；
+  - 不改范围语义（仍是图片序号范围），只改尺寸。
+- 文档同步：用户手册补充 DB 模式导出类别来源；设计书 v1.15 明确“DB 导出不得再选 classes.txt”。
+- 版本：`4.3.2+fork.37` → `4.3.2+fork.38`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/utils/export.py`、`anylabeling/views/labeling/label_converter.py`、`anylabeling/views/labeling/widgets/label_manager.py`、`anylabeling/views/labeling/utils/style.py`、`anylabeling/app_info.py`
+- 测试：`tests/test_utils/test_label_converter.py`（显式 classes 顺序/去重、DB 类别来源）、`tests/test_labeling/test_label_manager.py`（范围行 22px/按钮宽度）
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.15）、`docs/开始.md`、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：DB 数据集导出 YOLO/COCO/DOTA/MOT 不再询问 `classes.txt`，类别编号按“类别”页顺序；JSON 目录行为不变；类别页范围行更紧凑。
+- **接口**：`LabelConverter(classes=...)`；`export.py::_dataset_category_names()`；`get_compact_*_style()`。
+- **数据/契约**：无 schema 变更；导出只读类别表；“类别”页仍只列有对象的类别。
+- **版本**：fork.37 → fork.38。
+
+### 5. 实际验证内容
+
+- `tests/test_utils/test_label_converter.py`：**32 passed / 7 subtests**（新增显式 classes 顺序/去重与 DB 类别来源用例；含原 YOLO/COCO/DOTA/MOT/Pose 用例）。
+- `tests/test_labeling/test_label_manager.py::test_range_controls_match_reorder_button_height`：三个控件高度 22、`Go` 宽 ≤48。
+- 本轮 `tests/test_labeling` + `tests/test_widgets` + `tests/test_dataset_db` + `tests/test_config` + `tests/test_utils/test_tag_library.py` + `tests/test_utils/test_file_search.py` + `tests/test_utils/test_label_converter.py`：**429 passed / 10 failed / 156 subtests**；10 条失败与 HEAD 基线逐条相同（本次时序抖动 `test_brightness_contrast_updates_are_throttled` 未触发）。
+- **未执行**：真实桌面导出对话框（确认不再弹 classes）与真实“类别”页截图、导出文件类别编号逐项核对、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- DB 模式导出只包含“类别”页当前可见（`object_count > 0`）的类别；无对象类别不参与编号，也无法在类别页调整顺序。
+- 纯 JSON 目录没有持久化类别顺序，仍提示选择 `classes.txt`。
+- 批量导入类别（用户问题 2）与移动图片到其他文件夹/手动移动后的 DB 同步（问题 4）尚未实现，方案见本轮回复。
+- “类别”页控件使用固定 12px 字号/22px 高；若系统缩放或主题字体变化，需再看实际观感。
+
+---
+
 ## 4.3.2+fork.37 — 2026-11-23
 
 ### 1. 背景与原因

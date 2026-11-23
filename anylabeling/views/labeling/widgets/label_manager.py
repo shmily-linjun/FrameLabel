@@ -30,7 +30,10 @@ from PyQt6.QtWidgets import QColorDialog, QTableWidgetItem
 
 from ..logger import logger
 from ..utils.qt import new_icon, new_icon_path
-from ..utils.style import get_ok_btn_style, get_spinbox_style
+from ..utils.style import (
+    get_compact_ok_btn_style,
+    get_compact_spinbox_style,
+)
 from .label_dialog import natural_sort_key
 from .popup import Popup
 
@@ -187,20 +190,29 @@ class LabelManagerPanel(QtWidgets.QWidget):
         layout.addWidget(self.table, 1)
 
         range_layout = QtWidgets.QHBoxLayout()
-        range_layout.setContentsMargins(2, 0, 2, 2)
-        range_layout.setSpacing(4)
+        range_layout.setContentsMargins(2, 0, 2, 1)
+        range_layout.setSpacing(3)
         self.from_input = QtWidgets.QSpinBox()
         self.from_input.setMinimum(1)
-        self.from_input.setStyleSheet(get_spinbox_style())
+        self.from_input.setFixedSize(52, 22)
+        self.from_input.setStyleSheet(get_compact_spinbox_style())
         self.to_input = QtWidgets.QSpinBox()
         self.to_input.setMinimum(1)
-        self.to_input.setStyleSheet(get_spinbox_style())
+        self.to_input.setFixedSize(52, 22)
+        self.to_input.setStyleSheet(get_compact_spinbox_style())
         self.range_button = QtWidgets.QPushButton(self._tr("Go"))
-        self.range_button.setStyleSheet(get_ok_btn_style())
+        self.range_button.setStyleSheet(get_compact_ok_btn_style())
+        self.range_button.setFixedHeight(22)
+        self.range_button.setMinimumWidth(36)
+        self.range_button.setMaximumWidth(48)
         self.range_button.clicked.connect(self.apply_changes)
-        range_layout.addWidget(QtWidgets.QLabel(self._tr("From")))
+        from_label = QtWidgets.QLabel(self._tr("From"))
+        from_label.setStyleSheet("font-size: 12px;")
+        to_label = QtWidgets.QLabel(self._tr("To"))
+        to_label.setStyleSheet("font-size: 12px;")
+        range_layout.addWidget(from_label)
         range_layout.addWidget(self.from_input)
-        range_layout.addWidget(QtWidgets.QLabel(self._tr("To")))
+        range_layout.addWidget(to_label)
         range_layout.addWidget(self.to_input)
         range_layout.addWidget(self.range_button)
         range_layout.addStretch(1)

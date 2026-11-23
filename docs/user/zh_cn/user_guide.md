@@ -591,6 +591,8 @@ X-AnyLabeling 支持导入和导出 YOLO 目标检测、实例分割、旋转框
 在导入/导出 YOLO 标注文件之前，需要准备一份标签配置文件，具体如下：
 
 1. 对于 YOLO 目标检测、实例分割和旋转框检测任务，请参考 [classes.txt](../../../assets/classes.txt) 准备配置文件，每一行代表一个类别，编号从上至下从 0 开始依次递增。
+
+> **数据库数据集（目录含 `xanylabeling.db`）**：导出 YOLO（检测/分割/旋转框）、COCO（矩形/多边形）、DOTA、MOT/MOTS/ODVG 时不再询问 `classes.txt`，而是直接使用右侧 **类别/Classes** 页的顺序（`category.sort_index`）。请先在“类别”页用上移/下移调整导出顺序；这样导出的类别编号与界面顺序一致。纯 JSON 目录没有持久化的类别顺序，仍会要求选择 `classes.txt`。YOLO Pose/COCO Pose 仍需选择关键点配置文件（其中包含类别与关键点定义）。
 2. 对于 YOLO 关键点检测任务，请参考 [yolov8_pose.yaml](../../../assets/yolov8_pose.yaml) 进行准备，其中 `has_visible` 参数请参考[官方定义](https://docs.ultralytics.com/datasets/pose/#ultralytics-yolo-format)。
 
 > 要导出 YOLO Pose 格式，需要为每组检测框及其关键点指定 `group_id`，以记录对象之间的从属关系。

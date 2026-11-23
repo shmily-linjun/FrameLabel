@@ -95,6 +95,28 @@ def _check_filename_exist(self):
     return True
 
 
+def _dataset_category_names(host):
+    """Return the Classes-tab order for a DB dataset, or an empty list.
+
+    In DB mode the ``category`` table is authoritative and the Classes tab
+    edits its ``sort_index``; asking for a separate classes.txt would let the
+    two diverge.  JSON folders have no persisted category order, so callers
+    keep the old file-picker fallback there.
+    """
+    repository = getattr(host, "dataset_repository", None)
+    if repository is None:
+        return []
+    try:
+        return [
+            str(row["name"])
+            for row in repository.category_counts()
+            if row.get("name") and int(row.get("object_count", 0)) > 0
+        ]
+    except Exception as error:  # noqa: BLE001 - preserve the export path
+        logger.warning(f"Failed to read dataset categories: {error}")
+        return []
+
+
 def _show_yolo_export_error(parent, image_file, error):
     image_path = osp.abspath(image_file) if image_file else None
     message = (
@@ -296,20 +318,24 @@ def export_yolo_annotation(self, mode):
             return
 
     elif mode in ["hbb", "obb", "seg"]:
-        filter = QCoreApplication.translate(
-            "LabelingWidget", "Classes Files (*.txt);;All Files (*)"
-        )
-        self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            QCoreApplication.translate(
-                "LabelingWidget", "Select a specific classes file"
-            ),
-            "",
-            filter,
-        )
-        if not self.classes_file:
-            return
-        converter = LabelConverter(classes_file=self.classes_file)
+        dataset_classes = _dataset_category_names(self)
+        if dataset_classes:
+            converter = LabelConverter(classes=dataset_classes)
+        else:
+            filter = QCoreApplication.translate(
+                "LabelingWidget", "Classes Files (*.txt);;All Files (*)"
+            )
+            self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self,
+                QCoreApplication.translate(
+                    "LabelingWidget", "Select a specific classes file"
+                ),
+                "",
+                filter,
+            )
+            if not self.classes_file:
+                return
+            converter = LabelConverter(classes_file=self.classes_file)
 
     source_root = _get_yolo_source_root(
         self.filename, getattr(self, "last_open_dir", None)
@@ -802,16 +828,20 @@ def export_coco_annotation(self, mode):
             popup.show_popup(self, popup_height=65, position="center")
             return
     elif mode in ["rectangle", "polygon"]:
-        filter = "Classes Files (*.txt);;All Files (*)"
-        self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            self.tr("Select a specific classes file"),
-            "",
-            filter,
-        )
-        if not self.classes_file:
-            return
-        converter = LabelConverter(classes_file=self.classes_file)
+        dataset_classes = _dataset_category_names(self)
+        if dataset_classes:
+            converter = LabelConverter(classes=dataset_classes)
+        else:
+            filter = "Classes Files (*.txt);;All Files (*)"
+            self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self,
+                self.tr("Select a specific classes file"),
+                "",
+                filter,
+            )
+            if not self.classes_file:
+                return
+            converter = LabelConverter(classes_file=self.classes_file)
 
     dialog = QtWidgets.QDialog(self)
     dialog.setWindowTitle(self.tr("Export options"))
@@ -966,15 +996,17 @@ def export_dota_annotation(self):
     if not _check_filename_exist(self):
         return
 
-    filter = "Classes Files (*.txt);;All Files (*)"
-    self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
-        self,
-        self.tr("Select a specific classes file"),
-        "",
-        filter,
-    )
-    if not self.classes_file:
-        return
+    dataset_classes = _dataset_category_names(self)
+    if not dataset_classes:
+        filter = "Classes Files (*.txt);;All Files (*)"
+        self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            self.tr("Select a specific classes file"),
+            "",
+            filter,
+        )
+        if not self.classes_file:
+            return
 
     dialog = QtWidgets.QDialog(self)
     dialog.setWindowTitle(self.tr("Export options"))
@@ -1076,7 +1108,10 @@ def export_dota_annotation(self):
     else:
         os.makedirs(save_path)
 
-    converter = LabelConverter(classes_file=self.classes_file)
+    converter = LabelConverter(
+        classes=dataset_classes,
+        classes_file=self.classes_file if not dataset_classes else None,
+    )
 
     image_list = self.image_list if self.image_list else [self.filename]
 
@@ -1363,8 +1398,9 @@ def export_mot_annotation(self, mode):
     if not _check_filename_exist(self):
         return
 
-    converter = LabelConverter()
-    if mode in ["mot", "mots", "odvg"]:
+    dataset_classes = _dataset_category_names(self)
+    converter = LabelConverter(classes=dataset_classes)
+    if mode in ["mot", "mots", "odvg"] and not dataset_classes:
         filter = "Classes Files (*.txt);;All Files (*)"
         self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
             self,

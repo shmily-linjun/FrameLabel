@@ -470,6 +470,69 @@ def get_highlight_button_style():
     """
 
 
+def get_compact_ok_btn_style():
+    """Small primary button for dense side-panel rows (Classes tab)."""
+    t = get_theme()
+    return f"""
+        QPushButton {{
+            background-color: {t["primary"]};
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 12px;
+            min-width: 0px;
+            padding: 0px 8px;
+            height: 22px;
+        }}
+        QPushButton:hover {{
+            background-color: {t["primary_hover"]};
+        }}
+        QPushButton:pressed {{
+            background-color: {t["primary_pressed"]};
+        }}
+        QPushButton:disabled {{
+            background-color: {t["border_light"]};
+            color: {t["text_secondary"]};
+        }}
+    """
+
+
+def get_compact_spinbox_style(theme=None):
+    """Compact spinbox for the Classes range row."""
+    t = theme or get_theme()
+    return f"""
+        QSpinBox {{
+            padding: 0px 3px;
+            background: {t["background_secondary"]};
+            border: 1px solid {t["border_light"]};
+            border-radius: 4px;
+            min-height: 18px;
+            max-height: 22px;
+            font-size: 12px;
+            selection-background-color: {t["primary"]};
+        }}
+        QSpinBox::up-button, QSpinBox::down-button {{
+            width: 14px;
+            border: none;
+            background: {t["spinbox_button"]};
+        }}
+        QSpinBox::up-button:hover, QSpinBox::down-button:hover {{
+            background: {t["spinbox_button_hover"]};
+        }}
+        QSpinBox::up-arrow {{
+            image: url({new_icon_path("caret-up", "svg")});
+            width: 9px;
+            height: 9px;
+        }}
+        QSpinBox::down-arrow {{
+            image: url({new_icon_path("caret-down", "svg")});
+            width: 9px;
+            height: 9px;
+        }}
+    """
+
+
 def get_spinbox_style(theme=None):
     t = theme or get_theme()
     return f"""

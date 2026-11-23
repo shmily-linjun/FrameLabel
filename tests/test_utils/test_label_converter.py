@@ -16,6 +16,30 @@ from anylabeling.views.labeling.label_converter import (
 )
 
 
+class TestLabelConverterClasses(unittest.TestCase):
+    def test_explicit_classes_keep_dataset_order_and_dedupe(self):
+        converter = LabelConverter(classes=["dog", "cat", "dog", " "])
+        self.assertEqual(converter.classes, ["dog", "cat"])
+
+    def test_export_reads_database_category_order(self):
+        from types import SimpleNamespace
+
+        from anylabeling.views.labeling.utils.export import (
+            _dataset_category_names,
+        )
+
+        class Repository:
+            def category_counts(self):
+                return [
+                    {"name": "zebra", "object_count": 2},
+                    {"name": "cat", "object_count": 1},
+                    {"name": "unused", "object_count": 0},
+                ]
+
+        host = SimpleNamespace(dataset_repository=Repository())
+        self.assertEqual(_dataset_category_names(host), ["zebra", "cat"])
+
+
 class TestLabelConverterPoseConfig(unittest.TestCase):
 
     def setUp(self):

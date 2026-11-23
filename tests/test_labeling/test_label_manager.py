@@ -147,6 +147,13 @@ class TestLabelManagerPanel(unittest.TestCase):
         self.assertEqual(self.panel.from_input.maximum(), 2)
         self.assertEqual(self.panel.to_input.value(), 2)
 
+    def test_range_controls_match_reorder_button_height(self):
+        self.assertEqual(self.panel.from_input.height(), 22)
+        self.assertEqual(self.panel.to_input.height(), 22)
+        self.assertEqual(self.panel.range_button.height(), 22)
+        self.assertEqual(self.panel.move_up_button.height(), 22)
+        self.assertLessEqual(self.panel.range_button.width(), 48)
+
     def test_lock_only_updates_session_policy(self):
         before = [path.read_bytes() for path in self.paths]
         lock = self.panel._checkbox(self.row_of("cat"), 3)
