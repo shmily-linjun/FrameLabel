@@ -767,6 +767,7 @@ class LabelDialog(QtWidgets.QDialog):
 
         super(LabelDialog, self).__init__(parent)
         self.setObjectName("LabelDialog")
+        self.setWindowTitle(self.tr("Object Edit"))
         t = get_theme()
         self.setStyleSheet(f"""
             QDialog#LabelDialog QLineEdit,
@@ -980,6 +981,7 @@ class LabelDialog(QtWidgets.QDialog):
                 QtWidgets.QAbstractItemView.DragDropMode.InternalMove
             )
         self.label_list.currentItemChanged.connect(self.label_selected)
+        self.label_list.itemClicked.connect(self.label_clicked)
         self.label_list.itemDoubleClicked.connect(self.label_double_clicked)
         self.edit.set_list_widget(self.label_list)
         label_panel = RoundedPanel(radius=8)
@@ -1134,6 +1136,16 @@ class LabelDialog(QtWidgets.QDialog):
         else:
             # Clear the edit field if no item is selected
             self.edit.clear()
+
+    def label_clicked(self, item):
+        """Fill the class field even when the clicked item is already current.
+
+        ``currentItemChanged`` does not fire for a click on the current item,
+        which is the normal case when the list contains a single class.  The
+        click handler keeps that single-class list usable without retyping.
+        """
+        self.label_selected(item)
+        self.edit.setFocus(QtCore.Qt.FocusReason.MouseFocusReason)
 
     def validate(self):
         text = self.edit.text()

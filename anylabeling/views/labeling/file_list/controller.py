@@ -54,7 +54,6 @@ from ..utils.style import get_file_table_style
 from ..utils.thumbnail import THUMBNAIL_SIZE, ThumbnailLoader
 from .tags_dialog import BatchTagsDialog
 from .constants import (
-    FILE_CHECKED_COLOR,
     FILE_COL_IMPORT_TIME,
     FILE_COL_INFERENCE,
     FILE_COL_NAME,
@@ -63,18 +62,15 @@ from .constants import (
     FILE_COL_NAME_WIDTH,
     FILE_COLUMN_COUNT,
     FILE_COLUMN_WIDTHS,
-    FILE_FAILED_COLOR,
     FILE_PATH_ROLE,
     FILE_ROW_HEIGHT,
     FILE_ROW_HEIGHT_COMPACT,
     FILE_SORT_ROLE,
-    FILE_UNCHECKED_COLOR,
 )
 from .table import (
     FileNameDelegate,
     FileTableItem,
     FileTableWidget,
-    create_file_status_icon,
 )
 
 
@@ -166,13 +162,6 @@ class FileListController:
         )
         table.setIconSize(QtCore.QSize(THUMBNAIL_SIZE, THUMBNAIL_SIZE))
         table.setStyleSheet(get_file_table_style())
-        self.status_icons = {
-            True: create_file_status_icon(FILE_CHECKED_COLOR),
-            "failed": create_file_status_icon(FILE_FAILED_COLOR),
-            False: create_file_status_icon(
-                FILE_UNCHECKED_COLOR, filled=False
-            ),
-        }
         table.itemSelectionChanged.connect(host.file_selection_changed)
         table.setContextMenuPolicy(
             QtCore.Qt.ContextMenuPolicy.CustomContextMenu
@@ -251,14 +240,8 @@ class FileListController:
         shapes_item = FileTableItem(
             str(meta.shape_count), sort_key=meta.shape_count
         )
-        shapes_item.setIcon(
-            self.status_icons.get(
-                meta.checked, self.status_icons[False]
-            )
-        )
-        shapes_item.setToolTip(
-            self.host._annotation_checked_text(meta.checked)
-        )
+        # The object count is a plain number now: the old review-status circle
+        # was a leftover of the removed image-level ``checked`` indicator.
         shapes_item.setTextAlignment(
             QtCore.Qt.AlignmentFlag.AlignRight
             | QtCore.Qt.AlignmentFlag.AlignVCenter
@@ -320,7 +303,8 @@ class FileListController:
         if panel is not None:
             panel.invalidate()
 
-    def apply_row_state(self, row, checked, shape_count=None):
+    def apply_row_state(self, row, shape_count=None):
+        """Update the object-count cell for ``row``."""
         shapes_item = self.table.item(row, FILE_COL_SHAPES)
         if shapes_item is None:
             return
@@ -330,10 +314,6 @@ class FileListController:
             shape_count = meta.shape_count
         shapes_item.setText(str(shape_count))
         shapes_item.setData(FILE_SORT_ROLE, shape_count)
-        shapes_item.setIcon(
-            self.status_icons.get(checked, self.status_icons[False])
-        )
-        shapes_item.setToolTip(self.host._annotation_checked_text(checked))
 
     def refresh_row(self, row, checked=None, shape_count=None):
         path = self.path_at(row)
@@ -360,7 +340,7 @@ class FileListController:
                 f"{path}\n"
                 f"{self.host._annotation_checked_text(effective_checked)}"
             )
-        self.apply_row_state(row, effective_checked, effective_count)
+        self.apply_row_state(row, effective_count)
         split_item = self.table.item(row, FILE_COL_SPLIT)
         if split_item is not None:
             split = meta.split if meta.split in SPLIT_KEYS else SPLIT_NONE

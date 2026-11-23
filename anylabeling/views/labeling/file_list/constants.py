@@ -7,10 +7,6 @@ share one source of truth without importing the (very large) main widget.
 
 from PyQt6.QtCore import Qt
 
-FILE_CHECKED_COLOR = "#22A06B"
-FILE_FAILED_COLOR = "#DE350B"
-FILE_UNCHECKED_COLOR = "#8C98A4"
-
 FILE_COL_NAME = 0
 FILE_COL_SHAPES = 1
 FILE_COL_IMPORT_TIME = 2

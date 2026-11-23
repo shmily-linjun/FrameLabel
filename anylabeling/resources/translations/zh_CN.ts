@@ -2804,6 +2804,10 @@ Original images backed up to:
 </context><context>
     <name>LabelDialog</name>
     <message>
+        <source>Object Edit</source>
+        <translation>对象编辑</translation>
+    </message>
+    <message>
         <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1369" />
         <source>Enter class</source>
         <translation>输入类别</translation>

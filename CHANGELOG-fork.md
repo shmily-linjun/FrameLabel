@@ -6,6 +6,59 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.33 — 2026-11-23
+
+### 1. 背景与原因
+
+用户提出 3 项：
+
+1. 文件表“对象”列数字前的圆圈是 `checked` 状态的遗留物，要求确认并去除；
+2. “图像属性 → 标志”没有内容，希望展示已有 `tags` 供点击快速添加（用户明确要求先讨论，本批未改代码）；
+3. 图一的对象编辑对话框需要命名（用户拟名“对象编辑”），并修复“只有一个类别时，点击下方类别名不会填入上方输入框、需要手动再输入”的问题。
+
+第 1 项是 fork.30 移除 `checked::` 搜索后残留的视觉装饰；第 3 项的根因是类别列表只连接了 `currentItemChanged`，而单击已经是 current item 的项不会触发该信号（单类别列表天然如此）。
+
+### 2. 主要实现与关键细节
+
+- **去掉对象列审核圆点**：
+  - `FileListController.build_row_cells()` 不再给“对象”列 `setIcon()`，`apply_row_state()` 只更新数量文本与排序键；`apply_row_state(row, checked, shape_count)` 改为 `apply_row_state(row, shape_count)`，`refresh_row()` 与 `StatusController._set_file_item_checked()` 同步。
+  - 删除 `status_icons`、`create_file_status_icon()`、`FILE_CHECKED_COLOR`/`FILE_FAILED_COLOR`/`FILE_UNCHECKED_COLOR` 及 `file_list/__init__.py` 的导出；删除对应的圆点图标单测。
+  - `checked` 数据契约不变：JSON 顶层 `checked`、文件表行内 checkState/UserRole、`Ctrl+Alt+U/K/J`、“检查状态”菜单与文件名 tooltip 仍保留，只是文件表不画圆点。
+- **对象编辑对话框**：
+  - `LabelDialog` 设置窗口标题 `Object Edit`（中/日/韩：对象编辑/オブジェクト編集/객체 편집）。
+  - 新增 `label_clicked()` 并连接 `label_list.itemClicked`：被点击的类别项即使已经是 current item（单类别列表），也会填入“对象类别”输入框并交回焦点；`currentItemChanged` 继续处理键盘/编程选择。
+- **第 2 项（标签库）**：本批只在回复中表述理解并列出待确认点，未改代码、未动 `flags` 契约。
+- 版本：`4.3.2+fork.32` → `4.3.2+fork.33`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/file_list/controller.py`、`file_list/table.py`、`file_list/constants.py`、`file_list/__init__.py`、`anylabeling/views/labeling/status.py`、`anylabeling/views/labeling/widgets/label_dialog.py`、`anylabeling/resources/translations/*`、`anylabeling/resources/resources.py`、`anylabeling/app_info.py`
+- 测试：新增 `tests/test_labeling/test_label_dialog.py`（2 条）；`tests/test_labeling/test_label_widget_metrics.py` 删除圆点用例；`test_file_table.py` 既有用例回归
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.10，§4.5）、`docs/开始.md`（T3）、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：文件表“对象”列只显示数字，不再有灰色/绿色/红色圆点；对象编辑对话框标题为“对象编辑”；单类别列表单击类别名即可填入输入框。
+- **接口**：删除 `create_file_status_icon()`、三个 `FILE_*_COLOR` 常量、`FileListController.status_icons`；`apply_row_state()` 去掉 `checked` 参数；`LabelDialog` 新增 `label_clicked()` 与窗口标题。
+- **数据/契约**：无 schema 变更；`checked` 字段与审核动作保持不变，旧 JSON 兼容。
+- **版本**：fork.32 → fork.33。
+
+### 5. 实际验证内容
+
+- `tests/test_labeling/test_label_dialog.py`：**2 passed**（窗口标题；单类别单击 `itemClicked` 填充输入框）；`test_kie_linking.py` 7 passed；`test_file_table.py` 新增“对象列无状态图标”用例通过。
+- `tests/test_labeling/test_file_table.py` + `test_label_widget_metrics.py`：**40 passed / 5 failed**；5 条失败与 HEAD 基线逐条相同（4 条文件表 DB 模式测试债、1 条 `SimpleNamespace` 桩缺方法）。
+- 与 HEAD 导出树（`temporary/fork31/baseline`，HEAD `f31a952`）同环境对比 `tests/test_labeling tests/test_widgets tests/test_dataset_db`：当前 **347 passed / 11 failed / 53 subtests**，基线 **321 passed / 10 failed**；失败集合唯一差异仍是已记录的时序抖动 `test_brightness_contrast_updates_are_throttled`；新增 3 个用例通过、删除 1 个圆点用例。
+- `scripts/compile_languages.py`：四语言 `.qm` 各 **2274 条 / 0 unfinished**，`resources.py` 重建；`Object Edit` 四语言抽查通过。
+- **未执行**：真实桌面文件表观感（圆点是否完全消失）、真实鼠标单击单类别列表、输入法/高分屏、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 文件表不再显示审核状态；状态只能从画布左下角面板、右键“检查状态”、快捷键与文件名 tooltip 获取。若后续做 `asset.state` 图级审核 UI，应统一设计，不要恢复“对象列圆点”。
+- “对象编辑”同时用于新建与编辑，标题不区分入口；若需区分，可按入口设置副标题/不同标题。
+- 第 2 项（在“图像属性”页展示已有标签并点击添加）尚未实现，等待用户确认范围与交互（是否与 `flags` 分区、标签库范围、点击是添加还是切换等）。
+
+---
+
 ## 4.3.2+fork.32 — 2026-11-23
 
 ### 1. 背景与原因

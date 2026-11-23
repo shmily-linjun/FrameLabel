@@ -16,23 +16,6 @@ from .constants import (
 )
 
 
-def create_file_status_icon(color, filled=True):
-    """Build the small circle icon that encodes an annotation check state."""
-    pixmap = QtGui.QPixmap(10, 12)
-    pixmap.fill(QtCore.Qt.GlobalColor.transparent)
-    painter = QtGui.QPainter(pixmap)
-    painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-    if filled:
-        painter.setBrush(QtGui.QColor(color))
-        painter.setPen(QtCore.Qt.PenStyle.NoPen)
-    else:
-        painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
-        painter.setPen(QtGui.QPen(QtGui.QColor(color), 1.5))
-    painter.drawEllipse(1, 2, 8, 8)
-    painter.end()
-    return QtGui.QIcon(pixmap)
-
-
 class FileNameDelegate(QtWidgets.QStyledItemDelegate):
     """Paint the file name column without the legacy per-row checkbox."""
 

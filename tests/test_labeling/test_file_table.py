@@ -1087,6 +1087,20 @@ def test_statistics_totals_clear_or_set_filters(window):
     assert widget.file_search.text() == "label::object_0"
 
 
+def test_object_column_has_no_status_circle(window, tmp_path):
+    """The object count cell must not paint the legacy ``checked`` icon."""
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, _first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    app.processEvents()
+
+    item = widget.file_list_widget.item(0, FILE_COL_SHAPES)
+    assert item is not None
+    assert item.icon().isNull()
+    assert item.text() == "3"
+
+
 def test_batch_tags_dialog_parses_tags_and_mode(window):
     from anylabeling.views.labeling.file_list.tags_dialog import (
         BatchTagsDialog,

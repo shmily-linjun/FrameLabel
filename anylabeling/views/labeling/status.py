@@ -217,7 +217,7 @@ class DocumentStatus:
         )
         row = self.host.files.row_of(item.text())
         if row is not None:
-            self.host.files.apply_row_state(row, checked, shape_count)
+            self.host.files.apply_row_state(row, shape_count)
 
     def _file_item_annotation_checked(self, item):
         return item.data(Qt.ItemDataRole.UserRole) in (True, "failed")

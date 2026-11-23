@@ -118,26 +118,6 @@ class TestLabelWidgetMetrics(unittest.TestCase):
         self.assertIn("color: #f5f5f7", dark_style)
         init_theme("light")
 
-    def test_unchecked_review_status_icon_is_hollow_circle(self):
-        from anylabeling.views.labeling.file_list.constants import (
-            FILE_CHECKED_COLOR,
-            FILE_UNCHECKED_COLOR,
-        )
-        from anylabeling.views.labeling.file_list.table import (
-            create_file_status_icon,
-        )
-
-        checked = create_file_status_icon(FILE_CHECKED_COLOR)
-        unchecked = create_file_status_icon(
-            FILE_UNCHECKED_COLOR, filled=False
-        )
-        checked_image = checked.pixmap(12, 12).toImage()
-        unchecked_image = unchecked.pixmap(12, 12).toImage()
-
-        self.assertGreater(checked_image.pixelColor(6, 6).alpha(), 0)
-        self.assertEqual(unchecked_image.pixelColor(6, 6).alpha(), 0)
-        self.assertGreater(unchecked_image.pixelColor(6, 2).alpha(), 0)
-
     def test_window_title_includes_annotation_checked_status(self):
         from anylabeling.views.labeling.label_widget import LabelingWidget
 
