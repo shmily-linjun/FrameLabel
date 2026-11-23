@@ -9,6 +9,48 @@
 
 两份文件都安装 `dev` 依赖，因此包含 `PyInstaller`、`pytest`、`PySide6`（提供 `pyside6-lrelease`）等打包工具。**不要在同一环境中同时装 CPU 和 GPU 的 onnxruntime**。
 
+## 0. 最常见的错误：不在仓库根目录执行
+
+`conda env create -f environment-gpu.yml` 只负责找到 YAML 文件；**pip 子进程仍以你当前所在目录为工作目录**。如果当前目录不是仓库根，`-e .` 会指向那个目录：
+
+```text
+ERROR: file:///D:/cbg does not appear to be a Python project:
+neither 'setup.py' nor 'pyproject.toml' found.
+```
+
+例如你在 `D:\cbg` 执行、仓库实际在 `D:\cbg\X-AnyLabeling-main`，先在 PowerShell 中确认：
+
+```powershell
+Get-Location
+Test-Path .\pyproject.toml
+```
+
+必须有 `pyproject.toml`，否则先 `cd` 到仓库根：
+
+```powershell
+cd D:\cbg\X-AnyLabeling-main
+Test-Path .\pyproject.toml
+conda env create -f environment-gpu.yml
+```
+
+如果上一次已经留下不完整的环境，先删除再重来：
+
+```powershell
+conda env remove -n xanylabeling-gpu -y
+```
+
+也可以在仓库根目录用脚本自动切到正确目录（推荐）：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\setup_conda_env.ps1 -Device gpu
+```
+
+失败后重建：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\setup_conda_env.ps1 -Device gpu -Recreate
+```
+
 ## 1. 前置条件
 
 - Windows 10/11 64 位（本文以 Windows 打包为例）。

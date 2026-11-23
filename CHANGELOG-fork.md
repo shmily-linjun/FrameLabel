@@ -6,6 +6,63 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.46 — 2026-11-23
+
+### 1. 背景与原因
+
+用户在新电脑 `D:\cbg` 执行 `conda env create -f environment-gpu.yml` 失败：
+
+```text
+ERROR: file:///D:/cbg does not appear to be a Python project:
+neither 'setup.py' nor 'pyproject.toml' found.
+```
+
+原因是 `-e .` 由 conda 的 pip 子进程按**当前工作目录**解析，而不是按 YAML 文件所在目录；`D:\cbg` 不是仓库根。
+
+### 2. 主要实现与关键细节
+
+- 新增 `scripts/setup_conda_env.ps1`：
+  - 自动定位仓库根（脚本父目录）；
+  - `Push-Location` 到仓库根后再执行 `conda env create -f environment-<device>.yml`；
+  - 支持 `-Device cpu|gpu`、`-Recreate`（清理失败/半成品环境）、`-DryRun`（只打印命令）；
+  - 检测环境已存在并提示用 `-Recreate`，不再产生二次失败。
+- 两份 `environment-*.yml` 顶部加醒目警告，说明必须从仓库根执行及失败报错特征。
+- `docs/dev/打包环境-conda.md` 增加“最常见的错误：不在仓库根目录执行”专节，给出 `Get-Location`/`Test-Path pyproject.toml`、删除半成品环境、脚本一键创建步骤。
+- 版本：4.3.2+fork.45 → 4.3.2+fork.46。
+
+### 3. 涉及模块与文件
+
+- 新增：`scripts/setup_conda_env.ps1`
+- 修改：`environment-cpu.yml`、`environment-gpu.yml`、`docs/dev/打包环境-conda.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`anylabeling/app_info.py`
+- 未修改运行时代码。
+
+### 4. 行为、接口与兼容性影响
+
+- 在仓库根目录执行：
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File scripts\setup_conda_env.ps1 -Device gpu
+  ```
+  会自动切到仓库根，避免 `-e .` 指向错误目录；
+- 已存在或半成品环境用 `-Recreate` 重建；
+- 环境文件直接执行的行为不变，仍要求当前目录是仓库根；
+- 版本：fork.45 → fork.46。
+
+### 5. 实际验证内容
+
+- `scripts/setup_conda_env.ps1 -Device gpu -DryRun` 通过，输出正确仓库根、环境名、YAML 路径和最终命令；
+- 两份 YAML 继续用 PyYAML 解析通过；
+- 未在干净机器实际创建环境，未实际打包；
+- 运行时代码未变，沿用 fork.44 回归结果（551 passed / 10 failed / 156 subtests）。
+
+### 6. 已知限制与后续事项
+
+- 脚本是 Windows PowerShell 5.1+；Linux/macOS 仍需在仓库根手动执行；
+- 脚本不安装 NVIDIA 驱动、CUDA/cuDNN、Inno Setup；
+- 若 conda 不在 PATH，脚本会提示先打开 Anaconda Prompt；
+- `-Recreate` 会删除同名环境，执行前需确认环境名。
+
+---
+
 ## 4.3.2+fork.45 — 2026-11-23
 
 ### 1. 背景与原因
