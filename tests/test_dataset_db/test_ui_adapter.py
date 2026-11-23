@@ -137,6 +137,7 @@ def test_simple_database_filters_parses_tags():
         None,
         False,
         None,
+        None,
     )
     assert FileSession._simple_database_filters("tags::a\\,b") == (
         [],
@@ -144,15 +145,19 @@ def test_simple_database_filters_parses_tags():
         None,
         False,
         None,
+        None,
     )
     assert FileSession._simple_database_filters(
         "tags::a,tags::b"
-    ) == ([], ["a", "b"], None, False, None)
+    ) == ([], ["a", "b"], None, False, None, None)
     # Boolean forms deliberately fall back to the full evaluator.
     assert FileSession._simple_database_filters("tags::a|b") is None
     assert FileSession._simple_database_filters(
         "tags::a,split::train"
-    ) == ([], ["a"], "train", False, None)
+    ) == ([], ["a"], "train", False, None, None)
+    assert FileSession._simple_database_filters(
+        "editor::张三"
+    ) == ([], [], None, False, None, "张三")
 
 
 def test_open_dataset_for_folder_and_file_rows(dataset_tmp):

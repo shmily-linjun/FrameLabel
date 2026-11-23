@@ -70,6 +70,31 @@ class TestFileSearch(unittest.TestCase):
         self.assertEqual(pattern.mode, "normal")
         self.assertEqual(pattern.pattern, "#0")
 
+    def test_editor_search_matches_attribution(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            first = str(Path(temp_dir) / "a.jpg")
+            second = str(Path(temp_dir) / "b.jpg")
+            self._write_label_data(
+                Path(temp_dir) / "a.json",
+                {"shapes": [], "author": "张三"},
+            )
+            self._write_label_data(
+                Path(temp_dir) / "b.json",
+                {"shapes": [], "author": "李四"},
+            )
+            self.assertEqual(
+                filter_image_files(
+                    [first, second], "editor::张三"
+                ),
+                [first],
+            )
+            self.assertEqual(
+                filter_image_files(
+                    [first, second], "author::李四"
+                ),
+                [second],
+            )
+
     def test_tags_search_matches_case_insensitively(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             first = str(Path(temp_dir) / "a.jpg")

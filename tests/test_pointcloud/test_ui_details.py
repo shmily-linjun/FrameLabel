@@ -400,7 +400,7 @@ def test_workspace_prepares_gl_before_native_show(detection, app):
     assert detection.viewport._error is None
 
 
-def test_file_and_folder_choosers_use_qt_without_shell_icon_lookup(window):
+def test_file_and_folder_choosers_use_native_dialogs(window):
     for method, callback, result in (
         ("getOpenFileName", window.open_file, ("", "")),
         ("getExistingDirectory", window.open_directory, ""),
@@ -409,8 +409,9 @@ def test_file_and_folder_choosers_use_qt_without_shell_icon_lookup(window):
             QtWidgets.QFileDialog, method, return_value=result
         ) as dialog:
             callback()
-        options = dialog.call_args.kwargs["options"]
-        assert options & QtWidgets.QFileDialog.Option.DontUseNativeDialog
-        assert (
-            options & QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons
+        options = dialog.call_args.kwargs.get(
+            "options", QtWidgets.QFileDialog.Option(0)
+        )
+        assert not (
+            options & QtWidgets.QFileDialog.Option.DontUseNativeDialog
         )

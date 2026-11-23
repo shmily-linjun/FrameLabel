@@ -191,6 +191,7 @@ def test_image_summaries_sql_filters(dataset_tmp):
                 shapes=[rectangle("bolt", "s1")],
                 tags=["Defect", "blur"],
             ),
+            editor="张三",
         )
         second = repository.add_image("b.png", split="val")
         repository.save_annotation(
@@ -198,6 +199,7 @@ def test_image_summaries_sql_filters(dataset_tmp):
             ImageAnnotation(
                 shapes=[polygon("nut", "s2")], tags=["blur"]
             ),
+            editor="李四",
         )
         repository.add_image("c.png", split="none")
 
@@ -221,6 +223,12 @@ def test_image_summaries_sql_filters(dataset_tmp):
         )] == ["c.png"]
         assert [row["rel_path"] for row in repository.image_summaries(
             filename="b.png"
+        )] == ["b.png"]
+        assert [row["rel_path"] for row in repository.image_summaries(
+            editor="张三"
+        )] == ["a.png"]
+        assert [row["rel_path"] for row in repository.image_summaries(
+            editor="李四"
         )] == ["b.png"]
         assert repository.image_summaries(
             labels=["bolt"], split="val"

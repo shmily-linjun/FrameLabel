@@ -1223,8 +1223,6 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             self.tr("Open point cloud"),
             self._recent(),
             self.tr("Point clouds (*.bin *.ply *.pcd)"),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if path:
             path = Path(path).resolve()
@@ -1237,8 +1235,6 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             self,
             self.tr("Open point cloud directory"),
             self._recent(),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if not directory:
             return
@@ -1825,8 +1821,6 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             self.tr("Choose labels for current frame"),
             str(self.document.frame.label_path),
             self.tr("Point labels (*.label)"),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if not path:
             return
@@ -1850,8 +1844,6 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             self,
             self.tr("Choose label directory"),
             str(self.document.frame.label_path.parent),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if not directory:
             return
@@ -1874,8 +1866,6 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             self,
             self.tr("Change output directory"),
             str(self.label_directory or self.document.frame.label_path.parent),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if not directory:
             self._schedule_autosave()
@@ -2027,8 +2017,6 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             self.tr("Save complete frame labels"),
             str(self.document.frame.label_path),
             self.tr("Point labels (*.label)"),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if not path:
             self._schedule_autosave()
@@ -2073,8 +2061,6 @@ class PointCloudDialog(QtWidgets.QMainWindow):
                 self.tr("Save class definitions"),
                 str(path or Path(self._recent()) / "pointcloud_classes.json"),
                 self.tr("Class definitions (*.json)"),
-                options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-                | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
             )
             if not selected:
                 return False
@@ -2126,8 +2112,6 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             self.tr("Load class definitions"),
             self._recent(),
             self.tr("Class definitions (*.json)"),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if not path:
             return

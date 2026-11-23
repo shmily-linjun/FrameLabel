@@ -107,10 +107,6 @@ class PointCloudExportDialog(QtWidgets.QDialog):
             self.tr("Export 3D objects"),
             self.path_input.text(),
             self.tr("ZIP archives (*.zip)"),
-            options=(
-                QtWidgets.QFileDialog.Option.DontUseNativeDialog
-                | QtWidgets.QFileDialog.Option.DontConfirmOverwrite
-            ),
         )
         if path:
             self.path_input.setText(path)

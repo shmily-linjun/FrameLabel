@@ -3139,6 +3139,22 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Move out of Dataset</source>
+        <translation>移出数据集</translation>
+    </message>
+    <message>
+        <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
+        <translation>%d 个文件将移出数据集并从当前列表移除，是否继续？</translation>
+    </message>
+    <message>
+        <source>(%d moved out of the dataset)</source>
+        <translation>（其中 %d 个已移出数据集）</translation>
+    </message>
+    <message>
+        <source>Editor: %s</source>
+        <translation>编辑人：%s</translation>
+    </message>
+    <message>
         <source>Move to Folder…</source>
         <translation>移动到文件夹…</translation>
     </message>
@@ -3329,8 +3345,9 @@ Continue?</source>
 - Text: plain text matches the file name
 - Index: #N (e.g., #1, #10)
 - Regex: &lt;pattern&gt; (e.g., &lt;\.png$&gt;)
-- Attributes: label::xxx, split::train, shape::1, type::xxx,
-  gid::0, difficult::1, score::[0,0.5], description::1,
+- Attributes: label::xxx, tags::xxx, editor::张三, split::train,
+  shape::1, type::xxx, gid::0, difficult::1, score::[0,0.5],
+  description::1,
 - split values: none/train/val/test (also 未划分/训练/验证/测试)
 - Several values: label::cat|dog (or), label::cat,dog (and)
 - Combine conditions: label::cat,split::train
@@ -3341,7 +3358,7 @@ Continue?</source>
 - 文本：纯文本匹配文件名
 - 序号：#N（如 #1、#10）
 - 正则：&lt;pattern&gt;（如 &lt;\.png$&gt;）
-- 属性：label::xxx、split::train、shape::1、type::xxx、
+- 属性：label::xxx、tags::xxx、editor::张三、split::train、shape::1、type::xxx、
   gid::0、difficult::1、score::[0,0.5]、description::1、
 - split 取值：none/train/val/test（也支持 未划分/训练/验证/测试）
 - 多值：label::cat|dog（或）、label::cat,dog（且）

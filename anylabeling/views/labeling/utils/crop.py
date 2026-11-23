@@ -264,7 +264,6 @@ def save_crop(self):
             self,
             self.tr("Select Save Directory"),
             path_edit.text(),
-            QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             path_edit.setText(path)

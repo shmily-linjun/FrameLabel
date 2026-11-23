@@ -481,8 +481,7 @@ def upload_mmgd_annotation(self, LABEL_OPACITY):
             self.tr("Select Upload Folder"),
             None,
             QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks
-            | QtWidgets.QFileDialog.Option.DontUseNativeDialog,
+            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
         )
         if path:
             path_edit.setText(path)
@@ -834,8 +833,7 @@ def upload_mask_annotation(self, LABEL_OPACITY):
             self.tr("Select Upload Folder"),
             path_edit.text(),
             QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks
-            | QtWidgets.QFileDialog.Option.DontUseNativeDialog,
+            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
         )
         if path:
             path_edit.setText(path)
@@ -1005,8 +1003,7 @@ def upload_dota_annotation(self):
             self.tr("Select Upload Folder"),
             path_edit.text(),
             QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks
-            | QtWidgets.QFileDialog.Option.DontUseNativeDialog,
+            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
         )
         if path:
             path_edit.setText(path)
@@ -1243,8 +1240,7 @@ def upload_voc_annotation(self, mode):
             self.tr("Select Upload Folder"),
             path_edit.text(),
             QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks
-            | QtWidgets.QFileDialog.Option.DontUseNativeDialog,
+            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
         )
         if path:
             path_edit.setText(path)
@@ -1440,8 +1436,7 @@ def upload_yolo_annotation(self, mode, LABEL_OPACITY):
             self.tr("Select Upload Folder"),
             path_edit.text(),
             QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks
-            | QtWidgets.QFileDialog.Option.DontUseNativeDialog,
+            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
         )
         if path:
             path_edit.setText(path)

@@ -3140,6 +3140,22 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Move out of Dataset</source>
+        <translation>데이터세트에서 이동</translation>
+    </message>
+    <message>
+        <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
+        <translation>%d개 파일이 데이터세트에서 제거되고 현재 목록에서 삭제됩니다. 계속할까요?</translation>
+    </message>
+    <message>
+        <source>(%d moved out of the dataset)</source>
+        <translation>(%d개가 데이터세트에서 이동됨)</translation>
+    </message>
+    <message>
+        <source>Editor: %s</source>
+        <translation>편집자: %s</translation>
+    </message>
+    <message>
         <source>Move to Folder…</source>
         <translation>폴더로 이동…</translation>
     </message>
@@ -3330,8 +3346,9 @@ Continue?</source>
 - Text: plain text matches the file name
 - Index: #N (e.g., #1, #10)
 - Regex: &lt;pattern&gt; (e.g., &lt;\.png$&gt;)
-- Attributes: label::xxx, split::train, shape::1, type::xxx,
-  gid::0, difficult::1, score::[0,0.5], description::1,
+- Attributes: label::xxx, tags::xxx, editor::张三, split::train,
+  shape::1, type::xxx, gid::0, difficult::1, score::[0,0.5],
+  description::1,
 - split values: none/train/val/test (also 未划分/训练/验证/测试)
 - Several values: label::cat|dog (or), label::cat,dog (and)
 - Combine conditions: label::cat,split::train

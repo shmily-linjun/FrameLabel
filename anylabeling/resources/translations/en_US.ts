@@ -3140,6 +3140,22 @@ Continue?</translation>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Move out of Dataset</source>
+        <translation>Move out of Dataset</translation>
+    </message>
+    <message>
+        <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
+        <translation>%d file(s) will leave the dataset and be removed from the current list. Continue?</translation>
+    </message>
+    <message>
+        <source>(%d moved out of the dataset)</source>
+        <translation>(%d moved out of the dataset)</translation>
+    </message>
+    <message>
+        <source>Editor: %s</source>
+        <translation>Editor: %s</translation>
+    </message>
+    <message>
         <source>Move to Folder…</source>
         <translation>Move to Folder…</translation>
     </message>
@@ -3330,8 +3346,9 @@ Continue?</translation>
 - Text: plain text matches the file name
 - Index: #N (e.g., #1, #10)
 - Regex: &lt;pattern&gt; (e.g., &lt;\.png$&gt;)
-- Attributes: label::xxx, split::train, shape::1, type::xxx,
-  gid::0, difficult::1, score::[0,0.5], description::1,
+- Attributes: label::xxx, tags::xxx, editor::张三, split::train,
+  shape::1, type::xxx, gid::0, difficult::1, score::[0,0.5],
+  description::1,
 - split values: none/train/val/test (also 未划分/训练/验证/测试)
 - Several values: label::cat|dog (or), label::cat,dog (and)
 - Combine conditions: label::cat,split::train
@@ -3342,8 +3359,9 @@ Continue?</translation>
 - Text: plain text matches the file name
 - Index: #N (e.g., #1, #10)
 - Regex: &lt;pattern&gt; (e.g., &lt;\.png$&gt;)
-- Attributes: label::xxx, split::train, shape::1, type::xxx,
-  gid::0, difficult::1, score::[0,0.5], description::1,
+- Attributes: label::xxx, tags::xxx, editor::张三, split::train,
+  shape::1, type::xxx, gid::0, difficult::1, score::[0,0.5],
+  description::1,
 - split values: none/train/val/test (also 未划分/训练/验证/测试)
 - Several values: label::cat|dog (or), label::cat,dog (and)
 - Combine conditions: label::cat,split::train

@@ -35,7 +35,7 @@ class ScrollAreaPreview(QtWidgets.QScrollArea):
 class FileDialogPreview(QtWidgets.QFileDialog):
     def __init__(self, *args, **kwargs):
         super(FileDialogPreview, self).__init__(*args, **kwargs)
-        self.setOption(self.Option.DontUseNativeDialog, True)
+        self.setOption(self.Option.DontUseNativeDialog, False)
 
         self.label_preview = ScrollAreaPreview(self)
         self.label_preview.setFixedSize(300, 300)

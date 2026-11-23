@@ -217,13 +217,15 @@ class DatasetRepository:
         split: str | None = None,
         objectless: bool = False,
         filename: str | None = None,
+        editor: str | None = None,
     ) -> list[dict[str, Any]]:
         """Rows for the file table: image fields + object count + tags.
 
-        ``labels``/``tags``/``split``/``objectless``/``filename`` are a fast
-        SQL path for the common search terms (``label::``, ``tags::``,
-        ``split::``, ``shape::0``, plain filename text); complex boolean
-        expressions still fall back to the in-Python query evaluator.
+        ``labels``/``tags``/``editor``/``split``/``objectless``/``filename``
+        are a fast SQL path for the common search terms (``label::``,
+        ``tags::``, ``editor::``, ``split::``, ``shape::0``, plain filename
+        text); complex boolean expressions still fall back to the in-Python
+        query evaluator.
         """
 
         where = ["f.dataset_id = ?", "f.is_deleted = 0"]
@@ -239,6 +241,9 @@ class DatasetRepository:
         if filename:
             where.append("instr(f.file_name, ?) > 0")
             params.append(filename)
+        if editor:
+            where.append("f.editor = ? COLLATE NOCASE")
+            params.append(editor)
         for label in labels or ():
             where.append(
                 "EXISTS (SELECT 1 FROM annotation_object o "

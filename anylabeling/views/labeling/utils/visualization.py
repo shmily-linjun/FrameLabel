@@ -134,7 +134,6 @@ def _show_visualization_dialog(self, export_type):
                 self.tr("Save Visualization Video"),
                 path_edit.text(),
                 self.tr("MP4 Video (*.mp4);;All Files (*)"),
-                options=QFileDialog.Option.DontUseNativeDialog,
             )
             if path:
                 path_edit.setText(_ensure_extension(path, ".mp4"))
@@ -288,7 +287,6 @@ def _save_visualization_image(self, options):
             self.tr("Save Visualization Image"),
             default_path,
             self.tr("PNG Image (*.png);;All Files (*)"),
-            options=QFileDialog.Option.DontUseNativeDialog,
         )
         save_path = _ensure_extension(save_path, ".png") if save_path else ""
     else:
@@ -297,7 +295,6 @@ def _save_visualization_image(self, options):
             self.tr("Save Visualization Images"),
             default_path,
             self.tr("Zip Archive (*.zip);;All Files (*)"),
-            options=QFileDialog.Option.DontUseNativeDialog,
         )
         save_path = _ensure_extension(save_path, ".zip") if save_path else ""
 

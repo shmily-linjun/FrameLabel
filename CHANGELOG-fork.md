@@ -6,6 +6,75 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.42 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈 4 项：
+
+1. “移动到文件夹”用了 Qt 自绘的 “Look in” 对话框，不能在顶部直接输入路径；希望全部文件/文件夹选择都用 Windows 原生对话框；
+2. 该操作用的是文件选择窗口，应改为文件夹选择；
+3. 只允许移动到数据集根目录内不合理；移出数据集可后悔/重新导入，风险低，应允许；
+4. 已记录每张图的 `editor`/时间，但无法按“张三/李四”筛选或查看。
+
+### 2. 主要实现与关键细节
+
+- **全部文件/文件夹选择改用原生对话框**：
+  - 移除标注、导出、上传、点云、PPOCR、可视化等模块所有显式
+    `QtWidgets.QFileDialog.Option.DontUseNativeDialog`；
+  - `file_dialog_preview.py` 把该选项显式设为 `False`（原生），自定义预览不再拦截；
+  - `file_session.py` 保存对话框保留 `DontUseNativeDialog, False`，同样是原生；
+  - 原生窗口支持顶部地址栏输入/粘贴路径。
+- **移动改为文件夹选择**：
+  - `getExistingDirectory(..., options=ShowDirsOnly)`，只列文件夹，不再显示文件；
+  - 目标可用任意目录。
+- **允许移出数据集**：
+  - 目标在数据集根内：移动图片+同名 JSON，`DatasetRepository.move_image()` 更新 `rel_path`/`file_name`；
+  - 目标在根外：先弹“移出数据集”确认，移动文件后 `delete_image()` 软删 DB 行并从文件表移除；文件/JSON 保留在新目录，可重新导入；
+  - 失败回滚文件并保留原行；多选按行倒序处理，避免删行导致索引错位。
+- **编辑人筛选/查看（不新增列）**：
+  - 搜索语法新增 `editor::张三`（也支持 `author::张三`，精确、不区分大小写）；
+  - DB 走 `image_summaries(editor=...)` 的 `f.editor` 过滤；JSON 走 `_LabelData.editor`；
+  - 文件表不新增列；文件名 tooltip 增加“编辑人：%s”；
+  - `FileMeta` 增加 `editor` 字段，DB 行从 `image_summaries` 的 `editor` 读取，JSON 从 `author`/`editor` 读取。
+- 翻译：新增“移出数据集/确认/编辑人”等 4 条；更新搜索语法 tooltip；`.qm` 各 2319 条。
+- 版本：4.3.2+fork.41 → 4.3.2+fork.42。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/file_list/controller.py`、`file_session.py`、`right_sidebar.py`、`widgets/workspace.py`、`widgets/label_manager.py`、`utils/export.py`、`utils/upload.py`、`utils/crop.py`、`utils/visualization.py`、`widgets/file_dialog_preview.py`、`widgets/ppocr_dialog.py`、`widgets/pointcloud_dialog.py`、`pointcloud/*`、`services/dataset/repository.py`、`utils/file_search.py`、`utils/file_meta.py`、`resources/translations/*`、`app_info.py`
+- 测试：`tests/test_labeling/test_file_table.py`（移出数据集）、`tests/test_dataset_db/test_repository.py`（editor 过滤）、`tests/test_dataset_db/test_ui_adapter.py`（6 元过滤器）、`tests/test_utils/test_file_search.py`（editor 搜索）、`tests/test_pointcloud/test_ui_details.py`（原生对话框断言）
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.19）、`docs/dev/数据库设计-讨论稿.md`、`docs/开始.md`、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：文件/文件夹选择为 Windows 原生窗口，可直接输入路径；移动使用文件夹选择；可移出数据集（确认后从列表/DB 活跃记录移除）；搜索框可用 `editor::张三`，文件名悬停显示编辑人。
+- **接口**：新增 `image_summaries(editor=...)`；`_simple_database_filters()` 返回 6 元组（追加 editor）；`FileMeta.editor`；`parse_category_names` 等不受影响。
+- **数据**：移出数据集是软删除，文件保留在新目录；可重新导入恢复。无 schema 变更。
+- **版本**：fork.41 → fork.42。
+
+### 5. 实际验证内容
+
+- `test_move_to_folder_updates_db_and_file_table`：根内移动，图片+JSON+DB+文件表同步。
+- `test_move_outside_dataset_removes_row`：移出根外，文件保留、文件表行移除、DB 活跃行消失。
+- `test_image_summaries_sql_filters`：`editor="张三"` / `"李四"` 过滤；`test_editor_search_matches_attribution`：`editor::张三` / `author::李四`。
+- `test_simple_database_filters_parses_tags`：6 元组含 editor。
+- `test_file_and_folder_choosers_use_native_dialogs`：点云打开文件/文件夹不再带 `DontUseNativeDialog`。
+- 最终回归：`test_labeling` **255 passed / 10 failed / 51 subtests**；其余（不含 pointcloud）**291 passed / 1 failed / 105 subtests**；合计 **546 passed / 11 failed / 156 subtests**。10 条与 HEAD 基线逐条相同，第 11 条为已知 `test_brightness_contrast_updates_are_throttled` 时序抖动。
+- `tests/test_pointcloud` 整组在本沙箱运行到约 54% 时进程异常退出（`0xC0000409`），单条原生对话框用例通过；该组未纳入最终统计。
+- 四语言 `.qm` 各 **2319 条 / 0 unfinished**；`resources.py` 无 diff。
+- **未执行**：真实桌面所有原生对话框逐项点选、根外移动后重新导入恢复、编辑人筛选在真实 DB 的 UI 观感、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 原生 Windows 对话框不继承应用深色主题；`file_dialog_preview.py` 的自定义预览在原生模式下不可见。
+- 移出数据集为软删除，回收站仍保留 DB 行；重新导入会按新路径重建记录，不自动恢复原 `rel_path`。
+- 编辑人筛选是精确匹配；同一人有多种写法（`张三`/`zhangsan`）时需分别搜索；文件表只在 tooltip 显示，不新增列。
+- 多选移出时同名冲突逐项失败，不自动改名。
+- 点云整组测试崩溃与本次改动无直接证据，但未完成基线对比；若后续复现需单独排障。
+
+---
+
 ## 4.3.2+fork.41 — 2026-11-23
 
 ### 1. 背景与原因

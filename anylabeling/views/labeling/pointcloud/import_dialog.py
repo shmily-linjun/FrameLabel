@@ -69,7 +69,6 @@ class PointCloudImportDialog(PointCloudExportDialog):
                 "import_directory", str(self.frames[0].path.parent)
             ),
             self.tr("ZIP archives (*.zip)"),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             self.path_input.setText(path)

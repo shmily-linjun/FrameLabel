@@ -242,6 +242,11 @@ class FileListController:
         )
         name_item.setToolTip(
             f"{file}\n{self.host._annotation_checked_text(meta.checked)}"
+            + (
+                "\n" + self.host.tr("Editor: %s") % meta.editor
+                if meta.editor
+                else ""
+            )
         )
 
         shapes_item = FileTableItem(
@@ -1046,7 +1051,7 @@ class FileListController:
             host,
             host.tr("Move to Folder"),
             osp.dirname(paths[0]),
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog,
+            QtWidgets.QFileDialog.Option.ShowDirsOnly,
         )
         if not destination:
             return
@@ -1056,41 +1061,72 @@ class FileListController:
         )
         if root:
             root = osp.abspath(root)
+
+        def inside_dataset(path):
+            if not root:
+                return True
             try:
-                inside = (
-                    osp.commonpath([root, destination]) == root
-                )
+                return osp.commonpath([root, osp.abspath(path)]) == root
             except ValueError:
-                inside = False
-            if not inside:
-                host.error_message(
-                    host.tr("Move to Folder"),
-                    host.tr(
-                        "Choose a folder inside the current dataset "
-                        "directory."
-                    ),
+                return False
+
+        keep_flags = {
+            path: inside_dataset(destination) for path in paths
+        }
+        leaving = [path for path, keep in keep_flags.items() if not keep]
+        if leaving:
+            answer = QtWidgets.QMessageBox.question(
+                host,
+                host.tr("Move out of Dataset"),
+                host.tr(
+                    "%d file(s) will leave the dataset and be removed "
+                    "from the current list. Continue?"
                 )
+                % len(leaving),
+                QtWidgets.QMessageBox.StandardButton.Yes
+                | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.No,
+            )
+            if answer != QtWidgets.QMessageBox.StandardButton.Yes:
                 return
 
         moved = 0
+        left = 0
         failed = []
-        for row, path in zip(targets, paths):
+        current_removed = str(host.filename) in leaving
+        for row, path in reversed(list(zip(targets, paths))):
             try:
-                self._move_one_file(row, path, destination)
+                keep = keep_flags[path]
+                self._move_one_file(
+                    row, path, destination, keep_in_dataset=keep
+                )
                 moved += 1
+                if not keep:
+                    left += 1
             except Exception as error:  # noqa: BLE001 - per-file report
                 logger.error("Failed to move %s: %s", path, error)
                 failed.append(osp.basename(path))
+        if current_removed and self.table.rowCount() > 0:
+            host.filename = None
+            self.table.setCurrentCell(0, FILE_COL_NAME)
+            first_path = self.path_at(0)
+            if first_path:
+                host.load_file(first_path)
         if failed:
             host.status(
                 host.tr("Failed to move: %s") % ", ".join(failed[:3])
             )
         elif moved:
-            host.status(
-                host.tr("Moved %d files") % moved
-            )
+            message = host.tr("Moved %d files") % moved
+            if left:
+                message += " " + host.tr(
+                    "(%d moved out of the dataset)"
+                ) % left
+            host.status(message)
 
-    def _move_one_file(self, row, path, destination):
+    def _move_one_file(
+        self, row, path, destination, keep_in_dataset=True
+    ):
         host = self.host
         new_path = osp.join(destination, osp.basename(path))
         if osp.normcase(osp.abspath(path)) == osp.normcase(
@@ -1119,19 +1155,25 @@ class FileListController:
                 old_rel = osp.relpath(
                     path, root
                 ).replace(os.sep, "/")
-                new_rel = osp.relpath(
-                    new_path, root
-                ).replace(os.sep, "/")
                 image = repository.find_image(old_rel)
                 if image is None:
                     raise FileNotFoundError(old_rel)
-                repository.move_image(image["id"], new_rel)
+                if keep_in_dataset:
+                    new_rel = osp.relpath(
+                        new_path, root
+                    ).replace(os.sep, "/")
+                    repository.move_image(image["id"], new_rel)
+                else:
+                    repository.delete_image(image["id"])
         except Exception:
             if label_moved:
                 shutil.move(new_label, old_label)
             shutil.move(new_path, path)
             raise
-        self._update_row_path(row, path, new_path)
+        if keep_in_dataset:
+            self._update_row_path(row, path, new_path)
+        else:
+            self.remove_rows([row], confirm=False, advance=False)
 
     def _update_row_path(self, row, old_path, new_path):
         host = self.host

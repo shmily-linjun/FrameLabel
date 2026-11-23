@@ -374,7 +374,6 @@ def export_yolo_annotation(self, mode):
                 "LabelingWidget", "Select Export Directory"
             ),
             path_edit.text(),
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             path_edit.setText(path)
@@ -651,7 +650,6 @@ def export_voc_annotation(self, mode):
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             path_edit.setText(path)
@@ -874,7 +872,6 @@ def export_coco_annotation(self, mode):
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             path_edit.setText(path)
@@ -1035,7 +1032,6 @@ def export_dota_annotation(self):
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             path_edit.setText(path)
@@ -1256,7 +1252,6 @@ def export_mask_annotation(self):
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             path_edit.setText(path)
@@ -1441,7 +1436,6 @@ def export_mot_annotation(self, mode):
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             path_edit.setText(path)
@@ -1598,7 +1592,6 @@ def export_pporc_annotation(self, mode):
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             path_edit.setText(path)
@@ -1788,7 +1781,6 @@ def export_vlm_r1_ovd_annotation(self):
             self.tr("Select Export File"),
             path_edit.text(),
             "JSONL Files (*.jsonl)",
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             if not path.endswith(".jsonl"):

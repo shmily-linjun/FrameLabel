@@ -100,6 +100,8 @@ _SEARCH_FIELDS = frozenset(
     (
         "label",
         "tags",
+        "editor",
+        "author",
         "split",
         "shape",
         "type",
@@ -140,7 +142,7 @@ class _LabelData:
     :class:`SearchQuery` can use a single code path for missing files.
     """
 
-    __slots__ = ("data", "exists", "shapes", "split", "tags")
+    __slots__ = ("data", "exists", "shapes", "split", "tags", "editor")
 
     def __init__(self, data=None):
         self.data = data if isinstance(data, dict) else None
@@ -149,6 +151,7 @@ class _LabelData:
             self.shapes = []
             self.split = SPLIT_NONE
             self.tags = []
+            self.editor = ""
             return
 
         shapes = self.data.get("shapes")
@@ -160,6 +163,8 @@ class _LabelData:
             if isinstance(tags, list)
             else []
         )
+        editor = self.data.get("author") or self.data.get("editor") or ""
+        self.editor = str(editor)
 
 
 def _normalize_stored_split(value):
@@ -340,6 +345,8 @@ class _AttributeNode(_Node):
             return _matches_label(label_data, spec)
         if field == "tags":
             return _matches_tags(label_data, spec)
+        if field in ("editor", "author"):
+            return _matches_editor(label_data, spec)
         if field == "type":
             return _matches_shape_type(label_data, spec)
         if field == "gid":
@@ -374,6 +381,12 @@ def _matches_tags(label_data, spec):
         return False
     target = spec.lower()
     return any(tag.lower() == target for tag in label_data.tags)
+
+
+def _matches_editor(label_data, spec):
+    if not isinstance(spec, str) or not spec:
+        return False
+    return label_data.editor.lower() == spec.lower()
 
 
 def _matches_shape_type(label_data, spec):
@@ -454,7 +467,7 @@ def _make_attribute_node(field, raw_value):
     if field not in _SEARCH_FIELDS:
         raise SearchQueryError(f"unknown search field: {field!r}")
 
-    if field in ("label", "tags", "type"):
+    if field in ("label", "tags", "type", "editor", "author"):
         return _AttributeNode(field, raw_value)
     if field == "split":
         return _AttributeNode(field, _parse_split_query(raw_value))

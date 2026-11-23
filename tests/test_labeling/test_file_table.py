@@ -1198,6 +1198,36 @@ def test_move_to_folder_updates_db_and_file_table(
     assert repository.find_image(first.name) is None
 
 
+def test_move_outside_dataset_removes_row(
+    window, tmp_path, monkeypatch
+):
+    widget = window.labeling_widget.view
+    images, first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    monkeypatch.setattr(
+        QtWidgets.QFileDialog,
+        "getExistingDirectory",
+        staticmethod(lambda *args, **kwargs: str(outside)),
+    )
+    monkeypatch.setattr(widget, "_ensure_operator", lambda: True)
+    monkeypatch.setattr(
+        QtWidgets.QMessageBox,
+        "question",
+        staticmethod(
+            lambda *args, **kwargs: QtWidgets.QMessageBox.StandardButton.Yes
+        ),
+    )
+
+    widget.files.move_rows_to_folder([widget.fn_to_index[str(first)]])
+
+    assert (outside / first.name).is_file()
+    assert not first.exists()
+    assert str(first) not in widget.fn_to_index
+    assert widget.dataset_repository.find_image(first.name) is None
+
+
 def test_category_import_button_is_shown_on_classes_tab(window):
     widget = window.labeling_widget.view
     button = widget.category_import_button

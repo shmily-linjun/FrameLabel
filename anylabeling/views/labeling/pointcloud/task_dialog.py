@@ -371,8 +371,6 @@ class CreateTaskDialog(QtWidgets.QDialog):
             self.tr("Save labels"),
             str(Path(self.workspace._recent()) / "pointcloud_classes.json"),
             self.tr("Class definitions (*.json)"),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if not path:
             return
@@ -397,8 +395,6 @@ class CreateTaskDialog(QtWidgets.QDialog):
             self.tr("Load classes"),
             self.workspace._recent(),
             self.tr("Class definitions (*.json)"),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if not path:
             return
@@ -442,8 +438,6 @@ class CreateTaskDialog(QtWidgets.QDialog):
             field.text()
             or self.directory_input.text()
             or self.workspace._recent(),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog
-            | QtWidgets.QFileDialog.Option.DontUseCustomDirectoryIcons,
         )
         if directory:
             field.setText(directory)

@@ -352,9 +352,9 @@ class FileSession:
         """Return SQL-friendly filters or ``None``.
 
         Only flat forms are optimized: ``label::x`` / ``tags::x`` /
-        ``split::train`` / ``shape::0`` and plain filename text, joined by
-        commas.  Boolean groups, attributes and regex keep using the full
-        in-Python evaluator.
+        ``editor::x`` / ``split::train`` / ``shape::0`` and plain filename
+        text, joined by commas.  Boolean groups, attributes and regex keep
+        using the full in-Python evaluator.
         """
 
         text = str(pattern or "").strip()
@@ -383,6 +383,7 @@ class FileSession:
         split = None
         objectless = False
         filename = None
+        editor = None
         for part in parts:
             if "::" not in part:
                 if not part or filename is not None:
@@ -398,6 +399,8 @@ class FileSession:
                 labels.append(_unescape_filter_value(value))
             elif field == "tags" and value:
                 tags.append(_unescape_filter_value(value))
+            elif field in ("editor", "author") and value:
+                editor = _unescape_filter_value(value)
             elif field == "split" and value:
                 normalized = value.lower()
                 if normalized == "unassigned":
@@ -409,7 +412,7 @@ class FileSession:
                 objectless = True
             else:
                 return None
-        return labels, tags, split, objectless, filename
+        return labels, tags, split, objectless, filename, editor
 
     def _load_database_folder(
         self, directory, repository, load=True, pattern=None, select_first=True
@@ -430,13 +433,14 @@ class FileSession:
             elif not query.matches_all:
                 filters = self._simple_database_filters(pattern)
                 if filters is not None:
-                    labels, tags, split, objectless, filename = filters
+                    labels, tags, split, objectless, filename, editor = filters
                     rows = repository.image_summaries(
                         labels=labels,
                         tags=tags,
                         split=split,
                         objectless=objectless,
                         filename=filename,
+                        editor=editor,
                     )
                 else:
                     filtered = []
@@ -463,6 +467,7 @@ class FileSession:
                 row["split"],
                 self._import_timestamp(row["imported_at"]),
                 tuple(row["tags"]),
+                str(row.get("editor") or ""),
             )
             self.host.files.append_db_row(file_path, meta)
         self.host.file_list_widget.fill_name_column()

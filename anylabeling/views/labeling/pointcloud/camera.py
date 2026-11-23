@@ -318,7 +318,6 @@ class _CameraSourceFields(QtWidgets.QWidget):
             self,
             self.directory_input.placeholderText(),
             self.directory_input.text(),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if directory:
             self.directory_input.setText(directory)
@@ -331,7 +330,6 @@ class _CameraSourceFields(QtWidgets.QWidget):
             QtCore.QCoreApplication.translate(
                 "CameraConfigurationDialog", "JSON files (*.json)"
             ),
-            options=QtWidgets.QFileDialog.Option.DontUseNativeDialog,
         )
         if path:
             self.calibration_input.setText(path)

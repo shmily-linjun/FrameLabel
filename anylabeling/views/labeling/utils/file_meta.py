@@ -61,6 +61,7 @@ class FileMeta:
     split: str
     import_time: float
     tags: tuple = ()
+    editor: str = ""
 
 
 def read_file_meta(image_path, label_file=None):
@@ -89,7 +90,10 @@ def read_file_meta(image_path, label_file=None):
     checked = _normalize_checked(data.get("checked", False))
     split = _normalize_split(data.get("split", SPLIT_NONE))
     tags = tuple(normalize_image_tags(data.get("tags")))
-    return FileMeta(True, checked, shape_count, split, import_time, tags)
+    editor = data.get("author") or data.get("editor") or ""
+    return FileMeta(
+        True, checked, shape_count, split, import_time, tags, str(editor)
+    )
 
 
 def format_import_time(ts):
