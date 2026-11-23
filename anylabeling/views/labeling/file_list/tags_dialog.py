@@ -24,6 +24,7 @@ from ..utils.style import (
     get_ok_btn_style,
     get_settings_combo_style,
 )
+from ..widgets.tag_library import TagLibraryWidget
 
 
 class BatchTagsDialog(QtWidgets.QDialog):
@@ -47,7 +48,7 @@ class BatchTagsDialog(QtWidgets.QDialog):
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(16, 16, 16, 16)
-        layout.setSpacing(10)
+        layout.setSpacing(8)
 
         layout.addWidget(
             QtWidgets.QLabel(
@@ -70,11 +71,24 @@ class BatchTagsDialog(QtWidgets.QDialog):
         self.mode_combo.currentIndexChanged.connect(self._on_mode_changed)
         layout.addWidget(self.mode_combo)
 
-        self.stack = QtWidgets.QStackedWidget(self)
-        self.stack.addWidget(self._build_add_page())
-        self.stack.addWidget(self._build_replace_page())
-        self.stack.addWidget(self._build_delete_page())
-        layout.addWidget(self.stack)
+        self.add_page = self._build_add_page()
+        self.replace_page = self._build_replace_page()
+        self.delete_page = self._build_delete_page()
+        layout.addWidget(self.add_page)
+        layout.addWidget(self.replace_page)
+        layout.addWidget(self.delete_page)
+        self.replace_page.hide()
+        self.delete_page.hide()
+
+        self.library_widget = TagLibraryWidget(self._tr, self)
+        self.library_widget.set_entries(
+            [(tag, 0) for tag in self._library_tags], []
+        )
+        self.library_widget.set_editing_enabled(True)
+        self.library_widget.list_widget.setMinimumHeight(44)
+        self.library_widget.list_widget.setMaximumHeight(96)
+        self.library_widget.tag_clicked.connect(self._append_library_tag)
+        layout.addWidget(self.library_widget)
 
         self.error_label = QtWidgets.QLabel("")
         self.error_label.setWordWrap(True)
@@ -101,7 +115,7 @@ class BatchTagsDialog(QtWidgets.QDialog):
         page = QtWidgets.QWidget(self)
         layout = QtWidgets.QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(6)
+        layout.setSpacing(4)
         layout.addWidget(
             QtWidgets.QLabel(self._tr("Tags to add (comma separated)"))
         )
@@ -109,14 +123,13 @@ class BatchTagsDialog(QtWidgets.QDialog):
         self.tags_edit.setPlaceholderText(self._tr("tag1, tag2"))
         self.tags_edit.setClearButtonEnabled(True)
         layout.addWidget(self.tags_edit)
-        layout.addWidget(self._make_library_picker(self.tags_edit, page))
         return page
 
     def _build_replace_page(self):
         page = QtWidgets.QWidget(self)
         layout = QtWidgets.QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(6)
+        layout.setSpacing(4)
         layout.addWidget(QtWidgets.QLabel(self._tr("Tag to replace")))
         self.old_tag_combo = QtWidgets.QComboBox(page)
         self.old_tag_combo.setStyleSheet(get_settings_combo_style())
@@ -135,15 +148,13 @@ class BatchTagsDialog(QtWidgets.QDialog):
         self.new_tags_edit.setPlaceholderText(self._tr("tag1, tag2"))
         self.new_tags_edit.setClearButtonEnabled(True)
         layout.addWidget(self.new_tags_edit)
-        layout.addWidget(
-            self._make_library_picker(self.new_tags_edit, page)
-        )
         return page
 
     def _build_delete_page(self):
         page = QtWidgets.QWidget(self)
         layout = QtWidgets.QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(4)
         warning = QtWidgets.QLabel(
             self._tr("This removes every image tag from %d images.")
             % self._image_count
@@ -152,33 +163,29 @@ class BatchTagsDialog(QtWidgets.QDialog):
         layout.addWidget(warning)
         return page
 
-    def _make_library_picker(self, target_edit, parent):
-        combo = QtWidgets.QComboBox(parent)
-        combo.setStyleSheet(get_settings_combo_style())
-        combo.addItem(self._tr("Add from tag library…"), None)
-        for tag in self._library_tags:
-            combo.addItem(tag, tag)
-        combo.activated.connect(
-            lambda _index, widget=combo, edit=target_edit: (
-                self._append_library_tag(widget, edit)
-            )
+    def _append_library_tag(self, tag):
+        if not tag:
+            return
+        edit = (
+            self.new_tags_edit
+            if self.mode() == MODE_REPLACE
+            else self.tags_edit
         )
-        return combo
-
-    def _append_library_tag(self, combo, edit):
-        tag = combo.currentData()
-        if tag:
-            parts = [part.strip() for part in edit.text().split(",")]
-            parts = [part for part in parts if part]
-            parts.append(str(tag))
-            edit.setText(", ".join(parts))
-            edit.setFocus()
-        combo.setCurrentIndex(0)
+        parts = [part.strip() for part in edit.text().split(",")]
+        parts = [part for part in parts if part]
+        parts.append(str(tag))
+        edit.setText(", ".join(parts))
+        edit.setFocus()
 
     # -- mode / validation --------------------------------------------
     def _on_mode_changed(self, index):
-        self.stack.setCurrentIndex(index)
+        mode = self.mode()
+        self.add_page.setVisible(mode == MODE_ADD)
+        self.replace_page.setVisible(mode == MODE_REPLACE)
+        self.delete_page.setVisible(mode == MODE_DELETE_ALL)
+        self.library_widget.setVisible(mode != MODE_DELETE_ALL)
         self.error_label.clear()
+        self.adjustSize()
 
     def mode(self):
         return self.mode_combo.currentData()

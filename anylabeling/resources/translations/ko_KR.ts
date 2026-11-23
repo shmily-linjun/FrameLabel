@@ -3140,6 +3140,22 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>File Not Found</source>
+        <translation>파일을 찾을 수 없음</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; 파일이 없습니다.</translation>
+    </message>
+    <message>
+        <source>Remove it from the file list, or skip it for now?</source>
+        <translation>파일 목록에서 제거하거나 지금은 건너뛸까요?</translation>
+    </message>
+    <message>
+        <source>Skip</source>
+        <translation>건너뛰기</translation>
+    </message>
+    <message>
         <source>Batch Set Image Tags</source>
         <translation>이미지 태그 일괄 설정</translation>
     </message>

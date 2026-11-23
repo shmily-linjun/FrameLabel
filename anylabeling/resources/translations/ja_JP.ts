@@ -3139,6 +3139,22 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>File Not Found</source>
+        <translation>ファイルが見つかりません</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; が見つかりません。</translation>
+    </message>
+    <message>
+        <source>Remove it from the file list, or skip it for now?</source>
+        <translation>ファイル一覧から削除するか、今回はスキップしますか？</translation>
+    </message>
+    <message>
+        <source>Skip</source>
+        <translation>スキップ</translation>
+    </message>
+    <message>
         <source>Batch Set Image Tags</source>
         <translation>画像タグを一括設定</translation>
     </message>

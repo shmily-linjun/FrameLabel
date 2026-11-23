@@ -33,12 +33,14 @@ reports an extending press through ``selection_only_gesture()`` and
 ``LabelingWidget.file_selection_changed`` ignores that gesture.
 """
 
+import os
 import os.path as osp
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ....services.identity.attribution import format_timestamp
 from .. import utils
+from ..logger import logger
 from ..schema import IMAGE_TAGS_FIELD
 from ..utils.batch_tags import (
     MODE_DELETE_ALL,
@@ -942,7 +944,7 @@ class FileListController:
     def remove_row(self, row):
         self.remove_rows([row])
 
-    def remove_rows(self, rows):
+    def remove_rows(self, rows, confirm=True, advance=True):
         """Remove rows from the list (images and JSON files stay on disk)."""
         host = self.host
         targets = sorted(
@@ -952,27 +954,29 @@ class FileListController:
             return
         paths = [self.path_at(row) for row in targets]
         paths = [path for path in paths if path]
-        if len(paths) == 1:
-            question = host.tr(
-                'Remove "%s" from the file list?\n'
-                "The image file and its annotation file will NOT be deleted."
-            ) % osp.basename(paths[0])
-        else:
-            question = host.tr(
-                "Remove %d files from the file list?\n"
-                "The image files and their annotation files "
-                "will NOT be deleted."
-            ) % len(paths)
-        answer = QtWidgets.QMessageBox.question(
-            host,
-            host.tr("Remove File"),
-            question,
-            QtWidgets.QMessageBox.StandardButton.Yes
-            | QtWidgets.QMessageBox.StandardButton.No,
-            QtWidgets.QMessageBox.StandardButton.No,
-        )
-        if answer != QtWidgets.QMessageBox.StandardButton.Yes:
-            return
+        if confirm:
+            if len(paths) == 1:
+                question = host.tr(
+                    'Remove "%s" from the file list?\n'
+                    "The image file and its annotation file will NOT be "
+                    "deleted."
+                ) % osp.basename(paths[0])
+            else:
+                question = host.tr(
+                    "Remove %d files from the file list?\n"
+                    "The image files and their annotation files "
+                    "will NOT be deleted."
+                ) % len(paths)
+            answer = QtWidgets.QMessageBox.question(
+                host,
+                host.tr("Remove File"),
+                question,
+                QtWidgets.QMessageBox.StandardButton.Yes
+                | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.No,
+            )
+            if answer != QtWidgets.QMessageBox.StandardButton.Yes:
+                return
         all_tag_paths = getattr(host, "_tag_library_all_paths", None)
         if all_tag_paths:
             removed = {
@@ -993,7 +997,7 @@ class FileListController:
             self.table.blockSignals(False)
         self.rebuild_index()
         if was_current:
-            if self.table.count() > 0:
+            if advance and self.table.count() > 0:
                 next_row = min(first_row, self.table.count() - 1)
                 host.filename = None
                 self.table.setCurrentCell(next_row, FILE_COL_NAME)
@@ -1010,6 +1014,51 @@ class FileListController:
         invalidate_tags = getattr(host, "_invalidate_tag_library", None)
         if invalidate_tags is not None:
             invalidate_tags()
+
+    def remove_missing_path(self, path):
+        """Remove a file whose image is gone, without a second prompt."""
+        host = self.host
+        path = str(path)
+        row = self.fn_to_index.get(path)
+        if row is None:
+            return
+        repository = getattr(host, "dataset_repository", None)
+        root = getattr(host, "dataset_root", None)
+        if repository is not None and root:
+            relative = osp.relpath(path, root).replace(os.sep, "/")
+            image = repository.find_image(relative)
+            if image is not None:
+                try:
+                    repository.delete_image(image["id"])
+                except Exception:  # noqa: BLE001 - keep the list usable
+                    logger.exception("failed to remove missing image from DB")
+        next_row = min(row, self.table.rowCount() - 2)
+        self.remove_rows([row], confirm=False, advance=False)
+        if self.table.rowCount() > 0:
+            next_row = max(0, min(next_row, self.table.rowCount() - 1))
+            host.filename = None
+            self.table.setCurrentCell(next_row, FILE_COL_NAME)
+            next_path = self.path_at(next_row)
+            if next_path:
+                host.load_file(next_path)
+        else:
+            host.filename = None
+            host.update_browse_actions()
+
+    def skip_missing_path(self, path):
+        """Leave the row in place and select the next file."""
+        host = self.host
+        row = self.fn_to_index.get(str(path))
+        if row is None or self.table.rowCount() <= 1:
+            host.filename = None
+            host.update_browse_actions()
+            return
+        next_row = (row + 1) % self.table.rowCount()
+        host.filename = None
+        self.table.setCurrentCell(next_row, FILE_COL_NAME)
+        next_path = self.path_at(next_row)
+        if next_path:
+            host.load_file(next_path)
 
     def clear(self):
         self.table.blockSignals(True)

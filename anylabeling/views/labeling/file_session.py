@@ -91,6 +91,8 @@ class FileSession:
 
         The source JSON files are imported read-only, so opening a legacy
         project once migrates it into the database and later opens use the DB.
+        Returns ``True`` when a database is available, ``False`` on a hard
+        failure, and ``None`` when the folder has no images.
         """
 
         database_path = Path(directory) / "xanylabeling.db"
@@ -103,7 +105,7 @@ class FileSession:
             and "_delete_" not in Path(path).parts
         ]
         if not images:
-            return False
+            return None
         from ...services.dataset.importer import import_xlabel_folder
 
         QtWidgets.QApplication.setOverrideCursor(
@@ -594,6 +596,8 @@ class FileSession:
             filename = self.host.settings.value("filename", "")
         filename = str(filename)
         if not QtCore.QFile.exists(filename):
+            if self._handle_missing_file(filename):
+                return False
             self.host.error_message(
                 self.host.tr("Error opening file"),
                 self.host.tr("No such file: <b>%s</b>") % filename,
@@ -653,6 +657,39 @@ class FileSession:
             with QtCore.QSignalBlocker(self.host.shape_text_edit):
                 self.host.shape_text_edit.setPlainText("")
         return self._load_image_common(filename)
+
+    def _handle_missing_file(self, filename):
+        """Offer remove/skip when a file-list entry no longer exists."""
+        files = getattr(self.host, "files", None)
+        if files is None or str(filename) not in self.host.fn_to_index:
+            return False
+        box = QtWidgets.QMessageBox(self.host)
+        box.setWindowTitle(self.host.tr("File Not Found"))
+        box.setIcon(QtWidgets.QMessageBox.Icon.Warning)
+        box.setText(
+            self.host.tr("<b>%s</b> is missing.")
+            % osp.basename(filename)
+        )
+        box.setInformativeText(
+            self.host.tr(
+                "Remove it from the file list, or skip it for now?"
+            )
+        )
+        remove_button = box.addButton(
+            self.host.tr("Remove from List"),
+            QtWidgets.QMessageBox.ButtonRole.DestructiveRole,
+        )
+        skip_button = box.addButton(
+            self.host.tr("Skip"), QtWidgets.QMessageBox.ButtonRole.RejectRole
+        )
+        box.exec()
+        if box.clickedButton() is remove_button:
+            files.remove_missing_path(filename)
+            return True
+        if box.clickedButton() is skip_button:
+            files.skip_missing_path(filename)
+            return True
+        return False
 
     def _load_image_common(self, filename):
         """Load image data already prepared by the JSON/DB branch."""
@@ -1204,7 +1241,7 @@ class FileSession:
             self.host.reset_state()
             if osp.isfile(image_path):
                 image_path = osp.dirname(image_path)
-            self.host.import_image_folder(image_path, auto_db=False)
+            self.host.import_image_folder(image_path)
 
             self.host.filename = filename
             if self.host.filename:
@@ -1362,8 +1399,12 @@ class FileSession:
         if self.host.compare_view_manager.is_active():
             self.host.close_compare_view(confirm=False)
 
-        if auto_db and not pattern:
-            self._ensure_dataset_for_folder(dirpath)
+        if auto_db:
+            ensured = self._ensure_dataset_for_folder(dirpath)
+            if ensured is False:
+                # A folder with images must become a dataset; do not silently
+                # fall back to the legacy JSON read/write path.
+                return
 
         repository = self._open_dataset_for_folder(dirpath)
         if repository is False:

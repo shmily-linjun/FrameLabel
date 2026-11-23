@@ -3140,6 +3140,22 @@ Continue?</translation>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>File Not Found</source>
+        <translation>File Not Found</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; is missing.</translation>
+    </message>
+    <message>
+        <source>Remove it from the file list, or skip it for now?</source>
+        <translation>Remove it from the file list, or skip it for now?</translation>
+    </message>
+    <message>
+        <source>Skip</source>
+        <translation>Skip</translation>
+    </message>
+    <message>
         <source>Batch Set Image Tags</source>
         <translation>Batch Set Image Tags</translation>
     </message>

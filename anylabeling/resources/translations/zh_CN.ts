@@ -3139,6 +3139,22 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>File Not Found</source>
+        <translation>文件不存在</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; 已丢失。</translation>
+    </message>
+    <message>
+        <source>Remove it from the file list, or skip it for now?</source>
+        <translation>要从列表中移除，还是暂时跳过？</translation>
+    </message>
+    <message>
+        <source>Skip</source>
+        <translation>跳过</translation>
+    </message>
+    <message>
         <source>Batch Set Image Tags</source>
         <translation>批量设置图片标签</translation>
     </message>

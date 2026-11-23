@@ -24,13 +24,12 @@ class TagLibraryWidget(QtWidgets.QWidget):
         self._editing_enabled = True
         theme = get_theme()
         self._theme = theme
-
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         header = QtWidgets.QHBoxLayout()
-        header.setContentsMargins(6, 6, 6, 2)
+        header.setContentsMargins(6, 4, 6, 2)
         header.setSpacing(4)
         self.title_label = QtWidgets.QLabel(self._tr("Tag Library"))
         self.title_label.setStyleSheet(
@@ -41,6 +40,14 @@ class TagLibraryWidget(QtWidgets.QWidget):
         self.count_label.setStyleSheet(
             f"QLabel {{ color: {theme['text_secondary']}; font-size: 11px; }}"
         )
+        self.search_edit = QtWidgets.QLineEdit()
+        self.search_edit.setPlaceholderText(self._tr("Search tags…"))
+        self.search_edit.setClearButtonEnabled(True)
+        self.search_edit.setFixedHeight(20)
+        self.search_edit.setMinimumWidth(52)
+        self.search_edit.setMaximumWidth(180)
+        self.search_edit.setToolTip(self._tr("Search tags…"))
+        self.search_edit.textChanged.connect(self._rebuild)
         self.collapse_button = QtWidgets.QToolButton()
         self.collapse_button.setAutoRaise(True)
         self.collapse_button.setArrowType(QtCore.Qt.ArrowType.DownArrow)
@@ -48,7 +55,7 @@ class TagLibraryWidget(QtWidgets.QWidget):
         self.collapse_button.clicked.connect(self._toggle_collapsed)
         header.addWidget(self.title_label)
         header.addWidget(self.count_label)
-        header.addStretch(1)
+        header.addWidget(self.search_edit, 1)
         header.addWidget(self.collapse_button)
         layout.addLayout(header)
 
@@ -56,13 +63,6 @@ class TagLibraryWidget(QtWidgets.QWidget):
         body_layout = QtWidgets.QVBoxLayout(self.body)
         body_layout.setContentsMargins(6, 0, 6, 6)
         body_layout.setSpacing(4)
-
-        self.search_edit = QtWidgets.QLineEdit()
-        self.search_edit.setPlaceholderText(self._tr("Search tags…"))
-        self.search_edit.setClearButtonEnabled(True)
-        self.search_edit.setFixedHeight(24)
-        self.search_edit.textChanged.connect(self._rebuild)
-        body_layout.addWidget(self.search_edit)
 
         self.list_widget = QtWidgets.QListWidget()
         self.list_widget.setObjectName("TagLibrary")
@@ -157,6 +157,16 @@ class TagLibraryWidget(QtWidgets.QWidget):
         layout.addWidget(self.body, 1)
 
     # -- public API ----------------------------------------------------
+    def sizeHint(self):
+        # The search field belongs to the header, but must not raise the right
+        # sidebar's minimum width back to a wide value.
+        hint = super().sizeHint()
+        return QtCore.QSize(160, hint.height())
+
+    def minimumSizeHint(self):
+        hint = super().minimumSizeHint()
+        return QtCore.QSize(0, hint.height())
+
     def set_entries(self, entries, current_tags):
         self._entries = list(entries)
         self._current = set(current_tags or ())

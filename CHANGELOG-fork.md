@@ -6,6 +6,75 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.39 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈/要求：
+
+1. 不应再区分 DB/JSON 两套操作逻辑：打开文件夹时没有 DB 就创建 DB，之后全部走 DB；
+2. “类别”页的批量导入按钮不应占用一整行；
+3. 外部删除/移走图片后，不需要复杂校验；打开该行时只弹“清除出列表/跳过”；
+4. 评估把标签库搜索栏移到标题栏；代码量小/逻辑简单就移动；
+5. 批量设置图片标签对话框应复用“标签库”的点选方式，并收紧 label/combobox/lineedit 间距。
+
+### 2. 主要实现与关键细节
+
+- **打开文件夹强制建库（正常 UI 路径）**：
+  - `import_image_folder()` 对所有带图片目录先 `_ensure_dataset_for_folder()`，不区分是否搜索/是否已有 DB；
+  - 建库失败直接返回，不再静默回退到 JSON 读写；
+  - 移除单文件打开路径里的 `auto_db=False`；
+  - `_ensure_dataset_for_folder()` 改为三态：`True` 可用、`False` 硬失败、`None` 无图片；
+  - `auto_db=False` 仅保留给测试/迁移工具，正常 UI 不再使用。JSON 读写分支仍存在，但只服务于旧项目导入/兼容测试，完整删除属于 P4。
+- **缺失文件简化处理**：
+  - `load_file()` 发现 `QFile.exists()` 为假时，若该路径在文件表中，弹“文件不存在”对话框，只有 **从列表移除** / **跳过** 两个动作；
+  - 移除：`FileListController.remove_missing_path()` 删除文件表行，并把 DB 行软删除（`repository.delete_image`），随后加载下一张；
+  - 跳过：`skip_missing_path()` 保留记录，选中下一张；
+  - 不扫描全盘、不做移动匹配、不自动改其他 `rel_path`。
+- **标签库搜索栏移入标题栏**：
+  - `TagLibraryWidget` 标题行改为“标题 + 计数 + 搜索框 + 折叠”，删除 body 里的独立搜索行；
+  - 搜索框 `52–180px`、高 20px；`minimumSizeHint()` 覆盖为宽度 0、`sizeHint()` 宽度 160，避免把右侧栏最小宽度重新抬高；
+  - 逻辑不变，只是布局移动；代码量约 25 行，不复杂。
+- **批量标签对话框复用标签库**：
+  - `BatchTagsDialog` 嵌入同一个 `TagLibraryWidget`（搜索、双击标签加入输入框），删除“从标签库添加…”下拉；
+  - 去掉 `QStackedWidget`，改为同层 group 显隐，消除 stack 最大页高度造成的空白；
+  - 主布局 spacing 8、页内 spacing 4；标签列表高度 44–96px；
+  - 三种模式不变；替换模式的“要替换的标签”仍是可编辑下拉（它是替换源，不是“添加标签”）。
+- 翻译：新增“文件不存在/丢失/移除或跳过/Skip”4 条；`.qm` 各 2303 条。
+- 版本：4.3.2+fork.38 → 4.3.2+fork.39。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/file_session.py`、`file_list/controller.py`、`file_list/tags_dialog.py`、`widgets/tag_library.py`、`resources/translations/*`、`anylabeling/app_info.py`
+- 测试：`tests/test_labeling/test_file_table.py`（自动建库、缺失文件移除）、`tests/test_widgets/test_tag_library_widget.py`、`tests/test_labeling/test_label_manager.py`
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.16）、`docs/dev/数据库设计-讨论稿.md`、`docs/开始.md`、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：打开任意图片文件夹都会自动建库；建库失败明确报错；外部删除图片时只问“移除/跳过”；标签库搜索在标题栏；批量标签对话框直接点标签库。
+- **接口**：`_ensure_dataset_for_folder()` 三态；`remove_missing_path()`/`skip_missing_path()`；`TagLibraryWidget.sizeHint()/minimumSizeHint()`。
+- **数据**：无 schema 变更；缺失图片“从列表移除”会将 DB 行软删除；不做自动重定位。
+- **版本**：fork.38 → fork.39。
+
+### 5. 实际验证内容
+
+- `test_folder_open_always_creates_database`：无库目录首次打开生成 `xanylabeling.db`。
+- `test_missing_file_can_be_removed_from_db_list`：删除磁盘图片后 `remove_missing_path()` 从文件表/DB 活跃行移除。
+- 标签库/批量对话框用例：搜索仍在标题栏、双击标签加入、布局可用。
+- 侧栏最小宽度两条回归：标签库搜索移动后仍可拖窄（修复 `sizeHint` 抬高最小宽度）。
+- 四语言 `.qm` 各 **2303 条 / 0 unfinished**；`resources.py` 无 diff。
+- 最终回归（同集合分两组）：`tests/test_labeling` **251 passed / 10 failed / 51 subtests**，`tests/test_widgets` + `tests/test_dataset_db` + `tests/test_config` + `tests/test_utils` **286 passed / 1 failed / 105 subtests**；合计 **537 passed / 11 failed / 156 subtests**。10 条失败与 HEAD 基线逐条相同；第 11 条是已知时序抖动 `test_brightness_contrast_updates_are_throttled`，基线本次未触发。
+
+### 6. 已知限制与后续事项
+
+- 正常 UI 已强制 DB，但 JSON 读写函数仍保留给旧项目导入、CLI/兼容测试；彻底删除是 P4，不能靠本批完成。
+- 缺失文件“从列表移除”是软删除，回收站仍会保留该行；若希望硬删除/从回收站彻底清除，需要单独的清理动作。
+- 批量导入类别（“类别”页）尚未实现；建议改为表头右上角 `QToolButton`（`setCornerWidget`），不占行。
+- 标签库搜索在标题栏后，窄侧栏下宽度有限（最小 52px）；英文标题较长时会更紧。
+- 批量标签的“要替换的标签”仍是下拉；若也要改成标签库单击选择，需要额外的单击/双击区分。
+
+---
+
 ## 4.3.2+fork.38 — 2026-11-23
 
 ### 1. 背景与原因

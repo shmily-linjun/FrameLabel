@@ -1170,6 +1170,31 @@ def test_object_column_has_no_status_circle(window, tmp_path):
     assert item.text() == "3"
 
 
+def test_folder_open_always_creates_database(window, tmp_path):
+    widget = window.labeling_widget.view
+    images, _first, _second, _third = _make_dataset(tmp_path)
+
+    widget.import_image_folder(str(images))
+
+    assert (images / "xanylabeling.db").is_file()
+    assert widget.dataset_repository is not None
+    assert widget.dataset_root == str(images.resolve())
+
+
+def test_missing_file_can_be_removed_from_db_list(window, tmp_path):
+    widget = window.labeling_widget.view
+    images, first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images))
+    repository = widget.dataset_repository
+    assert repository is not None
+    first.unlink()
+
+    widget.files.remove_missing_path(str(first))
+
+    assert str(first) not in widget.fn_to_index
+    assert repository.find_image(first.name) is None
+
+
 def test_tag_library_keeps_folder_vocabulary_when_filtered(
     window, tmp_path
 ):
@@ -1314,6 +1339,8 @@ def test_batch_tags_dialog_parses_tags_and_mode(window):
     dialog = BatchTagsDialog(
         3, ["defect", "blur"], translate=lambda text: text
     )
+    dialog.library_widget.tag_clicked.emit("defect")
+    assert dialog.tags_edit.text() == "defect"
     dialog.tags_edit.setText(" defect, blur ,defect ")
     assert dialog.tags() == ["defect", "blur"]
     assert dialog.mode() == "add"
