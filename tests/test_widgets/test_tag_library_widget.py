@@ -58,12 +58,26 @@ class TagLibraryWidgetTest(unittest.TestCase):
         assert self.widget.empty_label.text() == "No matching tags."
         assert self.widget.empty_label.isVisible() is True
 
-    def test_click_emits_after_event_loop(self):
+    def test_single_click_does_not_add(self):
         item = self.widget.list_widget.item(0)
         self.widget.list_widget.itemClicked.emit(item)
+        self.app.processEvents()
         assert self.clicked == []
+
+    def test_double_click_adds(self):
+        item = self.widget.list_widget.item(0)
+        self.widget.list_widget.itemDoubleClicked.emit(item)
         self.app.processEvents()
         assert self.clicked == ["scratch"]
+        assert self.searches == []
+
+    def test_long_tag_is_not_truncated_to_a_tiny_cell(self):
+        self.widget.set_entries(
+            [("这是一个比较长的标签名称", 1)], current_tags=[]
+        )
+        item = self.widget.list_widget.item(0)
+        assert item.sizeHint().width() >= 96
+        assert item.sizeHint().width() <= 200
 
     def test_ctrl_click_requests_a_tag_search(self):
         self.widget._is_search_gesture = lambda: True

@@ -126,7 +126,12 @@ class TagLibraryWidget(QtWidgets.QWidget):
             self._on_context_menu
         )
         self.list_widget.itemClicked.connect(self._on_item_clicked)
-        self.list_widget.itemActivated.connect(self._on_item_clicked)
+        self.list_widget.itemDoubleClicked.connect(
+            self._on_item_double_clicked
+        )
+        self.list_widget.itemActivated.connect(
+            self._on_item_double_clicked
+        )
         body_layout.addWidget(self.list_widget, 1)
 
         self.empty_label = QtWidgets.QLabel("")
@@ -139,8 +144,8 @@ class TagLibraryWidget(QtWidgets.QWidget):
 
         self.hint_label = QtWidgets.QLabel(
             self._tr(
-                "Click to add; right-click or Ctrl+click to show images "
-                "using it."
+                "Double-click to add; right-click or Ctrl+click to show "
+                "images using it."
             )
         )
         self.hint_label.setWordWrap(True)
@@ -203,12 +208,22 @@ class TagLibraryWidget(QtWidgets.QWidget):
     def _rebuild(self):
         missing = self._missing_entries()
         matching = self._matching_entries(missing)
+        metrics = self.list_widget.fontMetrics()
+        longest = max(
+            (metrics.horizontalAdvance(tag) for tag, _ in matching),
+            default=0,
+        )
+        cell_width = max(96, min(200, longest + 28))
+        self.list_widget.setGridSize(QtCore.QSize(cell_width, 28))
         self.list_widget.clear()
         for tag, count in matching:
             item = QtWidgets.QListWidgetItem(tag)
             item.setData(QtCore.Qt.ItemDataRole.UserRole, tag)
+            item.setSizeHint(QtCore.QSize(cell_width, 28))
             item.setToolTip(
                 self._tr("%s (used by %d images)") % (tag, count)
+                + "\n"
+                + self._tr("Double-click to add.")
             )
             self.list_widget.addItem(item)
 
@@ -231,19 +246,25 @@ class TagLibraryWidget(QtWidgets.QWidget):
     def _on_item_clicked(self, item):
         if item is None or not self._editing_enabled:
             return
+        if not self._is_search_gesture():
+            # A single click only selects; adding requires a double-click so
+            # an accidental click does not write a tag (and attribution).
+            return
         tag = item.data(QtCore.Qt.ItemDataRole.UserRole)
         if not tag:
             return
-        search = self._is_search_gesture()
-        # Let the click handler return before the host saves/rebuilds or the
-        # search bar replaces the file list.
         QtCore.QTimer.singleShot(
-            0,
-            lambda value=str(tag), find=search: (
-                self.tag_search_requested.emit(value)
-                if find
-                else self.tag_clicked.emit(value)
-            ),
+            0, lambda value=str(tag): self.tag_search_requested.emit(value)
+        )
+
+    def _on_item_double_clicked(self, item):
+        if item is None or not self._editing_enabled:
+            return
+        tag = item.data(QtCore.Qt.ItemDataRole.UserRole)
+        if not tag:
+            return
+        QtCore.QTimer.singleShot(
+            0, lambda value=str(tag): self.tag_clicked.emit(value)
         )
 
     def _is_search_gesture(self):

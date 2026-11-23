@@ -6,6 +6,70 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.36 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈/提问 5 项：
+
+1. 查询 `(shape::0,split::none)` 时标签库标签被压缩成“暗…”“导…”等缩略；
+2. 标签库来源应继续用文件列表，还是改用文件夹/数据库？
+3. 标签的搜索/添加是否存储在数据库，是否有必要用数据库？
+4. `resources.py` 按方案二执行；能否与方案一（拆分 qrc）结合，会不会更好？
+5. 标签库单击添加容易手滑，是否改成双击添加。
+
+第 1 项的根因：`QListWidget` 的 IconMode 虽然设置了 112px 网格，但每个 item 的 `sizeHint` 仍按文本宽度（约 44px）计算，长标签被 item 自身宽度截断；网格空余没有分配给 chip。第 5 项与“点击即写盘 + 归属”叠加后，误触成本较高，采纳双击。
+
+### 2. 主要实现与关键细节
+
+- **标签库来源改为文件夹/数据集**：
+  - JSON 模式在 `import_image_folder()` 无搜索条件时记录 `host._tag_library_all_paths`（文件夹内全部图片）；搜索过滤只重建文件表，不再覆盖该列表；移除行时从列表剔除。
+  - DB 模式直接 `DatasetRepository.tag_counts()`（全部活跃图片），不再传当前文件表 `rel_paths`。
+  - 因此搜索过滤不会改变标签库词表；`(shape::0,split::none)` 等查询只影响文件表，不影响可添加的标签。
+- **标签宽度修复**：
+  - `TagLibraryWidget._rebuild()` 按当前匹配标签的最长文本计算 chip 宽度（96–200px），并给每个 item 设置 `sizeHint`；长标签不再被压成 2 个字，超长仍 elide + tooltip 全名。
+- **双击添加**：
+  - 单击只选中，不写盘；双击（或选中后 `Enter`）才添加并立即保存/盖章；右键/Ctrl+单击仍是 `tags::` 查找。
+  - 提示与 tooltip 改为“双击添加……”。
+- **resources.py 方案二（源码优先 `.qm`，发布前再嵌入）**：
+  - `app.py` 先加载 `anylabeling/resources/translations/<lang>.qm`，失败再回退 `:/languages/...`。
+  - `scripts/compile_languages.py` 新增 `--no-resources`：日常只编 `.qm`；不带参数时仍生成 `resources.py`，作为发布/打包步骤。
+  - 本批使用 `--no-resources`，并把 `resources.py` 保持为上一版（无生成 diff）；发布前必须运行不带 `--no-resources` 的脚本。
+  - **未采用方案一**：在方案二下静态资源几乎不再变化，再拆 qrc 需要多一个生成文件和构建步骤，收益重叠；如后续要做资源模块化可再拆。
+- 翻译：标签库提示改为“双击添加……”并新增“Double-click to add.”；重编 `.qm`。
+- 版本：`4.3.2+fork.35` → `4.3.2+fork.36`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/app.py`、`scripts/compile_languages.py`、`anylabeling/views/labeling/widgets/tag_library.py`、`label_widget.py`、`file_session.py`、`file_list/controller.py`、`resources/translations/*`、`app_info.py`
+- 测试：`tests/test_widgets/test_tag_library_widget.py` 改为单击不添加/双击添加/长标签宽度；`tests/test_labeling/test_file_table.py` 改为双击写盘、增加“搜索过滤后词表不缩水”与登录提示用例
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.13）、`docs/dev/数据库设计-讨论稿.md`、`docs/开始.md`、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：标签库词表不随文件表搜索缩水；长标签显示完整（超长省略+tooltip）；单击只选中、双击/Enter 才添加；登录提示与 `tags::` 查找不变。
+- **接口**：`LabelingWidget._tag_library_all_paths`；`TagLibraryWidget` 的 `itemDoubleClicked` 添加；`compile_languages.py --no-resources`；`app.py` 文件系统 `.qm` 优先。
+- **数据/存储**：无 schema 变更。DB 数据集标签存 `image_tag`；纯 JSON 目录标签存 JSON 顶层 `tags`，不需要额外数据库。标签库/`tags::` 的索引是派生缓存，不另建表。
+- **版本**：fork.35 → fork.36。
+
+### 5. 实际验证内容
+
+- `test_tag_library_widget.py`：单击不添加、双击添加、Ctrl+单击只查找、长标签 item 宽度 96–200px；离屏预览确认 4 字标签不再显示为“暗…”。
+- `test_file_table.py`：双击后 JSON 立即写入 `tags`/`author`/`modified_at`；把文件表缩到 1 行后标签库仍包含其他图片的标签；未登录时库仍 enabled 且调用 `_ensure_operator()`。
+- 本轮 `tests/test_labeling tests/test_widgets tests/test_dataset_db tests/test_config tests/test_utils/test_tag_library.py tests/test_utils/test_file_search.py`：**392 passed / 10 failed / 149 subtests**；失败集合与 HEAD 基线**完全相同**，未新增失败。
+- 四语言 `.qm` 各 **2286 条 / 0 unfinished**；`resources.py` 本批无 diff（按方案二保留旧嵌入副本）。
+- **未执行**：真实桌面双击/长标签观感、打包产物中文件系统 `.qm` 回退路径的真实安装验证、万级目录词表扫描性能、全量回归。
+
+### 6. 已知限制与后续事项
+
+- 发布/打包前必须运行 `python scripts/compile_languages.py`（不带 `--no-resources`），否则安装包内嵌的翻译仍是上一版；源码运行不受影响。
+- 未拆分 qrc；静态资源变化时 `resources.py` 仍会整体重写。
+- 标签库词表按文件夹/数据集全量维护；文件表搜索只影响列表，不影响词表。移除行会从 JSON 词表剔除该文件，但磁盘 JSON 仍在。
+- 双击添加同样会立即保存当前图片的其它未保存修改；这是“点击即写盘”的既有语义。
+- `tags::` 仍为精确标签名匹配；非 ASCII 大小写在 SQLite/JSON 两种模式可能略有差异。
+
+---
+
 ## 4.3.2+fork.35 — 2026-11-23
 
 ### 1. 背景与原因

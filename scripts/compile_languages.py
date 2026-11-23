@@ -1,7 +1,16 @@
+"""Compile the Qt translation files, and (for release builds) resources.py.
+
+Daily translation work only needs ``.qm`` files: the application loads them
+from ``anylabeling/resources/translations`` first, so ``resources.py`` does not
+have to be regenerated for every string change.  Run the script without
+``--no-resources`` before packaging so the embedded copy is up to date too.
+"""
+
+import argparse
 import os
-import sys
 import shutil
 import subprocess
+import sys
 
 
 def find_lrelease() -> str:
@@ -60,23 +69,47 @@ def compile_resources(output: str, qrc: str) -> None:
             normalize_imports(output)
         return
     print(
-        "Error: no Qt resource compiler found. Tried python -m PyQt6.pyrcc_main, pyrcc6, pyside6-rcc, rcc -g python, and lrelease-sibling rcc."
+        "Error: no Qt resource compiler found. Tried python -m "
+        "PyQt6.pyrcc_main, pyrcc6, pyside6-rcc, rcc -g python, and "
+        "lrelease-sibling rcc."
     )
 
 
-supported_languages = ["en_US", "zh_CN", "ja_JP", "ko_KR"]
-lrelease = find_lrelease()
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--no-resources",
+        action="store_true",
+        help=(
+            "compile only the .qm files; the app loads them from disk.  Use "
+            "the default behaviour before packaging to refresh resources.py."
+        ),
+    )
+    args = parser.parse_args()
 
-for language in supported_languages:
-    subprocess.run(
-        [
-            lrelease,
-            f"anylabeling/resources/translations/{language}.ts",
-        ],
-        check=True,
+    supported_languages = ["en_US", "zh_CN", "ja_JP", "ko_KR"]
+    lrelease = find_lrelease()
+    for language in supported_languages:
+        subprocess.run(
+            [
+                lrelease,
+                f"anylabeling/resources/translations/{language}.ts",
+            ],
+            check=True,
+        )
+
+    if args.no_resources:
+        print(
+            "Skipped resources.py; run without --no-resources before "
+            "packaging to embed the new translations."
+        )
+        return
+
+    compile_resources(
+        output="anylabeling/resources/resources.py",
+        qrc="anylabeling/resources/resources.qrc",
     )
 
-compile_resources(
-    output="anylabeling/resources/resources.py",
-    qrc="anylabeling/resources/resources.qrc",
-)
+
+if __name__ == "__main__":
+    main()

@@ -380,9 +380,22 @@ def main():
 
     language = config.get("language", QtCore.QLocale.system().name())
     translator = QtCore.QTranslator()
-    loaded_language = translator.load(
-        ":/languages/translations/" + language + ".qm"
+    # Source/on-disk builds use the freshly compiled .qm files; packaged
+    # builds fall back to the copy embedded in resources.py (generated at
+    # release time).
+    qm_file = (
+        Path(__file__).resolve().parent
+        / "resources"
+        / "translations"
+        / f"{language}.qm"
     )
+    loaded_language = (
+        translator.load(str(qm_file)) if qm_file.is_file() else False
+    )
+    if not loaded_language:
+        loaded_language = translator.load(
+            ":/languages/translations/" + language + ".qm"
+        )
     QtCore.QCoreApplication.setAttribute(
         QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts
     )

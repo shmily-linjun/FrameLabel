@@ -115,6 +115,10 @@ class LabelingWidget(LabelDialog):
         self._tag_library_entries = []
         self._tag_library_loaded = False
         self._tag_library_dirty = True
+        #: All images imported from the current folder (not just the rows that
+        #: match the search); the library intentionally keeps this vocabulary
+        #: stable while the file list is filtered.
+        self._tag_library_all_paths = None
         # Dataset database mode (T3/P1).  ``None`` means the classic JSON
         # workflow; ``dataset_repository`` switches file listing/load/save to
         # the SQLite store.
@@ -473,35 +477,24 @@ class LabelingWidget(LabelDialog):
     # DB mode asks ``DatasetRepository.tag_counts()``.
     def _tag_library_source(self):
         repository = getattr(self, "dataset_repository", None)
-        files = getattr(self, "files", None)
-        paths = (
-            [
-                files.path_at(row)
-                for row in range(files.table.rowCount())
-            ]
-            if files is not None
-            else []
-        )
         if repository is not None:
-            rel_paths = None
-            root = getattr(self, "dataset_root", None)
-            if root:
-                rel_paths = []
-                for path in paths:
-                    try:
-                        rel = osp.relpath(path, root).replace(os.sep, "/")
-                    except ValueError:
-                        continue
-                    if rel and rel != ".." and not rel.startswith("../"):
-                        rel_paths.append(rel)
+            # The library is a dataset-wide vocabulary; a search that narrows
+            # the file table must not change which tags can be added.
             return [
                 (row["tag"], int(row["image_count"]))
-                for row in repository.tag_counts(rel_paths)
+                for row in repository.tag_counts()
             ]
         if self._tag_catalog is None:
             self._tag_catalog = TagCatalog()
+        files = getattr(self, "files", None)
         if files is None:
             return []
+        paths = getattr(self, "_tag_library_all_paths", None)
+        if not paths:
+            paths = [
+                files.path_at(row)
+                for row in range(files.table.rowCount())
+            ]
         return self._tag_catalog.load(paths, files.label_file_for)
 
     def _refresh_tag_library(self):

@@ -3156,8 +3156,12 @@ Continue?</source>
         <translation>태그 라이브러리 펼치기</translation>
     </message>
     <message>
-        <source>Click to add; right-click or Ctrl+click to show images using it.</source>
-        <translation>클릭하여 추가합니다. 마우스 오른쪽 버튼 또는 Ctrl+클릭으로 이 태그를 사용하는 이미지를 표시합니다.</translation>
+        <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
+        <translation>더블클릭하여 추가합니다. 마우스 오른쪽 버튼 또는 Ctrl+클릭으로 이 태그를 사용하는 이미지를 표시합니다.</translation>
+    </message>
+    <message>
+        <source>Double-click to add.</source>
+        <translation>더블클릭하여 추가합니다.</translation>
     </message>
     <message>
         <source>Show images with this tag</source>

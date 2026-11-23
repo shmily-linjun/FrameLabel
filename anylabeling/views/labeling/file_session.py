@@ -414,6 +414,7 @@ class FileSession:
     ):
         self.host.last_open_dir = str(directory)
         self.host.filename = None
+        self.host._tag_library_all_paths = None
         self.host.update_browse_actions()
         self.host._clear_file_list()
 
@@ -1386,6 +1387,12 @@ class FileSession:
         self.host._clear_file_list()
 
         files_on_disk = list(utils.scan_all_images(dirpath))
+        if not pattern:
+            # Keep the folder-wide tag vocabulary independent of the current
+            # search filter.  A search re-import keeps the previous list.
+            self.host._tag_library_all_paths = [
+                str(path) for path in files_on_disk
+            ]
         if pattern:
             query = parse_search_query(pattern)
             image_files = filter_image_files(

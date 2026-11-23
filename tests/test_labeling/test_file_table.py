@@ -1104,6 +1104,36 @@ def test_object_column_has_no_status_circle(window, tmp_path):
     assert item.text() == "3"
 
 
+def test_tag_library_keeps_folder_vocabulary_when_filtered(
+    window, tmp_path
+):
+    """Searching the file list must not shrink the tag vocabulary."""
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, _first, _second, third = _make_dataset(tmp_path)
+    source_label = third.with_suffix(".json")
+    data = json.loads(source_label.read_text(encoding="utf-8"))
+    data["tags"] = ["defect"]
+    source_label.write_text(json.dumps(data), encoding="utf-8")
+
+    widget.import_image_folder(str(images), auto_db=False)
+    app.processEvents()
+    assert "defect" in dict(widget._tag_library_source())
+
+    # Simulate a search that shows only the first image.
+    widget.files.table.setRowCount(1)
+    widget._tag_library_dirty = True
+    widget._refresh_tag_library()
+    app.processEvents()
+
+    list_widget = widget.tag_library_widget.list_widget
+    texts = [
+        list_widget.item(index).text()
+        for index in range(list_widget.count())
+    ]
+    assert "defect" in texts
+
+
 def test_tag_library_click_requires_login(window, tmp_path, monkeypatch):
     """The library stays clickable when logged out so it can ask for login."""
     app = QtWidgets.QApplication.instance()
@@ -1173,7 +1203,7 @@ def test_tag_library_click_adds_tag_and_writes_attribution(
         ]
         assert "defect" in texts
 
-        list_widget.itemClicked.emit(
+        list_widget.itemDoubleClicked.emit(
             list_widget.item(texts.index("defect"))
         )
         QTest.qWait(30)

@@ -3156,8 +3156,12 @@ Continue?</translation>
         <translation>Expand tag library</translation>
     </message>
     <message>
-        <source>Click to add; right-click or Ctrl+click to show images using it.</source>
-        <translation>Click to add; right-click or Ctrl+click to show images using it.</translation>
+        <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
+        <translation>Double-click to add; right-click or Ctrl+click to show images using it.</translation>
+    </message>
+    <message>
+        <source>Double-click to add.</source>
+        <translation>Double-click to add.</translation>
     </message>
     <message>
         <source>Show images with this tag</source>

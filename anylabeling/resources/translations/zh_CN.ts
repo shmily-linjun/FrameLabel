@@ -3155,8 +3155,12 @@ Continue?</source>
         <translation>展开标签库</translation>
     </message>
     <message>
-        <source>Click to add; right-click or Ctrl+click to show images using it.</source>
-        <translation>单击添加；右键或 Ctrl+单击可查看使用该标签的图片。</translation>
+        <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
+        <translation>双击添加；右键或 Ctrl+单击可查看使用该标签的图片。</translation>
+    </message>
+    <message>
+        <source>Double-click to add.</source>
+        <translation>双击添加。</translation>
     </message>
     <message>
         <source>Show images with this tag</source>

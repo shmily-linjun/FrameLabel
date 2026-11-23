@@ -954,6 +954,16 @@ class FileListController:
         )
         if answer != QtWidgets.QMessageBox.StandardButton.Yes:
             return
+        all_tag_paths = getattr(host, "_tag_library_all_paths", None)
+        if all_tag_paths:
+            removed = {
+                osp.normcase(osp.abspath(str(path))) for path in paths
+            }
+            host._tag_library_all_paths = [
+                path
+                for path in all_tag_paths
+                if osp.normcase(osp.abspath(str(path))) not in removed
+            ]
         was_current = str(host.filename) in {str(path) for path in paths}
         first_row = targets[0]
         self.table.blockSignals(True)

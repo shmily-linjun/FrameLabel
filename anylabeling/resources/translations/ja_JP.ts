@@ -3155,8 +3155,12 @@ Continue?</source>
         <translation>タグライブラリを展開</translation>
     </message>
     <message>
-        <source>Click to add; right-click or Ctrl+click to show images using it.</source>
-        <translation>クリックで追加。右クリックまたは Ctrl+クリックで、このタグを使う画像を表示します。</translation>
+        <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
+        <translation>ダブルクリックで追加。右クリックまたは Ctrl+クリックで、このタグを使う画像を表示します。</translation>
+    </message>
+    <message>
+        <source>Double-click to add.</source>
+        <translation>ダブルクリックで追加。</translation>
     </message>
     <message>
         <source>Show images with this tag</source>
