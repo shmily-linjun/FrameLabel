@@ -27,12 +27,25 @@ class SegmentAnythingONNX:
             p for p in self.providers if p != "TensorrtExecutionProvider"
         ]
 
+        # SAM's encoder can ask the ORT BFC arena for a contiguous 1 GiB
+        # block.  On Windows that fails even when the process still has free
+        # memory (fragmentation/commit limit), and the failure is reported as
+        # a misleading "Failed to allocate memory".  Let ORT allocate on
+        # demand instead of growing a persistent arena.
+        self.session_options = onnxruntime.SessionOptions()
+        self.session_options.enable_cpu_mem_arena = False
+        self.session_options.enable_mem_pattern = False
+
         self.encoder_session = onnxruntime.InferenceSession(
-            encoder_model_path, providers=self.providers
+            encoder_model_path,
+            sess_options=self.session_options,
+            providers=self.providers,
         )
         self.encoder_input_name = self.encoder_session.get_inputs()[0].name
         self.decoder_session = onnxruntime.InferenceSession(
-            decoder_model_path, providers=self.providers
+            decoder_model_path,
+            sess_options=self.session_options,
+            providers=self.providers,
         )
 
     def get_input_points(self, prompt):
@@ -70,7 +83,9 @@ class SegmentAnythingONNX:
             # Lazy initialization
             if self.encoder_session is None:
                 self.encoder_session = onnxruntime.InferenceSession(
-                    self.encoder_model_path, providers=self.providers
+                    self.encoder_model_path,
+                    sess_options=self.session_options,
+                    providers=self.providers,
                 )
                 self.encoder_input_name = (
                     self.encoder_session.get_inputs()[0].name

@@ -37,7 +37,9 @@ class TestLabelConverterClasses(unittest.TestCase):
                 ]
 
         host = SimpleNamespace(dataset_repository=Repository())
-        self.assertEqual(_dataset_category_names(host), ["zebra", "cat"])
+        self.assertEqual(
+            _dataset_category_names(host), ["zebra", "cat", "unused"]
+        )
 
 
 class TestLabelConverterPoseConfig(unittest.TestCase):

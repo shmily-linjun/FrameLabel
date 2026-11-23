@@ -11746,6 +11746,34 @@ Response preview:
 </context>  <context>
     <name>LabelManagerPanel</name>
     <message>
+        <source>Batch import categories…</source>
+        <translation>批量导入类别…</translation>
+    </message>
+    <message>
+        <source>Batch Import Categories</source>
+        <translation>批量导入类别</translation>
+    </message>
+    <message>
+        <source>Enter category names separated by commas, spaces, or newlines:</source>
+        <translation>输入类别名称，可用中文/英文逗号、空格或换行分隔：</translation>
+    </message>
+    <message>
+        <source>Batch import is only available for dataset folders.</source>
+        <translation>批量导入仅适用于数据集文件夹。</translation>
+    </message>
+    <message>
+        <source>Enter at least one category.</source>
+        <translation>请至少输入一个类别。</translation>
+    </message>
+    <message>
+        <source>An error occurred while importing categories.</source>
+        <translation>导入类别时发生错误。</translation>
+    </message>
+    <message>
+        <source>Imported %d categories.</source>
+        <translation>已导入 %d 个类别。</translation>
+    </message>
+    <message>
         <source>Category</source>
         <translation>类别</translation>
     </message>

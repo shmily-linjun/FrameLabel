@@ -263,7 +263,7 @@ class TestLabelManagerPanel(unittest.TestCase):
         self.panel.ensure_built()
         self.assertEqual(self.row_labels(), ["dog", "cat"])
 
-    def test_categories_without_objects_are_not_listed(self):
+    def test_categories_without_objects_are_listed(self):
         repository = FakeCategoryRepository(["cat", "dog"])
         repository.category_counts = lambda: [
             {"name": "cat", "object_count": 2},
@@ -272,7 +272,39 @@ class TestLabelManagerPanel(unittest.TestCase):
         self.host.dataset_repository = repository
         self.panel.invalidate()
         self.panel.ensure_built()
-        self.assertEqual(self.row_labels(), ["cat"])
+        self.assertEqual(self.row_labels(), ["cat", "dog"])
+
+    def test_batch_import_appends_categories(self):
+        class Repository:
+            def __init__(self):
+                self.names = ["cat"]
+
+            def category_counts(self):
+                return [
+                    {"name": name, "object_count": 0}
+                    for name in self.names
+                ]
+
+            def ensure_category(self, name):
+                if name not in self.names:
+                    self.names.append(name)
+
+        repository = Repository()
+        self.host.dataset_repository = repository
+        self.panel.invalidate()
+        self.panel.ensure_built()
+        from unittest.mock import patch
+
+        with patch.object(
+            QtWidgets.QInputDialog,
+            "getMultiLineText",
+            return_value=("dog, 猫\ndog", True),
+        ), patch(
+            "anylabeling.views.labeling.widgets.label_manager.Popup"
+        ):
+            self.panel.import_categories()
+        self.assertEqual(repository.names, ["cat", "dog", "猫"])
+        self.assertEqual(self.row_labels(), ["cat", "dog", "猫"])
 
     def test_move_up_persists_the_new_order(self):
         repository = FakeCategoryRepository(["cat", "dog"])

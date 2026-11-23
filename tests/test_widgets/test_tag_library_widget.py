@@ -48,6 +48,15 @@ class TagLibraryWidgetTest(unittest.TestCase):
         assert self._item_texts() == ["scratch", "blur"]
         assert self.widget.count_label.text() == "(2)"
 
+    def test_header_search_is_readable_and_count_follows_title(self):
+        assert self.widget.search_edit.height() >= 24
+        assert (
+            self.widget.count_label.x()
+            >= self.widget.title_label.x()
+            + self.widget.title_label.width()
+        )
+        assert self.widget.search_edit.x() > self.widget.count_label.x()
+
     def test_search_filters_the_list(self):
         self.widget.search_edit.setText("blu")
         assert self._item_texts() == ["blur"]

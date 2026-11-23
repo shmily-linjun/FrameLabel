@@ -6,6 +6,75 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.40 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈 5 项：
+
+1. “类别”页批量导入按表头右上角按钮做，先看效果；
+2. 已有登录后，类别“锁定”是否还有必要；
+3. 标签库搜索在标题栏后高度太低、搜索框变形，且计数 `(x)` 应紧挨标题；
+4. 批量标签对话框的标签库不能随窗口拉伸，仍被折叠；
+5. SAM ONNX 在有内存时仍报 1 GiB BFC 分配失败，切模型后恢复。
+
+### 2. 主要实现与关键细节
+
+- **类别批量导入**：
+  - `LabelManagerPanel` 在 `QTableWidget.horizontalHeader()` 上放 22×22 `QToolButton`（`clipboard-paste` 图标），通过 `eventFilter` 定位到表头右上角；不新增行。
+  - 点击弹多行输入框；`parse_category_names()` 按中文/英文逗号、空白、换行分隔，去重保序。
+  - DB 模式 `ensure_category()` 追加；导入后刷新类别页。非 DB 数据集提示“仅适用于数据集文件夹”。
+  - DB 模式类别页改为显示**全部类别**（含 0 对象）；空类别可改名/删除：新增 `DatasetRepository.rename_category()`/`delete_category()`/`category_object_count()`，`_rewrite_database()` 对 0 对象类别走类别级操作，范围改名/删除后清理已变空的旧类别。
+  - 导出 `_dataset_category_names()` 也包含 0 对象类别，保持“界面顺序 = 导出顺序”。
+- **标签库标题栏**：
+  - 标题/计数改回紧邻；搜索框放在 stretch 之后、折叠按钮之前；
+  - 搜索框高度 20 → 24px，宽度 52–180px，不再被压扁；
+  - 仍保持 `minimumSizeHint` 宽 0，避免抬高侧栏最小宽度。
+- **批量标签对话框拉伸**：
+  - `TagLibraryWidget` 从固定/最大高度改为可扩展，`layout.addWidget(..., 1)`；
+  - 对话框启用 size grip；标签列表最小 60px，随窗口高度增长。
+- **SAM ONNX BFC arena**：
+  - `sam_onnx.py` 为 encoder/decoder 共用 `SessionOptions`，设置
+    `enable_cpu_mem_arena=False`、`enable_mem_pattern=False`；
+  - 不再预申请/扩展 1 GiB BFC 块，避免“物理内存尚有余量但连续块分配失败”；
+  - 保留 fork.20 的 CPU 串行锁与 encoder 释放后重建策略。
+- 翻译：新增类别导入 7 条；四语言 `.qm` 各 2310 条。
+- 版本：4.3.2+fork.39 → 4.3.2+fork.40。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/widgets/label_manager.py`、`anylabeling/views/labeling/utils/category_names.py`（新增）、`anylabeling/services/dataset/repository.py`、`anylabeling/views/labeling/widgets/tag_library.py`、`anylabeling/views/labeling/file_list/tags_dialog.py`、`anylabeling/services/auto_labeling/sam_onnx.py`、`resources/translations/*`、`app_info.py`
+- 测试：`tests/test_labeling/test_label_manager.py`、`tests/test_utils/test_category_names.py`（新增）、`tests/test_dataset_db/test_repository.py`、`tests/test_labeling/test_file_table.py`
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.17）、`docs/dev/数据库设计-讨论稿.md`、`docs/开始.md`、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：类别页可批量导入并显示空类别；空类别可改名/删除；标签库搜索高度/计数布局修复；批量标签对话框标签库可随窗口拉伸；SAM 不再因 BFC 1 GiB 块失败（在内存确实不足时仍会失败，但不再误报竞技场错误）。
+- **接口**：`DatasetRepository.rename_category()`/`delete_category()`/`category_object_count()`；`parse_category_names()`；`LabelManagerPanel.import_categories()`。
+- **数据**：`category` 表无 schema 变更；空类别为 `is_deleted=0` 正常行，删除为软删除；导出包含空类别。
+- **版本**：fork.39 → fork.40。
+
+### 5. 实际验证内容
+
+- `test_label_manager.py`：**全部通过**，新增“批量导入追加类别”和“空类别也显示”用例。
+- `test_category_names.py`：2 条解析用例通过。
+- `test_repository.py`：新增“空类别改名/删除、已使用类别不可删”用例通过。
+- 标签库/侧栏：搜索在标题栏、高度 24、计数紧邻标题；侧栏最小宽度两条回归通过。
+- 批量标签对话框：标签库直接复用、随窗口增长（离屏手工验证）。
+- `.qm` 四语言各 **2310 条 / 0 unfinished**；`resources.py` 无 diff。
+- 最终回归（同集合分两组）：`test_labeling` **252 passed / 10 failed / 51 subtests**；其余 **290 passed / 1 failed / 105 subtests**；合计 **542 passed / 11 failed / 156 subtests**，10 条与 HEAD 基线逐条相同，第 11 条为已知 `test_brightness_contrast_updates_are_throttled` 时序抖动。
+- **未执行**：真实桌面批量导入/空类别改名删除、表头按钮实际位置观感、SAM 真实模型 OOM 复测、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 表头按钮是 `QHeaderView` 子控件，覆盖在最右列表头上；窗口很窄时可能遮挡 `Color` 表头文字，需要按实际观感调位置/图标。
+- 批量导入按精确名称去重；大小写不同视为不同类别。
+- 0 对象类别的删除是软删除，目前没有“恢复已删除空类别”的 UI。
+- SAM 关闭 arena 会略增分配开销；若实际提交内存确实不足，仍可能 OOM，需要关闭其它模型/增大页面文件。
+- 类别“锁定”评估见本轮回复：登录与锁定职责不同，暂建议保留。
+
+---
+
 ## 4.3.2+fork.39 — 2026-11-23
 
 ### 1. 背景与原因

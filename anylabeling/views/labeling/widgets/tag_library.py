@@ -36,14 +36,23 @@ class TagLibraryWidget(QtWidgets.QWidget):
             f"QLabel {{ color: {theme['text_secondary']};"
             " font-size: 11px; font-weight: 600; }"
         )
+        self.title_label.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Preferred,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
+        self.title_label.setToolTip(self._tr("Tag Library"))
         self.count_label = QtWidgets.QLabel("")
         self.count_label.setStyleSheet(
             f"QLabel {{ color: {theme['text_secondary']}; font-size: 11px; }}"
         )
+        self.count_label.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.search_edit = QtWidgets.QLineEdit()
         self.search_edit.setPlaceholderText(self._tr("Search tags…"))
         self.search_edit.setClearButtonEnabled(True)
-        self.search_edit.setFixedHeight(20)
+        self.search_edit.setFixedHeight(24)
         self.search_edit.setMinimumWidth(52)
         self.search_edit.setMaximumWidth(180)
         self.search_edit.setToolTip(self._tr("Search tags…"))
@@ -55,7 +64,8 @@ class TagLibraryWidget(QtWidgets.QWidget):
         self.collapse_button.clicked.connect(self._toggle_collapsed)
         header.addWidget(self.title_label)
         header.addWidget(self.count_label)
-        header.addWidget(self.search_edit, 1)
+        header.addStretch(1)
+        header.addWidget(self.search_edit)
         header.addWidget(self.collapse_button)
         layout.addLayout(header)
 

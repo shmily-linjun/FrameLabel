@@ -11748,6 +11748,34 @@ Response preview:
 </context>  <context>
     <name>LabelManagerPanel</name>
     <message>
+        <source>Batch import categories…</source>
+        <translation>카테고리 일괄 가져오기…</translation>
+    </message>
+    <message>
+        <source>Batch Import Categories</source>
+        <translation>카테고리 일괄 가져오기</translation>
+    </message>
+    <message>
+        <source>Enter category names separated by commas, spaces, or newlines:</source>
+        <translation>카테고리 이름을 입력하세요(쉼표, 공백 또는 줄바꿈으로 구분):</translation>
+    </message>
+    <message>
+        <source>Batch import is only available for dataset folders.</source>
+        <translation>일괄 가져오기는 데이터세트 폴더에서만 사용할 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>Enter at least one category.</source>
+        <translation>카테고리를 하나 이상 입력하세요.</translation>
+    </message>
+    <message>
+        <source>An error occurred while importing categories.</source>
+        <translation>카테고리를 가져오는 중 오류가 발생했습니다.</translation>
+    </message>
+    <message>
+        <source>Imported %d categories.</source>
+        <translation>카테고리 %d개를 가져왔습니다.</translation>
+    </message>
+    <message>
         <source>Category</source>
         <translation>카테고리</translation>
     </message>

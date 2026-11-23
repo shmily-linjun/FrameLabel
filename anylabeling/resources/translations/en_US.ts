@@ -11748,6 +11748,34 @@ Response preview:
 </context>  <context>
     <name>LabelManagerPanel</name>
     <message>
+        <source>Batch import categories…</source>
+        <translation>Batch import categories…</translation>
+    </message>
+    <message>
+        <source>Batch Import Categories</source>
+        <translation>Batch Import Categories</translation>
+    </message>
+    <message>
+        <source>Enter category names separated by commas, spaces, or newlines:</source>
+        <translation>Enter category names separated by commas, spaces, or newlines:</translation>
+    </message>
+    <message>
+        <source>Batch import is only available for dataset folders.</source>
+        <translation>Batch import is only available for dataset folders.</translation>
+    </message>
+    <message>
+        <source>Enter at least one category.</source>
+        <translation>Enter at least one category.</translation>
+    </message>
+    <message>
+        <source>An error occurred while importing categories.</source>
+        <translation>An error occurred while importing categories.</translation>
+    </message>
+    <message>
+        <source>Imported %d categories.</source>
+        <translation>Imported %d categories.</translation>
+    </message>
+    <message>
         <source>Category</source>
         <translation>Category</translation>
     </message>

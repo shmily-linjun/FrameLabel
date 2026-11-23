@@ -29,6 +29,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QColorDialog, QTableWidgetItem
 
 from ..logger import logger
+from ..utils.category_names import parse_category_names
 from ..utils.qt import new_icon, new_icon_path
 from ..utils.style import (
     get_compact_ok_btn_style,
@@ -189,6 +190,24 @@ class LabelManagerPanel(QtWidgets.QWidget):
         )
         layout.addWidget(self.table, 1)
 
+        self.import_button = QtWidgets.QToolButton(
+            self.table.horizontalHeader()
+        )
+        self.import_button.setAutoRaise(True)
+        self.import_button.setFixedSize(22, 22)
+        self.import_button.setIcon(new_icon("clipboard-paste", "svg"))
+        self.import_button.setIconSize(QtCore.QSize(14, 14))
+        self.import_button.setToolTip(
+            self._tr("Batch import categories…")
+        )
+        self.import_button.setAccessibleName(
+            self._tr("Batch import categories…")
+        )
+        self.import_button.clicked.connect(self.import_categories)
+        self.table.horizontalHeader().installEventFilter(self)
+        self.table.installEventFilter(self)
+        self._position_import_button()
+
         range_layout = QtWidgets.QHBoxLayout()
         range_layout.setContentsMargins(2, 0, 2, 1)
         range_layout.setSpacing(3)
@@ -229,6 +248,73 @@ class LabelManagerPanel(QtWidgets.QWidget):
         layout.addLayout(range_layout)
         self.table.currentCellChanged.connect(
             lambda *_args: self._update_reorder_buttons()
+        )
+
+    def _position_import_button(self):
+        header = self.table.horizontalHeader()
+        visible_width = min(header.width(), self.table.viewport().width())
+        self.import_button.move(
+            max(0, visible_width - self.import_button.width() - 2),
+            max(0, (header.height() - self.import_button.height()) // 2),
+        )
+        self.import_button.raise_()
+
+    def eventFilter(self, watched, event):
+        header = self.table.horizontalHeader()
+        if watched in (header, self.table) and event.type() in (
+            QtCore.QEvent.Type.Resize,
+            QtCore.QEvent.Type.Show,
+        ):
+            self._position_import_button()
+        return super().eventFilter(watched, event)
+
+    def import_categories(self):
+        """Append pasted category names to the dataset vocabulary."""
+        if not self._editing_enabled:
+            return
+        repository = getattr(self.host, "dataset_repository", None)
+        if repository is None:
+            self._error(
+                self._tr(
+                    "Batch import is only available for dataset folders."
+                )
+            )
+            return
+        text, accepted = QtWidgets.QInputDialog.getMultiLineText(
+            self,
+            self._tr("Batch Import Categories"),
+            self._tr(
+                "Enter category names separated by commas, spaces, or "
+                "newlines:"
+            ),
+            "",
+        )
+        if not accepted:
+            return
+        names = parse_category_names(text)
+        if not names:
+            self._error(self._tr("Enter at least one category."))
+            return
+        existing = {
+            row["name"] for row in repository.category_counts()
+        }
+        added = 0
+        try:
+            for name in names:
+                if name in existing:
+                    continue
+                repository.ensure_category(name)
+                added += 1
+        except Exception as error:  # noqa: BLE001 - surfaced as a popup
+            logger.error(f"Failed to import categories: {error}")
+            self._error(
+                self._tr("An error occurred while importing categories.")
+            )
+            return
+        self.invalidate()
+        self.rebuild()
+        self._success(
+            self._tr("Imported %d categories.") % added
         )
 
     def _create_reorder_button(self, icon, tooltip, offset):
@@ -392,13 +478,12 @@ class LabelManagerPanel(QtWidgets.QWidget):
         repository = getattr(self.host, "dataset_repository", None)
         if repository is not None:
             # The database is authoritative and already ordered by
-            # ``category.sort_index``.  Categories whose objects are all
-            # deleted are not listed any more, mirroring JSON mode where the
-            # category set is derived from the remaining shapes.
+            # ``category.sort_index``.  Keep zero-object categories too:
+            # batch import declares classes that have no objects yet, and the
+            # export order must include them.
             return [
                 row["name"]
                 for row in repository.category_counts()
-                if row.get("object_count", 0) > 0
             ]
         labels = set()
         for image_file in files:
@@ -517,6 +602,7 @@ class LabelManagerPanel(QtWidgets.QWidget):
         self.range_button.setEnabled(
             self._editing_enabled and self.table.rowCount() > 0
         )
+        self.import_button.setEnabled(self._editing_enabled)
         hint = (
             ""
             if self._editing_enabled
@@ -837,7 +923,45 @@ class LabelManagerPanel(QtWidgets.QWidget):
         if not image_ids:
             return False
         try:
-            repository.rewrite_categories(image_ids, renames, deletes)
+            counts = {
+                row["name"]: int(row["object_count"])
+                for row in repository.category_counts()
+            }
+            empty_renames = {
+                old: new
+                for old, new in renames.items()
+                if counts.get(old, 0) == 0
+            }
+            empty_deletes = {
+                old for old in deletes if counts.get(old, 0) == 0
+            }
+            for old, new in empty_renames.items():
+                if not repository.rename_category(old, new):
+                    return False
+            for old in empty_deletes:
+                if not repository.delete_category(old):
+                    return False
+
+            object_renames = {
+                old: new
+                for old, new in renames.items()
+                if old not in empty_renames
+            }
+            object_deletes = {
+                old for old in deletes if old not in empty_deletes
+            }
+            if object_renames or object_deletes:
+                repository.rewrite_categories(
+                    image_ids, object_renames, object_deletes
+                )
+            # If the selected range covered every object, the old name is now
+            # empty; drop the category row so it does not linger in export.
+            for old in object_renames:
+                if repository.category_object_count(old) == 0:
+                    repository.delete_category(old)
+            for old in object_deletes:
+                if repository.category_object_count(old) == 0:
+                    repository.delete_category(old)
             return True
         except Exception as error:  # noqa: BLE001 - surfaced as a popup
             logger.error(f"Error occurred while updating labels: {error}")

@@ -11746,6 +11746,34 @@ Response preview:
 </context>  <context>
     <name>LabelManagerPanel</name>
     <message>
+        <source>Batch import categories…</source>
+        <translation>カテゴリを一括インポート…</translation>
+    </message>
+    <message>
+        <source>Batch Import Categories</source>
+        <translation>カテゴリの一括インポート</translation>
+    </message>
+    <message>
+        <source>Enter category names separated by commas, spaces, or newlines:</source>
+        <translation>カテゴリ名を入力してください（カンマ、スペース、改行で区切ります）：</translation>
+    </message>
+    <message>
+        <source>Batch import is only available for dataset folders.</source>
+        <translation>一括インポートはデータセットフォルダでのみ使用できます。</translation>
+    </message>
+    <message>
+        <source>Enter at least one category.</source>
+        <translation>カテゴリを1つ以上入力してください。</translation>
+    </message>
+    <message>
+        <source>An error occurred while importing categories.</source>
+        <translation>カテゴリのインポート中にエラーが発生しました。</translation>
+    </message>
+    <message>
+        <source>Imported %d categories.</source>
+        <translation>%d 個のカテゴリをインポートしました。</translation>
+    </message>
+    <message>
         <source>Category</source>
         <translation>カテゴリ</translation>
     </message>

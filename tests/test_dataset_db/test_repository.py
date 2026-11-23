@@ -283,6 +283,31 @@ def test_tag_counts_exclude_soft_deleted_images(dataset_tmp):
         database.close()
 
 
+def test_empty_category_can_be_renamed_and_deleted(dataset_tmp):
+    database, repository = make_repository(dataset_tmp)
+    try:
+        repository.ensure_category("empty")
+        assert [
+            row["name"] for row in repository.category_counts()
+        ] == ["empty"]
+        assert repository.rename_category("empty", "renamed") is True
+        assert repository.rename_category("renamed", "renamed") is True
+        assert [
+            row["name"] for row in repository.category_counts()
+        ] == ["renamed"]
+        assert repository.delete_category("renamed") is True
+        assert repository.category_counts() == []
+
+        image_id = repository.add_image("images/used.png")
+        repository.save_annotation(
+            image_id,
+            ImageAnnotation(shapes=[rectangle("used", "s1")]),
+        )
+        assert repository.delete_category("used") is False
+    finally:
+        database.close()
+
+
 def test_category_order_follows_sort_index(dataset_tmp):
     database, repository = make_repository(dataset_tmp)
     try:

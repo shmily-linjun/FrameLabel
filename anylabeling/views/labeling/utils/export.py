@@ -110,7 +110,7 @@ def _dataset_category_names(host):
         return [
             str(row["name"])
             for row in repository.category_counts()
-            if row.get("name") and int(row.get("object_count", 0)) > 0
+            if row.get("name")
         ]
     except Exception as error:  # noqa: BLE001 - preserve the export path
         logger.warning(f"Failed to read dataset categories: {error}")

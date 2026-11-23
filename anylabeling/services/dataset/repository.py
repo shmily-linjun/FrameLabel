@@ -143,6 +143,57 @@ class DatasetRepository:
         )
         return int(cursor.lastrowid)
 
+    def category_object_count(self, name: str) -> int:
+        """Return the number of active objects in a category."""
+        row = self.db.query_one(
+            "SELECT COUNT(o.id) AS count "
+            "FROM category c "
+            "LEFT JOIN annotation_object o "
+            "  ON o.category_id = c.id AND o.is_deleted = 0 "
+            "WHERE c.dataset_id = ? AND c.name = ? AND c.is_deleted = 0",
+            (self.dataset_id, str(name)),
+        )
+        return int(row["count"]) if row is not None else 0
+
+    def rename_category(self, old: str, new: str) -> bool:
+        """Rename an empty category row (used by batch import/rename)."""
+        old = str(old).strip()
+        new = str(new).strip()
+        if not old or not new:
+            return False
+        if old == new:
+            return True
+        row = self.db.query_one(
+            "SELECT id FROM category "
+            "WHERE dataset_id = ? AND name = ? AND is_deleted = 0",
+            (self.dataset_id, old),
+        )
+        if row is None:
+            return False
+        conflict = self.db.query_one(
+            "SELECT id FROM category "
+            "WHERE dataset_id = ? AND name = ? AND is_deleted = 0",
+            (self.dataset_id, new),
+        )
+        if conflict is not None:
+            return False
+        self.db.execute(
+            "UPDATE category SET name = ?, updated_at = ? WHERE id = ?",
+            (new, _now(), row["id"]),
+        )
+        return True
+
+    def delete_category(self, name: str) -> bool:
+        """Soft-delete an empty category row."""
+        if self.category_object_count(name) > 0:
+            return False
+        cursor = self.db.execute(
+            "UPDATE category SET is_deleted = 1, updated_at = ? "
+            "WHERE dataset_id = ? AND name = ? AND is_deleted = 0",
+            (_now(), self.dataset_id, str(name)),
+        )
+        return cursor.rowcount > 0
+
     def category_names(self) -> dict[int, str]:
         rows = self.db.query(
             "SELECT id, name FROM category WHERE dataset_id = ? AND is_deleted = 0",

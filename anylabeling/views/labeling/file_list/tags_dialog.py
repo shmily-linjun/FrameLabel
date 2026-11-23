@@ -44,6 +44,7 @@ class BatchTagsDialog(QtWidgets.QDialog):
         self.setWindowTitle(self._tr("Batch Set Image Tags"))
         self.setModal(True)
         self.setMinimumWidth(440)
+        self.setSizeGripEnabled(True)
         self.setStyleSheet(get_dialog_style())
 
         layout = QtWidgets.QVBoxLayout(self)
@@ -85,10 +86,9 @@ class BatchTagsDialog(QtWidgets.QDialog):
             [(tag, 0) for tag in self._library_tags], []
         )
         self.library_widget.set_editing_enabled(True)
-        self.library_widget.list_widget.setMinimumHeight(44)
-        self.library_widget.list_widget.setMaximumHeight(96)
+        self.library_widget.list_widget.setMinimumHeight(60)
         self.library_widget.tag_clicked.connect(self._append_library_tag)
-        layout.addWidget(self.library_widget)
+        layout.addWidget(self.library_widget, 1)
 
         self.error_label = QtWidgets.QLabel("")
         self.error_label.setWordWrap(True)
