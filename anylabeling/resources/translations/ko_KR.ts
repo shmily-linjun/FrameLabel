@@ -3140,6 +3140,46 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Tag Library</source>
+        <translation>태그 라이브러리</translation>
+    </message>
+    <message>
+        <source>Search tags…</source>
+        <translation>태그 검색…</translation>
+    </message>
+    <message>
+        <source>Collapse tag library</source>
+        <translation>태그 라이브러리 접기</translation>
+    </message>
+    <message>
+        <source>Expand tag library</source>
+        <translation>태그 라이브러리 펼치기</translation>
+    </message>
+    <message>
+        <source>Click a tag to add it to this image; remove it with × above.</source>
+        <translation>태그를 클릭하면 현재 이미지에 추가됩니다. 제거는 위의 ×를 사용하세요.</translation>
+    </message>
+    <message>
+        <source>%s (used by %d images)</source>
+        <translation>%s (%d개 이미지에서 사용)</translation>
+    </message>
+    <message>
+        <source>No other tags in the current file list.</source>
+        <translation>현재 파일 목록에 다른 태그가 없습니다.</translation>
+    </message>
+    <message>
+        <source>No matching tags.</source>
+        <translation>일치하는 태그가 없습니다.</translation>
+    </message>
+    <message>
+        <source>Failed to save the new tag</source>
+        <translation>새 태그를 저장하지 못했습니다</translation>
+    </message>
+    <message>
+        <source>Tag added: %s</source>
+        <translation>태그 추가됨: %s</translation>
+    </message>
+    <message>
         <source>Set Tags…</source>
         <translation>태그 설정…</translation>
     </message>

@@ -900,6 +900,9 @@ class FileListController:
                 host.tr("Tags unchanged for %d files")
                 % len(result.unchanged)
             )
+        notify_tags = getattr(host, "_on_batch_tags_persisted", None)
+        if notify_tags is not None:
+            notify_tags(result.tags_by_path)
 
     def _sync_open_image_tags(self, result):
         """Refresh the open image when the batch included it."""
@@ -975,6 +978,9 @@ class FileListController:
         host.update_browse_actions()
         host._refresh_statistics_if_visible()
         self.invalidate_label_manager()
+        invalidate_tags = getattr(host, "_invalidate_tag_library", None)
+        if invalidate_tags is not None:
+            invalidate_tags()
 
     def clear(self):
         self.table.blockSignals(True)
@@ -990,3 +996,6 @@ class FileListController:
         self.reset_sort()
         self._thumbnail_loader.clear()
         self.invalidate_label_manager()
+        invalidate_tags = getattr(self.host, "_invalidate_tag_library", None)
+        if invalidate_tags is not None:
+            invalidate_tags()

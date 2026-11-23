@@ -45,7 +45,9 @@ from .utils.label_text import (  # noqa: F401 (re-exported helpers)
     format_label_list_text as _format_label_list_text,
     measure_text_width as _measure_text_width,
 )
+from .utils.image_tags import normalize_image_tag, normalize_image_tags
 from .utils.qt import apply_application_font, new_icon_path
+from .utils.tag_library import TagCatalog
 from .utils.theme import get_theme
 from .widgets import (
     BrightnessContrastProcessor,
@@ -106,6 +108,12 @@ class LabelingWidget(LabelDialog):
         self.image_data = None
         self.label_file = None
         self.other_data = {}
+        # Tag library cache: JSON mode keeps a per-file tag map; DB mode
+        # re-queries ``DatasetRepository.tag_counts()`` when marked dirty.
+        self._tag_catalog = None
+        self._tag_library_entries = []
+        self._tag_library_loaded = False
+        self._tag_library_dirty = True
         # Dataset database mode (T3/P1).  ``None`` means the classic JSON
         # workflow; ``dataset_repository`` switches file listing/load/save to
         # the SQLite store.
@@ -456,6 +464,116 @@ class LabelingWidget(LabelDialog):
             return
         self.other_data[IMAGE_TAGS_FIELD] = list(tags)
         self.set_dirty()
+
+    # -- tag library -----------------------------------------------------
+    # The "Image Attributes" tab lists the tags already used by the current
+    # file list, so a tag can be added with one click.  JSON mode caches the
+    # per-file tags (``TagCatalog``) to avoid re-reading thousands of files;
+    # DB mode asks ``DatasetRepository.tag_counts()``.
+    def _tag_library_source(self):
+        repository = getattr(self, "dataset_repository", None)
+        files = getattr(self, "files", None)
+        paths = (
+            [
+                files.path_at(row)
+                for row in range(files.table.rowCount())
+            ]
+            if files is not None
+            else []
+        )
+        if repository is not None:
+            rel_paths = None
+            root = getattr(self, "dataset_root", None)
+            if root:
+                rel_paths = []
+                for path in paths:
+                    try:
+                        rel = osp.relpath(path, root).replace(os.sep, "/")
+                    except ValueError:
+                        continue
+                    if rel and rel != ".." and not rel.startswith("../"):
+                        rel_paths.append(rel)
+            return [
+                (row["tag"], int(row["image_count"]))
+                for row in repository.tag_counts(rel_paths)
+            ]
+        if self._tag_catalog is None:
+            self._tag_catalog = TagCatalog()
+        if files is None:
+            return []
+        return self._tag_catalog.load(paths, files.label_file_for)
+
+    def _refresh_tag_library(self):
+        widget = getattr(self, "tag_library_widget", None)
+        if widget is None:
+            return
+        if self._tag_library_dirty or not self._tag_library_loaded:
+            try:
+                self._tag_library_entries = self._tag_library_source()
+            except Exception:  # noqa: BLE001 - never break the tab
+                logger.warning(
+                    "Failed to refresh the tag library", exc_info=True
+                )
+                self._tag_library_entries = []
+            self._tag_library_loaded = True
+            self._tag_library_dirty = False
+        current = normalize_image_tags(
+            list(self.other_data.get(IMAGE_TAGS_FIELD) or [])
+        )
+        widget.set_entries(self._tag_library_entries, current)
+
+    def _refresh_tag_library_if_visible(self):
+        widget = getattr(self, "tag_library_widget", None)
+        tabs = getattr(self, "right_tabs", None)
+        if widget is None or tabs is None:
+            return
+        page = tabs.currentWidget()
+        if page is widget or (page is not None and page.isAncestorOf(widget)):
+            self._refresh_tag_library()
+
+    def _invalidate_tag_library(self):
+        self._tag_library_dirty = True
+        self._refresh_tag_library_if_visible()
+
+    def _on_tags_persisted(self):
+        """Update the library cache after a successful annotation save."""
+        tags = normalize_image_tags(
+            list(self.other_data.get(IMAGE_TAGS_FIELD) or [])
+        )
+        if self._tag_catalog is not None and self.image_path:
+            self._tag_catalog.update(self.image_path, tags)
+        self._tag_library_dirty = True
+        self._refresh_tag_library_if_visible()
+
+    def _on_batch_tags_persisted(self, tags_by_path):
+        if self._tag_catalog is not None:
+            for path, tags in tags_by_path.items():
+                self._tag_catalog.update(path, tags)
+        self._tag_library_dirty = True
+        self._refresh_tag_library_if_visible()
+
+    def _on_tag_library_tag_clicked(self, tag):
+        tag = normalize_image_tag(tag)
+        if not tag or not self.image_path:
+            return
+        if not self._ensure_operator():
+            return
+        current = normalize_image_tags(
+            list(self.other_data.get(IMAGE_TAGS_FIELD) or [])
+        )
+        if tag in current:
+            return
+        tags = current + [tag]
+        self.other_data[IMAGE_TAGS_FIELD] = tags
+        self.image_tags_widget.set_tags(tags)
+        label_file = self.files.label_file_for(self.image_path)
+        # "Click = write": the save path stamps author/modified_at through
+        # the attribution gate, so the tag is on disk immediately.
+        if self._save_file(label_file):
+            self.status(self.tr("Tag added: %s") % tag)
+        else:
+            self.status(self.tr("Failed to save the new tag"))
+            self._refresh_tag_library_if_visible()
 
     # -- operator identity ---------------------------------------------------
     # The browse-mode policy and the attribution baseline live in

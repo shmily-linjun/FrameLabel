@@ -143,6 +143,11 @@ class OperatorGate:
                 tags_widget.set_interactions_enabled(
                     bool(allowed and host.image_path)
                 )
+            tag_library = getattr(host, "tag_library_widget", None)
+            if tag_library is not None:
+                tag_library.set_editing_enabled(
+                    bool(allowed and host.image_path)
+                )
             label_manager = getattr(host, "label_manager_widget", None)
             if label_manager is not None:
                 label_manager.set_editing_enabled(bool(allowed))

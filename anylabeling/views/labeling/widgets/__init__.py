@@ -13,6 +13,7 @@ from .classifier_dialog import ClassifierDialog
 from .file_dialog_preview import FileDialogPreview
 from .filter_label_widget import GroupIDFilterComboBox, LabelFilterComboBox
 from .image_tags_widget import ImageTagsWidget
+from .tag_library import TagLibraryWidget
 from .shape_dialog import ShapeModifyDialog
 from .label_dialog import (
     DigitShortcutDialog,

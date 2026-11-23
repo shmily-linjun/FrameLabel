@@ -139,6 +139,12 @@ class RightSidebarTabs:
             return
         if page is getattr(self.host, "statistics_table", None):
             self.host._refresh_statistics()
+            return
+        tag_library = getattr(self.host, "tag_library_widget", None)
+        if tag_library is not None and page is not None and (
+            page is tag_library or page.isAncestorOf(tag_library)
+        ):
+            self.host._refresh_tag_library()
 
     def _refresh_statistics(self):
         table = getattr(self.host, "statistics_table", None)

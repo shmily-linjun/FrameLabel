@@ -1,6 +1,9 @@
 import copy
 import json
 import os
+import shutil
+import uuid
+from pathlib import Path
 from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -1099,6 +1102,77 @@ def test_object_column_has_no_status_circle(window, tmp_path):
     assert item is not None
     assert item.icon().isNull()
     assert item.text() == "3"
+
+
+def test_tag_library_click_adds_tag_and_writes_attribution(
+    window, monkeypatch
+):
+    """A library click must persist the tag and stamp the author at once."""
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    # The JSON save path uses mkstemp; pytest's tmp_path carries an
+    # owner-only DACL that the DSH sandbox cannot write, so use a normal
+    # directory for the write-through assertion.
+    base = (
+        Path(__file__).resolve().parents[2]
+        / "temporary"
+        / "pytest-tag-library-ui"
+        / uuid.uuid4().hex
+    )
+    base.mkdir(parents=True, exist_ok=True)
+    try:
+        images, first, _second, third = _make_dataset(base)
+        source_label = third.with_suffix(".json")
+        data = json.loads(source_label.read_text(encoding="utf-8"))
+        data["tags"] = ["defect"]
+        source_label.write_text(json.dumps(data), encoding="utf-8")
+
+        widget.import_image_folder(str(images), auto_db=False)
+        widget.show_right_tab("flags")
+        app.processEvents()
+
+        session = SimpleNamespace(
+            operator_name="tester", is_logged_in=True
+        )
+        monkeypatch.setattr(
+            widget.operator_gate,
+            "service",
+            SimpleNamespace(session=session),
+        )
+        widget.tag_library_widget.set_editing_enabled(True)
+        widget._tag_library_dirty = True
+        widget._refresh_tag_library()
+        app.processEvents()
+
+        list_widget = widget.tag_library_widget.list_widget
+        texts = [
+            list_widget.item(index).text()
+            for index in range(list_widget.count())
+        ]
+        assert "defect" in texts
+
+        list_widget.itemClicked.emit(
+            list_widget.item(texts.index("defect"))
+        )
+        QTest.qWait(30)
+        app.processEvents()
+
+        saved = json.loads(
+            first.with_suffix(".json").read_text(encoding="utf-8")
+        )
+        assert "defect" in saved["tags"]
+        assert saved["author"] == "tester"
+        assert saved["modified_at"]
+        assert "defect" in widget.image_tags_widget.tags
+
+        remaining = [
+            list_widget.item(index).text()
+            for index in range(list_widget.count())
+        ]
+        assert "defect" not in remaining
+        assert widget.dirty is False
+    finally:
+        shutil.rmtree(base, ignore_errors=True)
 
 
 def test_batch_tags_dialog_parses_tags_and_mode(window):

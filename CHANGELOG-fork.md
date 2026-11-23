@@ -6,6 +6,68 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.34 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈 2 项：
+
+1. 运行时出现 `Skipping unexpected key in config: column_widths` 告警；
+2. “图像属性 → 标志”为空，希望它显示当前文件列表里已经出现过的所有标签/标记（flags/tags），点击即可添加到当前图片；并明确：保留现有“图片标签”功能、只列尚未添加的标签、标签多时需搜索/折叠、点击后立即写盘并盖章归属、只负责添加（移除仍用标签上的 ×）。
+
+第 1 项的根因是 `FileListController.on_column_resized()` 会把用户列宽写进 `file_list.column_widths`，但默认配置模板没有声明该键，且 `update_dict()` 把其中的列索引当成 schema 键逐项校验；第 2 项是 fork.31/32 删除“标志”展示后留下的空白区域。
+
+### 2. 主要实现与关键细节
+
+- **配置告警修复**：
+  - `anylabeling/configs/xanylabeling_config.yaml` 的 `file_list` 增加 `column_widths: {}`。
+  - `config.update_dict()` 增加 `_FREEFORM_CONFIG_KEYS = {"column_widths"}`：该映射的键是数据（列索引），整体深拷贝合并，不再逐键校验，因此启动时既不告警也不丢列宽。
+- **标签库取代“标志”区**：
+  - 新增 [TagLibraryWidget](../../anylabeling/views/labeling/widgets/tag_library.py)：标题“标签库 (N)”、搜索框、可滚动标签网格、收起/展开箭头；只显示当前图片尚未添加的标签；点击发 `tag_clicked`（用 `QTimer.singleShot(0)` 延后，避免在 `itemClicked` 中删除条目）。
+  - 新增 Qt-free [TagCatalog](../../anylabeling/views/labeling/utils/tag_library.py)：JSON 模式按绝对路径缓存每个标注文件的 `tags`，`load()` 只读新增路径、删除消失路径，`update()/remove()` 支持保存/批量写后的增量维护。
+  - `DatasetRepository.tag_counts(rel_paths=None)`：按 `image_tag` 统计活跃图片的标签用量；`rel_paths` 限定当前文件表行（900 个一批），`None` 表示整个数据集。
+  - `LabelingWidget` 新增 `_refresh_tag_library()`/`_refresh_tag_library_if_visible()`/`_invalidate_tag_library()`/`_on_tags_persisted()`/`_on_batch_tags_persisted()`；`_on_tag_library_tag_clicked()` 先 `_ensure_operator()`，加 tag 后调用 `_save_file()` **立即保存**，保存路径经归属门禁写 `author`/`modified_at`；成功后标签从库中消失，失败显示“新标签保存失败”。
+  - `FileSession._save_file()` 改为返回 `True/False`，供点击即写盘判断成功/失败；`AnnotationEditor.save_labels()` 成功后通知 `_on_tags_persisted()`；批量标签完成后通知 `_on_batch_tags_persisted(result.tags_by_path)`。
+  - 工作区装配：`attributes_panel` 不再添加 `Flags` 标签与 `flag_widget`，改为 `TagLibraryWidget`；`flag_widget` 仍保留并 `hide()`（分类对话框、归属签名继续使用图片级 `flags`），旧 `flags` 数据不变但不再有独立复选框 UI。
+  - `OperatorGate.apply()` 同步启用/禁用标签库；`RightSidebarTabs` 在切到“图像属性”页时刷新；导入/移除文件行、保存、批量标签都会失效/更新缓存。
+- **翻译**：`LabelingWidget` 上下文新增 10 条（标签库标题、搜索、收起/展开、提示、计数、空状态、保存失败、添加成功）；重编 `.qm`、重建 `resources.py`。
+- 版本：`4.3.2+fork.33` → `4.3.2+fork.34`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/config.py`、`anylabeling/configs/xanylabeling_config.yaml`、`anylabeling/services/dataset/repository.py`、`anylabeling/views/labeling/label_widget.py`、`annotation_editor.py`、`file_session.py`、`file_list/controller.py`、`operator/gate.py`、`right_sidebar.py`、`widgets/workspace.py`、`widgets/__init__.py`、`translations/*`、`resources.py`、`app_info.py`
+- 新增：`anylabeling/views/labeling/utils/tag_library.py`、`anylabeling/views/labeling/widgets/tag_library.py`
+- 测试：新增 `tests/test_utils/test_tag_library.py`（3）、`tests/test_widgets/test_tag_library_widget.py`（4）；`tests/test_dataset_db/test_repository.py` 增加 `tag_counts` 用例；`tests/test_config/test_normalization.py` 增加 `column_widths` 用例；`tests/test_labeling/test_file_table.py` 增加“点击标签立即写盘并盖章”用例
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.11，§4.5）、`docs/dev/数据库设计-讨论稿.md`、`docs/开始.md`（T3）、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：启动不再出现 `column_widths` 告警；“图像属性”页下方显示标签库，搜索/收起，点击标签立即保存并添加到当前图片，标签从库中消失；移除仍用上方 chips 的 ×。
+- **接口**：新增 `TagCatalog`、`TagLibraryWidget`、`DatasetRepository.tag_counts(rel_paths=None)`；`FileSession._save_file()` 返回 bool；`update_dict()` 对 `column_widths` 整体合并。
+- **数据/契约**：无 schema 变更；标签仍写 JSON `tags` 或 DB `image_tag`，立即保存按归属契约写 `author`/`modified_at`；图片级 `flags` 数据保留，但界面不再提供复选框编辑（分类对话框仍可维护）。
+- **版本**：fork.33 → fork.34。
+
+### 5. 实际验证内容
+
+- `tests/test_utils/test_tag_library.py`：**3 passed**（计数/排序、增量 update/remove、缺失与坏文件）；`tests/test_widgets/test_tag_library_widget.py`：**4 passed**（只列未添加、搜索、点击延后发信号、折叠）。
+- `tests/test_dataset_db/test_repository.py::test_tag_counts_exclude_soft_deleted_images`：通过（软删过滤 + `rel_paths` 限定）；`tests/test_config/test_normalization.py`：**5 passed**（默认配置声明 `column_widths`、动态键合并无告警）。
+- `tests/test_labeling/test_file_table.py::test_tag_library_click_adds_tag_and_writes_attribution`：通过（点击后 JSON 立即写入 `tags`/`author`/`modified_at`，库中条目消失）。该用例把数据放在 `temporary/` 而非 pytest `tmp_path`，因为本机 DSH 沙箱下 `tmp_path` 的 owner-only DACL 会让 `LabelFile.save()` 的 `mkstemp` 失败（既有测试债）。
+- 与 HEAD 导出树（`temporary/fork31/baseline`，HEAD `f31a952`）同环境对比 `tests/test_labeling tests/test_widgets tests/test_dataset_db tests/test_config tests/test_utils/test_tag_library.py`：当前 **361 passed / 11 failed / 53 subtests**，基线 **321 passed / 10 failed**；失败集合唯一差异仍是已记录的时序抖动 `test_brightness_contrast_updates_are_throttled`；本批新增 10 个用例全部通过。
+- `scripts/compile_languages.py`：四语言 `.qm` 各 **2284 条 / 0 unfinished**，`resources.py` 重建；四语言抽查 10 个新字符串通过。
+- `python -m py_compile` 修改与新增文件：通过。
+- **未执行**：真实桌面标签库观感/点击/输入法、千图/万图 JSON 首次扫描耗时、真实 DB 7553 图 `tag_counts` 冒烟、隐藏图片级 flags UI 对分类工作流的真实回归、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 标签库只收集图片标签 `tags`，不把图片级 `flags` 的布尔值混入（两者是不同字段）；原“标志”复选框 UI 已隐藏，`flags` 仍按旧契约保存，分类对话框仍可维护。
+- JSON 模式首次打开“图像属性”页会同步扫描当前文件表内所有标注文件（有缓存后仅增量）；万级目录首次可能卡顿约数秒，后续可改为后台线程。
+- 标签库只负责添加；删除仍用图片标签 chips 的 ×，且删除后不会立刻重新扫描全局词表（下次失效/重扫时恢复）。
+- 点击即保存会同时保存当前图片其它未保存的修改（与手动保存语义一致）；保存失败时标签已进入内存但会提示失败，用户可再次保存。
+- `rel_paths` 限定按当前文件表行计算；DB 模式下列表若被搜索过滤，标签库也随可见行变化。
+- 版本 fork.33 → fork.34。
+
+---
+
 ## 4.3.2+fork.33 — 2026-11-23
 
 ### 1. 背景与原因

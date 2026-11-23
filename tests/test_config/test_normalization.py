@@ -157,5 +157,33 @@ class TestRemovedConfigKeys(unittest.TestCase):
             CONFIG_MODULE.logger = original_logger
 
 
+def test_default_config_declares_file_list_column_widths():
+    import yaml
+
+    path = (
+        Path(__file__).resolve().parents[2]
+        / "anylabeling/configs/xanylabeling_config.yaml"
+    )
+    default_config = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert default_config["file_list"]["column_widths"] == {}
+
+    target = {
+        "file_list": dict(default_config["file_list"]),
+    }
+    recording_logger = _RecordingLogger()
+    original_logger = CONFIG_MODULE.logger
+    CONFIG_MODULE.logger = recording_logger
+    try:
+        update_dict(
+            target,
+            {"file_list": {"column_widths": {"4": 77}}},
+            validate_item=validate_config_item,
+        )
+        assert recording_logger.warnings == []
+        assert target["file_list"]["column_widths"] == {"4": 77}
+    finally:
+        CONFIG_MODULE.logger = original_logger
+
+
 if __name__ == "__main__":
     unittest.main()

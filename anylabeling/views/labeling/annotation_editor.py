@@ -250,6 +250,9 @@ class AnnotationEditor:
             self.host._update_file_row_after_save(len(shapes))
             # The new categories only reach the JSON file now.
             self._invalidate_label_manager()
+            notify_tags = getattr(self.host, "_on_tags_persisted", None)
+            if notify_tags is not None:
+                notify_tags()
             # disable allows next and previous image to proceed
             # self.filename = filename
             return True
@@ -304,6 +307,9 @@ class AnnotationEditor:
         # ``save_annotation`` creates the categories in the database; the
         # visible "Classes" tab must re-read them right away.
         self._invalidate_label_manager()
+        notify_tags = getattr(self.host, "_on_tags_persisted", None)
+        if notify_tags is not None:
+            notify_tags()
         return True
 
     def new_shape(self):

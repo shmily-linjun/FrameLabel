@@ -469,6 +469,11 @@ class FileSession:
         self._apply_dataset_ui_state(True)
         self.host.status(self.host.tr("Dataset database: %s") % str(root))
         self.host._refresh_statistics_if_visible()
+        invalidate_tags = getattr(
+            self.host, "_invalidate_tag_library", None
+        )
+        if invalidate_tags is not None:
+            invalidate_tags()
         if self.host.file_list_widget.count() > 0 and select_first:
             self.host._no_selection_slot = True
             try:
@@ -674,6 +679,11 @@ class FileSession:
         self.host.image_tags_widget.set_interactions_enabled(
             self.host._operator_edit_allowed()
         )
+        refresh_tags = getattr(
+            self.host, "_refresh_tag_library_if_visible", None
+        )
+        if refresh_tags is not None:
+            refresh_tags()
 
         if (
             hasattr(self.host, "navigator_dialog")
@@ -1025,6 +1035,8 @@ class FileSession:
         if filename and self.host.save_labels(filename):
             self.host.add_recent_file(filename)
             self.host.set_clean()
+            return True
+        return False
 
     def close_file(self, _value=False):
         if not self.host.may_continue():
@@ -1399,3 +1411,8 @@ class FileSession:
         if image_files and self.host._config.get("exif_scan_enabled", True):
             self.host.async_exif_scanner.start_scan(image_files)
         self.host._refresh_statistics_if_visible()
+        invalidate_tags = getattr(
+            self.host, "_invalidate_tag_library", None
+        )
+        if invalidate_tags is not None:
+            invalidate_tags()

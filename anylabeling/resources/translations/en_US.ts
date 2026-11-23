@@ -3140,6 +3140,46 @@ Continue?</translation>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Tag Library</source>
+        <translation>Tag Library</translation>
+    </message>
+    <message>
+        <source>Search tags…</source>
+        <translation>Search tags…</translation>
+    </message>
+    <message>
+        <source>Collapse tag library</source>
+        <translation>Collapse tag library</translation>
+    </message>
+    <message>
+        <source>Expand tag library</source>
+        <translation>Expand tag library</translation>
+    </message>
+    <message>
+        <source>Click a tag to add it to this image; remove it with × above.</source>
+        <translation>Click a tag to add it to this image; remove it with × above.</translation>
+    </message>
+    <message>
+        <source>%s (used by %d images)</source>
+        <translation>%s (used by %d images)</translation>
+    </message>
+    <message>
+        <source>No other tags in the current file list.</source>
+        <translation>No other tags in the current file list.</translation>
+    </message>
+    <message>
+        <source>No matching tags.</source>
+        <translation>No matching tags.</translation>
+    </message>
+    <message>
+        <source>Failed to save the new tag</source>
+        <translation>Failed to save the new tag</translation>
+    </message>
+    <message>
+        <source>Tag added: %s</source>
+        <translation>Tag added: %s</translation>
+    </message>
+    <message>
         <source>Set Tags…</source>
         <translation>Set Tags…</translation>
     </message>

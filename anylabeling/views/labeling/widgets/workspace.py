@@ -42,6 +42,7 @@ from ..widgets import (
     ImageTagsWidget,
     LabelManagerPanel,
     OperatorBar,
+    TagLibraryWidget,
 )
 from ..widgets.panel import HoverScrollBars, RoundedPanel
 from ..widgets.statistics_table import StatisticsTable
@@ -535,8 +536,8 @@ def build_workspace(host, scroll_area, instruction_layout):
     objects_panel_layout.addWidget(host.label_list, 1)
 
     # "Image Attributes": the only place where image-level metadata is
-    # edited.  Image tags (free text chips) sit above the image flags
-    # (checkbox template); both belong to the current image.
+    # edited.  Image tags (free text chips) sit above the tag library, which
+    # lists the vocabulary already used by the current file list.
     attributes_panel = RoundedPanel()
     attributes_panel_layout = QVBoxLayout(attributes_panel)
     attributes_panel_layout.setContentsMargins(0, 0, 0, 0)
@@ -548,12 +549,15 @@ def build_workspace(host, scroll_area, instruction_layout):
     )
     tags_label = QLabel(host.tr("Image Tags"))
     tags_label.setStyleSheet(section_label_style)
-    flags_label = QLabel(host.tr("Flags"))
-    flags_label.setStyleSheet(section_label_style)
+    host.tag_library_widget = TagLibraryWidget(host.tr)
+    host.tag_library_widget.tag_clicked.connect(
+        host._on_tag_library_tag_clicked
+    )
+    host.flag_widget.setParent(attributes_panel)
+    host.flag_widget.hide()
     attributes_panel_layout.addWidget(tags_label)
     attributes_panel_layout.addWidget(host.image_tags_widget)
-    attributes_panel_layout.addWidget(flags_label)
-    attributes_panel_layout.addWidget(host.flag_widget, 1)
+    attributes_panel_layout.addWidget(host.tag_library_widget, 1)
 
     description_panel = RoundedPanel()
     description_panel_layout = QVBoxLayout(description_panel)
@@ -656,6 +660,7 @@ def build_workspace(host, scroll_area, instruction_layout):
         host.label_manager_widget.table,
         host.label_list,
         host.file_list_widget,
+        host.tag_library_widget.list_widget,
         host.flag_widget,
         host.shape_text_edit,
     ):

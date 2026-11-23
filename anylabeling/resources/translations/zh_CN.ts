@@ -3139,6 +3139,46 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Tag Library</source>
+        <translation>标签库</translation>
+    </message>
+    <message>
+        <source>Search tags…</source>
+        <translation>搜索标签…</translation>
+    </message>
+    <message>
+        <source>Collapse tag library</source>
+        <translation>收起标签库</translation>
+    </message>
+    <message>
+        <source>Expand tag library</source>
+        <translation>展开标签库</translation>
+    </message>
+    <message>
+        <source>Click a tag to add it to this image; remove it with × above.</source>
+        <translation>点击标签即可添加到当前图片；移除请用上方的 ×。</translation>
+    </message>
+    <message>
+        <source>%s (used by %d images)</source>
+        <translation>%s（%d 张图片使用）</translation>
+    </message>
+    <message>
+        <source>No other tags in the current file list.</source>
+        <translation>当前文件列表中没有其他标签。</translation>
+    </message>
+    <message>
+        <source>No matching tags.</source>
+        <translation>没有匹配的标签。</translation>
+    </message>
+    <message>
+        <source>Failed to save the new tag</source>
+        <translation>新标签保存失败</translation>
+    </message>
+    <message>
+        <source>Tag added: %s</source>
+        <translation>已添加标签：%s</translation>
+    </message>
+    <message>
         <source>Set Tags…</source>
         <translation>设置标签…</translation>
     </message>

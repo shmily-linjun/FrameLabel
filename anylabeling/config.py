@@ -27,6 +27,10 @@ _REMOVED_CONFIG_KEYS = {
     "shape_dock",
     "file_list_checkbox_editable",
 }
+#: Free-form mappings whose keys are data (column indexes), not schema.  The
+#: default config declares them as an empty dict; their entries must be
+#: merged as a whole instead of being validated key by key.
+_FREEFORM_CONFIG_KEYS = {"column_widths"}
 
 
 def set_work_directory(directory: str) -> None:
@@ -58,6 +62,9 @@ def update_dict(target_dict, new_dict, validate_item=None):
             validate_item(key, value)
         if key not in target_dict:
             logger.warning(f"Skipping unexpected key in config: {key}")
+            continue
+        if key in _FREEFORM_CONFIG_KEYS and isinstance(value, dict):
+            target_dict[key] = copy.deepcopy(value)
             continue
         if isinstance(target_dict[key], dict) and isinstance(value, dict):
             update_dict(target_dict[key], value, validate_item=validate_item)

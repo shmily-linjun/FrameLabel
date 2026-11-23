@@ -3139,6 +3139,46 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Tag Library</source>
+        <translation>タグライブラリ</translation>
+    </message>
+    <message>
+        <source>Search tags…</source>
+        <translation>タグを検索…</translation>
+    </message>
+    <message>
+        <source>Collapse tag library</source>
+        <translation>タグライブラリを折りたたむ</translation>
+    </message>
+    <message>
+        <source>Expand tag library</source>
+        <translation>タグライブラリを展開</translation>
+    </message>
+    <message>
+        <source>Click a tag to add it to this image; remove it with × above.</source>
+        <translation>タグをクリックすると現在の画像に追加します。削除は上の × から行います。</translation>
+    </message>
+    <message>
+        <source>%s (used by %d images)</source>
+        <translation>%s（%d 枚の画像で使用）</translation>
+    </message>
+    <message>
+        <source>No other tags in the current file list.</source>
+        <translation>現在のファイル一覧に他のタグはありません。</translation>
+    </message>
+    <message>
+        <source>No matching tags.</source>
+        <translation>一致するタグがありません。</translation>
+    </message>
+    <message>
+        <source>Failed to save the new tag</source>
+        <translation>新しいタグを保存できませんでした</translation>
+    </message>
+    <message>
+        <source>Tag added: %s</source>
+        <translation>タグを追加しました: %s</translation>
+    </message>
+    <message>
         <source>Set Tags…</source>
         <translation>タグを設定…</translation>
     </message>

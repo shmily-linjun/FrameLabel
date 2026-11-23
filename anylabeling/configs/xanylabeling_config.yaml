@@ -73,6 +73,7 @@ file_list:
   show_inference: true
   show_split: true
   show_thumbnails: true
+  column_widths: {}
 
 # label_dialog
 show_label_text_field: true

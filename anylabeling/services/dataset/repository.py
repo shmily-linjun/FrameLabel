@@ -258,6 +258,61 @@ class DatasetRepository:
         )
         return [dict(row) for row in rows]
 
+    def tag_counts(
+        self, rel_paths: Iterable[str] | None = None
+    ) -> list[dict[str, Any]]:
+        """Return the image-tag vocabulary of active images.
+
+        ``rel_paths`` restricts the counts to the images currently shown in
+        the file table; ``None`` means the whole dataset.  Results are ordered
+        by usage (most used first), then case-insensitively by name.
+        """
+
+        base_sql = (
+            "SELECT t.tag AS tag, COUNT(*) AS image_count "
+            "FROM image_tag t "
+            "JOIN image_file f ON f.id = t.image_id "
+            "WHERE f.dataset_id = ? AND f.is_deleted = 0 "
+        )
+        if rel_paths is None:
+            rows = self.db.query(
+                base_sql
+                + "GROUP BY t.tag "
+                "ORDER BY image_count DESC, t.tag COLLATE NOCASE, t.tag",
+                (self.dataset_id,),
+            )
+            return [dict(row) for row in rows]
+
+        values = []
+        seen = set()
+        for path in rel_paths:
+            value = _normalize_rel_path(path)
+            if value and value not in seen:
+                seen.add(value)
+                values.append(value)
+        if not values:
+            return []
+        counts: dict[str, int] = {}
+        for start in range(0, len(values), 900):
+            chunk = values[start : start + 900]
+            placeholders = ",".join("?" for _ in chunk)
+            rows = self.db.query(
+                base_sql
+                + f"AND f.rel_path IN ({placeholders}) "
+                "GROUP BY t.tag",
+                [self.dataset_id, *chunk],
+            )
+            for row in rows:
+                tag = row["tag"]
+                counts[tag] = counts.get(tag, 0) + int(row["image_count"])
+        return [
+            {"tag": tag, "image_count": count}
+            for tag, count in sorted(
+                counts.items(),
+                key=lambda item: (-item[1], item[0].casefold(), item[0]),
+            )
+        ]
+
     def set_category_order(self, names: Iterable[str]) -> bool:
         """Persist the display order of categories (D7/D18).
 

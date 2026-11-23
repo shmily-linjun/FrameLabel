@@ -239,6 +239,34 @@ def test_statistics_and_category_counts(dataset_tmp):
         database.close()
 
 
+def test_tag_counts_exclude_soft_deleted_images(dataset_tmp):
+    database, repository = make_repository(dataset_tmp)
+    try:
+        first = repository.add_image("images/a.png")
+        second = repository.add_image("images/b.png")
+        third = repository.add_image("images/c.png")
+        repository.save_annotation(
+            first, ImageAnnotation(tags=["defect", "blur"])
+        )
+        repository.save_annotation(second, ImageAnnotation(tags=["defect"]))
+        repository.save_annotation(third, ImageAnnotation(tags=["scratch"]))
+        repository.delete_image(second)
+
+        assert repository.tag_counts() == [
+            {"tag": "blur", "image_count": 1},
+            {"tag": "defect", "image_count": 1},
+            {"tag": "scratch", "image_count": 1},
+        ]
+        # Restricting to the visible file list drops images outside it.
+        assert repository.tag_counts(["images/a.png"]) == [
+            {"tag": "blur", "image_count": 1},
+            {"tag": "defect", "image_count": 1},
+        ]
+        assert repository.tag_counts([]) == []
+    finally:
+        database.close()
+
+
 def test_category_order_follows_sort_index(dataset_tmp):
     database, repository = make_repository(dataset_tmp)
     try:
