@@ -46,6 +46,7 @@ from .utils.label_text import (  # noqa: F401 (re-exported helpers)
     measure_text_width as _measure_text_width,
 )
 from .utils.image_tags import normalize_image_tag, normalize_image_tags
+from .utils.file_search import escape_query_value
 from .utils.qt import apply_application_font, new_icon_path
 from .utils.tag_library import TagCatalog
 from .utils.theme import get_theme
@@ -245,9 +246,9 @@ class LabelingWidget(LabelDialog):
                 "- Text: plain text matches the file name\n"
                 "- Index: #N (e.g., #1, #10)\n"
                 "- Regex: <pattern> (e.g., <\\.png$>)\n"
-                "- Attributes: label::xxx, split::train, shape::1, type::xxx,\n"
-                "  gid::0, difficult::1, score::[0,0.5], description::1,\n"
-                "  review::pending\n"
+                "- Attributes: label::xxx, tags::xxx, split::train,\n"
+                "  shape::1, type::xxx, gid::0, difficult::1,\n"
+                "  score::[0,0.5], description::1, review::pending\n"
                 "- split values: none/train/val/test (also 未划分/训练/验证/测试)\n"
                 "- Several values: label::cat|dog (or), label::cat,dog (and)\n"
                 "- Combine conditions: label::cat,split::train\n"
@@ -551,6 +552,14 @@ class LabelingWidget(LabelDialog):
                 self._tag_catalog.update(path, tags)
         self._tag_library_dirty = True
         self._refresh_tag_library_if_visible()
+
+    def _search_tag_from_library(self, tag):
+        """Turn a tag-library lookup into ``tags::`` in the search box."""
+        tag = str(tag or "").strip()
+        if not tag:
+            return
+        self.file_search.setText("tags::" + escape_query_value(tag))
+        self.file_search_changed()
 
     def _on_tag_library_tag_clicked(self, tag):
         tag = normalize_image_tag(tag)

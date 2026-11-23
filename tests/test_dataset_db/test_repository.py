@@ -186,16 +186,32 @@ def test_image_summaries_sql_filters(dataset_tmp):
     try:
         first = repository.add_image("a.png", split="train")
         repository.save_annotation(
-            first, ImageAnnotation(shapes=[rectangle("bolt", "s1")])
+            first,
+            ImageAnnotation(
+                shapes=[rectangle("bolt", "s1")],
+                tags=["Defect", "blur"],
+            ),
         )
         second = repository.add_image("b.png", split="val")
         repository.save_annotation(
-            second, ImageAnnotation(shapes=[polygon("nut", "s2")])
+            second,
+            ImageAnnotation(
+                shapes=[polygon("nut", "s2")], tags=["blur"]
+            ),
         )
         repository.add_image("c.png", split="none")
 
         assert [row["rel_path"] for row in repository.image_summaries(
             labels=["bolt"]
+        )] == ["a.png"]
+        assert [row["rel_path"] for row in repository.image_summaries(
+            tags=["defect"]
+        )] == ["a.png"]
+        assert [row["rel_path"] for row in repository.image_summaries(
+            tags=["blur"]
+        )] == ["a.png", "b.png"]
+        assert [row["rel_path"] for row in repository.image_summaries(
+            tags=["blur", "defect"]
         )] == ["a.png"]
         assert [row["rel_path"] for row in repository.image_summaries(
             split="val"

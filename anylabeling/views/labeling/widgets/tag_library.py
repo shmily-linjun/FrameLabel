@@ -13,6 +13,7 @@ from ..utils.theme import get_theme
 
 class TagLibraryWidget(QtWidgets.QWidget):
     tag_clicked = QtCore.pyqtSignal(str)
+    tag_search_requested = QtCore.pyqtSignal(str)
 
     def __init__(self, translate, parent=None):
         super().__init__(parent)
@@ -118,6 +119,12 @@ class TagLibraryWidget(QtWidgets.QWidget):
             """
         )
         self.list_widget.setMinimumHeight(80)
+        self.list_widget.setContextMenuPolicy(
+            QtCore.Qt.ContextMenuPolicy.CustomContextMenu
+        )
+        self.list_widget.customContextMenuRequested.connect(
+            self._on_context_menu
+        )
         self.list_widget.itemClicked.connect(self._on_item_clicked)
         self.list_widget.itemActivated.connect(self._on_item_clicked)
         body_layout.addWidget(self.list_widget, 1)
@@ -131,7 +138,10 @@ class TagLibraryWidget(QtWidgets.QWidget):
         body_layout.addWidget(self.empty_label)
 
         self.hint_label = QtWidgets.QLabel(
-            self._tr("Click a tag to add it to this image; remove it with × above.")
+            self._tr(
+                "Click to add; right-click or Ctrl+click to show images "
+                "using it."
+            )
         )
         self.hint_label.setWordWrap(True)
         self.hint_label.setStyleSheet(
@@ -224,9 +234,36 @@ class TagLibraryWidget(QtWidgets.QWidget):
         tag = item.data(QtCore.Qt.ItemDataRole.UserRole)
         if not tag:
             return
-        # Let the click handler return before the host saves and rebuilds the
-        # list: clearing a QListWidget inside its own itemClicked signal would
-        # delete the item while the signal is still being delivered.
+        search = self._is_search_gesture()
+        # Let the click handler return before the host saves/rebuilds or the
+        # search bar replaces the file list.
         QtCore.QTimer.singleShot(
-            0, lambda value=str(tag): self.tag_clicked.emit(value)
+            0,
+            lambda value=str(tag), find=search: (
+                self.tag_search_requested.emit(value)
+                if find
+                else self.tag_clicked.emit(value)
+            ),
         )
+
+    def _is_search_gesture(self):
+        return bool(
+            QtWidgets.QApplication.keyboardModifiers()
+            & QtCore.Qt.KeyboardModifier.ControlModifier
+        )
+
+    def _on_context_menu(self, position):
+        item = self.list_widget.itemAt(position)
+        if item is None:
+            return
+        tag = item.data(QtCore.Qt.ItemDataRole.UserRole)
+        if not tag:
+            return
+        menu = QtWidgets.QMenu(self.list_widget)
+        action = menu.addAction(self._tr("Show images with this tag"))
+        action.triggered.connect(
+            lambda _checked=False, value=str(tag): (
+                self.tag_search_requested.emit(value)
+            )
+        )
+        menu.exec(self.list_widget.viewport().mapToGlobal(position))

@@ -3155,8 +3155,12 @@ Continue?</source>
         <translation>展开标签库</translation>
     </message>
     <message>
-        <source>Click a tag to add it to this image; remove it with × above.</source>
-        <translation>点击标签即可添加到当前图片；移除请用上方的 ×。</translation>
+        <source>Click to add; right-click or Ctrl+click to show images using it.</source>
+        <translation>单击添加；右键或 Ctrl+单击可查看使用该标签的图片。</translation>
+    </message>
+    <message>
+        <source>Show images with this tag</source>
+        <translation>查看使用该标签的图片</translation>
     </message>
     <message>
         <source>%s (used by %d images)</source>

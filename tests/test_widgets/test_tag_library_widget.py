@@ -29,7 +29,9 @@ class TagLibraryWidgetTest(unittest.TestCase):
             current_tags=["defect"],
         )
         self.clicked = []
+        self.searches = []
         self.widget.tag_clicked.connect(self.clicked.append)
+        self.widget.tag_search_requested.connect(self.searches.append)
 
     def tearDown(self):
         self.widget.close()
@@ -62,6 +64,14 @@ class TagLibraryWidgetTest(unittest.TestCase):
         assert self.clicked == []
         self.app.processEvents()
         assert self.clicked == ["scratch"]
+
+    def test_ctrl_click_requests_a_tag_search(self):
+        self.widget._is_search_gesture = lambda: True
+        item = self.widget.list_widget.item(0)
+        self.widget.list_widget.itemClicked.emit(item)
+        self.app.processEvents()
+        assert self.searches == ["scratch"]
+        assert self.clicked == []
 
     def test_collapse_hides_the_body(self):
         self.widget.set_collapsed(True)

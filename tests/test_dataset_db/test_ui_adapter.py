@@ -130,6 +130,31 @@ def make_db(root):
     return database, repository, image_id
 
 
+def test_simple_database_filters_parses_tags():
+    assert FileSession._simple_database_filters("tags::defect") == (
+        [],
+        ["defect"],
+        None,
+        False,
+        None,
+    )
+    assert FileSession._simple_database_filters("tags::a\\,b") == (
+        [],
+        ["a,b"],
+        None,
+        False,
+        None,
+    )
+    assert FileSession._simple_database_filters(
+        "tags::a,tags::b"
+    ) == ([], ["a", "b"], None, False, None)
+    # Boolean forms deliberately fall back to the full evaluator.
+    assert FileSession._simple_database_filters("tags::a|b") is None
+    assert FileSession._simple_database_filters(
+        "tags::a,split::train"
+    ) == ([], ["a"], "train", False, None)
+
+
 def test_open_dataset_for_folder_and_file_rows(dataset_tmp):
     root = dataset_tmp / "dataset"
     root.mkdir()

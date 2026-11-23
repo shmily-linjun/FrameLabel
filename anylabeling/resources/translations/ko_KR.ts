@@ -3156,8 +3156,12 @@ Continue?</source>
         <translation>태그 라이브러리 펼치기</translation>
     </message>
     <message>
-        <source>Click a tag to add it to this image; remove it with × above.</source>
-        <translation>태그를 클릭하면 현재 이미지에 추가됩니다. 제거는 위의 ×를 사용하세요.</translation>
+        <source>Click to add; right-click or Ctrl+click to show images using it.</source>
+        <translation>클릭하여 추가합니다. 마우스 오른쪽 버튼 또는 Ctrl+클릭으로 이 태그를 사용하는 이미지를 표시합니다.</translation>
+    </message>
+    <message>
+        <source>Show images with this tag</source>
+        <translation>이 태그를 사용하는 이미지 보기</translation>
     </message>
     <message>
         <source>%s (used by %d images)</source>

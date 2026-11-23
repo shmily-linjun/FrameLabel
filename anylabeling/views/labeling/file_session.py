@@ -33,6 +33,21 @@ from .utils.file_search import (
     matches_query_label_data,
     parse_search_query,
 )
+
+
+def _unescape_filter_value(value):
+    """Remove one level of backslash escaping from a raw filter value."""
+    result = []
+    index = 0
+    while index < len(value):
+        char = value[index]
+        if char == "\\" and index + 1 < len(value):
+            result.append(value[index + 1])
+            index += 2
+            continue
+        result.append(char)
+        index += 1
+    return "".join(result)
 from .widgets.file_dialog_preview import FileDialogPreview
 
 
@@ -334,14 +349,15 @@ class FileSession:
     def _simple_database_filters(pattern):
         """Return SQL-friendly filters or ``None``.
 
-        Only flat forms are optimized: ``label::x`` / ``split::train`` /
-        ``shape::0`` and plain filename text, joined by commas.  Boolean
-        groups, attributes and regex keep using the full in-Python evaluator.
+        Only flat forms are optimized: ``label::x`` / ``tags::x`` /
+        ``split::train`` / ``shape::0`` and plain filename text, joined by
+        commas.  Boolean groups, attributes and regex keep using the full
+        in-Python evaluator.
         """
 
         text = str(pattern or "").strip()
         if not text:
-            return [], None, False, None
+            return [], [], None, False, None
         if any(char in text for char in "()|!"):
             return None
         parts = []
@@ -361,6 +377,7 @@ class FileSession:
                 buffer.append(char)
         parts.append("".join(buffer).strip())
         labels = []
+        tags = []
         split = None
         objectless = False
         filename = None
@@ -368,13 +385,7 @@ class FileSession:
             if "::" not in part:
                 if not part or filename is not None:
                     return None
-                filename = (
-                    part.replace("\\,", ",")
-                    .replace("\\|", "|")
-                    .replace("\\(", "(")
-                    .replace("\\)", ")")
-                    .replace("\\\\", "\\")
-                )
+                filename = _unescape_filter_value(part)
                 continue
             if part.count("::") != 1:
                 return None
@@ -382,13 +393,9 @@ class FileSession:
             field = field.strip().lower()
             value = value.strip()
             if field == "label" and value:
-                labels.append(
-                    value.replace("\\,", ",")
-                    .replace("\\|", "|")
-                    .replace("\\(", "(")
-                    .replace("\\)", ")")
-                    .replace("\\\\", "\\")
-                )
+                labels.append(_unescape_filter_value(value))
+            elif field == "tags" and value:
+                tags.append(_unescape_filter_value(value))
             elif field == "split" and value:
                 normalized = value.lower()
                 if normalized == "unassigned":
@@ -400,7 +407,7 @@ class FileSession:
                 objectless = True
             else:
                 return None
-        return labels, split, objectless, filename
+        return labels, tags, split, objectless, filename
 
     def _load_database_folder(
         self, directory, repository, load=True, pattern=None, select_first=True
@@ -420,9 +427,10 @@ class FileSession:
             elif not query.matches_all:
                 filters = self._simple_database_filters(pattern)
                 if filters is not None:
-                    labels, split, objectless, filename = filters
+                    labels, tags, split, objectless, filename = filters
                     rows = repository.image_summaries(
                         labels=labels,
+                        tags=tags,
                         split=split,
                         objectless=objectless,
                         filename=filename,

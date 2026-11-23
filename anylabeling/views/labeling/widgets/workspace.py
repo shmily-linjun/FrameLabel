@@ -553,6 +553,9 @@ def build_workspace(host, scroll_area, instruction_layout):
     host.tag_library_widget.tag_clicked.connect(
         host._on_tag_library_tag_clicked
     )
+    host.tag_library_widget.tag_search_requested.connect(
+        host._search_tag_from_library
+    )
     host.flag_widget.setParent(attributes_panel)
     host.flag_widget.hide()
     attributes_panel_layout.addWidget(tags_label)

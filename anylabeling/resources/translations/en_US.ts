@@ -3156,8 +3156,12 @@ Continue?</translation>
         <translation>Expand tag library</translation>
     </message>
     <message>
-        <source>Click a tag to add it to this image; remove it with × above.</source>
-        <translation>Click a tag to add it to this image; remove it with × above.</translation>
+        <source>Click to add; right-click or Ctrl+click to show images using it.</source>
+        <translation>Click to add; right-click or Ctrl+click to show images using it.</translation>
+    </message>
+    <message>
+        <source>Show images with this tag</source>
+        <translation>Show images with this tag</translation>
     </message>
     <message>
         <source>%s (used by %d images)</source>

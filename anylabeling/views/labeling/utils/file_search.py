@@ -6,8 +6,8 @@ evaluated against image file names and their annotation JSON files.
 Grammar (all operators work for every field and can be freely combined)
 -----------------------------------------------------------------------
 ``field::value``
-    A condition.  Supported fields are ``label``, ``split``, ``shape``,
-    ``type``, ``gid``, ``difficult``, ``review``, ``score`` and
+    A condition.  Supported fields are ``label``, ``tags``, ``split``,
+    ``shape``, ``type``, ``gid``, ``difficult``, ``review``, ``score`` and
     ``description``.  The field name is case insensitive.
 
 ``plain text``
@@ -99,6 +99,7 @@ _SPLIT_VALUE_ALIASES = {
 _SEARCH_FIELDS = frozenset(
     (
         "label",
+        "tags",
         "split",
         "shape",
         "type",
@@ -139,7 +140,7 @@ class _LabelData:
     :class:`SearchQuery` can use a single code path for missing files.
     """
 
-    __slots__ = ("data", "exists", "shapes", "split")
+    __slots__ = ("data", "exists", "shapes", "split", "tags")
 
     def __init__(self, data=None):
         self.data = data if isinstance(data, dict) else None
@@ -147,11 +148,18 @@ class _LabelData:
         if not self.exists:
             self.shapes = []
             self.split = SPLIT_NONE
+            self.tags = []
             return
 
         shapes = self.data.get("shapes")
         self.shapes = shapes if isinstance(shapes, list) else []
         self.split = _normalize_stored_split(self.data.get("split"))
+        tags = self.data.get("tags")
+        self.tags = (
+            [tag for tag in tags if isinstance(tag, str) and tag]
+            if isinstance(tags, list)
+            else []
+        )
 
 
 def _normalize_stored_split(value):
@@ -330,6 +338,8 @@ class _AttributeNode(_Node):
             return label_data.split == spec
         if field == "label":
             return _matches_label(label_data, spec)
+        if field == "tags":
+            return _matches_tags(label_data, spec)
         if field == "type":
             return _matches_shape_type(label_data, spec)
         if field == "gid":
@@ -357,6 +367,13 @@ def _matches_label(label_data, spec):
         if isinstance(label, str) and label and label.lower() == target:
             return True
     return False
+
+
+def _matches_tags(label_data, spec):
+    if not isinstance(spec, str) or not spec:
+        return False
+    target = spec.lower()
+    return any(tag.lower() == target for tag in label_data.tags)
 
 
 def _matches_shape_type(label_data, spec):
@@ -437,7 +454,7 @@ def _make_attribute_node(field, raw_value):
     if field not in _SEARCH_FIELDS:
         raise SearchQueryError(f"unknown search field: {field!r}")
 
-    if field in ("label", "type"):
+    if field in ("label", "tags", "type"):
         return _AttributeNode(field, raw_value)
     if field == "split":
         return _AttributeNode(field, _parse_split_query(raw_value))

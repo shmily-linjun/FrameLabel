@@ -1104,6 +1104,28 @@ def test_object_column_has_no_status_circle(window, tmp_path):
     assert item.text() == "3"
 
 
+def test_tag_library_click_requires_login(window, tmp_path, monkeypatch):
+    """The library stays clickable when logged out so it can ask for login."""
+    app = QtWidgets.QApplication.instance()
+    widget = window.labeling_widget.view
+    images, _first, _second, _third = _make_dataset(tmp_path)
+    widget.import_image_folder(str(images), auto_db=False)
+    app.processEvents()
+
+    assert widget.tag_library_widget.list_widget.isEnabled() is True
+    calls = []
+    monkeypatch.setattr(
+        widget,
+        "_ensure_operator",
+        lambda: calls.append(True) or False,
+    )
+
+    widget._on_tag_library_tag_clicked("defect")
+
+    assert calls == [True]
+    assert "defect" not in widget.image_tags_widget.tags
+
+
 def test_tag_library_click_adds_tag_and_writes_attribution(
     window, monkeypatch
 ):
@@ -1171,6 +1193,19 @@ def test_tag_library_click_adds_tag_and_writes_attribution(
         ]
         assert "defect" not in remaining
         assert widget.dirty is False
+
+        # Ctrl+click / the context menu turns a tag into a tags:: search.
+        searches = []
+        monkeypatch.setattr(
+            widget,
+            "file_search_changed",
+            lambda: searches.append(widget.file_search.text()),
+        )
+        widget._search_tag_from_library("defect")
+        assert widget.file_search.text() == "tags::defect"
+        assert searches == ["tags::defect"]
+        widget._search_tag_from_library("a,b")
+        assert widget.file_search.text() == "tags::a\\,b"
     finally:
         shutil.rmtree(base, ignore_errors=True)
 

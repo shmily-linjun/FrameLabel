@@ -6,6 +6,63 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.35 — 2026-11-23
+
+### 1. 背景与原因
+
+用户反馈 2 项（另有一项关于生成文件的疑问）：
+
+1. `resources.py` 每次都被修改且行数特别大，想知道原因；
+2. 标签库有三个新问题：①搜索框不支持 `tags` 字段；②未登录时点击标签没有登录提示；③鼠标悬停显示“xxx 张图片使用”很好，但点击已被用于添加，想知道如何快速查看哪些图片使用了该标签（即触发 `tags::xxx` 搜索）。
+
+第 2 项的根因：`file_search.py` 没有 `tags` 字段；fork.34 把 `TagLibraryWidget` 放进了 `OperatorGate.apply()` 的禁用列表，未登录时点击被控件直接吞掉（没有走到 `_ensure_operator()`）；标签库只有左键添加一个事件。
+
+### 2. 主要实现与关键细节
+
+- **`tags::` 搜索**：
+  - `file_search.py` 的字段集合加入 `tags`，`_LabelData` 缓存 `tags`，新增 `_matches_tags()`：按标签精确匹配、不区分大小写；`tags::a,tags::b` 为 AND，`tags::a|b` 走既有 OR 展开。
+  - DB 快路径：`DatasetRepository.image_summaries(tags=...)` 用 `EXISTS (SELECT 1 FROM image_tag ... t.tag = ? COLLATE NOCASE)`；`FileSession._simple_database_filters()` 解析 `tags::` 并返回 5 元组（labels/tags/split/objectless/filename），统一用 `_unescape_filter_value()` 处理转义。复杂布尔式仍走完整求值器。
+  - 搜索框 tooltip 与中文手册补充 `tags::xxx`。
+- **未登录点击标签库**：
+  - 移除 `OperatorGate.apply()` 对 `tag_library_widget` 的 `set_editing_enabled(False)`；标签库保持可点击，点击仍走 `_on_tag_library_tag_clicked()` → `_ensure_operator()`，未登录时弹出登录对话框。图片标签 chips 仍在浏览模式只读。
+- **查找使用某标签的图片**：
+  - `TagLibraryWidget` 新增 `tag_search_requested` 信号；右键标签菜单“Show images with this tag”，或 `Ctrl+单击` 触发。
+  - `LabelingWidget._search_tag_from_library()` 用 `escape_query_value()` 拼出 `tags::标签名`，写入搜索框并调用 `file_search_changed()`；库底提示更新为“单击添加；右键或 Ctrl+单击可查看使用该标签的图片”。
+- **`resources.py` 说明（未改代码）**：它是 `scripts/compile_languages.py` 用 Qt RCC 从 `resources.qrc` 生成的资源包，内嵌 252 个图标/图片/4 个 `.qm`；RCC 以每行约 16 字节的十六进制字面量输出，因此文件约 5.2 MB / 11.7 万行。只有资源文件变化（本批是翻译）时才会重新生成；翻译 `.qm` 在文件尾部，`.qm` 变化会移动后续字节串的断行位置，造成数万行 diff。该生成文件不手改；是否“拆分资源/改为运行时加载 `.qm`/发布时再生成”属于流程选择，本批未改。
+- 翻译：替换 1 条标签库提示、新增“Show images with this tag”；四语言重编。
+- 版本：`4.3.2+fork.34` → `4.3.2+fork.35`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/utils/file_search.py`、`anylabeling/views/labeling/file_session.py`、`anylabeling/services/dataset/repository.py`、`anylabeling/views/labeling/widgets/tag_library.py`、`anylabeling/views/labeling/label_widget.py`、`anylabeling/views/labeling/operator/gate.py`、`anylabeling/resources/translations/*`、`resources.py`、`app_info.py`
+- 测试：`tests/test_utils/test_file_search.py` 增加 `tags::` 用例；`tests/test_widgets/test_tag_library_widget.py` 增加 Ctrl+单击搜索用例；`tests/test_labeling/test_file_table.py` 增加未登录可点击/登录提示与 `tags::` 搜索框写入断言；`tests/test_dataset_db/test_repository.py` 增加 `image_summaries(tags=...)` 断言
+- 文档：本文件、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.12，§4.5）、`docs/开始.md`（T3）、`docs/user/zh_cn/user_guide.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：搜索框支持 `tags::xxx`；未登录点击标签库会弹登录；右键标签或 `Ctrl+单击` 直接筛出使用该标签的图片。
+- **接口**：`file_search` 新增 `tags` 字段；`image_summaries(tags=None)`；`TagLibraryWidget.tag_search_requested`；`LabelingWidget._search_tag_from_library()`。
+- **数据/契约**：无 schema 变更；标签匹配精确、不区分大小写；DB `COLLATE NOCASE` 对非 ASCII 大小写的处理与 Python `.lower()` 略有差异。
+- **版本**：fork.34 → fork.35。
+
+### 5. 实际验证内容
+
+- `tests/test_utils/test_file_search.py`：`tags::` 大小写/AND/NOT/缺失文件用例通过；`test_dataset_db/test_repository.py::test_image_summaries_sql_filters` 增加 `tags` 快路径断言并通过。
+- `tests/test_widgets/test_tag_library_widget.py`：Ctrl+单击只发 `tag_search_requested`、不添加；`test_labeling/test_file_table.py`：未登录时标签库仍 enabled、点击调用 `_ensure_operator()`，以及 `_search_tag_from_library("defect")` 写入 `tags::defect`、逗号被转义。
+- 本轮 `tests/test_labeling tests/test_widgets tests/test_dataset_db tests/test_config tests/test_utils/test_tag_library.py tests/test_utils/test_file_search.py`：**389 passed / 10 failed / 149 subtests**；失败集合与 HEAD 基线**完全相同**（本次运行时序抖动 `test_brightness_contrast_updates_are_throttled` 通过，故从 11 降到 10，未引入新失败）。
+- `scripts/compile_languages.py`：四语言 `.qm` 各 **2285 条 / 0 unfinished**；新字符串四语言抽查通过。
+- **未执行**：真实桌面右键菜单/`Ctrl+单击`/登录弹窗观感、真实大目录 `tags::` 搜索性能、非 ASCII 大小写标签的 DB/JSON 一致性、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- `tags::` 为**精确标签名**匹配，不支持子串/通配符；需要子串时可用普通文件名/其它条件组合，后续可加 `tags~=` 之类语法。
+- SQLite `COLLATE NOCASE` 只对 ASCII 大小写不敏感；含非 ASCII 大小写的标签在 DB 与 JSON 模式可能表现不同。
+- 右键/Ctrl+单击会覆盖当前搜索框内容并重新加载列表；想保留原查询需先自行记录。
+- 标签库仍只添加；查找结果通过文件表呈现，没有独立的“使用该标签的图片”对话框。
+- `resources.py` 的生成/提交策略未改；若希望减少 diff，需要在“运行时优先加载文件系统 `.qm` + 发布前统一生成”之间做流程选择（本批仅解释）。
+
+---
+
 ## 4.3.2+fork.34 — 2026-11-23
 
 ### 1. 背景与原因

@@ -70,6 +70,60 @@ class TestFileSearch(unittest.TestCase):
         self.assertEqual(pattern.mode, "normal")
         self.assertEqual(pattern.pattern, "#0")
 
+    def test_tags_search_matches_case_insensitively(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            first = str(Path(temp_dir) / "a.jpg")
+            second = str(Path(temp_dir) / "b.jpg")
+            third = str(Path(temp_dir) / "c.jpg")
+            self._write_label_data(
+                Path(temp_dir) / "a.json",
+                {"shapes": [], "tags": ["Defect", "blur"]},
+            )
+            self._write_label_data(
+                Path(temp_dir) / "b.json",
+                {"shapes": [], "tags": ["blur"]},
+            )
+            self._write_label_data(
+                Path(temp_dir) / "c.json", {"shapes": []}
+            )
+
+            self.assertEqual(
+                filter_image_files(
+                    [first, second, third], "tags::defect"
+                ),
+                [first],
+            )
+            self.assertEqual(
+                filter_image_files(
+                    [first, second, third], "tags::DEFECT"
+                ),
+                [first],
+            )
+            self.assertEqual(
+                filter_image_files(
+                    [first, second, third], "tags::blur"
+                ),
+                [first, second],
+            )
+            self.assertEqual(
+                filter_image_files(
+                    [first, second, third], "tags::blur,tags::defect"
+                ),
+                [first],
+            )
+            self.assertEqual(
+                filter_image_files(
+                    [first, second, third], "!tags::blur"
+                ),
+                [third],
+            )
+            self.assertEqual(
+                filter_image_files(
+                    [first, second, third], "tags::missing"
+                ),
+                [],
+            )
+
     def test_attribute_search_modes(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             image_files = [

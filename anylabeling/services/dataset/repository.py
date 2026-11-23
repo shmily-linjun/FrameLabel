@@ -162,16 +162,17 @@ class DatasetRepository:
         self,
         *,
         labels: list[str] | None = None,
+        tags: list[str] | None = None,
         split: str | None = None,
         objectless: bool = False,
         filename: str | None = None,
     ) -> list[dict[str, Any]]:
         """Rows for the file table: image fields + object count + tags.
 
-        ``labels``/``split``/``objectless``/``filename`` are a fast SQL path
-        for the common search terms (``label::``, ``split::``, ``shape::0``,
-        plain filename text); complex boolean expressions still fall back to
-        the in-Python query evaluator.
+        ``labels``/``tags``/``split``/``objectless``/``filename`` are a fast
+        SQL path for the common search terms (``label::``, ``tags::``,
+        ``split::``, ``shape::0``, plain filename text); complex boolean
+        expressions still fall back to the in-Python query evaluator.
         """
 
         where = ["f.dataset_id = ?", "f.is_deleted = 0"]
@@ -195,6 +196,12 @@ class DatasetRepository:
                 "AND c.name = ?)"
             )
             params.append(label)
+        for tag in tags or ():
+            where.append(
+                "EXISTS (SELECT 1 FROM image_tag t "
+                "WHERE t.image_id = f.id AND t.tag = ? COLLATE NOCASE)"
+            )
+            params.append(tag)
         rows = self.db.query(
             "SELECT f.*, "
             " (SELECT COUNT(*) FROM annotation_object o "
