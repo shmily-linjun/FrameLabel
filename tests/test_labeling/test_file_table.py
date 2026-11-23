@@ -1228,6 +1228,18 @@ def test_move_outside_dataset_removes_row(
     assert widget.dataset_repository.find_image(first.name) is None
 
 
+def test_train_menu_has_planned_tool_entries(window):
+    actions = window.labeling_widget.view.actions
+    for name in (
+        "ultralytics_train",
+        "training_analysis",
+        "sam_tool",
+        "rf_detr_tool",
+        "efficient_tool",
+    ):
+        assert getattr(actions, name) is not None
+
+
 def test_category_import_button_is_shown_on_classes_tab(window):
     widget = window.labeling_widget.view
     button = widget.category_import_button

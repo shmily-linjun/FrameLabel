@@ -59,7 +59,17 @@ def build_menus(host):
             host.actions.open_settings,
         ),
     )
-    utils.add_actions(menus.train, (host.actions.ultralytics_train,))
+    utils.add_actions(
+        menus.train,
+        (
+            host.actions.ultralytics_train,
+            None,
+            host.actions.training_analysis,
+            host.actions.sam_tool,
+            host.actions.rf_detr_tool,
+            host.actions.efficient_tool,
+        ),
+    )
     utils.add_actions(
         menus.workflow,
         (

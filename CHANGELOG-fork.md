@@ -6,6 +6,65 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.43 — 2026-11-23
+
+### 1. 背景与原因
+
+用户要求在标题/菜单栏“工具”（当前 Ultralytics 所在菜单）中增加：
+
+- 训练结果分析
+- SAM
+- RF-DETR
+- Efficient
+
+并明确“暂时不实现功能，先添加菜单”，同时把四项加入设计书作为后续功能。
+
+### 2. 主要实现与关键细节
+
+- 在 `actions/builder.py` 增加四个 QAction：
+  - `training_analysis`：Training Result Analysis；
+  - `sam_tool`：SAM；
+  - `rf_detr_tool`：RF-DETR；
+  - `efficient_tool`：Efficient。
+- 四个动作均使用 `planned_feature()`：点击只在状态栏提示“%s is planned but not implemented yet.”，不启动任何训练/模型逻辑。
+- 图标：`chart-column`、`circle-selection`、`component`、`cpu-ai`；tooltip 写明 Planned。
+- 在 `actions/menus.py` 的 Train 菜单中，Ultralytics 后加分隔线，再列四个占位项。
+- 翻译：新增菜单/提示 6 条；四语言 `.qm` 各 2325 条。
+- 设计书 §6.6.1–§6.6.4 新增四项规划：
+  - 训练结果分析：只读解析 Ultralytics run（args/results/weights/曲线/混淆矩阵），按类别定位错误样本、对比 run、回链数据集；
+  - SAM：统一 SAM/SAM2 提示分割工作台，复用现有适配器与 CPU 串行锁/BFC 策略；
+  - RF-DETR：检测模型族接入自动标注/训练包/结果回导，首期不在桌面端训练；
+  - Efficient：EfficientViT/EfficientDet 等轻量模型族，面向 CPU/低显存。
+- 版本：4.3.2+fork.42 → 4.3.2+fork.43。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/actions/builder.py`、`actions/menus.py`、`resources/translations/*`、`app_info.py`
+- 测试：`tests/test_labeling/test_file_table.py`（四个 action 存在）
+- 文档：本文件、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`（正文 v1.20）、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可观察**：Train 菜单在 Ultralytics 后新增四个菜单项；点击显示“规划功能，暂未实现”，不会触发训练/推理。
+- **接口**：`actions.training_analysis`/`sam_tool`/`rf_detr_tool`/`efficient_tool`。
+- **数据**：无变化。
+- **版本**：fork.42 → fork.43。
+
+### 5. 实际验证内容
+
+- `test_train_menu_has_planned_tool_entries`：四个 action 均已注册，Ultralytics 仍存在。
+- 四语言 `.qm` 各 **2325 条 / 0 unfinished**；`resources.py` 无 diff。
+- 最终回归：`test_labeling` **256 passed / 10 failed / 51 subtests**（失败集合与基线相同）；其余沿用 fork.42 的 **291 passed / 1 failed / 105 subtests**；合计 **547 passed / 11 failed / 156 subtests**。
+- **未执行**：真实菜单点选观感、占位提示翻译逐语言检查、打包与全量回归。
+
+### 6. 已知限制与后续事项
+
+- 四个菜单项目前完全无功能，只是占位；点击不会打开任何窗口。
+- “训练结果分析”优先做只读分析；SAM/RF-DETR/Efficient 需要模型管理、训练包格式和自动标注适配，属于后续独立批次。
+- 菜单放在与 Ultralytics 相同的 Train 菜单，而不是 Tool 菜单；如果用户希望放在 Tool 菜单，需要再确认（避免同一动作出现在两个菜单）。
+
+---
+
 ## 4.3.2+fork.42 — 2026-11-23
 
 ### 1. 背景与原因

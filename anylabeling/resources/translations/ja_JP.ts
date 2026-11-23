@@ -3139,6 +3139,30 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Training Result Analysis</source>
+        <translation>トレーニング結果分析</translation>
+    </message>
+    <message>
+        <source>Planned: analyze training runs and metrics</source>
+        <translation>計画中：トレーニング実行と指標を分析</translation>
+    </message>
+    <message>
+        <source>Planned: SAM prompt segmentation tool</source>
+        <translation>計画中：SAM プロンプトセグメンテーションツール</translation>
+    </message>
+    <message>
+        <source>Planned: RF-DETR model support</source>
+        <translation>計画中：RF-DETR モデル対応</translation>
+    </message>
+    <message>
+        <source>Planned: Efficient model family support</source>
+        <translation>計画中：Efficient モデルファミリー対応</translation>
+    </message>
+    <message>
+        <source>%s is planned but not implemented yet.</source>
+        <translation>%s は計画中の機能で、まだ実装されていません。</translation>
+    </message>
+    <message>
         <source>Move out of Dataset</source>
         <translation>データセットから移動</translation>
     </message>

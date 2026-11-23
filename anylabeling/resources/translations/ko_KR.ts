@@ -3140,6 +3140,30 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Training Result Analysis</source>
+        <translation>학습 결과 분석</translation>
+    </message>
+    <message>
+        <source>Planned: analyze training runs and metrics</source>
+        <translation>계획: 학습 실행 및 지표 분석</translation>
+    </message>
+    <message>
+        <source>Planned: SAM prompt segmentation tool</source>
+        <translation>계획: SAM 프롬프트 분할 도구</translation>
+    </message>
+    <message>
+        <source>Planned: RF-DETR model support</source>
+        <translation>계획: RF-DETR 모델 지원</translation>
+    </message>
+    <message>
+        <source>Planned: Efficient model family support</source>
+        <translation>계획: Efficient 모델 제품군 지원</translation>
+    </message>
+    <message>
+        <source>%s is planned but not implemented yet.</source>
+        <translation>%s 기능은 계획 중이며 아직 구현되지 않았습니다.</translation>
+    </message>
+    <message>
         <source>Move out of Dataset</source>
         <translation>데이터세트에서 이동</translation>
     </message>

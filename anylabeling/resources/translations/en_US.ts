@@ -3140,6 +3140,30 @@ Continue?</translation>
 </context><context>
     <name>LabelingWidget</name>
     <message>
+        <source>Training Result Analysis</source>
+        <translation>Training Result Analysis</translation>
+    </message>
+    <message>
+        <source>Planned: analyze training runs and metrics</source>
+        <translation>Planned: analyze training runs and metrics</translation>
+    </message>
+    <message>
+        <source>Planned: SAM prompt segmentation tool</source>
+        <translation>Planned: SAM prompt segmentation tool</translation>
+    </message>
+    <message>
+        <source>Planned: RF-DETR model support</source>
+        <translation>Planned: RF-DETR model support</translation>
+    </message>
+    <message>
+        <source>Planned: Efficient model family support</source>
+        <translation>Planned: Efficient model family support</translation>
+    </message>
+    <message>
+        <source>%s is planned but not implemented yet.</source>
+        <translation>%s is planned but not implemented yet.</translation>
+    </message>
+    <message>
         <source>Move out of Dataset</source>
         <translation>Move out of Dataset</translation>
     </message>

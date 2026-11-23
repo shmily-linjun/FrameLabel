@@ -752,6 +752,36 @@ def build_actions(host):  # noqa: C901
         icon="cpu-ai",
     )
 
+    def planned_feature(name):
+        return lambda: host.status(
+            host.tr("%s is planned but not implemented yet.") % name
+        )
+
+    training_analysis = action(
+        host.tr("Training Result Analysis"),
+        planned_feature(host.tr("Training Result Analysis")),
+        icon="chart-column",
+        tip=host.tr("Planned: analyze training runs and metrics"),
+    )
+    sam_tool = action(
+        "SAM",
+        planned_feature("SAM"),
+        icon="circle-selection",
+        tip=host.tr("Planned: SAM prompt segmentation tool"),
+    )
+    rf_detr_tool = action(
+        "RF-DETR",
+        planned_feature("RF-DETR"),
+        icon="component",
+        tip=host.tr("Planned: RF-DETR model support"),
+    )
+    efficient_tool = action(
+        "Efficient",
+        planned_feature("Efficient"),
+        icon="cpu-ai",
+        tip=host.tr("Planned: Efficient model family support"),
+    )
+
     zoom = QtWidgets.QWidgetAction(host)
     zoom.setDefaultWidget(host.zoom_widget)
     host.zoom_widget.setWhatsThis(
@@ -1618,6 +1648,10 @@ def build_actions(host):  # noqa: C901
     actions.shape_converter = shape_converter
     actions.sponsor = sponsor
     actions.ultralytics_train = ultralytics_train
+    actions.training_analysis = training_analysis
+    actions.sam_tool = sam_tool
+    actions.rf_detr_tool = rf_detr_tool
+    actions.efficient_tool = efficient_tool
     actions.tool = (
         jump_next_images,
         open_next_image,
