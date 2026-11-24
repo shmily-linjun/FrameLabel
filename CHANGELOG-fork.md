@@ -6,6 +6,54 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.48 — 2026-11-24
+
+### 1. 背景与原因
+
+用户反馈 CPU/GPU 环境里没有 `onnxruntime` / `onnxruntime-gpu`，认为环境没有配置完。
+实际情况是：`conda env create` 在 `Obtaining file:///D:/cbg` 阶段就失败，pip
+尚未开始安装依赖，所以失败环境里没有 ORT；不是 extras 没写。
+
+同时为了让依赖在 YAML 中直接可见，补充显式包名。
+
+### 2. 主要实现与关键细节
+
+- `environment-cpu.yml` 的 pip 段显式增加：
+  - `onnx`
+  - `onnxruntime`
+- `environment-gpu.yml` 的 pip 段显式增加：
+  - `onnx`
+  - `onnxruntime-gpu`
+- 版本约束仍由 `pyproject.toml` 的 `[cpu]` / `[gpu]` extra 决定，避免切换
+  `gpu-cu11` / `gpu-cu13` 时重复 pin 冲突。
+- `docs/dev/打包环境-conda.md` 说明：失败环境没有 ORT 是 pip 未开始安装，
+  不是清单漏写；先解决 YAML 路径再重建。
+- 版本：4.3.2+fork.47 → 4.3.2+fork.48。
+
+### 3. 涉及模块与文件
+
+- 修改：`environment-cpu.yml`、`environment-gpu.yml`、`docs/dev/打包环境-conda.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`、`anylabeling/app_info.py`
+- 未修改运行时代码。
+
+### 4. 行为、接口与兼容性影响
+
+- 成功创建环境后，CPU 环境有 `onnxruntime`，GPU 环境有 `onnxruntime-gpu`；
+- 仍需使用仓库根 YAML（或 `scripts/setup_conda_env.ps1`）解决 `-e .` 路径；
+- 版本：fork.47 → fork.48。
+
+### 5. 实际验证内容
+
+- 两份 YAML 用 PyYAML 解析通过，pip 段包含 `onnx` + 对应 ORT 包名；
+- 未在干净机器实际创建环境；运行时代码未变，沿用 fork.44 回归结果。
+
+### 6. 已知限制与后续事项
+
+- 失败环境不会因为显式 ORT 行而自动装上 ORT；必须重建成功；
+- GPU 的 CUDA/cuDNN 仍由系统提供；
+- `gpu` extra 默认 CUDA 12，CUDA 11/13 需切换 extra。
+
+---
+
 ## 4.3.2+fork.47 — 2026-11-24
 
 ### 1. 背景与原因

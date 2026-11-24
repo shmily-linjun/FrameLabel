@@ -9,6 +9,10 @@
 
 两份文件都安装 `dev` 依赖，因此包含 `PyInstaller`、`pytest`、`PySide6`（提供 `pyside6-lrelease`）等打包工具。**不要在同一环境中同时装 CPU 和 GPU 的 onnxruntime**。
 
+为便于检查，`environment-cpu.yml` 的 pip 段显式列出 `onnx`、`onnxruntime`，`environment-gpu.yml` 显式列出 `onnx`、`onnxruntime-gpu`；版本约束仍由 `pyproject.toml` 的 `[cpu]` / `[gpu]` extra 决定。
+
+> 如果环境创建在 `Obtaining file:///D:/cbg` 这一步失败，pip 还没有开始安装依赖，所以环境里看不到 `onnxruntime`/`onnxruntime-gpu` 是正常的。必须先解决 YAML 路径问题，再重建环境；不是依赖清单漏写。
+
 ## 0. 最常见的错误：YAML 不在仓库根目录
 
 Conda 在安装 `pip:` 段时，会把 pip 子进程的工作目录设为 **environment.yml 所在目录**（不是终端的当前目录）。所以：

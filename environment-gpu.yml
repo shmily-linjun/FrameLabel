@@ -45,3 +45,8 @@ dependencies:
 
   - pip:
       - -e .[gpu,dev]
+      # 显式列出，方便在 environment.yml 中直接看到 GPU 推理依赖；
+      # 版本约束由 pyproject.toml 的 [gpu] extra 决定（默认 CUDA 12.x）。
+      # 切换到 gpu-cu13 / gpu-cu11 时，extras 会给出对应约束，这里保持包名即可。
+      - onnx
+      - onnxruntime-gpu

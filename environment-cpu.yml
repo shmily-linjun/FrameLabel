@@ -37,3 +37,7 @@ dependencies:
 
   - pip:
       - -e .[cpu,dev]
+      # 显式列出，方便在 environment.yml 中直接看到 CPU 推理依赖；
+      # 版本约束由 pyproject.toml 的 [cpu] extra 决定。
+      - onnx
+      - onnxruntime
