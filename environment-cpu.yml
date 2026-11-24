@@ -1,16 +1,18 @@
 # X-AnyLabeling CPU build environment
 #
-# !! 必须在包含 pyproject.toml 的仓库根目录执行；conda 的 pip 子进程以
-# !! 当前目录为工作目录，`-e .` 不会自动指向本 YAML 所在目录。
-# !! 从其他目录执行会报：
-# !!   file:///D:/... does not appear to be a Python project
+# !! 本文件必须与 pyproject.toml 放在同一个仓库根目录。
+# !! conda 会把 pip 子进程的工作目录设为“本 YAML 文件所在目录”，
+# !! 因此把 YAML 单独复制到 D:\cbg 再执行，`-e .` 会指向 D:\cbg 并报：
+# !!   file:///D:/cbg does not appear to be a Python project
+# !! 正确做法是用仓库根里的这一份：
+# !!   conda env create -f D:\path\to\repo\environment-cpu.yml
 #
-# 用法（必须在项目根目录执行；`-e .` 需要当前目录就是仓库根）：
+# 用法（YAML 与 pyproject.toml 同在仓库根）：
 #   conda env create -f environment-cpu.yml
 #   conda activate xanylabeling-cpu
 #   python -c "import onnxruntime as ort; print(ort.get_available_providers())"
 #
-# 也可以在仓库根目录用脚本自动切目录：
+# 也可以在仓库根目录用脚本自动调用正确路径：
 #   powershell -ExecutionPolicy Bypass -File scripts\setup_conda_env.ps1 -Device cpu
 #
 # 预期只看到 CPUExecutionProvider；这个环境不会安装 CUDA/cuDNN，

@@ -9,29 +9,29 @@
 
 两份文件都安装 `dev` 依赖，因此包含 `PyInstaller`、`pytest`、`PySide6`（提供 `pyside6-lrelease`）等打包工具。**不要在同一环境中同时装 CPU 和 GPU 的 onnxruntime**。
 
-## 0. 最常见的错误：不在仓库根目录执行
+## 0. 最常见的错误：YAML 不在仓库根目录
 
-`conda env create -f environment-gpu.yml` 只负责找到 YAML 文件；**pip 子进程仍以你当前所在目录为工作目录**。如果当前目录不是仓库根，`-e .` 会指向那个目录：
+Conda 在安装 `pip:` 段时，会把 pip 子进程的工作目录设为 **environment.yml 所在目录**（不是终端的当前目录）。所以：
+
+- `environment-*.yml` 必须和 `pyproject.toml` 放在同一个仓库根目录；
+- 不能只把 YAML 复制到 `D:\cbg` 再执行，否则 `-e .` 会指向 `D:\cbg`，报：
 
 ```text
 ERROR: file:///D:/cbg does not appear to be a Python project:
 neither 'setup.py' nor 'pyproject.toml' found.
 ```
 
-例如你在 `D:\cbg` 执行、仓库实际在 `D:\cbg\X-AnyLabeling-main`，先在 PowerShell 中确认：
+正确做法是使用仓库根里的 YAML，路径可以写绝对路径，终端在哪个目录都可以：
 
 ```powershell
-Get-Location
-Test-Path .\pyproject.toml
+# 先确认仓库根有 pyproject.toml
+Test-Path D:\cbg\X-AnyLabeling-main\pyproject.toml
+
+# 必须使用仓库根里的 environment-*.yml
+conda env create -f D:\cbg\X-AnyLabeling-main\environment-gpu.yml
 ```
 
-必须有 `pyproject.toml`，否则先 `cd` 到仓库根：
-
-```powershell
-cd D:\cbg\X-AnyLabeling-main
-Test-Path .\pyproject.toml
-conda env create -f environment-gpu.yml
-```
+不要使用 `D:\cbg\environment-gpu.yml` 这种复制出来的副本。
 
 如果上一次已经留下不完整的环境，先删除再重来：
 
@@ -39,7 +39,7 @@ conda env create -f environment-gpu.yml
 conda env remove -n xanylabeling-gpu -y
 ```
 
-也可以在仓库根目录用脚本自动切到正确目录（推荐）：
+也可以在仓库根目录用脚本自动使用正确路径（推荐）：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\setup_conda_env.ps1 -Device gpu

@@ -6,6 +6,57 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.47 — 2026-11-24
+
+### 1. 背景与原因
+
+fork.46 的排错说明把 conda 的 pip 工作目录写成了“终端当前目录”，不准确。用户从
+`C:\Windows\system32` 执行、YAML 仍在 `D:\cbg` 时，pip 仍解析到
+`file:///D:/cbg`：
+
+```text
+ERROR: file:///D:/cbg does not appear to be a Python project
+```
+
+实际原因是 **Conda 会把 pip 子进程的 cwd 设为 environment.yml 所在目录**，不是
+终端 cwd。只把 YAML 复制到 `D:\cbg`，即使 `cd` 到仓库根也会失败。
+
+### 2. 主要实现与关键细节
+
+- 修正两份 `environment-*.yml` 顶部说明：
+  - YAML 必须与 `pyproject.toml` 同目录；
+  - 不要只复制 YAML；使用仓库根里的绝对路径：
+    `conda env create -f D:\path\to\repo\environment-gpu.yml`。
+- 修正 `scripts/setup_conda_env.ps1` 的说明：脚本通过传入仓库根 YAML 解决路径，
+  而不是依赖 `Push-Location` 改变 conda 的 pip cwd。
+- 修正 `docs/dev/打包环境-conda.md` 的“最常见错误”专节，给出
+  `Test-Path D:\...\pyproject.toml` 和绝对路径命令。
+- 版本：4.3.2+fork.46 → 4.3.2+fork.47。
+
+### 3. 涉及模块与文件
+
+- 修改：`environment-cpu.yml`、`environment-gpu.yml`、`scripts/setup_conda_env.ps1`、`docs/dev/打包环境-conda.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/开始.md`、`anylabeling/app_info.py`
+- 未修改运行时代码。
+
+### 4. 行为、接口与兼容性影响
+
+- 使用仓库根 YAML 时，从任意终端目录执行 `conda env create -f <repo>\environment-gpu.yml` 都能正确把 `-e .` 解析到仓库；
+- 仍不能使用复制到仓库外的 YAML；
+- 版本：fork.46 → fork.47。
+
+### 5. 实际验证内容
+
+- `scripts/setup_conda_env.ps1 -Device gpu -DryRun` 通过，输出仓库根 YAML 绝对路径；
+- 两份 YAML 用 PyYAML 解析通过；
+- 未在干净机器实际创建环境；运行时代码未变，沿用 fork.44 回归结果。
+
+### 6. 已知限制与后续事项
+
+- 如果用户只有 YAML、没有仓库源码，必须先克隆/复制完整仓库；
+- 环境文件仍不安装 CUDA/cuDNN/Inno Setup。
+
+---
+
 ## 4.3.2+fork.46 — 2026-11-23
 
 ### 1. 背景与原因

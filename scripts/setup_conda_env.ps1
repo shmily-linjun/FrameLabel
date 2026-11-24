@@ -4,13 +4,13 @@
     Create the CPU or GPU Conda environment for building X-AnyLabeling.
 
 .DESCRIPTION
-    Conda runs the pip subprocess in the *current* directory.  Running
-    `conda env create -f environment-gpu.yml` from a directory without
-    pyproject.toml makes `-e .` point at that directory and fails with:
+    Conda sets the pip subprocess working directory to the directory holding
+    the environment YAML.  Copying only the YAML to another directory makes
+    `-e .` point there and fails with:
         file:///D:/somewhere does not appear to be a Python project
 
-    This wrapper always changes to the repository root first, so the
-    environment files work even when invoked from another directory.
+    This wrapper passes the YAML from the actual repository root, so it works
+    even when invoked from another directory.
 
 .PARAMETER Device
     cpu or gpu.
