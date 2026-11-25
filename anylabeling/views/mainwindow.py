@@ -15,6 +15,7 @@ from ..widgets.frameless import FramelessWindow, window_state
 from .labeling.label_wrapper import LabelingWrapper
 from .labeling.pointcloud.icons import get_icon
 from .labeling.utils.theme import get_theme
+from .labeling.widgets.dataset_chip import DatasetChip
 from .labeling.widgets.toolbar import ToolBarScrollArea
 
 # Toolbar positions supported by the labeling toolbar. They are persisted by
@@ -183,6 +184,7 @@ class MainWindow(FramelessWindow):
         if app_instance is not None:
             app_instance.installEventFilter(self._status_tip_filter)
         self._install_operator_chrome()
+        self._install_dataset_chip()
         self._install_fullscreen_button()
         self._restore_menu_visibility()
         self._restore_window_geometry()
@@ -294,6 +296,75 @@ class MainWindow(FramelessWindow):
                 action = QtWidgets.QWidgetAction(self)
                 action.setDefaultWidget(button)
                 self._toolbar.addAction(action)
+
+    # -- dataset chip ------------------------------------------------------
+    def _dataset_registry(self):
+        """Return a registry store lazily (the chip menu only)."""
+
+        from ..services.dataset.registry import RegistryStore
+
+        return RegistryStore()
+
+    def _install_dataset_chip(self):
+        """Show the open dataset in the window chrome (fork.56).
+
+        Frameless mode places the chip in the custom title bar; native
+        mode falls back to the tool bar, like the operator chip.
+        """
+
+        view = getattr(self.labeling_widget, "view", None)
+        if view is None:
+            return
+        self.dataset_chip = DatasetChip(
+            registry_provider=self._dataset_registry, parent=self
+        )
+        self.dataset_chip.open_center_requested.connect(
+            view.open_dataset_center
+        )
+        self.dataset_chip.open_dataset_requested.connect(
+            view.import_image_folder
+        )
+        self.dataset_chip.close_dataset_requested.connect(
+            view.close_dataset
+        )
+        view.dataset_changed.connect(self._update_dataset_chip)
+        if self.frameless:
+            self.add_title_widget(self.dataset_chip, key="dataset")
+        else:
+            action = QtWidgets.QWidgetAction(self)
+            action.setDefaultWidget(self.dataset_chip)
+            self._toolbar.addAction(action)
+        self.dataset_chip.show()
+        self._update_dataset_chip()
+
+    def _update_dataset_chip(self):
+        chip = getattr(self, "dataset_chip", None)
+        view = getattr(self.labeling_widget, "view", None)
+        if chip is None or view is None:
+            return
+        root = getattr(view, "dataset_root", None)
+        if not root:
+            chip.set_dataset(None, None)
+            return
+        name = ""
+        try:
+            entry = self._dataset_registry().get_by_path(
+                os.path.join(root, "xanylabeling.db")
+            )
+            if entry is not None:
+                name = entry.display_name
+        except Exception:  # noqa: BLE001 - the chip must still render
+            name = ""
+        if not name:
+            repository = getattr(view, "dataset_repository", None)
+            if repository is not None:
+                try:
+                    name = repository.dataset().get("name", "")
+                except Exception:  # noqa: BLE001 - best effort
+                    name = ""
+        if not name:
+            name = os.path.basename(root.rstrip("/\\")) or root
+        chip.set_dataset(name, root)
 
     # -- toolbar docking ---------------------------------------------------
     def _install_toolbar(self):

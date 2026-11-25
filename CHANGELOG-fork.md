@@ -6,6 +6,62 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.56 — 2026-11-25
+
+### 1. 背景与需求
+
+用户同意“标题栏 chip”方案，要求实现：在窗口标题栏显示当前数据集，并提供
+打开数据集中心 / 切换数据集 / 关闭数据集的快捷操作。
+
+### 2. 主要实现
+
+- 新增 `DatasetChip`（`views/labeling/widgets/dataset_chip.py`，`QToolButton`）：
+  - 文本：有数据集时“数据集：<名称>”（名称优先取注册表显示名，其次 `dataset.name`，
+    最后目录名；过长省略）；无数据集时“未打开数据集”；
+  - 菜单懒构建（`aboutToShow`）：当前数据集信息行、“数据集中心…”、“切换数据集”
+    （列出注册表 active 项，排除当前项，最多 20 条）、“关闭数据集”（无数据集时置灰）；
+  - 信号：`open_center_requested`、`open_dataset_requested(root)`、`close_dataset_requested`。
+- `LabelingWidget` 新增 `dataset_changed` 信号与 `close_dataset()`；`FileSession` 在
+  打开/关闭数据集时发射信号，并新增 `close_dataset()`（确认未保存修改→重置状态→清空
+  文件表→关闭数据库→状态栏提示“数据集已关闭”）。
+- `MainWindow` 安装 chip：无边框模式放入自定义标题栏（`add_title_widget(key="dataset")`），
+  原生边框模式放入工具栏；连接三个信号到标注窗口的方法，`dataset_changed` 驱动
+  `_update_dataset_chip()` 刷新显示。
+- i18n：新增 10 条文案（No dataset/Dataset: %s/Current: %s/Switch dataset/Close dataset/
+  No other datasets/Dataset closed 等），已补中文；四语言 `.qm` 各 2748 条，zh/en 0 未翻译。
+
+### 3. 涉及文件
+
+- `anylabeling/views/labeling/widgets/dataset_chip.py`（新增）
+- `anylabeling/views/mainwindow.py`、`views/labeling/label_widget.py`、
+  `views/labeling/file_session.py`
+- `tests/test_widgets/test_dataset_chip.py`（新增 3 个用例）
+- 翻译资源、`app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、
+  `docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+
+### 4. 行为与兼容性
+
+- 标题栏/工具栏新增 chip，不改变原有菜单与工具栏动作；
+- 无数据集时 chip 显示“未打开数据集”，关闭动作置灰；打开/切换/关闭均复用现有
+  `import_image_folder`/`close_dataset` 路径；
+- 关闭数据集不影响注册表记录（数据集仍列在中心，状态 active）。
+
+### 5. 验证
+
+- `tests/test_widgets/test_dataset_chip.py` **3 passed**；`tests/test_widgets` **91 passed /
+  1 failed（既有计时抖动）**；`tests/test_dataset_db + test_widgets + test_utils +
+  test_identity + test_i18n` 通过（除既有抖动外）。
+- 离屏中文核对：chip 文本“数据集：演示数据集”、tooltip“当前数据集：…”、菜单
+  “当前：… / 数据集中心… / 切换数据集 / 关闭数据集”。
+- 四语言 `.qm` 各 2748 条，zh/en 0 未翻译。
+- **未执行**：真实桌面查看标题栏 chip 位置与点击行为（本机无 GUI 会话）。
+
+### 6. 已知限制
+
+- “切换数据集”最多列 20 条，更多请打开数据集中心；
+- 原生边框模式下 chip 在工具栏而非菜单栏右侧（避免与操作员 chip 争用角落）；
+- 推送仍受本机凭据/网络阻塞；本地 `main` 领先远端 9 个提交。
+
 ## 4.3.2+fork.55 — 2026-11-25
 
 ### 1. 背景与需求

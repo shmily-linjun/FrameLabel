@@ -2617,6 +2617,53 @@ Example: person.car.bicycle</translation>
         <translation>Select at least one available dataset to merge.</translation>
     </message>
 </context><context>
+    <name>DatasetChip</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="60" />
+        <source>No dataset</source>
+        <translation>No dataset</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="61" />
+        <source>No dataset is open</source>
+        <translation>No dataset is open</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="66" />
+        <source>Dataset: %s</source>
+        <translation>Dataset: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="68" />
+        <source>Current dataset: %s</source>
+        <translation>Current dataset: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="107" />
+        <source>Current: %s</source>
+        <translation>Current: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="111" />
+        <source>Dataset Center…</source>
+        <translation>Dataset Center…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="121" />
+        <source>Switch dataset</source>
+        <translation>Switch dataset</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="133" />
+        <source>No other datasets</source>
+        <translation>No other datasets</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="136" />
+        <source>Close dataset</source>
+        <translation>Close dataset</translation>
+    </message>
+</context><context>
     <name>DeleteComponentDialog</name>
     <message>
         <location filename="..\..\views\labeling\vqa\dialogs.py" line="867" />
@@ -3545,311 +3592,316 @@ The image files and their annotation files will NOT be deleted.</translation>
         <translation>Error opening dataset</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="541" />
+        <location filename="..\..\views\labeling\file_session.py" line="543" />
         <location filename="..\..\views\labeling\file_session.py" line="168" />
         <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="208" />
+        <location filename="..\..\views\labeling\file_session.py" line="210" />
         <source>Import Project (X-AnyLabeling)</source>
         <translation>Import Project (X-AnyLabeling)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="271" />
-        <location filename="..\..\views\labeling\file_session.py" line="217" />
+        <location filename="..\..\views\labeling\file_session.py" line="273" />
+        <location filename="..\..\views\labeling\file_session.py" line="219" />
         <source>Import Project</source>
         <translation>Import Project</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="219" />
+        <location filename="..\..\views\labeling\file_session.py" line="221" />
         <source>A dataset database already exists in this directory.</source>
         <translation>A dataset database already exists in this directory.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="224" />
+        <location filename="..\..\views\labeling\file_session.py" line="226" />
         <source>Skip existing images or replace their annotations?</source>
         <translation>Skip existing images or replace their annotations?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="229" />
+        <location filename="..\..\views\labeling\file_session.py" line="231" />
         <source>Skip Existing</source>
         <translation>Skip Existing</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="233" />
+        <location filename="..\..\views\labeling\file_session.py" line="235" />
         <source>Replace Existing</source>
         <translation>Replace Existing</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="237" />
+        <location filename="..\..\views\labeling\file_session.py" line="239" />
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="252" />
+        <location filename="..\..\views\labeling\file_session.py" line="254" />
         <source>Import failed</source>
         <translation>Import failed</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="323" />
-        <location filename="..\..\views\labeling\file_session.py" line="252" />
+        <location filename="..\..\views\labeling\file_session.py" line="325" />
+        <location filename="..\..\views\labeling\file_session.py" line="254" />
         <source>&lt;b&gt;%s&lt;/b&gt;</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="256" />
+        <location filename="..\..\views\labeling\file_session.py" line="258" />
         <source>Images: %d</source>
         <translation>Images: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="257" />
+        <location filename="..\..\views\labeling\file_session.py" line="259" />
         <source>Labeled: %d</source>
         <translation>Labeled: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="258" />
+        <location filename="..\..\views\labeling\file_session.py" line="260" />
         <source>Objects: %d</source>
         <translation>Objects: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="259" />
+        <location filename="..\..\views\labeling\file_session.py" line="261" />
         <source>Skipped: %d</source>
         <translation>Skipped: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="260" />
+        <location filename="..\..\views\labeling\file_session.py" line="262" />
         <source>Errors: %d</source>
         <translation>Errors: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="264" />
+        <location filename="..\..\views\labeling\file_session.py" line="266" />
         <source>Backup: %s</source>
         <translation>Backup: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="279" />
+        <location filename="..\..\views\labeling\file_session.py" line="281" />
         <source>Recycle bin is available in dataset mode only.</source>
         <translation>Recycle bin is available in dataset mode only.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="293" />
+        <location filename="..\..\views\labeling\file_session.py" line="295" />
         <source>No dataset image is open.</source>
         <translation>No dataset image is open.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="322" />
-        <location filename="..\..\views\labeling\file_session.py" line="310" />
-        <location filename="..\..\views\labeling\file_session.py" line="304" />
+        <location filename="..\..\views\labeling\file_session.py" line="324" />
+        <location filename="..\..\views\labeling\file_session.py" line="312" />
+        <location filename="..\..\views\labeling\file_session.py" line="306" />
         <source>Error deleting image</source>
         <translation>Error deleting image</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="305" />
+        <location filename="..\..\views\labeling\file_session.py" line="307" />
         <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; does not exist.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="311" />
+        <location filename="..\..\views\labeling\file_session.py" line="313" />
         <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; already exists.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="330" />
+        <location filename="..\..\views\labeling\file_session.py" line="332" />
         <source>Image moved to the recycle bin.</source>
         <translation>Image moved to the recycle bin.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="493" />
+        <location filename="..\..\views\labeling\file_session.py" line="495" />
         <source>Dataset database: %s</source>
         <translation>Dataset database: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="724" />
-        <location filename="..\..\views\labeling\file_session.py" line="646" />
-        <location filename="..\..\views\labeling\file_session.py" line="614" />
-        <location filename="..\..\views\labeling\file_session.py" line="540" />
-        <location filename="..\..\views\labeling\file_session.py" line="531" />
-        <location filename="..\..\views\labeling\file_session.py" line="523" />
-        <location filename="..\..\views\labeling\file_session.py" line="516" />
+        <location filename="..\..\views\labeling\file_session.py" line="726" />
+        <location filename="..\..\views\labeling\file_session.py" line="648" />
+        <location filename="..\..\views\labeling\file_session.py" line="616" />
+        <location filename="..\..\views\labeling\file_session.py" line="542" />
+        <location filename="..\..\views\labeling\file_session.py" line="533" />
+        <location filename="..\..\views\labeling\file_session.py" line="525" />
+        <location filename="..\..\views\labeling\file_session.py" line="518" />
         <source>Error opening file</source>
         <translation>Error opening file</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="517" />
+        <location filename="..\..\views\labeling\file_session.py" line="519" />
         <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="524" />
+        <location filename="..\..\views\labeling\file_session.py" line="526" />
         <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="532" />
+        <location filename="..\..\views\labeling\file_session.py" line="534" />
         <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="615" />
+        <location filename="..\..\views\labeling\file_session.py" line="617" />
         <source>No such file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>No such file: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="647" />
+        <location filename="..\..\views\labeling\file_session.py" line="649" />
         <source>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</source>
         <translation>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="730" />
-        <location filename="..\..\views\labeling\file_session.py" line="653" />
+        <location filename="..\..\views\labeling\file_session.py" line="732" />
+        <location filename="..\..\views\labeling\file_session.py" line="655" />
         <source>Error reading %s</source>
         <translation>Error reading %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="679" />
+        <location filename="..\..\views\labeling\file_session.py" line="681" />
         <source>File Not Found</source>
         <translation>File Not Found</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="682" />
+        <location filename="..\..\views\labeling\file_session.py" line="684" />
         <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; is missing.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="686" />
+        <location filename="..\..\views\labeling\file_session.py" line="688" />
         <source>Remove it from the file list, or skip it for now?</source>
         <translation>Remove it from the file list, or skip it for now?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="691" />
+        <location filename="..\..\views\labeling\file_session.py" line="693" />
         <source>Remove from List</source>
         <translation>Remove from List</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="695" />
+        <location filename="..\..\views\labeling\file_session.py" line="697" />
         <source>Skip</source>
         <translation>Skip</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="709" />
+        <location filename="..\..\views\labeling\file_session.py" line="711" />
         <source>Image Description</source>
         <translation>Image Description</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="725" />
+        <location filename="..\..\views\labeling\file_session.py" line="727" />
         <source>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="963" />
+        <location filename="..\..\views\labeling\file_session.py" line="965" />
         <source>Image &amp; Label files (%s)</source>
         <translation>Image &amp; Label files (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="970" />
+        <location filename="..\..\views\labeling\file_session.py" line="972" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - Choose Image or Label file</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="983" />
+        <location filename="..\..\views\labeling\file_session.py" line="985" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>Changing the output directory is not available in dataset mode.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="996" />
+        <location filename="..\..\views\labeling\file_session.py" line="998" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - Save/Load Annotations in Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1009" />
+        <location filename="..\..\views\labeling\file_session.py" line="1011" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s . Annotations will be saved/loaded in %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1039" />
+        <location filename="..\..\views\labeling\file_session.py" line="1041" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1050" />
+        <location filename="..\..\views\labeling\file_session.py" line="1052" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>Save As is not available in dataset mode yet.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1055" />
+        <location filename="..\..\views\labeling\file_session.py" line="1057" />
         <source>%s - Choose File</source>
         <translation>%s - Choose File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1086" />
-        <location filename="..\..\views\labeling\file_session.py" line="1056" />
+        <location filename="..\..\views\labeling\file_session.py" line="1088" />
+        <location filename="..\..\views\labeling\file_session.py" line="1058" />
         <source>Label files (*%s)</source>
         <translation>Label files (*%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1084" />
+        <location filename="..\..\views\labeling\file_session.py" line="1086" />
         <source>Choose File</source>
         <translation>Choose File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1216" />
+        <location filename="..\..\views\labeling\file_session.py" line="1114" />
+        <source>Dataset closed</source>
+        <translation>Dataset closed</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1233" />
+        <location filename="..\..\views\labeling\file_session.py" line="1219" />
         <location filename="..\..\views\labeling\file_session.py" line="1202" />
-        <location filename="..\..\views\labeling\file_session.py" line="1185" />
-        <location filename="..\..\views\labeling\file_session.py" line="1159" />
-        <location filename="..\..\views\labeling\file_session.py" line="1145" />
-        <location filename="..\..\views\labeling\file_session.py" line="1131" />
+        <location filename="..\..\views\labeling\file_session.py" line="1176" />
+        <location filename="..\..\views\labeling\file_session.py" line="1162" />
+        <location filename="..\..\views\labeling\file_session.py" line="1148" />
         <source>Attention</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1186" />
-        <location filename="..\..\views\labeling\file_session.py" line="1132" />
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <location filename="..\..\views\labeling\file_session.py" line="1149" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>Move this image and its annotation to the recycle bin?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1146" />
+        <location filename="..\..\views\labeling\file_session.py" line="1163" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>Please disable 'Keep Previous Annotation' before deleting the label file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1153" />
+        <location filename="..\..\views\labeling\file_session.py" line="1170" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>You are about to permanently delete this label file, proceed anyway?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <location filename="..\..\views\labeling\file_session.py" line="1220" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>Please disable 'Keep Previous Annotation' before deleting the image file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1210" />
+        <location filename="..\..\views\labeling\file_session.py" line="1227" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>You are about to permanently delete this image file, proceed anyway?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1288" />
+        <location filename="..\..\views\labeling\file_session.py" line="1305" />
         <source>Save annotations?</source>
         <translation>Save annotations?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1324" />
+        <location filename="..\..\views\labeling\file_session.py" line="1341" />
         <source>%s - Import Files</source>
         <translation>%s - Import Files</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1326" />
+        <location filename="..\..\views\labeling\file_session.py" line="1343" />
         <source>Image files (%s)</source>
         <translation>Image files (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1347" />
+        <location filename="..\..\views\labeling\file_session.py" line="1364" />
         <source>%s - Open Directory</source>
         <translation>%s - Open Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1391" />
+        <location filename="..\..\views\labeling\file_session.py" line="1408" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</translation>
     </message>
@@ -4381,12 +4433,12 @@ Continue?</translation>
 </context><context>
     <name>LabelingWidget</name>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="246" />
+        <location filename="..\..\views\labeling\label_widget.py" line="247" />
         <source>Search files...</source>
         <translation>Search files...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="248" />
+        <location filename="..\..\views\labeling\label_widget.py" line="249" />
         <source>Supported search syntax:
 - Text: plain text matches the file name
 - Index: #N (e.g., #1, #10)
@@ -4415,77 +4467,77 @@ Continue?</translation>
 - ',' binds tighter than '|'; press Enter to search.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="271" />
+        <location filename="..\..\views\labeling\label_widget.py" line="272" />
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="575" />
+        <location filename="..\..\views\labeling\label_widget.py" line="576" />
         <source>Tag added: %s</source>
         <translation>Tag added: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="577" />
+        <location filename="..\..\views\labeling\label_widget.py" line="578" />
         <source>Failed to save the new tag</source>
         <translation>Failed to save the new tag</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="881" />
+        <location filename="..\..\views\labeling\label_widget.py" line="882" />
         <source>Open Last Dir: %s</source>
         <translation>Open Last Dir: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1004" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1005" />
         <source>Copy Successful</source>
         <translation>Copy Successful</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1250" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1251" />
         <source>L: %.2f px | Total: %.2f px</source>
         <translation>L: %.2f px | Total: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1254" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1255" />
         <source>L: %.2f px</source>
         <translation>L: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1258" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1259" />
         <source>R: %.2f px | C: %.2f px</source>
         <translation>R: %.2f px | C: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1270" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1271" />
         <source>H: %d, W: %d</source>
         <translation>H: %d, W: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1414" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1415" />
         <source>Login to edit annotations</source>
         <translation>Login to edit annotations</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1705" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1706" />
         <source>Please open an image first</source>
         <translation>Please open an image first</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1710" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1711" />
         <source>Select Compare Image Directory</source>
         <translation>Select Compare Image Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1719" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1720" />
         <source>Invalid compare directory</source>
         <translation>Invalid compare directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1730" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1731" />
         <source>Close Compare View</source>
         <translation>Close Compare View</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1731" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1732" />
         <source>Are you sure you want to close the compare view?</source>
         <translation>Are you sure you want to close the compare view?</translation>
     </message>
@@ -6479,267 +6531,272 @@ The image files and their annotation files will NOT be deleted.</translation>
         <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="208" />
+        <location filename="..\..\views\labeling\file_session.py" line="210" />
         <source>Import Project (X-AnyLabeling)</source>
         <translation>Import Project (X-AnyLabeling)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="217" />
+        <location filename="..\..\views\labeling\file_session.py" line="219" />
         <source>Import Project</source>
         <translation>Import Project</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="219" />
+        <location filename="..\..\views\labeling\file_session.py" line="221" />
         <source>A dataset database already exists in this directory.</source>
         <translation>A dataset database already exists in this directory.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="224" />
+        <location filename="..\..\views\labeling\file_session.py" line="226" />
         <source>Skip existing images or replace their annotations?</source>
         <translation>Skip existing images or replace their annotations?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="229" />
+        <location filename="..\..\views\labeling\file_session.py" line="231" />
         <source>Skip Existing</source>
         <translation>Skip Existing</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="233" />
+        <location filename="..\..\views\labeling\file_session.py" line="235" />
         <source>Replace Existing</source>
         <translation>Replace Existing</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="252" />
+        <location filename="..\..\views\labeling\file_session.py" line="254" />
         <source>Import failed</source>
         <translation>Import failed</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="256" />
+        <location filename="..\..\views\labeling\file_session.py" line="258" />
         <source>Images: %d</source>
         <translation>Images: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="257" />
+        <location filename="..\..\views\labeling\file_session.py" line="259" />
         <source>Labeled: %d</source>
         <translation>Labeled: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="258" />
+        <location filename="..\..\views\labeling\file_session.py" line="260" />
         <source>Objects: %d</source>
         <translation>Objects: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="259" />
+        <location filename="..\..\views\labeling\file_session.py" line="261" />
         <source>Skipped: %d</source>
         <translation>Skipped: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="260" />
+        <location filename="..\..\views\labeling\file_session.py" line="262" />
         <source>Errors: %d</source>
         <translation>Errors: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="264" />
+        <location filename="..\..\views\labeling\file_session.py" line="266" />
         <source>Backup: %s</source>
         <translation>Backup: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="279" />
+        <location filename="..\..\views\labeling\file_session.py" line="281" />
         <source>Recycle bin is available in dataset mode only.</source>
         <translation>Recycle bin is available in dataset mode only.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="293" />
+        <location filename="..\..\views\labeling\file_session.py" line="295" />
         <source>No dataset image is open.</source>
         <translation>No dataset image is open.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="304" />
+        <location filename="..\..\views\labeling\file_session.py" line="306" />
         <source>Error deleting image</source>
         <translation>Error deleting image</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="305" />
+        <location filename="..\..\views\labeling\file_session.py" line="307" />
         <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; does not exist.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="311" />
+        <location filename="..\..\views\labeling\file_session.py" line="313" />
         <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; already exists.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="330" />
+        <location filename="..\..\views\labeling\file_session.py" line="332" />
         <source>Image moved to the recycle bin.</source>
         <translation>Image moved to the recycle bin.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="493" />
+        <location filename="..\..\views\labeling\file_session.py" line="495" />
         <source>Dataset database: %s</source>
         <translation>Dataset database: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="516" />
+        <location filename="..\..\views\labeling\file_session.py" line="518" />
         <source>Error opening file</source>
         <translation>Error opening file</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="517" />
+        <location filename="..\..\views\labeling\file_session.py" line="519" />
         <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="524" />
+        <location filename="..\..\views\labeling\file_session.py" line="526" />
         <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="532" />
+        <location filename="..\..\views\labeling\file_session.py" line="534" />
         <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="615" />
+        <location filename="..\..\views\labeling\file_session.py" line="617" />
         <source>No such file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>No such file: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="647" />
+        <location filename="..\..\views\labeling\file_session.py" line="649" />
         <source>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</source>
         <translation>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="653" />
+        <location filename="..\..\views\labeling\file_session.py" line="655" />
         <source>Error reading %s</source>
         <translation>Error reading %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="679" />
+        <location filename="..\..\views\labeling\file_session.py" line="681" />
         <source>File Not Found</source>
         <translation>File Not Found</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="682" />
+        <location filename="..\..\views\labeling\file_session.py" line="684" />
         <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; is missing.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="686" />
+        <location filename="..\..\views\labeling\file_session.py" line="688" />
         <source>Remove it from the file list, or skip it for now?</source>
         <translation>Remove it from the file list, or skip it for now?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="695" />
+        <location filename="..\..\views\labeling\file_session.py" line="697" />
         <source>Skip</source>
         <translation>Skip</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="725" />
+        <location filename="..\..\views\labeling\file_session.py" line="727" />
         <source>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="963" />
+        <location filename="..\..\views\labeling\file_session.py" line="965" />
         <source>Image &amp; Label files (%s)</source>
         <translation>Image &amp; Label files (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="970" />
+        <location filename="..\..\views\labeling\file_session.py" line="972" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - Choose Image or Label file</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="983" />
+        <location filename="..\..\views\labeling\file_session.py" line="985" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>Changing the output directory is not available in dataset mode.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="996" />
+        <location filename="..\..\views\labeling\file_session.py" line="998" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - Save/Load Annotations in Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1009" />
+        <location filename="..\..\views\labeling\file_session.py" line="1011" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s . Annotations will be saved/loaded in %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1039" />
+        <location filename="..\..\views\labeling\file_session.py" line="1041" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1050" />
+        <location filename="..\..\views\labeling\file_session.py" line="1052" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>Save As is not available in dataset mode yet.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1055" />
+        <location filename="..\..\views\labeling\file_session.py" line="1057" />
         <source>%s - Choose File</source>
         <translation>%s - Choose File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1056" />
+        <location filename="..\..\views\labeling\file_session.py" line="1058" />
         <source>Label files (*%s)</source>
         <translation>Label files (*%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1084" />
+        <location filename="..\..\views\labeling\file_session.py" line="1086" />
         <source>Choose File</source>
         <translation>Choose File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1131" />
+        <location filename="..\..\views\labeling\file_session.py" line="1114" />
+        <source>Dataset closed</source>
+        <translation>Dataset closed</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1148" />
         <source>Attention</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1132" />
+        <location filename="..\..\views\labeling\file_session.py" line="1149" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>Move this image and its annotation to the recycle bin?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1146" />
+        <location filename="..\..\views\labeling\file_session.py" line="1163" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>Please disable 'Keep Previous Annotation' before deleting the label file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1153" />
+        <location filename="..\..\views\labeling\file_session.py" line="1170" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>You are about to permanently delete this label file, proceed anyway?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <location filename="..\..\views\labeling\file_session.py" line="1220" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>Please disable 'Keep Previous Annotation' before deleting the image file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1210" />
+        <location filename="..\..\views\labeling\file_session.py" line="1227" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>You are about to permanently delete this image file, proceed anyway?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1288" />
+        <location filename="..\..\views\labeling\file_session.py" line="1305" />
         <source>Save annotations?</source>
         <translation>Save annotations?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1324" />
+        <location filename="..\..\views\labeling\file_session.py" line="1341" />
         <source>%s - Import Files</source>
         <translation>%s - Import Files</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1326" />
+        <location filename="..\..\views\labeling\file_session.py" line="1343" />
         <source>Image files (%s)</source>
         <translation>Image files (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1347" />
+        <location filename="..\..\views\labeling\file_session.py" line="1364" />
         <source>%s - Open Directory</source>
         <translation>%s - Open Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1391" />
+        <location filename="..\..\views\labeling\file_session.py" line="1408" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</translation>
     </message>
@@ -7666,34 +7723,34 @@ Reset the label as {}.</translation>
 </context><context>
     <name>MainWindow</name>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="237" />
+        <location filename="..\..\views\mainwindow.py" line="239" />
         <source>Exit Full Screen</source>
         <translation>Exit Full Screen</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="239" />
+        <location filename="..\..\views\mainwindow.py" line="241" />
         <source>Full Screen</source>
         <translation>Full Screen</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="460" />
-        <location filename="..\..\views\mainwindow.py" line="434" />
+        <location filename="..\..\views\mainwindow.py" line="531" />
+        <location filename="..\..\views\mainwindow.py" line="505" />
         <source>Dock Toolbar at Top</source>
         <translation>Dock Toolbar at Top</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="461" />
-        <location filename="..\..\views\mainwindow.py" line="442" />
+        <location filename="..\..\views\mainwindow.py" line="532" />
+        <location filename="..\..\views\mainwindow.py" line="513" />
         <source>Dock Toolbar at Left</source>
         <translation>Dock Toolbar at Left</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="449" />
+        <location filename="..\..\views\mainwindow.py" line="520" />
         <source>Show Toolbar</source>
         <translation>Show Toolbar</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="463" />
+        <location filename="..\..\views\mainwindow.py" line="534" />
         <source>Hide Toolbar</source>
         <translation>Hide Toolbar</translation>
     </message>

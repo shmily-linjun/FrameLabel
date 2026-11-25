@@ -85,6 +85,7 @@ class LabelingWidget(LabelDialog):
 
     FIT_WINDOW, FIT_WIDTH, MANUAL_ZOOM = 0, 1, 2
     next_files_changed = QtCore.pyqtSignal(list)
+    dataset_changed = QtCore.pyqtSignal()
 
     def __init__(  # noqa: C901
         self,
@@ -1800,6 +1801,9 @@ class LabelingWidget(LabelDialog):
 
     def open_dataset_center(self):
         return FileSession(self).open_dataset_center()
+
+    def close_dataset(self):
+        return FileSession(self).close_dataset()
 
     @property
     def image_list(self):

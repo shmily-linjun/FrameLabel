@@ -2611,6 +2611,53 @@ Example: person.car.bicycle</source>
         <translation type="unfinished" />
     </message>
 </context><context>
+    <name>DatasetChip</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="60" />
+        <source>No dataset</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="61" />
+        <source>No dataset is open</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="66" />
+        <source>Dataset: %s</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="68" />
+        <source>Current dataset: %s</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="107" />
+        <source>Current: %s</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="111" />
+        <source>Dataset Center…</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="121" />
+        <source>Switch dataset</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="133" />
+        <source>No other datasets</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\dataset_chip.py" line="136" />
+        <source>Close dataset</source>
+        <translation type="unfinished" />
+    </message>
+</context><context>
     <name>DeleteComponentDialog</name>
     <message>
         <location filename="..\..\views\labeling\vqa\dialogs.py" line="867" />
@@ -3539,311 +3586,316 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>데이터셋을 열 수 없습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="541" />
+        <location filename="..\..\views\labeling\file_session.py" line="543" />
         <location filename="..\..\views\labeling\file_session.py" line="168" />
         <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="208" />
+        <location filename="..\..\views\labeling\file_session.py" line="210" />
         <source>Import Project (X-AnyLabeling)</source>
         <translation>프로젝트 가져오기(X-AnyLabeling)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="271" />
-        <location filename="..\..\views\labeling\file_session.py" line="217" />
+        <location filename="..\..\views\labeling\file_session.py" line="273" />
+        <location filename="..\..\views\labeling\file_session.py" line="219" />
         <source>Import Project</source>
         <translation>프로젝트 가져오기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="219" />
+        <location filename="..\..\views\labeling\file_session.py" line="221" />
         <source>A dataset database already exists in this directory.</source>
         <translation>이 디렉터리에 이미 데이터셋 데이터베이스가 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="224" />
+        <location filename="..\..\views\labeling\file_session.py" line="226" />
         <source>Skip existing images or replace their annotations?</source>
         <translation>기존 이미지를 건너뛸까요, 아니면 주석을 바꿀까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="229" />
+        <location filename="..\..\views\labeling\file_session.py" line="231" />
         <source>Skip Existing</source>
         <translation>기존 건너뛰기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="233" />
+        <location filename="..\..\views\labeling\file_session.py" line="235" />
         <source>Replace Existing</source>
         <translation>기존 바꾸기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="237" />
+        <location filename="..\..\views\labeling\file_session.py" line="239" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="252" />
+        <location filename="..\..\views\labeling\file_session.py" line="254" />
         <source>Import failed</source>
         <translation>가져오기 실패</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="323" />
-        <location filename="..\..\views\labeling\file_session.py" line="252" />
+        <location filename="..\..\views\labeling\file_session.py" line="325" />
+        <location filename="..\..\views\labeling\file_session.py" line="254" />
         <source>&lt;b&gt;%s&lt;/b&gt;</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="256" />
+        <location filename="..\..\views\labeling\file_session.py" line="258" />
         <source>Images: %d</source>
         <translation>이미지: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="257" />
+        <location filename="..\..\views\labeling\file_session.py" line="259" />
         <source>Labeled: %d</source>
         <translation>주석 있음: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="258" />
+        <location filename="..\..\views\labeling\file_session.py" line="260" />
         <source>Objects: %d</source>
         <translation>객체: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="259" />
+        <location filename="..\..\views\labeling\file_session.py" line="261" />
         <source>Skipped: %d</source>
         <translation>건너뜀: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="260" />
+        <location filename="..\..\views\labeling\file_session.py" line="262" />
         <source>Errors: %d</source>
         <translation>오류: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="264" />
+        <location filename="..\..\views\labeling\file_session.py" line="266" />
         <source>Backup: %s</source>
         <translation>백업: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="279" />
+        <location filename="..\..\views\labeling\file_session.py" line="281" />
         <source>Recycle bin is available in dataset mode only.</source>
         <translation>휴지통은 데이터셋 모드에서만 사용할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="293" />
+        <location filename="..\..\views\labeling\file_session.py" line="295" />
         <source>No dataset image is open.</source>
         <translation>열린 데이터셋 이미지가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="322" />
-        <location filename="..\..\views\labeling\file_session.py" line="310" />
-        <location filename="..\..\views\labeling\file_session.py" line="304" />
+        <location filename="..\..\views\labeling\file_session.py" line="324" />
+        <location filename="..\..\views\labeling\file_session.py" line="312" />
+        <location filename="..\..\views\labeling\file_session.py" line="306" />
         <source>Error deleting image</source>
         <translation>이미지 삭제 실패</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="305" />
+        <location filename="..\..\views\labeling\file_session.py" line="307" />
         <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 존재하지 않습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="311" />
+        <location filename="..\..\views\labeling\file_session.py" line="313" />
         <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 이미 존재합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="330" />
+        <location filename="..\..\views\labeling\file_session.py" line="332" />
         <source>Image moved to the recycle bin.</source>
         <translation>이미지를 휴지통으로 이동했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="493" />
+        <location filename="..\..\views\labeling\file_session.py" line="495" />
         <source>Dataset database: %s</source>
         <translation>데이터셋 데이터베이스: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="724" />
-        <location filename="..\..\views\labeling\file_session.py" line="646" />
-        <location filename="..\..\views\labeling\file_session.py" line="614" />
-        <location filename="..\..\views\labeling\file_session.py" line="540" />
-        <location filename="..\..\views\labeling\file_session.py" line="531" />
-        <location filename="..\..\views\labeling\file_session.py" line="523" />
-        <location filename="..\..\views\labeling\file_session.py" line="516" />
+        <location filename="..\..\views\labeling\file_session.py" line="726" />
+        <location filename="..\..\views\labeling\file_session.py" line="648" />
+        <location filename="..\..\views\labeling\file_session.py" line="616" />
+        <location filename="..\..\views\labeling\file_session.py" line="542" />
+        <location filename="..\..\views\labeling\file_session.py" line="533" />
+        <location filename="..\..\views\labeling\file_session.py" line="525" />
+        <location filename="..\..\views\labeling\file_session.py" line="518" />
         <source>Error opening file</source>
         <translation>파일 열기 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="517" />
+        <location filename="..\..\views\labeling\file_session.py" line="519" />
         <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 데이터셋 루트 밖에 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="524" />
+        <location filename="..\..\views\labeling\file_session.py" line="526" />
         <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>이미지가 데이터셋에 등록되어 있지 않습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="532" />
+        <location filename="..\..\views\labeling\file_session.py" line="534" />
         <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>이미지 파일을 열지 못했습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="615" />
+        <location filename="..\..\views\labeling\file_session.py" line="617" />
         <source>No such file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>파일을 찾을 수 없습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="647" />
+        <location filename="..\..\views\labeling\file_session.py" line="649" />
         <source>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</source>
         <translation>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;%s&lt;/i&gt;가 올바른 레이블 파일인지 확인하세요.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="730" />
-        <location filename="..\..\views\labeling\file_session.py" line="653" />
+        <location filename="..\..\views\labeling\file_session.py" line="732" />
+        <location filename="..\..\views\labeling\file_session.py" line="655" />
         <source>Error reading %s</source>
         <translation>%s 읽기 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="679" />
+        <location filename="..\..\views\labeling\file_session.py" line="681" />
         <source>File Not Found</source>
         <translation>파일을 찾을 수 없음</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="682" />
+        <location filename="..\..\views\labeling\file_session.py" line="684" />
         <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; 파일이 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="686" />
+        <location filename="..\..\views\labeling\file_session.py" line="688" />
         <source>Remove it from the file list, or skip it for now?</source>
         <translation>파일 목록에서 제거하거나 지금은 건너뛸까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="691" />
+        <location filename="..\..\views\labeling\file_session.py" line="693" />
         <source>Remove from List</source>
         <translation>Remove from List</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="695" />
+        <location filename="..\..\views\labeling\file_session.py" line="697" />
         <source>Skip</source>
         <translation>건너뛰기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="709" />
+        <location filename="..\..\views\labeling\file_session.py" line="711" />
         <source>Image Description</source>
         <translation>이미지 설명</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="725" />
+        <location filename="..\..\views\labeling\file_session.py" line="727" />
         <source>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;i&gt;{0}&lt;/i&gt;가 올바른 이미지 파일인지 확인하세요.&lt;br/&gt;지원되는 이미지 형식: {1}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="963" />
+        <location filename="..\..\views\labeling\file_session.py" line="965" />
         <source>Image &amp; Label files (%s)</source>
         <translation>이미지 및 레이블 파일 (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="970" />
+        <location filename="..\..\views\labeling\file_session.py" line="972" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - 이미지 또는 레이블 파일 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="983" />
+        <location filename="..\..\views\labeling\file_session.py" line="985" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>데이터셋 모드에서는 출력 디렉터리를 변경할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="996" />
+        <location filename="..\..\views\labeling\file_session.py" line="998" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - 디렉토리에 주석 저장/로드</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1009" />
+        <location filename="..\..\views\labeling\file_session.py" line="1011" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s. 주석은 %s에 저장되고 불러와집니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1039" />
+        <location filename="..\..\views\labeling\file_session.py" line="1041" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다. 주석은 데이터셋 데이터베이스에 저장됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1050" />
+        <location filename="..\..\views\labeling\file_session.py" line="1052" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1055" />
+        <location filename="..\..\views\labeling\file_session.py" line="1057" />
         <source>%s - Choose File</source>
         <translation>%s - 파일 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1086" />
-        <location filename="..\..\views\labeling\file_session.py" line="1056" />
+        <location filename="..\..\views\labeling\file_session.py" line="1088" />
+        <location filename="..\..\views\labeling\file_session.py" line="1058" />
         <source>Label files (*%s)</source>
         <translation>레이블 파일 (*%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1084" />
+        <location filename="..\..\views\labeling\file_session.py" line="1086" />
         <source>Choose File</source>
         <translation>파일을 선택하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1216" />
+        <location filename="..\..\views\labeling\file_session.py" line="1114" />
+        <source>Dataset closed</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1233" />
+        <location filename="..\..\views\labeling\file_session.py" line="1219" />
         <location filename="..\..\views\labeling\file_session.py" line="1202" />
-        <location filename="..\..\views\labeling\file_session.py" line="1185" />
-        <location filename="..\..\views\labeling\file_session.py" line="1159" />
-        <location filename="..\..\views\labeling\file_session.py" line="1145" />
-        <location filename="..\..\views\labeling\file_session.py" line="1131" />
+        <location filename="..\..\views\labeling\file_session.py" line="1176" />
+        <location filename="..\..\views\labeling\file_session.py" line="1162" />
+        <location filename="..\..\views\labeling\file_session.py" line="1148" />
         <source>Attention</source>
         <translation>주의</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1186" />
-        <location filename="..\..\views\labeling\file_session.py" line="1132" />
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <location filename="..\..\views\labeling\file_session.py" line="1149" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>이 이미지와 주석을 휴지통으로 이동할까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1146" />
+        <location filename="..\..\views\labeling\file_session.py" line="1163" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>라벨 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1153" />
+        <location filename="..\..\views\labeling\file_session.py" line="1170" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>이 라벨 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <location filename="..\..\views\labeling\file_session.py" line="1220" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>이미지 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1210" />
+        <location filename="..\..\views\labeling\file_session.py" line="1227" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>이 이미지 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1288" />
+        <location filename="..\..\views\labeling\file_session.py" line="1305" />
         <source>Save annotations?</source>
         <translation>주석을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1324" />
+        <location filename="..\..\views\labeling\file_session.py" line="1341" />
         <source>%s - Import Files</source>
         <translation>%s - 파일 가져오기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1326" />
+        <location filename="..\..\views\labeling\file_session.py" line="1343" />
         <source>Image files (%s)</source>
         <translation>이미지 파일(%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1347" />
+        <location filename="..\..\views\labeling\file_session.py" line="1364" />
         <source>%s - Open Directory</source>
         <translation>%s - 디렉토리 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1391" />
+        <location filename="..\..\views\labeling\file_session.py" line="1408" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>데이터셋 모드에서는 파일 추가를 아직 사용할 수 없습니다. 데이터셋 가져오기/동기화 항목을 사용하세요.</translation>
     </message>
@@ -4375,12 +4427,12 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="246" />
+        <location filename="..\..\views\labeling\label_widget.py" line="247" />
         <source>Search files...</source>
         <translation>파일 검색...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="248" />
+        <location filename="..\..\views\labeling\label_widget.py" line="249" />
         <source>Supported search syntax:
 - Text: plain text matches the file name
 - Index: #N (e.g., #1, #10)
@@ -4397,77 +4449,77 @@ Continue?</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="271" />
+        <location filename="..\..\views\labeling\label_widget.py" line="272" />
         <source>Settings</source>
         <translation>설정</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="575" />
+        <location filename="..\..\views\labeling\label_widget.py" line="576" />
         <source>Tag added: %s</source>
         <translation>태그 추가됨: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="577" />
+        <location filename="..\..\views\labeling\label_widget.py" line="578" />
         <source>Failed to save the new tag</source>
         <translation>새 태그를 저장하지 못했습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="881" />
+        <location filename="..\..\views\labeling\label_widget.py" line="882" />
         <source>Open Last Dir: %s</source>
         <translation>마지막 폴더 열기: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1004" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1005" />
         <source>Copy Successful</source>
         <translation>복사되었습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1250" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1251" />
         <source>L: %.2f px | Total: %.2f px</source>
         <translation>L: %.2f px | 합계: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1254" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1255" />
         <source>L: %.2f px</source>
         <translation>L: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1258" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1259" />
         <source>R: %.2f px | C: %.2f px</source>
         <translation>R: %.2f px | 둘레: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1270" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1271" />
         <source>H: %d, W: %d</source>
         <translation>H: %d, W: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1414" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1415" />
         <source>Login to edit annotations</source>
         <translation>로그인하면 주석을 편집할 수 있습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1705" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1706" />
         <source>Please open an image first</source>
         <translation>먼저 이미지를 여세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1710" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1711" />
         <source>Select Compare Image Directory</source>
         <translation>비교 이미지 디렉터리 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1719" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1720" />
         <source>Invalid compare directory</source>
         <translation>올바르지 않은 비교 디렉터리</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1730" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1731" />
         <source>Close Compare View</source>
         <translation>비교 보기 닫기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1731" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1732" />
         <source>Are you sure you want to close the compare view?</source>
         <translation>정말 비교 보기를 닫으시겠습니까?</translation>
     </message>
@@ -6461,267 +6513,272 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="208" />
+        <location filename="..\..\views\labeling\file_session.py" line="210" />
         <source>Import Project (X-AnyLabeling)</source>
         <translation>프로젝트 가져오기(X-AnyLabeling)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="217" />
+        <location filename="..\..\views\labeling\file_session.py" line="219" />
         <source>Import Project</source>
         <translation>프로젝트 가져오기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="219" />
+        <location filename="..\..\views\labeling\file_session.py" line="221" />
         <source>A dataset database already exists in this directory.</source>
         <translation>이 디렉터리에 이미 데이터셋 데이터베이스가 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="224" />
+        <location filename="..\..\views\labeling\file_session.py" line="226" />
         <source>Skip existing images or replace their annotations?</source>
         <translation>기존 이미지를 건너뛸까요, 아니면 주석을 바꿀까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="229" />
+        <location filename="..\..\views\labeling\file_session.py" line="231" />
         <source>Skip Existing</source>
         <translation>기존 건너뛰기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="233" />
+        <location filename="..\..\views\labeling\file_session.py" line="235" />
         <source>Replace Existing</source>
         <translation>기존 바꾸기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="252" />
+        <location filename="..\..\views\labeling\file_session.py" line="254" />
         <source>Import failed</source>
         <translation>가져오기 실패</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="256" />
+        <location filename="..\..\views\labeling\file_session.py" line="258" />
         <source>Images: %d</source>
         <translation>이미지: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="257" />
+        <location filename="..\..\views\labeling\file_session.py" line="259" />
         <source>Labeled: %d</source>
         <translation>주석 있음: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="258" />
+        <location filename="..\..\views\labeling\file_session.py" line="260" />
         <source>Objects: %d</source>
         <translation>객체: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="259" />
+        <location filename="..\..\views\labeling\file_session.py" line="261" />
         <source>Skipped: %d</source>
         <translation>건너뜀: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="260" />
+        <location filename="..\..\views\labeling\file_session.py" line="262" />
         <source>Errors: %d</source>
         <translation>오류: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="264" />
+        <location filename="..\..\views\labeling\file_session.py" line="266" />
         <source>Backup: %s</source>
         <translation>백업: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="279" />
+        <location filename="..\..\views\labeling\file_session.py" line="281" />
         <source>Recycle bin is available in dataset mode only.</source>
         <translation>휴지통은 데이터셋 모드에서만 사용할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="293" />
+        <location filename="..\..\views\labeling\file_session.py" line="295" />
         <source>No dataset image is open.</source>
         <translation>열린 데이터셋 이미지가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="304" />
+        <location filename="..\..\views\labeling\file_session.py" line="306" />
         <source>Error deleting image</source>
         <translation>이미지 삭제 실패</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="305" />
+        <location filename="..\..\views\labeling\file_session.py" line="307" />
         <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 존재하지 않습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="311" />
+        <location filename="..\..\views\labeling\file_session.py" line="313" />
         <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 이미 존재합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="330" />
+        <location filename="..\..\views\labeling\file_session.py" line="332" />
         <source>Image moved to the recycle bin.</source>
         <translation>이미지를 휴지통으로 이동했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="493" />
+        <location filename="..\..\views\labeling\file_session.py" line="495" />
         <source>Dataset database: %s</source>
         <translation>데이터셋 데이터베이스: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="516" />
+        <location filename="..\..\views\labeling\file_session.py" line="518" />
         <source>Error opening file</source>
         <translation>파일 열기 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="517" />
+        <location filename="..\..\views\labeling\file_session.py" line="519" />
         <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 데이터셋 루트 밖에 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="524" />
+        <location filename="..\..\views\labeling\file_session.py" line="526" />
         <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>이미지가 데이터셋에 등록되어 있지 않습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="532" />
+        <location filename="..\..\views\labeling\file_session.py" line="534" />
         <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>이미지 파일을 열지 못했습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="615" />
+        <location filename="..\..\views\labeling\file_session.py" line="617" />
         <source>No such file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>파일을 찾을 수 없습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="647" />
+        <location filename="..\..\views\labeling\file_session.py" line="649" />
         <source>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</source>
         <translation>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;%s&lt;/i&gt;가 올바른 레이블 파일인지 확인하세요.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="653" />
+        <location filename="..\..\views\labeling\file_session.py" line="655" />
         <source>Error reading %s</source>
         <translation>%s 읽기 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="679" />
+        <location filename="..\..\views\labeling\file_session.py" line="681" />
         <source>File Not Found</source>
         <translation>파일을 찾을 수 없음</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="682" />
+        <location filename="..\..\views\labeling\file_session.py" line="684" />
         <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; 파일이 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="686" />
+        <location filename="..\..\views\labeling\file_session.py" line="688" />
         <source>Remove it from the file list, or skip it for now?</source>
         <translation>파일 목록에서 제거하거나 지금은 건너뛸까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="695" />
+        <location filename="..\..\views\labeling\file_session.py" line="697" />
         <source>Skip</source>
         <translation>건너뛰기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="725" />
+        <location filename="..\..\views\labeling\file_session.py" line="727" />
         <source>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;i&gt;{0}&lt;/i&gt;가 올바른 이미지 파일인지 확인하세요.&lt;br/&gt;지원되는 이미지 형식: {1}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="963" />
+        <location filename="..\..\views\labeling\file_session.py" line="965" />
         <source>Image &amp; Label files (%s)</source>
         <translation>이미지 및 레이블 파일 (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="970" />
+        <location filename="..\..\views\labeling\file_session.py" line="972" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - 이미지 또는 레이블 파일 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="983" />
+        <location filename="..\..\views\labeling\file_session.py" line="985" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>데이터셋 모드에서는 출력 디렉터리를 변경할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="996" />
+        <location filename="..\..\views\labeling\file_session.py" line="998" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - 디렉토리에 주석 저장/로드</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1009" />
+        <location filename="..\..\views\labeling\file_session.py" line="1011" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s. 주석은 %s에 저장되고 불러와집니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1039" />
+        <location filename="..\..\views\labeling\file_session.py" line="1041" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다. 주석은 데이터셋 데이터베이스에 저장됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1050" />
+        <location filename="..\..\views\labeling\file_session.py" line="1052" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1055" />
+        <location filename="..\..\views\labeling\file_session.py" line="1057" />
         <source>%s - Choose File</source>
         <translation>%s - 파일 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1056" />
+        <location filename="..\..\views\labeling\file_session.py" line="1058" />
         <source>Label files (*%s)</source>
         <translation>레이블 파일 (*%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1084" />
+        <location filename="..\..\views\labeling\file_session.py" line="1086" />
         <source>Choose File</source>
         <translation>파일을 선택하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1131" />
+        <location filename="..\..\views\labeling\file_session.py" line="1114" />
+        <source>Dataset closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1148" />
         <source>Attention</source>
         <translation>주의</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1132" />
+        <location filename="..\..\views\labeling\file_session.py" line="1149" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>이 이미지와 주석을 휴지통으로 이동할까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1146" />
+        <location filename="..\..\views\labeling\file_session.py" line="1163" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>라벨 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1153" />
+        <location filename="..\..\views\labeling\file_session.py" line="1170" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>이 라벨 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <location filename="..\..\views\labeling\file_session.py" line="1220" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>이미지 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1210" />
+        <location filename="..\..\views\labeling\file_session.py" line="1227" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>이 이미지 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1288" />
+        <location filename="..\..\views\labeling\file_session.py" line="1305" />
         <source>Save annotations?</source>
         <translation>주석을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1324" />
+        <location filename="..\..\views\labeling\file_session.py" line="1341" />
         <source>%s - Import Files</source>
         <translation>%s - 파일 가져오기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1326" />
+        <location filename="..\..\views\labeling\file_session.py" line="1343" />
         <source>Image files (%s)</source>
         <translation>이미지 파일(%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1347" />
+        <location filename="..\..\views\labeling\file_session.py" line="1364" />
         <source>%s - Open Directory</source>
         <translation>%s - 디렉토리 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1391" />
+        <location filename="..\..\views\labeling\file_session.py" line="1408" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>데이터셋 모드에서는 파일 추가를 아직 사용할 수 없습니다. 데이터셋 가져오기/동기화 항목을 사용하세요.</translation>
     </message>
@@ -7639,34 +7696,34 @@ Reset the label as {}.</source>
 </context><context>
     <name>MainWindow</name>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="237" />
+        <location filename="..\..\views\mainwindow.py" line="239" />
         <source>Exit Full Screen</source>
         <translation>전체 화면 종료</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="239" />
+        <location filename="..\..\views\mainwindow.py" line="241" />
         <source>Full Screen</source>
         <translation>전체 화면</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="460" />
-        <location filename="..\..\views\mainwindow.py" line="434" />
+        <location filename="..\..\views\mainwindow.py" line="531" />
+        <location filename="..\..\views\mainwindow.py" line="505" />
         <source>Dock Toolbar at Top</source>
         <translation>Dock Toolbar at Top</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="461" />
-        <location filename="..\..\views\mainwindow.py" line="442" />
+        <location filename="..\..\views\mainwindow.py" line="532" />
+        <location filename="..\..\views\mainwindow.py" line="513" />
         <source>Dock Toolbar at Left</source>
         <translation>Dock Toolbar at Left</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="449" />
+        <location filename="..\..\views\mainwindow.py" line="520" />
         <source>Show Toolbar</source>
         <translation>Show Toolbar</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="463" />
+        <location filename="..\..\views\mainwindow.py" line="534" />
         <source>Hide Toolbar</source>
         <translation>Hide Toolbar</translation>
     </message>

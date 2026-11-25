@@ -174,6 +174,7 @@ class FileSession:
         self.host.dataset_root = str(Path(directory).resolve())
         self.host.dataset_image_id = None
         self.host.output_dir = None
+        self._emit_dataset_changed()
         # The DB's imported_at is authoritative; a legacy JSON-mode sidecar
         # would only confuse users and is no longer read in DB mode.
         legacy_sidecar = Path(directory) / ".xanylabeling_import_time.json"
@@ -199,6 +200,7 @@ class FileSession:
         self.host.dataset_repository = None
         self.host.dataset_root = None
         self.host.dataset_image_id = None
+        self._emit_dataset_changed()
 
     def import_project_dialog(self):
         """Import X-AnyLabeling JSON files into a dataset DB, then open it."""
@@ -1095,6 +1097,28 @@ class FileSession:
             self.host.set_clean()
             return True
         return False
+
+    def _emit_dataset_changed(self):
+        """Notify the window chrome; fake hosts in tests may not have it."""
+
+        signal = getattr(self.host, "dataset_changed", None)
+        if signal is not None:
+            signal.emit()
+
+    def close_dataset(self):
+        """Close the dataset database and clear the file table."""
+
+        if getattr(self.host, "dataset_repository", None) is None:
+            return
+        if not self.host.may_continue():
+            return
+        self.host.reset_state()
+        self.host.set_clean()
+        self.host.toggle_actions(False)
+        self.host.canvas.setEnabled(False)
+        self.host._clear_file_list()
+        self._close_dataset()
+        self.host.status(self.host.tr("Dataset closed"))
 
     def close_file(self, _value=False):
         if not self.host.may_continue():
