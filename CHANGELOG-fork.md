@@ -6,6 +6,53 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.57 — 2026-11-25
+
+### 1. 背景与需求
+
+用户反馈 fork.56 的“当前数据集”chip 位于标题栏右侧不合理，应放在**标题栏中间**；
+其他功能保持。
+
+### 2. 主要实现
+
+- `TitleBar` 新增 `add_center_widget()`：chip 作为标题栏子控件（不进入水平布局），
+  按窗口宽度居中；窗口缩放时重新定位。
+- 窄窗口保护：居中位置被夹在“菜单栏右边缘”与“右侧控件（操作员 chip/窗口按钮）左边缘”
+  之间；右侧控件通过 `_right_widgets` 跟踪，避免与操作员 chip 重叠。
+- `FramelessWindow.add_center_widget()` 对外暴露；`MainWindow._install_dataset_chip()`
+  在无边框模式下改用它（原生模式仍在工具栏）。
+- 测试：`test_center_widget_sits_in_the_middle`（TitleBar 级）与
+  `test_dataset_chip_is_centered_in_the_title_bar`（真实 MainWindow、1600px 宽度，
+  断言 chip 中心与标题栏中心偏差 ≤ 1/6 宽度且不越过最小化按钮）。
+- 版本：`4.3.2+fork.56` → `4.3.2+fork.57`。
+
+### 3. 涉及文件
+
+- `anylabeling/widgets/frameless/title_bar.py`、`anylabeling/widgets/frameless/window.py`
+- `anylabeling/views/mainwindow.py`
+- `tests/test_widgets/test_frameless_window.py`、`tests/test_widgets/test_mainwindow_state.py`
+- `anylabeling/app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、
+  `docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+
+### 4. 行为与兼容性
+
+- chip 仍显示/切换/打开中心/关闭数据集，行为不变，仅位置改变；
+- 原生边框模式不变（chip 在工具栏）；
+- 标题栏其余控件（菜单、操作员 chip、窗口按钮）布局不变；窄窗口下 chip 会被夹紧而不是覆盖控件。
+
+### 5. 验证
+
+- `tests/test_widgets/test_frameless_window.py` **20 passed**（含居中用例）；
+  `tests/test_widgets/test_mainwindow_state.py` **5 passed**（含 MainWindow 居中用例）；
+  `tests/test_widgets + test_dataset_db + test_utils + test_identity + test_i18n`
+  **381 passed / 108 subtests**。
+- **未执行**：真实桌面查看 chip 居中后的视觉效果（本机无 GUI 会话）。
+
+### 6. 已知限制
+
+- 居中为“窗口中心”，标题栏左侧的图标/标题/菜单较宽时 chip 会被夹向右侧（防止重叠）；
+- 推送仍受本机凭据/网络阻塞；本地 `main` 领先远端 10 个提交。
+
 ## 4.3.2+fork.56 — 2026-11-25
 
 ### 1. 背景与需求

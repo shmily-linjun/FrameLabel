@@ -43,6 +43,8 @@ class TitleBar(QtWidgets.QWidget):
         self._active = True
         self._full_title = ""
         self._menu_bar = None
+        self._center_widget = None
+        self._right_widgets = []
 
         self.setObjectName("FramelessTitleBar")
         self.setFixedHeight(theme.title_height)
@@ -115,6 +117,7 @@ class TitleBar(QtWidgets.QWidget):
     def resizeEvent(self, event):  # noqa: N802 - Qt naming
         super().resizeEvent(event)
         self._update_title_text()
+        self._position_center_widget()
 
     def set_icon(self, icon) -> None:
         if icon is None or (hasattr(icon, "isNull") and icon.isNull()):
@@ -175,6 +178,7 @@ class TitleBar(QtWidgets.QWidget):
         elif spec.on_clicked is not None:
             button.clicked.connect(spec.on_clicked)
         self._button_area.addWidget(button)
+        self._right_widgets.append(button)
         self._title_buttons[spec.key] = button
         return button
 
@@ -182,9 +186,53 @@ class TitleBar(QtWidgets.QWidget):
         """Place an arbitrary host widget (e.g. the operator chip)."""
         widget.setParent(self)
         self._button_area.addWidget(widget)
+        self._right_widgets.append(widget)
         if key:
             self._title_buttons[key] = widget
         return widget
+
+    def add_center_widget(self, widget, key: str = ""):
+        """Place a host widget in the middle of the title bar.
+
+        The widget is a child of the title bar, not part of the
+        horizontal layout, so it can sit at the window centre instead of
+        being pushed around by the menu bar width.  Its position is
+        recomputed on resize and clamped between the menus and the
+        window buttons so nothing overlaps on narrow windows.
+        """
+
+        widget.setParent(self)
+        self._center_widget = widget
+        widget.adjustSize()
+        widget.show()
+        widget.raise_()
+        if key:
+            self._title_buttons[key] = widget
+        self._position_center_widget()
+        QtCore.QTimer.singleShot(0, self._position_center_widget)
+        return widget
+
+    def _position_center_widget(self) -> None:
+        widget = self._center_widget
+        if widget is None or widget.isHidden():
+            return
+        widget.adjustSize()
+        x = max(0, (self.width() - widget.width()) // 2)
+        left = 0
+        if self._menu_bar is not None and self._menu_bar.isVisible():
+            left = self._menu_bar.geometry().right() + 8
+        right = self.minimize_button.geometry().left() - 8
+        right_edges = [
+            candidate.geometry().left()
+            for candidate in self._right_widgets
+            if candidate.isVisible() and candidate.geometry().width() > 0
+        ]
+        if right_edges:
+            right = min(right, min(right_edges) - 8)
+        if right > left and widget.width() < right - left:
+            x = min(max(x, left), right - widget.width())
+        y = max(0, (self.height() - widget.height()) // 2)
+        widget.move(x, y)
 
     def remove_button(self, key: str) -> None:
         widget = self._title_buttons.pop(key, None)

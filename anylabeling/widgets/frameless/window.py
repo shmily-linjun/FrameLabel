@@ -173,6 +173,13 @@ class FramelessWindow(QtWidgets.QMainWindow):
             raise RuntimeError("Title widgets require frameless mode")
         return self._title_bar.add_widget(widget, key)
 
+    def add_center_widget(self, widget, key: str = ""):
+        """Place ``widget`` in the middle of the frameless title bar."""
+
+        if self._title_bar is None:
+            raise RuntimeError("Title widgets require frameless mode")
+        return self._title_bar.add_center_widget(widget, key)
+
     def remove_title_button(self, key: str) -> None:
         if self._title_bar is not None:
             self._title_bar.remove_button(key)

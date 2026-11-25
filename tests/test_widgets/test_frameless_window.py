@@ -148,6 +148,22 @@ class TestFramelessWindow(unittest.TestCase):
         self.assertIs(window.menuBar(), window.menu_bar)
         self.assertIs(window.menu_bar.parent(), window)
 
+    def test_center_widget_sits_in_the_middle(self):
+        window = self._make_window(True)
+        window.resize(900, 300)
+        window.show()
+        self.app.processEvents()
+        chip = QtWidgets.QPushButton("Chip", window)
+        window.add_center_widget(chip, key="dataset")
+        self.app.processEvents()
+        bar = window.title_bar
+        bar._position_center_widget()
+        centre = chip.geometry().center().x()
+        self.assertLessEqual(abs(centre - bar.width() // 2), bar.width() // 6)
+        self.assertLess(
+            chip.geometry().right(), bar.minimize_button.geometry().left()
+        )
+
     def test_title_button_add_and_remove(self):
         window = self._make_window(True)
         clicked = []

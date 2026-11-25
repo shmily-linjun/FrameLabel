@@ -329,7 +329,7 @@ class MainWindow(FramelessWindow):
         )
         view.dataset_changed.connect(self._update_dataset_chip)
         if self.frameless:
-            self.add_title_widget(self.dataset_chip, key="dataset")
+            self.add_center_widget(self.dataset_chip, key="dataset")
         else:
             action = QtWidgets.QWidgetAction(self)
             action.setDefaultWidget(self.dataset_chip)

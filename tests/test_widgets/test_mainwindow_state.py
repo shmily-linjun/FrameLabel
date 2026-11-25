@@ -214,3 +214,19 @@ def test_toolbar_visibility_is_persisted(window_factory):
     second.show()
     app.processEvents()
     assert not _toolbar(second).isVisible()
+
+
+def test_dataset_chip_is_centered_in_the_title_bar(window_factory):
+    window = window_factory.make()
+    window.resize(1600, 1000)
+    window.show()
+    QtWidgets.QApplication.processEvents()
+    chip = window.dataset_chip
+    assert chip is not None
+    if not window.frameless:
+        return
+    bar = window.title_bar
+    bar._position_center_widget()
+    centre = chip.geometry().center().x()
+    assert abs(centre - bar.width() // 2) <= bar.width() // 6
+    assert chip.geometry().right() < bar.minimize_button.geometry().left()
