@@ -138,7 +138,9 @@ class DatasetCenterWindow(QtWidgets.QDialog):
         self.add_button.clicked.connect(self._add_folder)
         self.refresh_button = QtWidgets.QPushButton(self.tr("Refresh"), self)
         self.refresh_button.clicked.connect(self.refresh)
-        self.open_button = QtWidgets.QPushButton(self.tr("Open"), self)
+        self.open_button = QtWidgets.QPushButton(
+            self.tr("Open Dataset"), self
+        )
         self.open_button.clicked.connect(self._open_selected)
         self.rename_button = QtWidgets.QPushButton(self.tr("Rename…"), self)
         self.rename_button.clicked.connect(self._rename_selected)
@@ -211,14 +213,50 @@ class DatasetCenterWindow(QtWidgets.QDialog):
         detail_layout.setSpacing(6)
         overview_box = QtWidgets.QGroupBox(self.tr("Overview"), detail)
         overview_layout = QtWidgets.QVBoxLayout(overview_box)
-        self.overview_label = QtWidgets.QLabel(
+        self.overview_hint = QtWidgets.QLabel(
             self.tr("Select a dataset to see its overview."), overview_box
         )
-        self.overview_label.setWordWrap(True)
-        self.overview_label.setTextInteractionFlags(
+        self.overview_hint.setWordWrap(True)
+        self.overview_hint.setTextInteractionFlags(
             QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
         )
-        overview_layout.addWidget(self.overview_label)
+        overview_layout.addWidget(self.overview_hint)
+
+        self.summary_table = QtWidgets.QTableWidget(0, 3, overview_box)
+        self.summary_table.setHorizontalHeaderLabels(
+            [self.tr("Metric"), self.tr("Value"), self.tr("Share")]
+        )
+        self.summary_table.verticalHeader().setVisible(False)
+        self.summary_table.horizontalHeader().setStretchLastSection(True)
+        self.summary_table.setEditTriggers(
+            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers
+        )
+        self.summary_table.setSelectionBehavior(
+            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows
+        )
+        overview_layout.addWidget(self.summary_table, 1)
+
+        self.detail_tabs = QtWidgets.QTabWidget(overview_box)
+        self.classes_table = QtWidgets.QTableWidget(0, 3, self.detail_tabs)
+        self.classes_table.setHorizontalHeaderLabels(
+            [self.tr("Category"), self.tr("Images"), self.tr("Objects")]
+        )
+        self.tags_table = QtWidgets.QTableWidget(0, 2, self.detail_tabs)
+        self.tags_table.setHorizontalHeaderLabels(
+            [self.tr("Tag"), self.tr("Images")]
+        )
+        for table in (self.classes_table, self.tags_table):
+            table.verticalHeader().setVisible(False)
+            table.horizontalHeader().setStretchLastSection(True)
+            table.setEditTriggers(
+                QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers
+            )
+            table.setSelectionBehavior(
+                QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows
+            )
+        self.detail_tabs.addTab(self.classes_table, self.tr("Classes"))
+        self.detail_tabs.addTab(self.tags_table, self.tr("Tags"))
+        overview_layout.addWidget(self.detail_tabs, 2)
         detail_layout.addWidget(overview_box, 1)
 
         note_box = QtWidgets.QGroupBox(self.tr("Dataset note"), detail)
@@ -404,64 +442,90 @@ class DatasetCenterWindow(QtWidgets.QDialog):
         return overview
 
     # -- selection ---------------------------------------------------------
+    def _set_rows(self, table, rows) -> None:
+        table.setRowCount(len(rows))
+        for row_index, values in enumerate(rows):
+            for column, value in enumerate(values):
+                table.setItem(
+                    row_index,
+                    column,
+                    QtWidgets.QTableWidgetItem(str(value)),
+                )
+        table.resizeColumnsToContents()
+
+    def _clear_overview(self, hint: str) -> None:
+        self.overview_hint.setText(hint)
+        self.summary_table.setRowCount(0)
+        self.classes_table.setRowCount(0)
+        self.tags_table.setRowCount(0)
+        self.note_edit.clear()
+
     def _on_selection_changed(self) -> None:
         entries = self._selected_entries()
         if len(entries) != 1:
-            self.overview_label.setText(
+            self._clear_overview(
                 self.tr("%d datasets selected.") % len(entries)
                 if entries
                 else self.tr("Select a dataset to see its overview.")
             )
-            self.note_edit.clear()
             return
         entry = entries[0]
-        overview = self._load_overview(entry) if entry.state == STATE_ACTIVE else None
+        overview = (
+            self._load_overview(entry)
+            if entry.state == STATE_ACTIVE
+            else None
+        )
         if overview is None:
-            self.overview_label.setText(
+            self._clear_overview(
                 self.tr("This dataset is %s: %s")
                 % (
                     STATE_LABELS.get(entry.state, entry.state),
                     entry.db_path,
                 )
             )
-            self.note_edit.clear()
             return
         totals = overview["totals"]
         splits = overview["splits"]
-        lines = [
-            self.tr("Name: %s") % (entry.display_name or overview["dataset"]["name"] or "-"),
-            self.tr("Path: %s") % entry.db_path,
-            self.tr("Images: %d (recycle bin: %d)") % (
-                totals["images"], totals["trashed"]
-            ),
-            self.tr("Objects: %d · Classes: %d · Tag kinds: %d") % (
-                totals["objects"], totals["categories"], totals["tag_kinds"]
-            ),
-            self.tr("Split: train %d · val %d · test %d · none %d") % (
-                splits["train"], splits["val"], splits["test"], splits["none"]
-            ),
+        dataset = overview["dataset"]
+        name = entry.display_name or dataset["name"] or "-"
+        self.overview_hint.setText(
+            self.tr("Name: %s") % name
+            + " · "
+            + self.tr("Path: %s") % entry.db_path
+        )
+
+        def share(count: int) -> str:
+            if not totals["images"]:
+                return "-"
+            return "%.1f%%" % (count * 100.0 / totals["images"])
+
+        rows = [
+            (self.tr("Images"), totals["images"], ""),
+            (self.tr("Recycle bin"), totals["trashed"], ""),
+            (self.tr("Train"), splits["train"], share(splits["train"])),
+            (self.tr("Val"), splits["val"], share(splits["val"])),
+            (self.tr("Test"), splits["test"], share(splits["test"])),
+            (self.tr("None"), splits["none"], share(splits["none"])),
+            (self.tr("Objects"), totals["objects"], ""),
+            (self.tr("Classes"), totals["categories"], ""),
+            (self.tr("Tag kinds"), totals["tag_kinds"], ""),
         ]
-        top_tags = overview["tags"][:15]
-        if top_tags:
-            lines.append(
-                self.tr("Tags: ")
-                + ", ".join(
-                    "%s (%d)" % (row["tag"], row["image_count"])
-                    for row in top_tags
-                )
-            )
-        top_categories = overview["categories"][:10]
-        if top_categories:
-            lines.append(
-                self.tr("Classes: ")
-                + ", ".join(
-                    "%s (%d/%d)"
-                    % (row["name"], row["image_count"], row["object_count"])
-                    for row in top_categories
-                )
-            )
-        self.overview_label.setText("\n".join(lines))
-        self.note_edit.setPlainText(overview["dataset"].get("description", ""))
+        self._set_rows(self.summary_table, rows)
+        self._set_rows(
+            self.classes_table,
+            [
+                (row["name"], row["image_count"], row["object_count"])
+                for row in overview["categories"]
+            ],
+        )
+        self._set_rows(
+            self.tags_table,
+            [
+                (row["tag"], row["image_count"])
+                for row in overview["tags"]
+            ],
+        )
+        self.note_edit.setPlainText(dataset.get("description", ""))
 
     # -- login helpers -----------------------------------------------------
     def _operator(self):

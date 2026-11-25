@@ -6,6 +6,63 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.55 — 2026-11-25
+
+### 1. 背景与需求
+
+用户对数据集中心提出四项改进：
+
+1. 缺少快捷入口，考虑在工具栏添加“数据集中心”按钮；
+2. 统计总览不便于查看，建议改为表格；
+3. “打开文件”按钮更名为“打开数据集”；
+4. 合并时目标数据集用下拉选择很好，但同名数据集无法区分，建议显示“名称（路径）”。
+
+### 2. 主要实现
+
+- **工具栏入口**：`dataset_center` 动作加入工具栏（`actions/tool` 首位，`layers` 图标），
+  并保留 `文件 → 数据集中心…` 菜单入口；工具栏设置列表可单独隐藏/显示。
+  未采用“仅标题栏 chip”方案：工具栏是当前主界面唯一常驻快捷区，标题栏 chip 作为后续增强
+  （需要同时显示“当前数据集”状态，设计方案 §4.7 已预留）。
+- **概览表格**：右侧概览由纯文本改为表格——
+  - 汇总表三列：指标 / 数值 / 占比（图片、回收站、训练、验证、测试、未划分、对象、类别、标签种类）；
+  - 下方 `QTabWidget` 分“类别”（类别/图片/对象）与“标签”（标签/图片）两页，全部只读、行选择；
+  - 数据集名称与路径显示在概览上方的提示行。
+- **按钮更名**：`Open` → `Open Dataset`（中文“打开数据集”），菜单/工具栏文案不变（“数据集中心…”）。
+- **合并目标路径**：目标下拉文本改为 `显示名 (数据库路径)`，同名数据集可区分；
+  来源列表仍用显示名（来源在中心里已由用户多选确定）。
+- i18n：新增 13 条文案（Open Dataset/Metric/Value/Share/Category/Objects/Tag/Recycle bin/
+  Train/Val/Test/None/Tag kinds），已补中文；四语言 `.qm` 各 2737 条，zh/en 0 未翻译。
+
+### 3. 涉及文件
+
+- `anylabeling/views/labeling/actions/builder.py`（工具栏动作）
+- `anylabeling/views/dataset_center.py`（概览表格、按钮文案）
+- `anylabeling/views/dataset_center_merge.py`（目标下拉显示路径）
+- `tests/test_widgets/test_dataset_center.py`（表格断言 + 同名目标用例）
+- 翻译资源、`app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、
+  `docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+
+### 4. 行为与兼容性
+
+- 工具栏多一个按钮；可通过工具栏设置隐藏，不影响原有动作。
+- 概览从文字改为表格，信息量增加（全部类别/标签可滚动查看），不再只显示 Top 10/15。
+- “打开数据集”文案仅改显示；合并目标文本变化不影响选择值（仍存 `RegistryEntry`）。
+- 无接口/数据格式变化。
+
+### 5. 验证
+
+- `tests/test_dataset_db + test_widgets + test_utils + test_identity + test_i18n`：
+  **376 passed / 108 subtests**（新增同名目标下拉用例、表格断言）；
+  `test_image_tags_widget` 12 passed；`tests/test_i18n` 17 passed。
+- 四语言 `.qm` 各 2737 条，zh/en 0 未翻译。
+- **未执行**：真实桌面查看工具栏图标与表格排版（本机无 GUI 会话）。
+
+### 6. 已知限制
+
+- 概览表格目前一次加载全部类别/标签（万级标签时建议后续分页）；
+- “当前数据集”标题栏 chip 未实现（已登记为后续增强）；
+- 推送仍受本机凭据/网络阻塞；本地 `main` 领先远端 8 个提交。
+
 ## 4.3.2+fork.54 — 2026-11-25
 
 ### 1. 背景与问题

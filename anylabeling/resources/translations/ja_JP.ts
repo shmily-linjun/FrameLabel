@@ -2274,295 +2274,337 @@ Example: person.car.bicycle</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="141" />
-        <source>Open</source>
-        <translation>ファイルを開く</translation>
+        <location filename="..\..\views\dataset_center.py" line="142" />
+        <source>Open Dataset</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="143" />
+        <location filename="..\..\views\dataset_center.py" line="145" />
         <source>Rename…</source>
         <translation>名前を変更…</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="146" />
+        <location filename="..\..\views\dataset_center.py" line="148" />
         <source>Relocate…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="149" />
+        <location filename="..\..\views\dataset_center.py" line="151" />
         <source>Merge…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="152" />
+        <location filename="..\..\views\dataset_center.py" line="154" />
         <source>Delete Dataset…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="156" />
+        <location filename="..\..\views\dataset_center.py" line="158" />
         <source>Remove Record</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="173" />
+        <location filename="..\..\views\dataset_center.py" line="175" />
         <source>Search datasets…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="184" />
+        <location filename="..\..\views\dataset_center.py" line="186" />
         <source>State</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="185" />
+        <location filename="..\..\views\dataset_center.py" line="187" />
         <source>Name</source>
         <translation>名前</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="186" />
+        <location filename="..\..\views\dataset_center.py" line="503" />
+        <location filename="..\..\views\dataset_center.py" line="246" />
+        <location filename="..\..\views\dataset_center.py" line="242" />
+        <location filename="..\..\views\dataset_center.py" line="188" />
         <source>Images</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="187" />
+        <location filename="..\..\views\dataset_center.py" line="510" />
+        <location filename="..\..\views\dataset_center.py" line="257" />
+        <location filename="..\..\views\dataset_center.py" line="189" />
         <source>Classes</source>
         <translation>クラス</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="188" />
+        <location filename="..\..\views\dataset_center.py" line="258" />
+        <location filename="..\..\views\dataset_center.py" line="190" />
         <source>Tags</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="189" />
+        <location filename="..\..\views\dataset_center.py" line="191" />
         <source>Last opened</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="190" />
+        <location filename="..\..\views\dataset_center.py" line="192" />
         <source>Path</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="212" />
+        <location filename="..\..\views\dataset_center.py" line="214" />
         <source>Overview</source>
         <translation>統計概要</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="389" />
-        <location filename="..\..\views\dataset_center.py" line="215" />
+        <location filename="..\..\views\dataset_center.py" line="469" />
+        <location filename="..\..\views\dataset_center.py" line="217" />
         <source>Select a dataset to see its overview.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="224" />
+        <location filename="..\..\views\dataset_center.py" line="227" />
+        <source>Metric</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="227" />
+        <source>Value</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="227" />
+        <source>Share</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="242" />
+        <source>Category</source>
+        <translation>カテゴリ</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="509" />
+        <location filename="..\..\views\dataset_center.py" line="242" />
+        <source>Objects</source>
+        <translation>オブジェクト</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="246" />
+        <source>Tag</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="262" />
         <source>Dataset note</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="228" />
+        <location filename="..\..\views\dataset_center.py" line="266" />
         <source>Notes about this dataset (requires login)</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="234" />
+        <location filename="..\..\views\dataset_center.py" line="272" />
         <source>Save Note</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="317" />
+        <location filename="..\..\views\dataset_center.py" line="379" />
         <source>No datasets yet. Use Add Folder… to register one.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="387" />
+        <location filename="..\..\views\dataset_center.py" line="467" />
         <source>%d datasets selected.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="397" />
+        <location filename="..\..\views\dataset_center.py" line="480" />
         <source>This dataset is %s: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="408" />
+        <location filename="..\..\views\dataset_center.py" line="492" />
         <source>Name: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="409" />
+        <location filename="..\..\views\dataset_center.py" line="494" />
         <source>Path: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="410" />
-        <source>Images: %d (recycle bin: %d)</source>
+        <location filename="..\..\views\dataset_center.py" line="504" />
+        <source>Recycle bin</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="413" />
-        <source>Objects: %d · Classes: %d · Tag kinds: %d</source>
+        <location filename="..\..\views\dataset_center.py" line="505" />
+        <source>Train</source>
+        <translation>訓練</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="506" />
+        <source>Val</source>
+        <translation>Val</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="507" />
+        <source>Test</source>
+        <translation>Test</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="508" />
+        <source>None</source>
+        <translation>なし</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="511" />
+        <source>Tag kinds</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="416" />
-        <source>Split: train %d · val %d · test %d · none %d</source>
-        <translation type="unfinished" />
-    </message>
-    <message>
-        <location filename="..\..\views\dataset_center.py" line="423" />
-        <source>Tags: </source>
-        <translation type="unfinished" />
-    </message>
-    <message>
-        <location filename="..\..\views\dataset_center.py" line="432" />
-        <source>Classes: </source>
-        <translation type="unfinished" />
-    </message>
-    <message>
-        <location filename="..\..\views\dataset_center.py" line="455" />
+        <location filename="..\..\views\dataset_center.py" line="543" />
         <source>Login required</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="456" />
+        <location filename="..\..\views\dataset_center.py" line="544" />
         <source>Please log in before changing a dataset.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="477" />
+        <location filename="..\..\views\dataset_center.py" line="565" />
         <source>Add Dataset Folder</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="488" />
+        <location filename="..\..\views\dataset_center.py" line="576" />
         <source>Cannot add dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="489" />
+        <location filename="..\..\views\dataset_center.py" line="577" />
         <source>The folder must contain an existing xanylabeling.db dataset database.
 
 %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="506" />
+        <location filename="..\..\views\dataset_center.py" line="594" />
         <source>Dataset unavailable</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="507" />
+        <location filename="..\..\views\dataset_center.py" line="595" />
         <source>This dataset is missing or deleted.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="529" />
+        <location filename="..\..\views\dataset_center.py" line="617" />
         <source>Rename Dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="530" />
+        <location filename="..\..\views\dataset_center.py" line="618" />
         <source>New name:</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="539" />
+        <location filename="..\..\views\dataset_center.py" line="627" />
         <source>Rename failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="552" />
+        <location filename="..\..\views\dataset_center.py" line="640" />
         <source>Select the folder that contains xanylabeling.db</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="564" />
+        <location filename="..\..\views\dataset_center.py" line="652" />
         <source>Relocate failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="593" />
-        <location filename="..\..\views\dataset_center.py" line="583" />
+        <location filename="..\..\views\dataset_center.py" line="681" />
+        <location filename="..\..\views\dataset_center.py" line="671" />
         <source>Cannot save the note</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="625" />
+        <location filename="..\..\views\dataset_center.py" line="713" />
         <source>Dataset is open</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="626" />
+        <location filename="..\..\views\dataset_center.py" line="714" />
         <source>This dataset is open in the labeling window. Switch to another dataset before deleting it.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="635" />
+        <location filename="..\..\views\dataset_center.py" line="723" />
         <source>Delete dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="638" />
+        <location filename="..\..\views\dataset_center.py" line="726" />
         <source>Delete “%s”?</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="641" />
+        <location filename="..\..\views\dataset_center.py" line="729" />
         <source>The database is backed up first. “Database and images” also deletes the image files and cannot be undone.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="647" />
+        <location filename="..\..\views\dataset_center.py" line="735" />
         <source>Database only</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="650" />
+        <location filename="..\..\views\dataset_center.py" line="738" />
         <source>Database and images</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="668" />
+        <location filename="..\..\views\dataset_center.py" line="756" />
         <source>Backup failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="669" />
+        <location filename="..\..\views\dataset_center.py" line="757" />
         <source>The dataset was not deleted.
 
 %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="677" />
+        <location filename="..\..\views\dataset_center.py" line="765" />
         <source>Delete failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="678" />
+        <location filename="..\..\views\dataset_center.py" line="766" />
         <source>Backup: %s
 
 %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="729" />
+        <location filename="..\..\views\dataset_center.py" line="817" />
         <source>Remove record</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="730" />
+        <location filename="..\..\views\dataset_center.py" line="818" />
         <source>Remove %d record(s) from the registry? The dataset files are not touched.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="759" />
+        <location filename="..\..\views\dataset_center.py" line="847" />
         <source>Merge datasets</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="760" />
+        <location filename="..\..\views\dataset_center.py" line="848" />
         <source>Select at least one available dataset to merge.</source>
         <translation type="unfinished" />
     </message>
@@ -3924,7 +3966,7 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>すべてのタグをコピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="813" />
+        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="823" />
         <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="479" />
         <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="469" />
         <source>Select All</source>
@@ -3941,7 +3983,7 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="813" />
+        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="823" />
         <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="479" />
         <source>Deselect All</source>
         <translation>すべて選択解除</translation>
@@ -3967,32 +4009,32 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>Enter キーで保存、Esc キーでキャンセルします。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="738" />
+        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="748" />
         <source>Tags cannot be empty or contain line breaks.</source>
         <translation>タグを空にしたり、改行を含めたりすることはできません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="743" />
+        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="753" />
         <source>This tag already exists.</source>
         <translation>このタグは既に存在します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="772" />
+        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="782" />
         <source>Delete Image Tag</source>
         <translation>画像タグを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="774" />
+        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="784" />
         <source>Delete tag "%s"?</source>
         <translation>タグ「%s」を削除しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="835" />
+        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="845" />
         <source>Delete Image Tags</source>
         <translation>画像タグを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="836" />
+        <location filename="..\..\views\labeling\widgets\image_tags_widget.py" line="846" />
         <source>Delete %d selected tags?</source>
         <translation>選択した %d 件のタグを削除しますか？</translation>
     </message>
@@ -7628,7 +7670,7 @@ Reset the label as {}.</source>
 </context><context>
     <name>MergeDialog</name>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="384" />
+        <location filename="..\..\views\dataset_center_merge.py" line="383" />
         <location filename="..\..\views\dataset_center_merge.py" line="81" />
         <source>Merge Datasets</source>
         <translation type="unfinished" />
@@ -7659,7 +7701,7 @@ Reset the label as {}.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="259" />
+        <location filename="..\..\views\dataset_center_merge.py" line="258" />
         <location filename="..\..\views\dataset_center_merge.py" line="120" />
         <source>Parent folder for the new dataset</source>
         <translation type="unfinished" />
@@ -7730,67 +7772,67 @@ Reset the label as {}.</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="272" />
+        <location filename="..\..\views\dataset_center_merge.py" line="271" />
         <source>Run Preview to check the merge.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="311" />
+        <location filename="..\..\views\dataset_center_merge.py" line="310" />
         <source>Target required</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="312" />
+        <location filename="..\..\views\dataset_center_merge.py" line="311" />
         <source>Choose a name and a parent folder for the new dataset.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="319" />
+        <location filename="..\..\views\dataset_center_merge.py" line="318" />
         <source>Cannot create the target</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="340" />
+        <location filename="..\..\views\dataset_center_merge.py" line="339" />
         <source>Creating a new dataset starts the merge directly.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="352" />
+        <location filename="..\..\views\dataset_center_merge.py" line="351" />
         <source>Preview failed: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="357" />
+        <location filename="..\..\views\dataset_center_merge.py" line="356" />
         <source>Images: %(images)d · Objects: %(objects)d · Suspected duplicates: %(duplicates)d · Missing files: %(missing)d · Class decisions: %(categories)d</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="382" />
+        <location filename="..\..\views\dataset_center_merge.py" line="381" />
         <source>Merging datasets…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="412" />
+        <location filename="..\..\views\dataset_center_merge.py" line="411" />
         <source>Merged %(images)d images and %(objects)d objects; skipped %(skipped)d.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="421" />
+        <location filename="..\..\views\dataset_center_merge.py" line="420" />
         <source>Problems:</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="425" />
+        <location filename="..\..\views\dataset_center_merge.py" line="424" />
         <source>Backup: %s</source>
         <translation>バックアップ: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="427" />
+        <location filename="..\..\views\dataset_center_merge.py" line="426" />
         <source>Merge finished</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="436" />
+        <location filename="..\..\views\dataset_center_merge.py" line="435" />
         <source>Merge failed</source>
         <translation type="unfinished" />
     </message>

@@ -65,7 +65,7 @@ def build_actions(host):  # noqa: C901
         host.tr("Dataset Center…"),
         host.open_dataset_center,
         None,
-        None,
+        "layers",
         host.tr("Manage known datasets: overview, notes, merge and delete"),
     )
     show_trash = action(
@@ -1668,6 +1668,8 @@ def build_actions(host):  # noqa: C901
     actions.rf_detr_tool = rf_detr_tool
     actions.efficient_tool = efficient_tool
     actions.tool = (
+        dataset_center,
+        None,
         jump_next_images,
         open_next_image,
         open_prev_image,

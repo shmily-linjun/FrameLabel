@@ -50,7 +50,10 @@ def test_lists_dataset_and_shows_overview(window):
     assert center.table.rowCount() == 1
     assert center.table.item(0, 1).text() == "Demo"
     assert center.table.item(0, 2).text() == "1"
-    assert "Images: 1" in center.overview_label.text()
+    assert center.summary_table.rowCount() == 9
+    assert center.summary_table.item(0, 0).text() == "Images"
+    assert center.summary_table.item(0, 1).text() == "1"
+    assert "Demo" in center.overview_hint.text()
 
 
 def test_missing_dataset_is_marked(window):
@@ -58,6 +61,7 @@ def test_missing_dataset_is_marked(window):
     os.unlink(dataset_root / "xanylabeling.db")
     center.refresh()
     assert center.table.item(0, 0).text() == "缺失"
+    assert "missing" in center.overview_hint.text().lower()
     [entry] = registry.list()
     assert entry.state == "missing"
 
@@ -99,4 +103,42 @@ def test_registers_the_dataset_open_in_the_window(app, tmp_path):
         assert center.table.rowCount() == 1
     finally:
         center.deleteLater()
+        app.processEvents()
+
+
+def test_merge_target_combo_shows_the_path(app, tmp_path):
+    """Equal display names must be distinguishable by their database path."""
+
+    from anylabeling.views.dataset_center_merge import MergeDialog
+
+    roots = []
+    for name in ("first", "second"):
+        root = tmp_path / name
+        root.mkdir()
+        database = DatasetDatabase.create(
+            root / "xanylabeling.db", name="Same"
+        )
+        database.close()
+        roots.append(root)
+
+    app_db = str(tmp_path / "platform.db")
+    registry = RegistryStore(app_db)
+    entries = [registry.add_from_folder(str(root)) for root in roots]
+    operator_service = OperatorService(db_path=app_db)
+    operator_service.register("tester", "abcd")
+
+    dialog = MergeDialog(
+        sources=[entries[0]],
+        registry=registry,
+        operator_service=operator_service,
+    )
+    try:
+        label = dialog.existing_combo.itemText(0)
+        assert "Same" in label
+        assert (
+            str(roots[0] / "xanylabeling.db") in label
+            or str(roots[1] / "xanylabeling.db") in label
+        )
+    finally:
+        dialog.deleteLater()
         app.processEvents()

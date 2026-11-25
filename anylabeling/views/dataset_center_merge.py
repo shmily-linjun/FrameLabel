@@ -206,9 +206,8 @@ class MergeDialog(QtWidgets.QDialog):
         self._target_entries = entries
         self.existing_combo.clear()
         for entry in entries:
-            self.existing_combo.addItem(
-                entry.display_name or entry.uuid[:8], entry
-            )
+            label = entry.display_name or entry.uuid[:8]
+            self.existing_combo.addItem(f"{label} ({entry.db_path})", entry)
         current = None
         if self.current_dataset_root:
             for entry in entries:
