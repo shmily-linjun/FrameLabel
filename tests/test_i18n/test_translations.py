@@ -14,6 +14,7 @@ These tests enforce the two halves of the fix:
 
 import importlib.util
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -132,5 +133,69 @@ def test_upload_dialog_strings_are_translated():
             if QtCore.QCoreApplication.translate(context, text) == text
         ]
         assert untranslated == []
+    finally:
+        app.removeTranslator(translator)
+
+
+_FORMAT_SPECIFIER = re.compile(
+    r"%(?:\([^)]*\))?[#0\- +]?\d*(?:\.\d+)?[hlL]?[diouxXeEfFgGcrsa%]"
+)
+
+
+def _specifiers(text):
+    """Return the ordered ``%`` specifiers of a template (``%%`` skipped)."""
+
+    return [
+        match.group(0)
+        for match in _FORMAT_SPECIFIER.finditer(text)
+        if match.group(0) != "%%"
+    ]
+
+
+@pytest.mark.parametrize("language", LANGUAGES)
+def test_placeholder_order_matches_source(language):
+    """A translation must keep the source's ``%`` order and types.
+
+    The code formats translated templates with Python's ``%`` operator, so a
+    translation that swaps ``%d`` and ``%s`` raises ``TypeError`` at run time
+    (fork.50: the YOLO upload dialog crashed before it could open).
+    """
+
+    messages = scanner.read_ts(str(TRANSLATIONS / f"{language}.ts"))
+    mismatched = []
+    for (context, source), translation in messages.items():
+        if not translation.strip():
+            continue
+        source_specs = _specifiers(source)
+        translated_specs = _specifiers(translation)
+        if source_specs != translated_specs:
+            mismatched.append(
+                (context, source, translation, source_specs, translated_specs)
+            )
+    assert mismatched == [], "\n".join(
+        f"[{context}] {source!r} {source_specs} -> "
+        f"{translation!r} {translated_specs}"
+        for context, source, translation, source_specs, translated_specs in (
+            mismatched[:20]
+        )
+    )
+
+
+def test_classes_hint_template_accepts_its_arguments():
+    """Regression: formatting the class-source hint must not raise."""
+
+    from PyQt6 import QtCore, QtWidgets
+
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+    translator = QtCore.QTranslator()
+    assert translator.load(str(TRANSLATIONS / "zh_CN.qm"))
+    app.installTranslator(translator)
+    try:
+        template = QtCore.QCoreApplication.translate(
+            "LabelingWidget", "Classes: %d from %s"
+        )
+        rendered = template % (2, "D:/dataset/classes.txt")
+        assert "2" in rendered
+        assert "classes.txt" in rendered
     finally:
         app.removeTranslator(translator)

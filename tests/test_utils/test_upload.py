@@ -1,17 +1,58 @@
 import os
+from pathlib import Path
 from unittest import mock
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
-from PyQt6 import QtWidgets
+from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import Qt
 
 from anylabeling.views.labeling.utils.upload import (
+    _class_source_text,
     _refresh_uploaded_file_items,
     _reject_dataset_mode_upload,
     upload_yolo_annotation,
 )
+from anylabeling.views.labeling.utils.yolo_import import (
+    SOURCE_CLASSES,
+    SOURCE_DATASET,
+    ClassSource,
+)
+
+
+def test_class_source_text_formats_in_chinese():
+    """Regression: the zh_CN template must survive ``%`` formatting.
+
+    fork.49 shipped ``类别：来自 %s 的 %d 个`` for ``Classes: %d from %s``,
+    which raised ``TypeError`` as soon as the upload dialog was opened.
+    """
+
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+    translator = QtCore.QTranslator()
+    translations = (
+        Path(__file__).resolve().parents[2]
+        / "anylabeling/resources/translations/zh_CN.qm"
+    )
+    assert translator.load(str(translations))
+    app.installTranslator(translator)
+    try:
+        widget = QtWidgets.QWidget()
+        picked = ClassSource(
+            ("face", "person"), SOURCE_CLASSES, "D:/data/classes.txt"
+        )
+        text = _class_source_text(widget, picked)
+        assert "2" in text
+        assert "classes.txt" in text
+
+        dataset = ClassSource(("face",), SOURCE_DATASET)
+        dataset_text = _class_source_text(widget, dataset)
+        assert "1" in dataset_text
+
+        widget.close()
+        app.processEvents()
+    finally:
+        app.removeTranslator(translator)
 
 
 @pytest.mark.parametrize("use_output_dir", [False, True])

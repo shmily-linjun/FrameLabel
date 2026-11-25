@@ -6,6 +6,63 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.50 — 2026-11-25
+
+### 1. 背景与原因
+
+fork.49 发布后，用户点“上传 → YOLO Seg”直接崩溃：
+
+```text
+File "...\utils\upload.py", line 1028, in _class_source_text
+    return host.tr("Classes: %d from %s") % (count, source.path)
+TypeError: %d format: a real number is required, not str
+```
+
+根因是 fork.49 新补的 zh_CN 译文把占位符顺序写反了：
+`Classes: %d from %s` 被译成 `类别：来自 %s 的 %d 个`。代码用 Python `%` 按位置套参数
+（`(count, path)`），于是第一个 `%s` 吃到整数、第二个 `%d` 吃到字符串，抛 `TypeError`。
+换句话说：**译文能显示，但一旦参与格式化就会崩**；fork.49 的 i18n 守卫只检查“条目存在、
+非空、`.qm` 与 `.ts` 一致”，没有检查占位符。
+
+### 2. 主要实现与关键细节
+
+- 修正 zh_CN 译文：`类别：%d 个，来自 %s`（占位符顺序与类型与源文一致），重编 `zh_CN.qm`。
+- `tests/test_i18n` 新增两条守卫：
+  - `test_placeholder_order_matches_source[en_US/zh_CN/ja_JP/ko_KR]`：逐条比较源文与译文的
+    有序 `%` 说明符（跳过 `%%`），顺序或类型不一致即失败；覆盖全部 2493 条消息；
+  - `test_classes_hint_template_accepts_its_arguments`：加载 `zh_CN.qm` 后真实格式化
+    `Classes: %d from %s`，直接复现用户崩溃路径。
+- `tests/test_utils/test_upload.py` 新增 `test_class_source_text_formats_in_chinese`：
+  安装 zh_CN 翻译后调用 `_class_source_text()`（DB 类别与文件类别两种来源），确认不再抛异常。
+- 用旧译文复跑新守卫，确认能复现 `TypeError: %d format: a real number is required, not str`
+  并使两条用例失败；恢复修复后全绿（先证明守卫有效，再证明修复有效）。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/resources/translations/zh_CN.ts`、`zh_CN.qm`、`tests/test_i18n/test_translations.py`、`tests/test_utils/test_upload.py`、`anylabeling/app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+- 未修改运行时代码（`upload.py` 逻辑本身正确，问题在译文）。
+
+### 4. 行为、接口与兼容性影响
+
+- 修复后“上传 → YOLO Seg/检测/旋转框”可正常打开选项对话框并显示“类别：N 个，来自 …”。
+- 不改变任何接口或数据格式；仅修正一个译文条目并新增测试。
+- 版本：4.3.2+fork.49 → 4.3.2+fork.50（缺陷修复属用户可观察行为变化）。
+
+### 5. 实际验证内容
+
+- `tests/test_i18n` **14 passed**（含四语言占位符检查与崩溃回归）；`tests/test_utils/test_upload.py` **9 passed**（含中文格式化回归）；两者合计 **23 passed**。
+- 反向验证：临时恢复旧译文后，`test_placeholder_order_matches_source[zh_CN]` 与
+  `test_classes_hint_template_accepts_its_arguments` 均失败，错误正是用户看到的
+  `TypeError: %d format: a real number is required, not str`；恢复后全绿。
+- 四语言 `.qm` 重编各 2493 条（`en_US`/`zh_CN` 0 未翻译，`ja_JP`/`ko_KR` 各 130 条未翻译，状态与 fork.49 相同，本批未改）。
+- **未执行**：真实桌面点击“上传 → YOLO Seg”的完整交互（本机无 GUI 会话）；用户侧副本 `D:\cbg\code\X-AnyLabeling-main` 需要同步本次提交后才会生效。
+
+### 6. 已知限制与后续事项
+
+- 仍有一类风险：若后续人工新增/修改译文时打乱占位符，测试会拦住；但 `pylupdate6` 自动复用旧译文时也可能带出错误，因此每次都须跑 `tests/test_i18n`。
+- `ja_JP`/`ko_KR` 的 130 条未翻译文案仍未补（与 fork.49 相同）。
+- 推送仍受本机凭据/网络阻塞（见 fork.49 记录），本批提交同样只落在本地。
+
 ## 4.3.2+fork.49 — 2026-11-25
 
 ### 1. 背景与原因

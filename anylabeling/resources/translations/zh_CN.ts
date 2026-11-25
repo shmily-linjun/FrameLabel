@@ -6838,7 +6838,7 @@ Results have been saved to:
     <message>
         <location filename="..\..\views\labeling\utils\upload.py" line="1028" />
         <source>Classes: %d from %s</source>
-        <translation>类别：来自 %s 的 %d 个</translation>
+        <translation>类别：%d 个，来自 %s</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\utils\upload.py" line="1139" />
