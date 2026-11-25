@@ -6,6 +6,61 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.59 — 2026-11-25
+
+### 1. 背景与问题
+
+用户点击 `文件 → 打开文件` 时软件崩溃：
+
+```
+File ".../file_dialog_preview.py", line 49, in __init__
+    self.layout().addLayout(box, 1, 3, 1, 1)
+AttributeError: 'NoneType' object has no attribute 'addLayout'
+```
+
+### 2. 原因
+
+fork.42（`ce05c0d`，原生文件对话框）把 `FileDialogPreview` 的
+`DontUseNativeDialog` 从 `True` 改成了 `False`，于是 Windows 使用系统原生对话框；
+原生对话框没有 Qt 的 `layout()`，而该类正是靠往 `layout()` 里加预览面板实现
+“选中文件旁显示图片/JSON 预览”的，构造时即崩溃。
+
+### 3. 修复
+
+- `FileDialogPreview` 恢复 `DontUseNativeDialog = True`（该对话框必须用 Qt 自己的
+  控件树才能加预览面板）；
+- 增加防御：`layout()` 为 `None` 时只记录警告并跳过预览面板，不再抛异常（避免
+  未来平台/主题差异导致同类崩溃）；
+- 新增回归测试 `tests/test_widgets/test_file_dialog_preview.py`：
+  - 构造后 `DontUseNativeDialog` 为真、`layout()` 非空、预览初始隐藏；
+  - 用最小宿主调用 `FileSession.open_file()`（`exec` 被替换为取消），确认构造路径不再崩溃。
+- 版本：`4.3.2+fork.58` → `4.3.2+fork.59`。
+
+### 4. 涉及文件
+
+- `anylabeling/views/labeling/widgets/file_dialog_preview.py`
+- `tests/test_widgets/test_file_dialog_preview.py`（新增）
+- `anylabeling/app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`
+
+### 5. 行为与兼容性
+
+- “打开文件”对话框恢复“图片/JSON 预览”面板；其余原生文件对话框（保存、选择目录、
+  移动文件等）不受影响，仍是 fork.42 的原生行为；
+- 无接口/数据格式变化。
+
+### 6. 验证
+
+- `tests/test_widgets/test_file_dialog_preview.py` **2 passed**；
+  `tests/test_widgets + test_dataset_db + test_utils + test_identity + test_i18n`：
+  **383 passed / 1 failed（既有计时抖动）/ 108 subtests**。
+- 未执行：真实桌面点击“文件 → 打开文件”（本机无 GUI 会话），但构造路径已被用例覆盖。
+
+### 7. 已知限制
+
+- 该对话框为非原生，视觉风格与应用内 Qt 对话框一致，不再跟随 Windows 原生文件框主题
+  （预览功能所需，属预期）；
+- 推送仍受本机网络/凭据阻塞；本地 `main` 领先远端 12 个提交。
+
 ## 4.3.2+fork.58 — 2026-11-25
 
 ### 1. 背景与需求

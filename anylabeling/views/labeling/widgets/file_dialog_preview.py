@@ -4,6 +4,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 
 from .. import utils
 from ..label_file import LabelFile
+from ..logger import logger
 
 
 class ScrollAreaPreview(QtWidgets.QScrollArea):
@@ -35,7 +36,10 @@ class ScrollAreaPreview(QtWidgets.QScrollArea):
 class FileDialogPreview(QtWidgets.QFileDialog):
     def __init__(self, *args, **kwargs):
         super(FileDialogPreview, self).__init__(*args, **kwargs)
-        self.setOption(self.Option.DontUseNativeDialog, False)
+        # This dialog adds a preview pane to Qt's own widget hierarchy, so
+        # it must never use the native dialog: the native dialog has no
+        # ``layout()`` and adding the pane would crash (fork.42 regression).
+        self.setOption(self.Option.DontUseNativeDialog, True)
 
         self.label_preview = ScrollAreaPreview(self)
         self.label_preview.setFixedSize(300, 300)
@@ -46,7 +50,15 @@ class FileDialogPreview(QtWidgets.QFileDialog):
         box.addStretch()
 
         self.setFixedSize(self.width() + 300, self.height())
-        self.layout().addLayout(box, 1, 3, 1, 1)
+        dialog_layout = self.layout()
+        if dialog_layout is not None:
+            dialog_layout.addLayout(box, 1, 3, 1, 1)
+        else:
+            # Defensive: a native dialog would have no layout.  Keep the
+            # file picker usable instead of raising AttributeError.
+            logger.warning(
+                "File dialog has no layout; preview pane disabled"
+            )
         self.currentChanged.connect(self.on_change)
 
     def on_change(self, path):
