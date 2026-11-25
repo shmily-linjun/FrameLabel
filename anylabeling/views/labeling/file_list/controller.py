@@ -882,9 +882,7 @@ class FileListController:
                 getattr(host, "_tag_library_entries", None) or []
             )
         ]
-        dialog = BatchTagsDialog(
-            len(paths), library_tags, host, translate=host.tr
-        )
+        dialog = BatchTagsDialog(len(paths), library_tags, host)
         if (
             dialog.exec()
             != QtWidgets.QDialog.DialogCode.Accepted

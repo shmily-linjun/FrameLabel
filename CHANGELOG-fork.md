@@ -6,6 +6,82 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.52 — 2026-11-25
+
+### 1. 背景与原因
+
+用户反馈 fork.51 之后“图像属性”页仍残留英文：`Tag Library`、`Search tags…`、
+`No other tags in the current file list.`。
+
+排查结论是**代码结构问题**，不是漏译或 `.ts` 缺条目：
+
+- `TagLibraryWidget.__init__(self, translate, …)` 接收注入的翻译函数并执行
+  `self._tr = translate`；调用点分别传 `host.tr`（`workspace.py:560`）和
+  `self.tr`（`tags_dialog.py`）。
+- `BatchTagsDialog.__init__(…, translate=None)` 同样接受注入，
+  `file_list/controller.py` 传入 `translate=host.tr`。
+- `pylupdate6` 只按“类体内的字面量调用”把文案登记到**类名**上下文（`TagLibraryWidget`/
+  `BatchTagsDialog`），而运行时 `host.tr` 的上下文是 **`LabelingWidget`**。两者永远
+  对不上，因此这些文案无论 `.ts` 里有没有译文都会显示英文；fork.51 把它们的译文放在
+  `TagLibraryWidget`/`BatchTagsDialog` 下，自然不生效。
+
+### 2. 主要实现与关键细节
+
+- **移除翻译函数注入**，让控件使用自身的 `self.tr`（上下文 = 类名，与抽取一致）：
+  - `TagLibraryWidget(parent=None)`：删除 `translate` 参数与 `lambda` 兜底，
+    所有 `self._tr(...)` 改为 `self.tr(...)`；调用点改为 `TagLibraryWidget()` /
+    `TagLibraryWidget(self)`。
+  - `BatchTagsDialog(image_count, library_tags=(), parent=None)`：删除 `translate`
+    参数与 `self._tr` 赋值；调用点改为 `BatchTagsDialog(len(paths), library_tags, host)`。
+  - 测试替身同步去掉 `translate` 形参；`test_tag_library_widget` 改用
+    `TagLibraryWidget()`。
+- **新增回归测试** `test_image_attributes_tag_library_is_translated`：安装 `zh_CN.qm`
+  后校验标签库标题/搜索占位/收起提示/空状态，以及批量标签对话框标题与三种模式文案。
+- 重新生成 `.ts`：仅 `<location>` 行号变化，四语言译文**零增减、零改动**（证明上下文
+  已与抽取一致，不再依赖 fork.51 的“猜上下文”）。
+- 版本：`4.3.2+fork.51` → `4.3.2+fork.52`。
+
+### 3. 涉及模块与文件
+
+- 修改：`anylabeling/views/labeling/widgets/tag_library.py`、
+  `anylabeling/views/labeling/file_list/tags_dialog.py`、
+  `anylabeling/views/labeling/widgets/workspace.py`、
+  `anylabeling/views/labeling/file_list/controller.py`、
+  `anylabeling/resources/translations/*.ts`、`*.qm`、
+  `tests/test_i18n/test_translations.py`、`tests/test_widgets/test_tag_library_widget.py`、
+  `tests/test_labeling/test_file_table.py`、`anylabeling/app_info.py`、
+  `CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、
+  `docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+
+### 4. 行为、接口与兼容性影响
+
+- 用户可见：中文界面下“图像属性”页标签库（标题、搜索框、收起/展开、空状态、悬停提示）
+  与“批量设置图片标签”对话框恢复中文。
+- 内部接口：`TagLibraryWidget`、`BatchTagsDialog` 不再接受 `translate` 参数；仓库内
+  调用点与测试已同步，无外部调用者（`translate=` 全仓库检索为 0）。
+- 不改变数据格式、DB schema 或 `.ts` 条数与译文。
+
+### 5. 实际验证内容
+
+- 离屏运行时核对（`zh_CN.qm`）：`TagLibraryWidget` 标题“标签库”、占位“搜索标签…”、
+  收起提示“收起标签库”、空状态“当前文件列表中没有其他标签。”；
+  `BatchTagsDialog` 标题“批量设置图片标签”、模式“添加到现有标签/替换指定标签/删除所有图片标签”。
+- `tests/test_i18n` **17 passed**；`tests/test_i18n + tests/test_widgets + tests/test_utils +
+  tests/test_dataset_db` **342 passed / 105 subtests**；`tests/test_widgets/test_tag_library_widget.py`
+  **4 passed**；`tests/test_labeling/test_file_table.py` **41 passed / 4 failed**，4 条失败为
+  结构报告记录的既有文件表 DB 模式测试债（本批未改这些用例）。
+- 生成器幂等性：重跑 `generate_languages.py --no-resources` 后译文零变化，仅
+  `<location line>` 随源码行号更新。
+- 四语言 `.qm` 各 2632 条（`en_US`/`zh_CN` 0 未翻译，`ja_JP`/`ko_KR` 各 139 条未翻译）。
+- **未执行**：真实桌面人工验收（本机无 GUI 会话）；用户副本需同步本次提交后生效。
+
+### 6. 已知限制与后续事项
+
+- `ja_JP`/`ko_KR` 仍有 139 条未翻译（fork.49 遗留 130 条 + fork.51 新发现 9 条）。
+- 推送仍受本机凭据/网络阻塞（见 fork.49 记录）；本地 `main` 已领先远端 3 个提交。
+- 控件与对话框的翻译规范已写入设计书 §4.6：**不得注入翻译函数**，一律用自身
+  `self.tr`；确需跨上下文时由调用方用自己的 `tr` 包装后再传入文本（而不是传入函数）。
+
 ## 4.3.2+fork.51 — 2026-11-25
 
 ### 1. 背景与原因

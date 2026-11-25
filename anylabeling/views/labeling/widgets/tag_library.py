@@ -15,9 +15,8 @@ class TagLibraryWidget(QtWidgets.QWidget):
     tag_clicked = QtCore.pyqtSignal(str)
     tag_search_requested = QtCore.pyqtSignal(str)
 
-    def __init__(self, translate, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self._tr = translate or (lambda text: text)
         self._entries = []
         self._current = set()
         self._collapsed = False
@@ -31,7 +30,7 @@ class TagLibraryWidget(QtWidgets.QWidget):
         header = QtWidgets.QHBoxLayout()
         header.setContentsMargins(6, 4, 6, 2)
         header.setSpacing(4)
-        self.title_label = QtWidgets.QLabel(self._tr("Tag Library"))
+        self.title_label = QtWidgets.QLabel(self.tr("Tag Library"))
         self.title_label.setStyleSheet(
             f"QLabel {{ color: {theme['text_secondary']};"
             " font-size: 11px; font-weight: 600; }"
@@ -40,7 +39,7 @@ class TagLibraryWidget(QtWidgets.QWidget):
             QtWidgets.QSizePolicy.Policy.Preferred,
             QtWidgets.QSizePolicy.Policy.Preferred,
         )
-        self.title_label.setToolTip(self._tr("Tag Library"))
+        self.title_label.setToolTip(self.tr("Tag Library"))
         self.count_label = QtWidgets.QLabel("")
         self.count_label.setStyleSheet(
             f"QLabel {{ color: {theme['text_secondary']}; font-size: 11px; }}"
@@ -50,17 +49,17 @@ class TagLibraryWidget(QtWidgets.QWidget):
             QtWidgets.QSizePolicy.Policy.Preferred,
         )
         self.search_edit = QtWidgets.QLineEdit()
-        self.search_edit.setPlaceholderText(self._tr("Search tags…"))
+        self.search_edit.setPlaceholderText(self.tr("Search tags…"))
         self.search_edit.setClearButtonEnabled(True)
         self.search_edit.setFixedHeight(24)
         self.search_edit.setMinimumWidth(52)
         self.search_edit.setMaximumWidth(180)
-        self.search_edit.setToolTip(self._tr("Search tags…"))
+        self.search_edit.setToolTip(self.tr("Search tags…"))
         self.search_edit.textChanged.connect(self._rebuild)
         self.collapse_button = QtWidgets.QToolButton()
         self.collapse_button.setAutoRaise(True)
         self.collapse_button.setArrowType(QtCore.Qt.ArrowType.DownArrow)
-        self.collapse_button.setToolTip(self._tr("Collapse tag library"))
+        self.collapse_button.setToolTip(self.tr("Collapse tag library"))
         self.collapse_button.clicked.connect(self._toggle_collapsed)
         header.addWidget(self.title_label)
         header.addWidget(self.count_label)
@@ -153,7 +152,7 @@ class TagLibraryWidget(QtWidgets.QWidget):
         body_layout.addWidget(self.empty_label)
 
         self.hint_label = QtWidgets.QLabel(
-            self._tr(
+            self.tr(
                 "Double-click to add; right-click or Ctrl+click to show "
                 "images using it."
             )
@@ -199,9 +198,9 @@ class TagLibraryWidget(QtWidgets.QWidget):
             else QtCore.Qt.ArrowType.DownArrow
         )
         self.collapse_button.setToolTip(
-            self._tr("Expand tag library")
+            self.tr("Expand tag library")
             if self._collapsed
-            else self._tr("Collapse tag library")
+            else self.tr("Collapse tag library")
         )
 
     # -- internals -----------------------------------------------------
@@ -241,9 +240,9 @@ class TagLibraryWidget(QtWidgets.QWidget):
             item.setData(QtCore.Qt.ItemDataRole.UserRole, tag)
             item.setSizeHint(QtCore.QSize(cell_width, 28))
             item.setToolTip(
-                self._tr("%s (used by %d images)") % (tag, count)
+                self.tr("%s (used by %d images)") % (tag, count)
                 + "\n"
-                + self._tr("Double-click to add.")
+                + self.tr("Double-click to add.")
             )
             self.list_widget.addItem(item)
 
@@ -254,11 +253,11 @@ class TagLibraryWidget(QtWidgets.QWidget):
         self.hint_label.setVisible(bool(missing))
         if not missing:
             self.empty_label.setText(
-                self._tr("No other tags in the current file list.")
+                self.tr("No other tags in the current file list.")
             )
             self.empty_label.setVisible(True)
         elif not matching:
-            self.empty_label.setText(self._tr("No matching tags."))
+            self.empty_label.setText(self.tr("No matching tags."))
             self.empty_label.setVisible(True)
         else:
             self.empty_label.setVisible(False)
@@ -301,7 +300,7 @@ class TagLibraryWidget(QtWidgets.QWidget):
         if not tag:
             return
         menu = QtWidgets.QMenu(self.list_widget)
-        action = menu.addAction(self._tr("Show images with this tag"))
+        action = menu.addAction(self.tr("Show images with this tag"))
         action.triggered.connect(
             lambda _checked=False, value=str(tag): (
                 self.tag_search_requested.emit(value)

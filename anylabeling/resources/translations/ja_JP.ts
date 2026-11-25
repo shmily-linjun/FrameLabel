@@ -718,6 +718,89 @@ Example: person.car.bicycle</source>
         <translation>実行</translation>
     </message>
 </context><context>
+    <name>BatchTagsDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="42" />
+        <source>Batch Set Image Tags</source>
+        <translation>画像タグを一括設定</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="54" />
+        <source>Apply tags to the selected images (%d):</source>
+        <translation>選択した画像（%d 枚）にタグを適用:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="62" />
+        <source>Add to existing tags</source>
+        <translation>既存のタグに追加</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="65" />
+        <source>Replace a specific tag</source>
+        <translation>特定のタグを置き換え</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="68" />
+        <source>Delete all image tags</source>
+        <translation>すべての画像タグを削除</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="98" />
+        <source>Cancel</source>
+        <translation>キャンセル</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="101" />
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="118" />
+        <source>Tags to add (comma separated)</source>
+        <translation>追加するタグ（カンマ区切り）</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="146" />
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="121" />
+        <source>tag1, tag2</source>
+        <translation>例: 欠陥, ぼけ</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="131" />
+        <source>Tag to replace</source>
+        <translation>置き換えるタグ</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="139" />
+        <source>Select or type the tag to replace</source>
+        <translation>置き換えるタグを選択または入力</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="143" />
+        <source>Replace with (comma separated)</source>
+        <translation>置き換え後（カンマ区切り）</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="157" />
+        <source>This removes every image tag from %d images.</source>
+        <translation>%d 枚の画像からすべての画像タグを削除します。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="224" />
+        <source>Enter at least one tag.</source>
+        <translation>タグを1つ以上入力してください。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="230" />
+        <source>Select the tag to replace.</source>
+        <translation>置き換えるタグを選択してください。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="235" />
+        <source>Enter the replacement tag.</source>
+        <translation>置き換え後のタグを入力してください。</translation>
+    </message>
+</context><context>
     <name>CameraConfigurationDialog</name>
     <message>
         <location filename="..\..\views\labeling\pointcloud\camera.py" line="275" />
@@ -2996,76 +3079,76 @@ Original images backed up to:
         <translation>%d 個のファイルの分割を %s に設定しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="899" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="897" />
         <source>Batch Set Image Tags</source>
         <translation>画像タグを一括設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="900" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="898" />
         <source>Delete all image tags from %d files?</source>
         <translation>%d 枚の画像からすべての画像タグを削除しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="931" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="929" />
         <source>Failed to update tags for %d files</source>
         <translation>%d 枚の画像のタグを更新できませんでした</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="936" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="934" />
         <source>Tags updated for %d files</source>
         <translation>%d 枚の画像のタグを更新しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="941" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="939" />
         <source>Tags unchanged for %d files</source>
         <translation>%d 枚の画像のタグは変更されていません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="979" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="977" />
         <source>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</source>
         <translation>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="985" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="983" />
         <source>Remove %d files from the file list?
 The image files and their annotation files will NOT be deleted.</source>
         <translation>ファイルリストから %d 個のファイルを削除しますか？
 画像ファイルとアノテーションファイルは削除されません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="992" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="990" />
         <source>Remove File</source>
         <translation>Remove File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1059" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1057" />
         <source>Move to Folder</source>
         <translation>フォルダへ移動</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1087" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1085" />
         <source>Move out of Dataset</source>
         <translation>データセットから移動</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1088" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1086" />
         <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
         <translation>%d 個のファイルをデータセットから移動し、現在の一覧から削除します。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1124" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1122" />
         <source>Failed to move: %s</source>
         <translation>移動に失敗しました：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1125" />
         <source>Moved %d files</source>
         <translation>%d 個のファイルを移動しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1129" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
         <source>(%d moved out of the dataset)</source>
         <translation>（%d 個をデータセットから移動）</translation>
     </message>
@@ -5905,76 +5988,76 @@ Results have been saved to:
         <translation>%d 個のファイルの分割を %s に設定しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="899" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="897" />
         <source>Batch Set Image Tags</source>
         <translation>画像タグを一括設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="900" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="898" />
         <source>Delete all image tags from %d files?</source>
         <translation>%d 枚の画像からすべての画像タグを削除しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="931" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="929" />
         <source>Failed to update tags for %d files</source>
         <translation>%d 枚の画像のタグを更新できませんでした</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="936" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="934" />
         <source>Tags updated for %d files</source>
         <translation>%d 枚の画像のタグを更新しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="941" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="939" />
         <source>Tags unchanged for %d files</source>
         <translation>%d 枚の画像のタグは変更されていません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="979" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="977" />
         <source>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</source>
         <translation>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="985" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="983" />
         <source>Remove %d files from the file list?
 The image files and their annotation files will NOT be deleted.</source>
         <translation>ファイルリストから %d 個のファイルを削除しますか？
 画像ファイルとアノテーションファイルは削除されません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="992" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="990" />
         <source>Remove File</source>
         <translation>Remove File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1059" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1057" />
         <source>Move to Folder</source>
         <translation>フォルダへ移動</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1087" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1085" />
         <source>Move out of Dataset</source>
         <translation>データセットから移動</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1088" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1086" />
         <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
         <translation>%d 個のファイルをデータセットから移動し、現在の一覧から削除します。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1124" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1122" />
         <source>Failed to move: %s</source>
         <translation>移動に失敗しました：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1125" />
         <source>Moved %d files</source>
         <translation>%d 個のファイルを移動しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1129" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
         <source>(%d moved out of the dataset)</source>
         <translation>（%d 個をデータセットから移動）</translation>
     </message>
@@ -11784,6 +11867,61 @@ You can download the models again in the new directory.</source>
         <translation>利用可能なラベルデータがありません</translation>
     </message>
 </context><context>
+    <name>TagLibraryWidget</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="42" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="33" />
+        <source>Tag Library</source>
+        <translation>タグライブラリ</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="57" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="52" />
+        <source>Search tags…</source>
+        <translation>タグを検索…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="203" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="62" />
+        <source>Collapse tag library</source>
+        <translation>タグライブラリを折りたたむ</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="155" />
+        <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
+        <translation>ダブルクリックで追加。右クリックまたは Ctrl+クリックで、このタグを使う画像を表示します。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="201" />
+        <source>Expand tag library</source>
+        <translation>タグライブラリを展開</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="243" />
+        <source>%s (used by %d images)</source>
+        <translation>%s（%d 枚の画像で使用）</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="245" />
+        <source>Double-click to add.</source>
+        <translation>ダブルクリックで追加。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="256" />
+        <source>No other tags in the current file list.</source>
+        <translation>現在のファイル一覧に他のタグはありません。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="260" />
+        <source>No matching tags.</source>
+        <translation>一致するタグがありません。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="303" />
+        <source>Show images with this tag</source>
+        <translation>このタグを使う画像を表示</translation>
+    </message>
+</context><context>
     <name>TextInputDialog</name>
     <message>
         <location filename="..\..\views\labeling\utils\batch.py" line="221" />
@@ -13415,89 +13553,6 @@ Response preview:
         <translation>最初に登録されたアカウントが管理者になります。</translation>
     </message>
 </context>  <context>
-    <name>BatchTagsDialog</name>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="44" />
-        <source>Batch Set Image Tags</source>
-        <translation>画像タグを一括設定</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="56" />
-        <source>Apply tags to the selected images (%d):</source>
-        <translation>選択した画像（%d 枚）にタグを適用:</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="64" />
-        <source>Add to existing tags</source>
-        <translation>既存のタグに追加</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="67" />
-        <source>Replace a specific tag</source>
-        <translation>特定のタグを置き換え</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="70" />
-        <source>Delete all image tags</source>
-        <translation>すべての画像タグを削除</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="100" />
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="103" />
-        <source>OK</source>
-        <translation>OK</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="120" />
-        <source>Tags to add (comma separated)</source>
-        <translation>追加するタグ（カンマ区切り）</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="123" />
-        <source>tag1, tag2</source>
-        <translation>例: 欠陥, ぼけ</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="133" />
-        <source>Tag to replace</source>
-        <translation>置き換えるタグ</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="141" />
-        <source>Select or type the tag to replace</source>
-        <translation>置き換えるタグを選択または入力</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="145" />
-        <source>Replace with (comma separated)</source>
-        <translation>置き換え後（カンマ区切り）</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="159" />
-        <source>This removes every image tag from %d images.</source>
-        <translation>%d 枚の画像からすべての画像タグを削除します。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="226" />
-        <source>Enter at least one tag.</source>
-        <translation>タグを1つ以上入力してください。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="232" />
-        <source>Select the tag to replace.</source>
-        <translation>置き換えるタグを選択してください。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="237" />
-        <source>Enter the replacement tag.</source>
-        <translation>置き換え後のタグを入力してください。</translation>
-    </message>
-</context>
-  <context>
     <name>LabelManagerPanel</name>
     <message>
         <location filename="..\..\views\labeling\widgets\label_manager.py" line="148" />
@@ -13658,59 +13713,6 @@ Response preview:
         <location filename="..\..\views\labeling\widgets\label_manager.py" line="788" />
         <source>Labels modified successfully!</source>
         <translation>カテゴリを更新しました！</translation>
-    </message>
-</context>
-  <context>
-    <name>TagLibraryWidget</name>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="34" />
-        <source>Tag Library</source>
-        <translation>タグライブラリ</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="53" />
-        <source>Search tags…</source>
-        <translation>タグを検索…</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="63" />
-        <source>Collapse tag library</source>
-        <translation>タグライブラリを折りたたむ</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="156" />
-        <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
-        <translation>ダブルクリックで追加。右クリックまたは Ctrl+クリックで、このタグを使う画像を表示します。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="202" />
-        <source>Expand tag library</source>
-        <translation>タグライブラリを展開</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="244" />
-        <source>%s (used by %d images)</source>
-        <translation>%s（%d 枚の画像で使用）</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="246" />
-        <source>Double-click to add.</source>
-        <translation>ダブルクリックで追加。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="257" />
-        <source>No other tags in the current file list.</source>
-        <translation>現在のファイル一覧に他のタグはありません。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="261" />
-        <source>No matching tags.</source>
-        <translation>一致するタグがありません。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="304" />
-        <source>Show images with this tag</source>
-        <translation>このタグを使う画像を表示</translation>
     </message>
 </context>
   <context>

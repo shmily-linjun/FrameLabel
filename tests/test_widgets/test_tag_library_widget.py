@@ -20,7 +20,7 @@ class TagLibraryWidgetTest(unittest.TestCase):
         )
 
     def setUp(self):
-        self.widget = TagLibraryWidget(translate=lambda text: text)
+        self.widget = TagLibraryWidget()
         self.widget.resize(280, 260)
         self.widget.show()
         self.app.processEvents()

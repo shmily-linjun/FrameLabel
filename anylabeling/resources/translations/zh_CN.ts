@@ -718,6 +718,89 @@ Example: person.car.bicycle</source>
         <translation>运行</translation>
     </message>
 </context><context>
+    <name>BatchTagsDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="42" />
+        <source>Batch Set Image Tags</source>
+        <translation>批量设置图片标签</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="54" />
+        <source>Apply tags to the selected images (%d):</source>
+        <translation>将标签应用到选中的图片（%d 张）：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="62" />
+        <source>Add to existing tags</source>
+        <translation>添加到现有标签</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="65" />
+        <source>Replace a specific tag</source>
+        <translation>替换指定标签</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="68" />
+        <source>Delete all image tags</source>
+        <translation>删除所有图片标签</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="98" />
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="101" />
+        <source>OK</source>
+        <translation>确认</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="118" />
+        <source>Tags to add (comma separated)</source>
+        <translation>要添加的标签（以逗号分隔）</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="146" />
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="121" />
+        <source>tag1, tag2</source>
+        <translation>例如：缺陷, 模糊</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="131" />
+        <source>Tag to replace</source>
+        <translation>要替换的标签</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="139" />
+        <source>Select or type the tag to replace</source>
+        <translation>选择或输入要替换的标签</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="143" />
+        <source>Replace with (comma separated)</source>
+        <translation>替换为（以逗号分隔）</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="157" />
+        <source>This removes every image tag from %d images.</source>
+        <translation>将从 %d 张图片中移除全部图片标签。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="224" />
+        <source>Enter at least one tag.</source>
+        <translation>请至少输入一个标签。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="230" />
+        <source>Select the tag to replace.</source>
+        <translation>请选择要替换的标签。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="235" />
+        <source>Enter the replacement tag.</source>
+        <translation>请输入替换后的标签。</translation>
+    </message>
+</context><context>
     <name>CameraConfigurationDialog</name>
     <message>
         <location filename="..\..\views\labeling\pointcloud\camera.py" line="275" />
@@ -2996,76 +3079,76 @@ Original images backed up to:
         <translation>已将 %d 个文件的划分设为 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="899" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="897" />
         <source>Batch Set Image Tags</source>
         <translation>批量设置图片标签</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="900" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="898" />
         <source>Delete all image tags from %d files?</source>
         <translation>从 %d 张图片中删除全部图片标签？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="931" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="929" />
         <source>Failed to update tags for %d files</source>
         <translation>%d 张图片的标签更新失败</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="936" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="934" />
         <source>Tags updated for %d files</source>
         <translation>已更新 %d 张图片的标签</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="941" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="939" />
         <source>Tags unchanged for %d files</source>
         <translation>%d 张图片的标签未变化</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="979" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="977" />
         <source>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</source>
         <translation>从文件列表中移除“%s”？
 图片文件及其标注文件不会被删除。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="985" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="983" />
         <source>Remove %d files from the file list?
 The image files and their annotation files will NOT be deleted.</source>
         <translation>从文件列表移除 %d 个文件？
 图片文件及其标注文件不会被删除。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="992" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="990" />
         <source>Remove File</source>
         <translation>移除文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1059" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1057" />
         <source>Move to Folder</source>
         <translation>移动到文件夹</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1087" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1085" />
         <source>Move out of Dataset</source>
         <translation>移出数据集</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1088" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1086" />
         <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
         <translation>%d 个文件将移出数据集并从当前列表移除，是否继续？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1124" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1122" />
         <source>Failed to move: %s</source>
         <translation>移动失败：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1125" />
         <source>Moved %d files</source>
         <translation>已移动 %d 个文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1129" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
         <source>(%d moved out of the dataset)</source>
         <translation>（其中 %d 个已移出数据集）</translation>
     </message>
@@ -5917,76 +6000,76 @@ Results have been saved to:
         <translation>已将 %d 个文件的划分设为 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="899" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="897" />
         <source>Batch Set Image Tags</source>
         <translation>批量设置图片标签</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="900" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="898" />
         <source>Delete all image tags from %d files?</source>
         <translation>从 %d 张图片中删除全部图片标签？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="931" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="929" />
         <source>Failed to update tags for %d files</source>
         <translation>%d 张图片的标签更新失败</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="936" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="934" />
         <source>Tags updated for %d files</source>
         <translation>已更新 %d 张图片的标签</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="941" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="939" />
         <source>Tags unchanged for %d files</source>
         <translation>%d 张图片的标签未变化</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="979" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="977" />
         <source>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</source>
         <translation>从文件列表中移除“%s”？
 图片文件及其标注文件不会被删除。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="985" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="983" />
         <source>Remove %d files from the file list?
 The image files and their annotation files will NOT be deleted.</source>
         <translation>从文件列表移除 %d 个文件？
 图片文件及其标注文件不会被删除。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="992" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="990" />
         <source>Remove File</source>
         <translation>移除文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1059" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1057" />
         <source>Move to Folder</source>
         <translation>移动到文件夹</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1087" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1085" />
         <source>Move out of Dataset</source>
         <translation>移出数据集</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1088" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1086" />
         <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
         <translation>%d 个文件将移出数据集并从当前列表移除，是否继续？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1124" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1122" />
         <source>Failed to move: %s</source>
         <translation>移动失败：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1125" />
         <source>Moved %d files</source>
         <translation>已移动 %d 个文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1129" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
         <source>(%d moved out of the dataset)</source>
         <translation>（其中 %d 个已移出数据集）</translation>
     </message>
@@ -11805,6 +11888,61 @@ You can download the models again in the new directory.</source>
         <translation>没有可用的标注数据</translation>
     </message>
 </context><context>
+    <name>TagLibraryWidget</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="42" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="33" />
+        <source>Tag Library</source>
+        <translation>标签库</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="57" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="52" />
+        <source>Search tags…</source>
+        <translation>搜索标签…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="203" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="62" />
+        <source>Collapse tag library</source>
+        <translation>收起标签库</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="155" />
+        <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
+        <translation>双击添加；右键或 Ctrl+单击可查看使用该标签的图片。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="201" />
+        <source>Expand tag library</source>
+        <translation>展开标签库</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="243" />
+        <source>%s (used by %d images)</source>
+        <translation>%s（%d 张图片使用）</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="245" />
+        <source>Double-click to add.</source>
+        <translation>双击添加。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="256" />
+        <source>No other tags in the current file list.</source>
+        <translation>当前文件列表中没有其他标签。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="260" />
+        <source>No matching tags.</source>
+        <translation>没有匹配的标签。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="303" />
+        <source>Show images with this tag</source>
+        <translation>查看使用该标签的图片</translation>
+    </message>
+</context><context>
     <name>TextInputDialog</name>
     <message>
         <location filename="..\..\views\labeling\utils\batch.py" line="221" />
@@ -13436,89 +13574,6 @@ Response preview:
         <translation>首个注册的账号将成为管理员。</translation>
     </message>
 </context>  <context>
-    <name>BatchTagsDialog</name>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="44" />
-        <source>Batch Set Image Tags</source>
-        <translation>批量设置图片标签</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="56" />
-        <source>Apply tags to the selected images (%d):</source>
-        <translation>将标签应用到选中的图片（%d 张）：</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="64" />
-        <source>Add to existing tags</source>
-        <translation>添加到现有标签</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="67" />
-        <source>Replace a specific tag</source>
-        <translation>替换指定标签</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="70" />
-        <source>Delete all image tags</source>
-        <translation>删除所有图片标签</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="100" />
-        <source>Cancel</source>
-        <translation>取消</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="103" />
-        <source>OK</source>
-        <translation>确认</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="120" />
-        <source>Tags to add (comma separated)</source>
-        <translation>要添加的标签（以逗号分隔）</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="123" />
-        <source>tag1, tag2</source>
-        <translation>例如：缺陷, 模糊</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="133" />
-        <source>Tag to replace</source>
-        <translation>要替换的标签</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="141" />
-        <source>Select or type the tag to replace</source>
-        <translation>选择或输入要替换的标签</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="145" />
-        <source>Replace with (comma separated)</source>
-        <translation>替换为（以逗号分隔）</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="159" />
-        <source>This removes every image tag from %d images.</source>
-        <translation>将从 %d 张图片中移除全部图片标签。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="226" />
-        <source>Enter at least one tag.</source>
-        <translation>请至少输入一个标签。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="232" />
-        <source>Select the tag to replace.</source>
-        <translation>请选择要替换的标签。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_list\tags_dialog.py" line="237" />
-        <source>Enter the replacement tag.</source>
-        <translation>请输入替换后的标签。</translation>
-    </message>
-</context>
-  <context>
     <name>LabelManagerPanel</name>
     <message>
         <location filename="..\..\views\labeling\widgets\label_manager.py" line="148" />
@@ -13679,59 +13734,6 @@ Response preview:
         <location filename="..\..\views\labeling\widgets\label_manager.py" line="788" />
         <source>Labels modified successfully!</source>
         <translation>类别修改成功！</translation>
-    </message>
-</context>
-  <context>
-    <name>TagLibraryWidget</name>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="34" />
-        <source>Tag Library</source>
-        <translation>标签库</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="53" />
-        <source>Search tags…</source>
-        <translation>搜索标签…</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="63" />
-        <source>Collapse tag library</source>
-        <translation>收起标签库</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="156" />
-        <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
-        <translation>双击添加；右键或 Ctrl+单击可查看使用该标签的图片。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="202" />
-        <source>Expand tag library</source>
-        <translation>展开标签库</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="244" />
-        <source>%s (used by %d images)</source>
-        <translation>%s（%d 张图片使用）</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="246" />
-        <source>Double-click to add.</source>
-        <translation>双击添加。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="257" />
-        <source>No other tags in the current file list.</source>
-        <translation>当前文件列表中没有其他标签。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="261" />
-        <source>No matching tags.</source>
-        <translation>没有匹配的标签。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="304" />
-        <source>Show images with this tag</source>
-        <translation>查看使用该标签的图片</translation>
     </message>
 </context>
   <context>

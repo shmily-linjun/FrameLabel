@@ -35,13 +35,11 @@ class BatchTagsDialog(QtWidgets.QDialog):
         image_count,
         library_tags=(),
         parent=None,
-        translate=None,
     ):
         super().__init__(parent)
-        self._tr = translate if translate is not None else self.tr
         self._image_count = image_count
         self._library_tags = normalize_image_tags(list(library_tags or ()))
-        self.setWindowTitle(self._tr("Batch Set Image Tags"))
+        self.setWindowTitle(self.tr("Batch Set Image Tags"))
         self.setModal(True)
         self.setMinimumWidth(440)
         self.setSizeGripEnabled(True)
@@ -53,7 +51,7 @@ class BatchTagsDialog(QtWidgets.QDialog):
 
         layout.addWidget(
             QtWidgets.QLabel(
-                self._tr("Apply tags to the selected images (%d):")
+                self.tr("Apply tags to the selected images (%d):")
                 % image_count
             )
         )
@@ -61,13 +59,13 @@ class BatchTagsDialog(QtWidgets.QDialog):
         self.mode_combo = QtWidgets.QComboBox(self)
         self.mode_combo.setStyleSheet(get_settings_combo_style())
         self.mode_combo.addItem(
-            self._tr("Add to existing tags"), MODE_ADD
+            self.tr("Add to existing tags"), MODE_ADD
         )
         self.mode_combo.addItem(
-            self._tr("Replace a specific tag"), MODE_REPLACE
+            self.tr("Replace a specific tag"), MODE_REPLACE
         )
         self.mode_combo.addItem(
-            self._tr("Delete all image tags"), MODE_DELETE_ALL
+            self.tr("Delete all image tags"), MODE_DELETE_ALL
         )
         self.mode_combo.currentIndexChanged.connect(self._on_mode_changed)
         layout.addWidget(self.mode_combo)
@@ -81,7 +79,7 @@ class BatchTagsDialog(QtWidgets.QDialog):
         self.replace_page.hide()
         self.delete_page.hide()
 
-        self.library_widget = TagLibraryWidget(self._tr, self)
+        self.library_widget = TagLibraryWidget(self)
         self.library_widget.set_entries(
             [(tag, 0) for tag in self._library_tags], []
         )
@@ -97,10 +95,10 @@ class BatchTagsDialog(QtWidgets.QDialog):
 
         buttons = QtWidgets.QHBoxLayout()
         buttons.addStretch(1)
-        cancel_button = QtWidgets.QPushButton(self._tr("Cancel"))
+        cancel_button = QtWidgets.QPushButton(self.tr("Cancel"))
         cancel_button.setStyleSheet(get_cancel_btn_style())
         cancel_button.clicked.connect(self.reject)
-        ok_button = QtWidgets.QPushButton(self._tr("OK"))
+        ok_button = QtWidgets.QPushButton(self.tr("OK"))
         ok_button.setStyleSheet(get_ok_btn_style())
         ok_button.setDefault(True)
         ok_button.clicked.connect(self.accept)
@@ -117,10 +115,10 @@ class BatchTagsDialog(QtWidgets.QDialog):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(4)
         layout.addWidget(
-            QtWidgets.QLabel(self._tr("Tags to add (comma separated)"))
+            QtWidgets.QLabel(self.tr("Tags to add (comma separated)"))
         )
         self.tags_edit = QtWidgets.QLineEdit(page)
-        self.tags_edit.setPlaceholderText(self._tr("tag1, tag2"))
+        self.tags_edit.setPlaceholderText(self.tr("tag1, tag2"))
         self.tags_edit.setClearButtonEnabled(True)
         layout.addWidget(self.tags_edit)
         return page
@@ -130,7 +128,7 @@ class BatchTagsDialog(QtWidgets.QDialog):
         layout = QtWidgets.QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(4)
-        layout.addWidget(QtWidgets.QLabel(self._tr("Tag to replace")))
+        layout.addWidget(QtWidgets.QLabel(self.tr("Tag to replace")))
         self.old_tag_combo = QtWidgets.QComboBox(page)
         self.old_tag_combo.setStyleSheet(get_settings_combo_style())
         self.old_tag_combo.setEditable(True)
@@ -138,14 +136,14 @@ class BatchTagsDialog(QtWidgets.QDialog):
         self.old_tag_combo.setCurrentIndex(-1)
         if self.old_tag_combo.lineEdit() is not None:
             self.old_tag_combo.lineEdit().setPlaceholderText(
-                self._tr("Select or type the tag to replace")
+                self.tr("Select or type the tag to replace")
             )
         layout.addWidget(self.old_tag_combo)
         layout.addWidget(
-            QtWidgets.QLabel(self._tr("Replace with (comma separated)"))
+            QtWidgets.QLabel(self.tr("Replace with (comma separated)"))
         )
         self.new_tags_edit = QtWidgets.QLineEdit(page)
-        self.new_tags_edit.setPlaceholderText(self._tr("tag1, tag2"))
+        self.new_tags_edit.setPlaceholderText(self.tr("tag1, tag2"))
         self.new_tags_edit.setClearButtonEnabled(True)
         layout.addWidget(self.new_tags_edit)
         return page
@@ -156,7 +154,7 @@ class BatchTagsDialog(QtWidgets.QDialog):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(4)
         warning = QtWidgets.QLabel(
-            self._tr("This removes every image tag from %d images.")
+            self.tr("This removes every image tag from %d images.")
             % self._image_count
         )
         warning.setWordWrap(True)
@@ -223,18 +221,18 @@ class BatchTagsDialog(QtWidgets.QDialog):
             return True
         if mode == MODE_ADD and not self.tags():
             self.error_label.setText(
-                self._tr("Enter at least one tag.")
+                self.tr("Enter at least one tag.")
             )
             return False
         if mode == MODE_REPLACE:
             if not self.old_tags():
                 self.error_label.setText(
-                    self._tr("Select the tag to replace.")
+                    self.tr("Select the tag to replace.")
                 )
                 return False
             if not self.tags():
                 self.error_label.setText(
-                    self._tr("Enter the replacement tag.")
+                    self.tr("Enter the replacement tag.")
                 )
                 return False
         return True

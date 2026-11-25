@@ -1027,9 +1027,7 @@ def test_batch_tags_applies_to_selected_rows(
     assert repository is not None
 
     class FakeDialog:
-        def __init__(
-            self, _count, _library=None, _parent=None, translate=None
-        ):
+        def __init__(self, _count, _library=None, _parent=None):
             pass
 
         def exec(self):
@@ -1095,9 +1093,7 @@ def test_batch_tags_replaces_only_the_specified_tag(
     repository.save_annotation(second_id, second_annotation)
 
     class FakeDialog:
-        def __init__(
-            self, _count, _library=None, _parent=None, translate=None
-        ):
+        def __init__(self, _count, _library=None, _parent=None):
             pass
 
         def exec(self):
@@ -1415,9 +1411,7 @@ def test_batch_tags_dialog_parses_tags_and_mode(window):
         BatchTagsDialog,
     )
 
-    dialog = BatchTagsDialog(
-        3, ["defect", "blur"], translate=lambda text: text
-    )
+    dialog = BatchTagsDialog(3, ["defect", "blur"])
     dialog.library_widget.tag_clicked.emit("defect")
     assert dialog.tags_edit.text() == "defect"
     dialog.tags_edit.setText(" defect, blur ,defect ")

@@ -283,6 +283,61 @@ def test_right_sidebar_widgets_are_translated():
         app.removeTranslator(translator)
 
 
+def test_image_attributes_tag_library_is_translated():
+    """Regression: the injected-translate widgets stayed English.
+
+    ``TagLibraryWidget``/``BatchTagsDialog`` used to accept a ``translate``
+    callable and pass ``host.tr`` at the call site, so their literals were
+    registered under the class name but looked up with the ``LabelingWidget``
+    context (fork.52 removed the injection).
+    """
+
+    from PyQt6 import QtCore, QtWidgets
+
+    from anylabeling.views.labeling.file_list.tags_dialog import (
+        BatchTagsDialog,
+    )
+    from anylabeling.views.labeling.widgets.tag_library import (
+        TagLibraryWidget,
+    )
+
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+    translator = QtCore.QTranslator()
+    assert translator.load(str(TRANSLATIONS / "zh_CN.qm"))
+    app.installTranslator(translator)
+    try:
+        widget = TagLibraryWidget()
+        try:
+            assert widget.title_label.text() == "标签库"
+            assert widget.search_edit.placeholderText() == "搜索标签…"
+            assert widget.collapse_button.toolTip() == "收起标签库"
+            widget.set_entries([], [])
+            assert (
+                widget.empty_label.text()
+                == "当前文件列表中没有其他标签。"
+            )
+        finally:
+            widget.deleteLater()
+
+        dialog = BatchTagsDialog(3, ["defect"], None)
+        try:
+            assert dialog.windowTitle() == "批量设置图片标签"
+            modes = [
+                dialog.mode_combo.itemText(index)
+                for index in range(dialog.mode_combo.count())
+            ]
+            assert modes == [
+                "添加到现有标签",
+                "替换指定标签",
+                "删除所有图片标签",
+            ]
+            assert dialog.mode_combo.itemData(0) == "add"
+        finally:
+            dialog.deleteLater()
+    finally:
+        app.removeTranslator(translator)
+
+
 def test_scanner_resolves_dynamic_translation_patterns(tmp_path):
     """Dynamic call styles must stay extractable.
 

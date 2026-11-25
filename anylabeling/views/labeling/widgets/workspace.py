@@ -557,7 +557,7 @@ def build_workspace(host, scroll_area, instruction_layout):
     )
     tags_label = QLabel(host.tr("Image Tags"))
     tags_label.setStyleSheet(section_label_style)
-    host.tag_library_widget = TagLibraryWidget(host.tr)
+    host.tag_library_widget = TagLibraryWidget()
     host.tag_library_widget.tag_clicked.connect(
         host._on_tag_library_tag_clicked
     )
