@@ -32,6 +32,30 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 _WORK_ROOT = _REPO_ROOT / "temporary" / "pytest-statistics-widgets"
 
 
+def test_header_labels_stay_in_sync_with_column_count():
+    """The translated header literals must match `COLUMN_HEADERS`.
+
+    fork.51 writes the headers out as literals so the extractor can register
+    them; this guards against adding a column without adding its label.
+    """
+
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])  # noqa: F841
+    table = StatisticsTable()
+    try:
+        labels = table._header_labels()
+        assert len(labels) == len(COLUMN_HEADERS)
+        assert [label for label in labels] == [
+            "Class",
+            "Train",
+            "Val",
+            "Test",
+            "Unassigned",
+            "Total",
+        ]
+    finally:
+        table.deleteLater()
+
+
 def _make_entries():
     return [
         FileStatisticsEntry("a.jpg", SPLIT_TRAIN, ("car", "person"), True),

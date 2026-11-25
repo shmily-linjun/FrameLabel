@@ -6,6 +6,65 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.51 — 2026-11-25
+
+### 1. 背景与原因
+
+用户反馈“软件设为中文时，主界面右侧 QTabWidget 的内容全是英文”。
+
+对比 fork.48（`5c049c1^`）与 fork.50 的 `zh_CN.ts` 后确认这是 fork.49 翻译重建引入的回归：
+
+- **丢失 172 条** `(上下文, 源文)` 译文：`auto_labeling_form` 47、`LabelingWidget` 41（多数是已删除文案，属正常废弃）、`LabelManagerPanel` 33、`TrashDialog` 14、`LabelModifyDialog` 10、`PasswordResetDialog` 9、`StatisticsTable` 8 等；
+- **5 条被错误替换**：跨上下文按源文回退导致 `Classes` 从“类别”变成“标签过滤”、`Next`/`Previous` 从“下一张/上一张”变成“下一步/上一步”、`None` 从“无”变成“空”、“No images loaded”措辞变化。
+
+根因：`pylupdate6` 只会抽取**类体内、字面量参数**的 `*.tr()`。项目里还有多种运行时有效但抽取不到的写法：
+
+| 写法 | 位置 |
+|---|---|
+| `self._tr("…")`（内部 `translate(TRANSLATION_CONTEXT, text)`） | `LabelManagerPanel`、`TrashDialog` |
+| `self.tr(常量)` / `for label in 常量元组: self.tr(label)` | `StatisticsTable`（表头 `COLUMN_HEADERS`） |
+| `_translate("auto_labeling_form", "…")`（pyuic6 生成） | `widgets/auto_labeling/auto_labeling_ui.py` |
+| `QT_TRANSLATE_NOOP(SETTINGS_TRANSLATION_CONTEXT, "…")` | `settings/schema.py` |
+
+fork.49 的 `pylupdate6 --no-obsolete` 把这些消息当成废弃条目删掉，而 fork.49 的补充抽取只认字面量，于是整块译文中断；右侧栏“类别”“统计”等页面因此全英文。
+
+### 2. 主要实现与关键细节
+
+- **`scripts/translation_scan.py` 支持动态写法**：
+  - `_translate("ctx", "text")` / `translate(...)` / `QT_TRANSLATE_NOOP(ctx, text)`；
+  - `self._tr("text")`：上下文取模块级 `TRANSLATION_CONTEXT`（或 `*_TRANSLATION_CONTEXT`），委托调用（`host.label_manager_widget._tr(...)`）跳过，由属主模块登记；
+  - 参数可以是模块级字符串常量、同文件/跨文件的唯一同名常量、`+` 拼接；
+  - `for label in 常量元组:` 展开每个元素（序列常量允许引用同模块字符串常量）。
+- **`StatisticsTable` 表头改为字面量**：新增 `_header_labels()`，用 `self.tr("Class")/("Train")/("Val")/("Test")/("Unassigned")/("Total")` 直接书写（`pylupdate6` 原生可抽取），避免翻译共享常量；新增“表头数量与 `COLUMN_HEADERS` 一致”的测试。
+- **译文恢复**：按 fork.48 的 `(上下文, 源文)` 精确恢复被丢弃/被改坏的译文（`Classes`→“类别”等 5 条已还原），再补齐新增条目；`zh_CN.ts` 现有 2632 条消息、0 未翻译；另补 11 条此前从未翻译的文案（设置页“类别排序/校验类别/滚轮导航模式…”与类别页锁定提示）。
+- **测试**：
+  - `test_right_sidebar_widgets_are_translated`：安装 `zh_CN.qm` 后校验五个 tab 标题、“类别”页表格表头、统计表表头/可访问名、回收站与设置页文案；
+  - `test_scanner_resolves_dynamic_translation_patterns`：用临时包覆盖 `_tr`、`_translate`、`QT_TRANSLATE_NOOP`、常量参数、常量循环五种写法，断言扫描结果完整且 0 未解析。
+- 版本：`4.3.2+fork.50` → `4.3.2+fork.51`。
+
+### 3. 涉及模块与文件
+
+- 修改：`scripts/translation_scan.py`、`anylabeling/views/labeling/widgets/statistics_table.py`、`anylabeling/resources/translations/*.ts`、`*.qm`、`tests/test_i18n/test_translations.py`、`tests/test_widgets/test_statistics_table.py`、`anylabeling/app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+
+### 4. 行为、接口与兼容性影响
+
+- 用户可见：中文界面下右侧栏（对象/类别/图像属性/描述/统计）恢复中文，回收站、自动标注面板、设置页相关文案同步恢复；无接口或数据格式变化。
+- `StatisticsTable._header_labels()` 为新增内部方法，外部行为不变（表头文字与顺序不变）。
+
+### 5. 实际验证内容
+
+- `tests/test_i18n` **16 passed**（含右侧栏运行时回归与动态写法扫描用例）；`tests/test_utils + tests/test_widgets + tests/test_dataset_db + tests/test_i18n` **340 passed / 1 failed / 105 subtests**，唯一失败是已记录的 `test_brightness_contrast_updates_are_throttled` 计时抖动。
+- 离屏运行时核对（安装 `zh_CN.qm`）：tab 标题 对象/类别/图像属性/描述/统计；统计表头 类别/训练/验证/测试/未划分/合计；类别页表头 类别/删除/可见/锁定/颜色；`TrashDialog`“回收站/恢复”；`auto_labeling_form`“Box threshold”→“框置信度”；`SettingsDialog`“Edit Image Tags”→“编辑图片标签”。
+- 生成器幂等性：重新运行 `scripts/generate_languages.py --no-resources` 后四语言 `.ts` **0 行变化**（证明新增动态条目不会再被丢弃）。
+- 四语言 `.qm` 重编各 **2632 条**：`en_US`/`zh_CN` 0 未翻译；`ja_JP`/`ko_KR` 各 139 条未翻译（fork.49 遗留 130 条 + 本批新发现 9 条），回退英文。
+- **未执行**：真实桌面点击右侧栏各页的人工验收（本机无 GUI 会话）；用户副本需同步本次提交后生效。
+
+### 6. 已知限制与后续事项
+
+- `ja_JP`/`ko_KR` 仍有 139 条未翻译；如需完整四语言需补译。
+- 动态写法的抽取依赖 `scripts/translation_scan.py` 的常量解析：今后若新增更复杂的计算式（如 `dict[...]` 表达式、运行时拼装），需扩展 scanner 或改写字面量，否则仍会在重建时丢失；测试已覆盖现有五种写法。
+- 推送仍受本机凭据/网络阻塞（见 fork.49 记录），本批提交只落在本地。
+
 ## 4.3.2+fork.50 — 2026-11-25
 
 ### 1. 背景与原因

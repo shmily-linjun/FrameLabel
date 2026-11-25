@@ -20,7 +20,6 @@ from PyQt6.QtCore import Qt
 from ..utils.dataset_statistics import (
     COLUMN_CLASS,
     COLUMN_COUNT,
-    COLUMN_HEADERS,
     COLUMN_SPLITS,
     COLUMN_TOTAL,
     OBJECTLESS_ROW_LABEL,
@@ -116,6 +115,26 @@ class StatisticsTable(QtWidgets.QTableWidget):
             return None
         return StatisticsFilter(split=SPLIT_ORDER[section - COLUMN_SPLITS[0]])
 
+    def _header_labels(self):
+        """Return the column headers as translatable literals.
+
+        The strings are written out here (instead of translating the shared
+        ``COLUMN_HEADERS`` constant) so ``pylupdate6`` and
+        ``scripts/translation_scan.py`` can register them; fork.49 regenerated
+        the ``.ts`` files and dropped the whole ``StatisticsTable`` context,
+        which left the tab in English.  ``test_statistics_table`` asserts the
+        count stays in sync with ``COLUMN_HEADERS``.
+        """
+
+        return [
+            self.tr("Class"),
+            self.tr("Train"),
+            self.tr("Val"),
+            self.tr("Test"),
+            self.tr("Unassigned"),
+            self.tr("Total"),
+        ]
+
     def apply_theme(self) -> None:
         """Re-apply the theme-aware stylesheet and item decoration."""
         self.setStyleSheet(_statistics_table_style())
@@ -126,9 +145,7 @@ class StatisticsTable(QtWidgets.QTableWidget):
         self.setObjectName(TABLE_OBJECT_NAME)
         self.setAccessibleName(self.tr(STATISTICS_TAB_TITLE))
         self.setColumnCount(COLUMN_COUNT)
-        self.setHorizontalHeaderLabels(
-            [self.tr(header) for header in COLUMN_HEADERS]
-        )
+        self.setHorizontalHeaderLabels(self._header_labels())
         self.setRowCount(2)
         self.verticalHeader().setVisible(False)
         self.setShowGrid(True)
@@ -175,9 +192,7 @@ class StatisticsTable(QtWidgets.QTableWidget):
             self.clearContents()
             self.setRowCount(class_count + 2)
             self.setColumnCount(COLUMN_COUNT)
-            self.setHorizontalHeaderLabels(
-                [self.tr(header) for header in COLUMN_HEADERS]
-            )
+            self.setHorizontalHeaderLabels(self._header_labels())
             for row, label in enumerate(table.classes):
                 self.setItem(
                     row,

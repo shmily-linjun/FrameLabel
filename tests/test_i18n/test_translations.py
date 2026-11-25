@@ -199,3 +199,154 @@ def test_classes_hint_template_accepts_its_arguments():
         assert "classes.txt" in rendered
     finally:
         app.removeTranslator(translator)
+
+
+def test_right_sidebar_widgets_are_translated():
+    """Regression: the right tab widget must not fall back to English.
+
+    fork.51: ``pylupdate6 --no-obsolete`` dropped every dynamic message
+    (``self._tr``, constant headers, generated form) and the whole sidebar
+    showed English text.
+    """
+
+    from PyQt6 import QtCore, QtWidgets
+
+    from anylabeling.views.labeling.widgets.label_manager import (
+        LabelManagerPanel,
+    )
+    from anylabeling.views.labeling.widgets.statistics_table import (
+        StatisticsTable,
+    )
+
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+    translator = QtCore.QTranslator()
+    assert translator.load(str(TRANSLATIONS / "zh_CN.qm"))
+    app.installTranslator(translator)
+    try:
+        translated = {
+            text: QtCore.QCoreApplication.translate("LabelingWidget", text)
+            for text in (
+                "Objects",
+                "Classes",
+                "Image Attributes",
+                "Description",
+                "Statistics",
+            )
+        }
+        assert translated == {
+            "Objects": "对象",
+            "Classes": "类别",
+            "Image Attributes": "图像属性",
+            "Description": "描述",
+            "Statistics": "统计",
+        }
+
+        table = StatisticsTable()
+        try:
+            headers = [
+                table.horizontalHeaderItem(index).text()
+                for index in range(table.columnCount())
+            ]
+            assert headers == [
+                "类别",
+                "训练",
+                "验证",
+                "测试",
+                "未划分",
+                "合计",
+            ]
+            assert table.accessibleName() == "统计"
+        finally:
+            table.deleteLater()
+
+        host = type("Host", (), {"dataset_repository": None})()
+        panel = LabelManagerPanel(host)
+        try:
+            panel_headers = [
+                panel.table.horizontalHeaderItem(index).text()
+                for index in range(panel.table.columnCount())
+            ]
+            assert panel_headers == ["类别", "删除", "可见", "锁定", "颜色"]
+        finally:
+            panel.deleteLater()
+
+        for context, text, expected in (
+            ("TrashDialog", "Recycle Bin", "回收站"),
+            ("TrashDialog", "Restore", "恢复"),
+            ("LabelManagerPanel", "Category", "类别"),
+            ("SettingsDialog", "Edit Image Tags", "编辑图片标签"),
+        ):
+            assert (
+                QtCore.QCoreApplication.translate(context, text) == expected
+            )
+    finally:
+        app.removeTranslator(translator)
+
+
+def test_scanner_resolves_dynamic_translation_patterns(tmp_path):
+    """Dynamic call styles must stay extractable.
+
+    These are the patterns that ``pylupdate6`` cannot see; the scanner must
+    resolve them or a regeneration drops their translations again.
+    """
+
+    package = tmp_path / "pkg"
+    package.mkdir()
+
+    def write(name, content):
+        (package / name).write_text(content, encoding="utf-8")
+
+    write(
+        "helpers.py",
+        "from PyQt6.QtCore import QCoreApplication\n"
+        'TRANSLATION_CONTEXT = "HelperPanel"\n'
+        "class Helper:\n"
+        "    def _tr(self, text):\n"
+        "        return QCoreApplication.translate(TRANSLATION_CONTEXT, text)\n"
+        "    def build(self):\n"
+        '        self._tr("Helper String")\n'
+        "class Delegating:\n"
+        "    def build(self, owner):\n"
+        '        owner._tr("Delegated String")\n',
+    )
+    write(
+        "form_ui.py",
+        "from PyQt6 import QtCore\n"
+        "_translate = QtCore.QCoreApplication.translate\n"
+        'def setup(form):\n'
+        '    form.setWindowTitle(_translate("my_form", "Form Title"))\n',
+    )
+    write(
+        "constants.py",
+        'TITLE = "My Title"\n'
+        'HEADERS = ("Alpha", "Beta")\n',
+    )
+    write(
+        "table.py",
+        "from .constants import HEADERS, TITLE\n"
+        "class Table:\n"
+        "    def tr(self, text):\n"
+        "        return text\n"
+        "    def build(self):\n"
+        "        self.tr(TITLE)\n"
+        "        for header in HEADERS:\n"
+        "            self.tr(header)\n",
+    )
+    write(
+        "noop.py",
+        "from PyQt6.QtCore import QT_TRANSLATE_NOOP\n"
+        'CONTEXT = "NoopDialog"\n'
+        'QT_TRANSLATE_NOOP(CONTEXT, "Noop String")\n',
+    )
+
+    result = scanner.scan(str(package))
+    found = {(entry.context, entry.text) for entry in result.entries}
+    assert found == {
+        ("HelperPanel", "Helper String"),
+        ("my_form", "Form Title"),
+        ("Table", "My Title"),
+        ("Table", "Alpha"),
+        ("Table", "Beta"),
+        ("NoopDialog", "Noop String"),
+    }
+    assert result.unresolved == []
