@@ -73,3 +73,30 @@ def test_requires_login_for_changes(window, monkeypatch):
     )
     assert center._require_login() is None
     assert warnings
+
+
+def test_registers_the_dataset_open_in_the_window(app, tmp_path):
+    """Opening a folder must make the center list that dataset (fork.54)."""
+
+    dataset_root = tmp_path / "current"
+    dataset_root.mkdir()
+    database = DatasetDatabase.create(
+        dataset_root / "xanylabeling.db", name="Current"
+    )
+    database.close()
+    app_db = str(tmp_path / "platform.db")
+    registry = RegistryStore(app_db)
+    operator_service = OperatorService(db_path=app_db)
+    operator_service.register("tester", "abcd")
+    center = DatasetCenterWindow(
+        registry=registry,
+        operator_service=operator_service,
+        current_dataset_provider=lambda: str(dataset_root),
+    )
+    try:
+        [entry] = registry.list()
+        assert entry.display_name == "Current"
+        assert center.table.rowCount() == 1
+    finally:
+        center.deleteLater()
+        app.processEvents()

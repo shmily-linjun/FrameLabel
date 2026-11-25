@@ -651,7 +651,11 @@ class ImageTagsWidget(QtWidgets.QFrame):
             editor.setCursorPosition(len(editor.text()))
 
     def _refresh_height(self):
-        width = max(80, self._scroll.viewport().width())
+        viewport_width = self._scroll.viewport().width()
+        if viewport_width <= 0 and self.isVisible():
+            # The layout has not run yet; the show/resize event will refresh.
+            return
+        width = max(80, viewport_width)
         content_height = self._flow.heightForWidth(width)
         margins = self._flow.contentsMargins()
         vertical_margins = margins.top() + margins.bottom()
@@ -669,6 +673,12 @@ class ImageTagsWidget(QtWidgets.QFrame):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._refresh_height()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        # The first render may have happened while the tab was hidden and had
+        # no width; recompute once the real geometry is known.
+        QtCore.QTimer.singleShot(0, self._refresh_height)
 
     def start_add(self):
         if not self._interactions_enabled or self._mode != "normal":

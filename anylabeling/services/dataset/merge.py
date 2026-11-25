@@ -143,7 +143,7 @@ def _slug(value: str, fallback: str = "dataset") -> str:
 def _read_source(db_path: str) -> _SourceData:
     path = str(db_path)
     try:
-        database = DatasetDatabase.open(path, read_only=True)
+        database = DatasetDatabase.open_for_reading(path)
     except Exception as error:  # noqa: BLE001 - surfaced as MergeError
         raise MergeError(f"cannot open source dataset {path}: {error}") from error
     try:
@@ -243,7 +243,7 @@ def plan_merge(
     if not os.path.isfile(target_path):
         raise MergeError(f"target dataset does not exist: {target_path}")
     try:
-        target = DatasetDatabase.open(target_path, read_only=True)
+        target = DatasetDatabase.open_for_reading(target_path)
     except Exception as error:  # noqa: BLE001 - surfaced as MergeError
         raise MergeError(f"cannot open target dataset: {error}") from error
     try:

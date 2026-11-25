@@ -79,6 +79,21 @@ class DatasetDatabase:
         return cls(target, connection, False)
 
     @classmethod
+    def open_for_reading(cls, path: str | Path) -> "DatasetDatabase":
+        """Open for reading, falling back to a normal connection.
+
+        A WAL database that is currently written by the labeling window (or
+        another process) can refuse the ``mode=ro`` URI; the fallback keeps
+        read-only callers (overview, registry validation, merge sources)
+        working instead of reporting a false "cannot open" error.
+        """
+
+        try:
+            return cls.open(path, read_only=True)
+        except Exception:
+            return cls.open(path)
+
+    @classmethod
     def open(cls, path: str | Path, *, read_only: bool = False) -> "DatasetDatabase":
         target = Path(path)
         if not target.is_file():

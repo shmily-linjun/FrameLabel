@@ -6,6 +6,64 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.54 — 2026-11-25
+
+### 1. 背景与问题
+
+用户反馈数据集中心三个问题：
+
+1. 打开一个文件夹后，数据集中心没有记录——但打开目录时若没有 `xanylabeling.db` 会创建，
+   因此中心“至少应包含当前数据集”；
+2. 打开已有 `xanylabeling.db` 的文件夹时仍提示“该文件夹必须包含已存在的 xanylabeling.db
+   数据集数据库。无法打开数据库：…”；
+3. 刚启动后打开以前编辑过的数据集时，“图像属性”页“图片标签”下方出现空白占位，编辑标签后消失。
+
+### 2. 原因与修复
+
+- **中心为空**：fork.53 只在中心里“添加文件夹…”时登记；打开目录的流程没有登记。
+  fork.54 在 `DatasetCenterWindow.refresh()` 前调用 `_register_current_dataset()`：
+  校验当前 `dataset_root/xanylabeling.db` 并 `add_from_folder()` 自动登记（失败只记日志，
+  不影响列表）。
+- **有库仍报“无法打开”**：`RegistryStore.check_dataset()` 用 `DatasetDatabase.open(read_only=True)`
+  （SQLite `mode=ro` URI）。WAL 数据库正被编辑窗口/其他进程写入时，只读 URI 可能失败，
+  于是被误判为“无法打开”。新增 `DatasetDatabase.open_for_reading()`：先只读打开，失败回退
+  普通连接；注册表校验、概览读取、合并源/目标读取全部改用它；错误信息带上数据库路径。
+- **标签区域留白**：`ImageTagsWidget._render()` 在“图像属性”页隐藏时首次渲染，视口宽度
+  尚未确定（按 80px 兜底），流式布局把芯片折成多行并按最大行数预留高度，导致下方空白；
+  编辑标签触发重渲染后才收缩。fork.54 在 `showEvent` 中延迟刷新高度，并在视口宽度未知时
+  跳过计算（等布局完成后的 resize/show 再算）。
+
+### 3. 涉及文件
+
+- `anylabeling/services/dataset/connection.py`（`open_for_reading`）
+- `anylabeling/services/dataset/registry.py`（校验回退 + 错误带路径）
+- `anylabeling/services/dataset/merge.py`（源/目标读取用回退）
+- `anylabeling/views/dataset_center.py`（当前数据集自动登记）
+- `anylabeling/views/labeling/widgets/image_tags_widget.py`（show 时刷新高度）
+- `tests/test_widgets/test_dataset_center.py`（自动登记用例）
+- `anylabeling/app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、
+  `docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+
+### 4. 行为与兼容性
+
+- 打开目录后打开数据集中心即可看到当前数据集；重复打开不会重复登记。
+- 已有数据库即使正被窗口打开，也能被中心校验/概览/作为合并源读取。
+- 标签区域高度在切到“图像属性”页时即正确，不再依赖“编辑一次”。
+
+### 5. 验证
+
+- `tests/test_dataset_db + test_widgets + test_utils + test_identity + test_i18n`：
+  **374 passed / 1 failed（既有计时抖动）/ 108 subtests**；新增
+  `test_registers_the_dataset_open_in_the_window` 通过；`test_image_tags_widget` 12 passed。
+- 四语言 `.ts/.qm` 未新增文案（本批无新用户可见字符串）。
+- **未执行**：真实桌面复验三个问题（本机无 GUI 会话）。
+
+### 6. 已知限制
+
+- 若当前数据集被外部移动/删除，中心仍显示为 `missing`（设计如此），需“重新定位”。
+- 标签高度修复基于“隐藏页首次渲染宽度未知”的判断；如仍出现留白，需要用户提供复现步骤。
+- 推送仍受本机凭据/网络阻塞；本地 `main` 领先远端 7 个提交。
+
 ## 4.3.2+fork.53 — 2026-11-25
 
 ### 1. 背景与需求

@@ -251,6 +251,7 @@ class DatasetCenterWindow(QtWidgets.QDialog):
 
     # -- data --------------------------------------------------------------
     def refresh(self) -> None:
+        self._register_current_dataset()
         self._entries = self.registry.list()
         for entry in list(self._entries):
             if entry.state != STATE_ACTIVE:
@@ -271,6 +272,29 @@ class DatasetCenterWindow(QtWidgets.QDialog):
         self._entries = self.registry.list()
         self._overview_cache = {}
         self._fill_table()
+
+    def _register_current_dataset(self) -> None:
+        """Make sure the dataset opened in the labeling window is listed.
+
+        Opening a folder always creates/opens the dataset database, so the
+        center must never appear empty for it (fork.54).
+        """
+
+        root = self._current_dataset_root()
+        if not root:
+            return
+        try:
+            db_path = osp.join(root, "xanylabeling.db")
+            if self.registry.get_by_path(db_path) is not None:
+                return
+            check = self.registry.check_dataset(db_path)
+            if not check.ok:
+                return
+            self.registry.add_from_folder(
+                root, operator_id=self._operator_id()
+            )
+        except Exception:  # noqa: BLE001 - listing must still work
+            logger.exception("failed to register the open dataset")
 
     def _fill_table(self) -> None:
         self.table.blockSignals(True)
@@ -366,7 +390,7 @@ class DatasetCenterWindow(QtWidgets.QDialog):
         if cached is not None:
             return cached
         try:
-            database = DatasetDatabase.open(entry.db_path, read_only=True)
+            database = DatasetDatabase.open_for_reading(entry.db_path)
         except Exception:  # noqa: BLE001 - missing entries are reported in UI
             return None
         try:

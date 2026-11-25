@@ -148,12 +148,16 @@ class RegistryStore:
 
         path = _normalize_path(db_path)
         if not osp.isfile(path):
-            return DatasetCheck(False, STATE_MISSING, "数据库文件不存在")
+            return DatasetCheck(
+                False, STATE_MISSING, f"数据库文件不存在：{path}"
+            )
         try:
-            database = DatasetDatabase.open(path, read_only=True)
+            database = DatasetDatabase.open_for_reading(path)
         except Exception as error:  # noqa: BLE001 - surfaced to the window
             return DatasetCheck(
-                False, STATE_MISSING, f"无法打开数据库：{error}"
+                False,
+                STATE_MISSING,
+                f"无法打开数据库 {path}：{error}",
             )
         try:
             application = database.query("PRAGMA application_id")
