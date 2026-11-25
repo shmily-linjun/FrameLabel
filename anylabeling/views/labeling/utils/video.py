@@ -32,6 +32,13 @@ from anylabeling.views.labeling.utils.style import (
 )
 from anylabeling.views.labeling.widgets import Popup
 
+# pylupdate6 only records `tr()` calls inside class bodies.  These
+# modules also translate text through `host.tr`/`self.tr` in free
+# functions and helpers, where the receiver is the LabelingWidget; the
+# constant tells `scripts/translation_scan.py` which context to use
+# (see docs/dev/CODE_STRUCTURE_REPORT.md).
+TR_CONTEXT = "LabelingWidget"
+
 
 class FrameExtractionDialog(QDialog):
     def __init__(self, parent=None, total_frames=0, fps=0):

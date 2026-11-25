@@ -4,6 +4,11 @@ import os.path as osp
 from math import sqrt
 
 import numpy as np
+from PyQt6.QtCore import QCoreApplication
+
+# pylupdate6 cannot attribute `X.tr()` calls; the explicit context
+# keeps the registration equal to the run-time lookup.
+translate = QCoreApplication.translate
 from PyQt6.QtCore import Qt
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtSvg import QSvgRenderer
@@ -247,7 +252,7 @@ def on_thumbnail_click(widget):
         if widget.thumbnail_pixmap and not widget.thumbnail_pixmap.isNull():
             dialog = QtWidgets.QDialog(widget)
             dialog.setWindowTitle(
-                widget.tr("Thumbnail - Click anywhere to close")
+                translate("ThumbnailPreview", "Thumbnail - Click anywhere to close")
             )
             dialog.setModal(True)
 

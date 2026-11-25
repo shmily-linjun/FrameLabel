@@ -6,6 +6,70 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.49 — 2026-11-25
+
+### 1. 背景与原因
+
+用户反馈“工具标题栏 → 上传 → YOLO Seg”有三个问题：
+
+1. 强制要求 `classes.txt` 不合理；导出早已在 DB 模式直接使用“类别”页顺序（fork.38），上传没有跟上；
+2. `Upload Options` 窗口没有中文翻译；核对后发现这不是单个窗口的问题；
+3. 图片在 `.../images/train`、标注在 `.../labels/train` 时，在对话框里填标注目录仍然解析不到 YOLO Seg 标注。
+
+排查结论（均有实测）：
+
+- **翻译丢失的根因**：这些对话框/提示写在**模块级自由函数**里，用 `self.tr()`；`pylupdate6` 只抽取**类体内**的 `*.tr()`，对自由函数里的调用一条也不提取（对 `utils/upload.py` 单独跑 `pylupdate6` 产出空 `.ts`），所以字符串从未进入 `.ts/.qm`。运行时 `host.tr()` 本身有效（PyQt 按对象类名查上下文），坏的是抽取环节；全项目有 800+ 处这类调用，涉及上传、导出、裁剪、可视化、视频、批量处理、菜单/工具栏与若干代理模块。
+- **解析不到的根因有两层**：
+  - 当前 fork 打开文件夹必建库（fork.39），界面/文件表/画布只读 `xanylabeling.db`；但“上传”只写 JSON sidecar，因此 DB 模式下**所有**格式的上传都是“成功但看不见”，不只是 seg；
+  - `LabelConverter.yolo_to_custom()` 用 `split(" ")` + 直接 `int(float)`，遇到 Tab、重复空格、空行、`0.0` 类号或类号越界就直接抛异常，且第一处失败中断整批，只弹一句英文错误，不说是哪个文件哪一行；默认标注目录取 `dirname(dirname(image))`，不会推断 `labels/<split>`。
+
+### 2. 主要实现与关键细节
+
+- **YOLO 四格式上传（hbb/obb/seg/pose）**
+  - 类别来源按优先级：DB `category.sort_index` 顺序 → 最近的 `classes.txt`/`obj.names`/`names.txt` → 最近的 `data.yaml` 的 `names`（数字键排序）→ 兜底文件选择框（取消即退出）。pose 仍需关键点 YAML。
+  - 自动推断标注目录：把路径里的 `images` 段替换为 `labels`，保留 split；用户填 `labels` 时自动下钻同名 split 子目录；目录不存在直接报错退出。
+  - 对话框新增“类别来源”提示与“保留已有标注”选项。
+  - 解析改为任意空白切分、跳过空行、逐行校验；新增 `YoloAnnotationError`，消息形如 `a.txt:2: class index 3 is out of range for 1 class names (…/classes.txt)`；单文件失败只计入错误列表，不中断整批。
+  - 结束后统一汇总“已上传/跳过（无同名 .txt）/跳过（不在数据集）/失败 + 前 5 条错误”，失败写入日志。
+- **DB 模式写库**：新增 Qt-free `services/dataset/annotation_import.py`（`store_annotation`/`store_annotations`/`build_annotation`/`relative_to_root`），把转换结果按 `rel_path` 找 `image_id`，`preserve_existing` 时先 `load_annotation` 再追加，最后走 `repository.save_annotation()`；不在库中的图片记 skipped，根外路径记 failed。`LabelConverter` 的 `yolo_to_custom`/`yolo_obb_to_custom`/`yolo_pose_to_custom` 新增 `write=True` 参数（`write=False` 返回 payload 不落盘），默认行为不变。
+- **其他上传格式**：DB 模式下统一由 `_reject_dataset_mode_upload()` 明确拒绝并提示（COCO/VOC/DOTA/MOT/MGDD/Mask/ODVG/PPOCR/VLM-R1），避免继续“成功但不可见”；JSON 模式行为不变。
+- **对话框基类化**：新增 `widgets/base_dialog.py::BaseDialog`（路径行、复选、按钮、样式、`validate()`）与 `widgets/upload_dialogs.py`（`UploadFolderDialog`、`UploadCategorySection`、`UploadConfirmDialog`、`UploadProgressDialog`）；`upload.py` 的 5 个 `Upload Options` 对话框、9 个覆盖确认框、9 个进度框全部改用它们，原重复布局代码删除。
+- **翻译流水线**
+  - 新增 `scripts/translation_scan.py`：AST 扫描全部常量可翻译字符串，按运行时上下文归类（类体内 `self.tr` → 类名；显式 `QCoreApplication.translate("Ctx", …)` → Ctx；其余用模块级 `TR_CONTEXT`），并把 `pylupdate6` 抽不到的消息补进 `.ts`；另有 `translation_memory()`/`fill_translations()` 按源文复用旧译文，避免代码换类后译文丢失。
+  - `scripts/generate_languages.py` 改为：只把含翻译调用的源文件交给 `pylupdate6`（避免 Windows 命令行超长）、按语言执行补充抽取 + 译文回填，再 `lrelease`；新增 `--no-resources`（与 `compile_languages.py` 一致），发布前才重建 `resources.py`；`pylupdate6`/`pyuic6`/`lrelease` 找不到时回退到当前环境 `Scripts` 目录。
+  - 27 个模块补 `TR_CONTEXT = "LabelingWidget"`；`pointcloud/camera.py`、`widgets/operator_dialog.py`、`utils/qt.py` 的非 `self` 接收者改为显式 `translate("Context", …)`。
+  - `.ts/.qm` 重建：各 **2493 条**；`en_US`、`zh_CN` 0 未翻译（新文案与“代码换类后”的旧文案均已回填），`ja_JP`、`ko_KR` 各 130 条 fork.49 新文案未翻译（回退英文）。
+  - 新增守卫测试 `tests/test_i18n/test_translations.py`：上下文必须可解析、四语言条目齐全、`en_US`/`zh_CN` 必须翻译、`.qm` 抽样与 `.ts` 一致、上传对话框文案实测中文。
+
+### 3. 涉及模块与文件
+
+- 新增：`anylabeling/services/dataset/annotation_import.py`、`anylabeling/views/labeling/utils/yolo_import.py`、`anylabeling/views/labeling/widgets/base_dialog.py`、`anylabeling/views/labeling/widgets/upload_dialogs.py`、`scripts/translation_scan.py`、`tests/test_i18n/test_translations.py`、`tests/test_utils/test_yolo_import.py`、`tests/test_dataset_db/test_annotation_import.py`
+- 修改（运行时）：`utils/upload.py`、`utils/export.py`、`utils/crop.py`、`utils/video.py`、`utils/visualization.py`、`utils/batch.py`、`utils/shape.py`、`utils/async_exif.py`、`utils/qt.py`、`label_converter.py`、`label_widget.py`、`label_filters.py`、`label_loop.py`、`annotation_editor.py`、`appearance.py`、`auto_labeling_handoff.py`、`file_session.py`、`object_editor.py`、`relations.py`、`right_sidebar.py`、`shape_commands.py`、`special_workspaces.py`、`status.py`、`settings/runtime_applier.py`、`actions/{builder,menus,toolbar}.py`、`file_list/controller.py`、`operator/gate.py`、`pointcloud/camera.py`、`widgets/{attributes_panel,workspace,operator_dialog}.py`、`services/dataset/__init__.py`、`resources/translations/*.ts`、`resources/translations/*.qm`
+- 修改（测试/脚本/文档）：`tests/test_utils/test_upload.py`、`tests/test_utils/test_label_converter.py`、`scripts/generate_languages.py`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/user/zh_cn/user_guide.md`、`docs/开始.md`、`anylabeling/app_info.py`、`CHANGELOG-fork.md`
+
+### 4. 行为、接口与兼容性影响
+
+- **用户可见行为**：YOLO 检测/分割/旋转框/姿态上传不再要求 `classes.txt`（DB 模式用“类别”页顺序，JSON 模式自动探测）；标注目录自动填 `labels/<split>`；解析失败会逐条列出文件与行号；DB 模式下上传确实写入数据集并刷新文件表/统计/画布；其他格式在 DB 模式改为明确拒绝。
+- **接口变化**：`LabelConverter.yolo_*_to_custom(..., write=True)` 新增可选参数并返回 payload；`LabelConverter(..., classes_source=None)` 新增可选参数（用于错误消息）；新增 `store_annotation()/store_annotations()`；`upload_yolo_annotation()` 的签名与菜单入口不变。
+- **数据格式/存储**：不改变 XLABEL JSON 与 DB schema；DB 模式下上传不再产生 JSON sidecar（之前会留下永远不会被读取的 JSON）。
+- **兼容性**：JSON 模式（未建库/`auto_db=False` 的测试与迁移工具）保持原行为；`preserve_existing` 在 JSON 模式仍合并旧 JSON；旧 `.ts` 条目在重新生成时按源文回填，不丢既有译文。
+
+### 5. 实际验证内容
+
+- `tests/test_utils/test_label_converter.py::TestLabelConverterYoloImport` 9 passed；`tests/test_utils/test_yolo_import.py` 17 passed；`tests/test_dataset_db/test_annotation_import.py` 7 passed；`tests/test_utils/test_upload.py` 7 passed；`tests/test_i18n/test_translations.py` 9 passed。
+- 回归：`tests/test_utils tests/test_dataset_db tests/test_i18n` **249 passed / 0 failed / 103 subtests**；`tests/test_widgets tests/test_config tests/test_settings tests/test_identity` **155 passed / 1 skipped / 14 subtests**；`tests/test_labeling` **256 passed / 10 failed / 51 subtests**，10 条失败与 HEAD 基线记录逐条相同（测试债，本批未改）。
+- 离屏冒烟：两种 import 顺序下 `upload.py`/`upload_dialogs.py` 均可导入；`UploadFolderDialog`/`UploadProgressDialog`/`UploadConfirmDialog`/`UploadCategorySection` 可构建；`validate()` 返回预期提示；加载 `zh_CN.qm` 后上传对话框与 `LabelingWidget` 上下文抽查均返回中文。
+- `pyside6-lrelease` 重编四语言 `.qm` 各 2493 条。
+- **未执行**：真实桌面上的文件框/确认框/进度条交互、真实数据集批量上传验收、`black`/`flake8`（本机未安装，按规则未自行安装）、不带 `--no-resources` 的 `resources.py` 重建（按 fork.36 约定留到发布前）。
+
+### 6. 已知限制与后续事项
+
+- `ja_JP`、`ko_KR` 有 130 条 fork.49 新文案未翻译，运行时回退英文；需要时按 `scripts/generate_languages.py` 流程补译。
+- DB 模式目前只有 YOLO 四格式能上传；COCO/VOC/DOTA/MOT/MMGD/Mask/ODVG/PPOCR/VLM-R1 的写库适配未做（登记为 T10）。
+- 上传后不写 `editor/modified_at`（外部数据不是当前操作员所写）；`"none"` 语义与 fork.4 契约一致，未新增归属逻辑。
+- `black` 未运行，个别新增长行（如 `translate("CameraConfigurationDialog", "…")`）可能不符合 79 列格式，下一次格式化会统一处理。
+- 上传流程假设同一目录内所有图片都已在当前数据集中；之后新增到磁盘但未入库的图片会被记为“跳过（不在数据集）”，不会自动入库。
+
 ## 4.3.2+fork.48 — 2026-11-24
 
 ### 1. 背景与原因

@@ -6,6 +6,11 @@ dialogs therefore stay deliberately small - no e-mail, no recovery codes, no
 roles beyond the implicit first administrator.
 """
 
+from PyQt6.QtCore import QCoreApplication
+
+# pylupdate6 cannot attribute `X.tr()` calls; the explicit context
+# keeps the registration equal to the run-time lookup.
+translate = QCoreApplication.translate
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QComboBox,
@@ -49,28 +54,28 @@ _HINT_STYLE = "color: #8a8a8a; font-size: 12px;"
 def _describe_error(dialog, error: Exception) -> str:
     """Map a service exception to a user-facing, translated message."""
     if isinstance(error, OperatorCredentialsError):
-        return dialog.tr("Unknown operator or wrong password.")
+        return translate("OperatorDialog", "Unknown operator or wrong password.")
     if isinstance(error, OperatorDisabledError):
-        return dialog.tr("This operator is disabled.")
+        return translate("OperatorDialog", "This operator is disabled.")
     if isinstance(error, OperatorExistsError):
-        return dialog.tr("This operator name is already registered.")
+        return translate("OperatorDialog", "This operator name is already registered.")
     if isinstance(error, ReservedOperatorNameError):
-        return dialog.tr("This name is reserved.")
+        return translate("OperatorDialog", "This name is reserved.")
     if isinstance(error, PasswordError):
-        return dialog.tr("Password must be at least %d characters.") % (
+        return translate("OperatorDialog", "Password must be at least %d characters.") % (
             MIN_PASSWORD_LENGTH,
         )
     if isinstance(error, OperatorNameError):
-        return dialog.tr("The operator name is not valid.")
+        return translate("OperatorDialog", "The operator name is not valid.")
     if isinstance(error, OperatorPermissionError):
-        return dialog.tr("This operator cannot manage other accounts.")
+        return translate("OperatorDialog", "This operator cannot manage other accounts.")
     if isinstance(error, OperatorStorageError):
-        return dialog.tr("Cannot open the operator database: %s") % str(
+        return translate("OperatorDialog", "Cannot open the operator database: %s") % str(
             error
         )
     if isinstance(error, OperatorError):
         return str(error)
-    return dialog.tr("The operator operation failed: %s") % str(error)
+    return translate("OperatorDialog", "The operator operation failed: %s") % str(error)
 
 
 class _FormPage(QWidget):

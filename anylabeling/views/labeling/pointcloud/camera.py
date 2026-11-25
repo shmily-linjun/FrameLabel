@@ -4,6 +4,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
+from PyQt6.QtCore import QCoreApplication
+
+# pylupdate6 cannot attribute `X.tr()` calls; the explicit context
+# keeps the registration equal to the run-time lookup.
+translate = QCoreApplication.translate
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from anylabeling.views.labeling.utils.style import get_dialog_style
@@ -266,8 +271,8 @@ class _CameraSourceFields(QtWidgets.QWidget):
         self.remove_button.setIcon(QtGui.QIcon(pixmap))
         self.remove_button.setIconSize(QtCore.QSize(16, 16))
         self.remove_button.setFixedSize(24, 24)
-        self.remove_button.setToolTip(parent.tr("Remove camera"))
-        self.remove_button.setAccessibleName(parent.tr("Remove camera"))
+        self.remove_button.setToolTip(translate("CameraConfigurationDialog", "Remove camera"))
+        self.remove_button.setAccessibleName(translate("CameraConfigurationDialog", "Remove camera"))
         self.remove_button.clicked.connect(lambda: parent.remove_camera(self))
         form.addWidget(
             self.remove_button, 0, 1, QtCore.Qt.AlignmentFlag.AlignRight
@@ -282,12 +287,12 @@ class _CameraSourceFields(QtWidgets.QWidget):
             (
                 (
                     self.directory_input,
-                    parent.tr("Image directory"),
+                    translate("CameraConfigurationDialog", "Image directory"),
                     self._browse_directory,
                 ),
                 (
                     self.calibration_input,
-                    parent.tr("Calibration JSON (optional)"),
+                    translate("CameraConfigurationDialog", "Calibration JSON (optional)"),
                     self._browse_calibration,
                 ),
             ),
@@ -296,7 +301,7 @@ class _CameraSourceFields(QtWidgets.QWidget):
             field.setPlaceholderText(title)
             field.setAccessibleName(title)
             field.setMinimumHeight(32)
-            button = QtWidgets.QPushButton(parent.tr("Browse…"))
+            button = QtWidgets.QPushButton(translate("CameraConfigurationDialog", "Browse…"))
             button.setAutoDefault(False)
             button.setMinimumHeight(32)
             button.clicked.connect(callback)
@@ -829,7 +834,7 @@ class _CameraResizeHandle(QtWidgets.QWidget):
         self._start = None
         self.setFixedSize(16, 16)
         self.setCursor(QtCore.Qt.CursorShape.SizeBDiagCursor)
-        self.setToolTip(panel.tr("Drag to resize camera image"))
+        self.setToolTip(translate("CameraPanel", "Drag to resize camera image"))
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
@@ -1243,9 +1248,9 @@ class CameraPanel(QtWidgets.QFrame):
         action.setEnabled(bool(self.sources))
         action.setChecked(visible)
         title = (
-            self.workspace.tr("Hide camera images")
+            translate("PointCloudDialog", "Hide camera images")
             if visible
-            else self.workspace.tr("Show camera images")
+            else translate("PointCloudDialog", "Show camera images")
         )
         action.setText(title)
         action.setToolTip(title)

@@ -110,11 +110,25 @@ class PoseClassError(ValueError):
     pass
 
 
+class YoloAnnotationError(ValueError):
+    """A YOLO ``.txt`` file cannot be converted.
+
+    The message always names the file, the 1-based line number and the
+    reason, so the upload summary can tell the operator which line to fix
+    instead of failing the whole batch with ``IndexError``.
+    """
+
+
 class LabelConverter:
     def __init__(
-        self, classes_file=None, pose_cfg_file=None, classes=None
+        self,
+        classes_file=None,
+        pose_cfg_file=None,
+        classes=None,
+        classes_source=None,
     ):
         self.classes = []
+        self.classes_source = classes_source or ""
         if classes is not None:
             # Dataset categories are already in the user-visible order
             # (``category.sort_index``); do not re-sort or require classes.txt.
@@ -127,6 +141,7 @@ class LabelConverter:
             logger.info(f"Loading dataset classes: {self.classes}")
         elif classes_file:
             self.classes = self.read_lines(classes_file)
+            self.classes_source = self.classes_source or str(classes_file)
             logger.info(f"Loading classes: {self.classes}")
 
         self.pose_classes = {}
@@ -148,6 +163,7 @@ class LabelConverter:
                 for class_name, keypoint_name in classes.items():
                     self.pose_classes[class_name] = keypoint_name
                 self.classes = list(self.pose_classes.keys())
+            self.classes_source = self.classes_source or str(pose_cfg_file)
             logger.info(f"Loading pose classes: {self.pose_classes}")
 
     #################################################
@@ -598,17 +614,85 @@ class LabelConverter:
     #################################################
     #                Upload Methods                 #
     #################################################
-    def yolo_obb_to_custom(self, input_file, output_file, image_file):
+    @staticmethod
+    def _parse_yolo_rows(path, *, minimum_values, maximum_values=None):
+        """Parse a YOLO ``.txt`` file into ``(line, class_index, values)``.
+
+        Blank lines are skipped (some exporters leave a trailing newline),
+        separators are any whitespace (tabs and repeated spaces included) and
+        a bad row raises :class:`YoloAnnotationError` naming the file, the
+        line and the reason.
+        """
+
+        name = osp.basename(str(path))
+        try:
+            lines = LabelConverter.read_lines(path)
+        except OSError as exc:
+            raise YoloAnnotationError(
+                f"{name}: cannot read the label file ({exc})"
+            ) from exc
+        rows = []
+        for line_number, raw in enumerate(lines, 1):
+            tokens = raw.split()
+            if not tokens:
+                continue
+            try:
+                class_index = int(float(tokens[0]))
+            except ValueError as exc:
+                raise YoloAnnotationError(
+                    f"{name}:{line_number}: class index {tokens[0]!r} "
+                    "is not a number"
+                ) from exc
+            values = []
+            for token in tokens[1:]:
+                try:
+                    values.append(float(token))
+                except ValueError as exc:
+                    raise YoloAnnotationError(
+                        f"{name}:{line_number}: {token!r} is not a number"
+                    ) from exc
+            if len(values) < minimum_values:
+                raise YoloAnnotationError(
+                    f"{name}:{line_number}: expected at least "
+                    f"{minimum_values} values, found {len(values)}"
+                )
+            if maximum_values is not None and len(values) > maximum_values:
+                raise YoloAnnotationError(
+                    f"{name}:{line_number}: expected {maximum_values} values, "
+                    f"found {len(values)}"
+                )
+            rows.append((line_number, class_index, values))
+        return rows
+
+    def _class_name(self, class_index, path, line_number):
+        source = self.classes_source or "class list"
+        if class_index < 0 or class_index >= len(self.classes):
+            raise YoloAnnotationError(
+                f"{osp.basename(str(path))}:{line_number}: class index "
+                f"{class_index} is out of range for {len(self.classes)} "
+                f"class names ({source})"
+            )
+        return self.classes[class_index]
+
+    def yolo_obb_to_custom(
+        self, input_file, output_file, image_file, write=True
+    ):
+        """Convert YOLO OBB rows; ``write=False`` returns the payload only.
+
+        The upload flow uses ``write=False`` in database mode so the payload
+        can be stored in SQLite without creating a JSON sidecar.
+        """
+
         self.reset()
-        lines = self.read_lines(input_file)
+        rows = self._parse_yolo_rows(
+            input_file, minimum_values=8, maximum_values=8
+        )
         img_w, img_h = self.get_image_size(image_file)
-        for line in lines:
-            line = line.strip().split(" ")
-            class_index = int(line[0])
-            label = self.classes[class_index]
+        for line_number, class_index, values in rows:
+            label = self._class_name(class_index, input_file, line_number)
             shape_type = "rotation"
             # Extracting coordinates from YOLO format
-            x0, y0, x1, y1, x2, y2, x3, y3 = map(float, line[1:])
+            x0, y0, x1, y1, x2, y2, x3, y3 = values
             # Rescaling coordinates to image size
             x0, y0, x1, y1, x2, y2, x3, y3 = (
                 x0 * img_w,
@@ -637,22 +721,30 @@ class LabelConverter:
         self.custom_data["imagePath"] = osp.basename(image_file)
         self.custom_data["imageHeight"] = img_h
         self.custom_data["imageWidth"] = img_w
-        self.save_json(self.custom_data, output_file)
+        if write:
+            self.save_json(self.custom_data, output_file)
+        return self.custom_data
 
-    def yolo_pose_to_custom(self, input_file, output_file, image_file):
+    def yolo_pose_to_custom(
+        self, input_file, output_file, image_file, write=True
+    ):
+        """Convert YOLO pose rows; ``write=False`` returns the payload only."""
+
         self.reset()
-        lines = self.read_lines(input_file)
+        interval = 3 if self.has_visible else 2
+        rows = self._parse_yolo_rows(input_file, minimum_values=4)
         img_w, img_h = self.get_image_size(image_file)
         classes = list(self.pose_classes.keys())
-        for i, line in enumerate(lines):
-            line = line.strip().split(" ")
-            class_index = int(line[0])
-            label = classes[class_index]
+        for i, (line_number, class_index, values) in enumerate(rows):
+            label = self._class_name(class_index, input_file, line_number)
+            keypoints = values[4:]
+            if len(keypoints) % interval:
+                raise YoloAnnotationError(
+                    f"{osp.basename(str(input_file))}:{line_number}: "
+                    f"keypoint values are not a multiple of {interval}"
+                )
             # Add rectangle info
-            cx = float(line[1])
-            cy = float(line[2])
-            nw = float(line[3])
-            nh = float(line[4])
+            cx, cy, nw, nh = values[:4]
             xmin = int((cx - nw / 2) * img_w)
             ymin = int((cy - nh / 2) * img_h)
             xmax = int((cx + nw / 2) * img_w)
@@ -676,11 +768,9 @@ class LabelConverter:
             self.custom_data["shapes"].append(shape)
             # Add keypoints info
             keypoint_name = self.pose_classes[label]
-            keypoints = line[5:]
-            interval = 3 if self.has_visible else 2
             for j in range(0, len(keypoints), interval):
-                x = float(keypoints[j]) * img_w
-                y = float(keypoints[j + 1]) * img_h
+                x = keypoints[j] * img_w
+                y = keypoints[j + 1] * img_h
                 flag = int(keypoints[j + 2]) if self.has_visible else 0
                 if (x == 0 and y == 0) or (flag == 0 and self.has_visible):
                     continue
@@ -703,23 +793,29 @@ class LabelConverter:
         self.custom_data["imagePath"] = osp.basename(image_file)
         self.custom_data["imageHeight"] = img_h
         self.custom_data["imageWidth"] = img_w
-        self.save_json(self.custom_data, output_file)
+        if write:
+            self.save_json(self.custom_data, output_file)
+        return self.custom_data
 
-    def yolo_to_custom(self, input_file, output_file, image_file, mode):
+    def yolo_to_custom(
+        self, input_file, output_file, image_file, mode, write=True
+    ):
+        """Convert YOLO det/seg rows; ``write=False`` returns the payload."""
+
         self.reset()
-        lines = self.read_lines(input_file)
+        if mode == "seg":
+            rows = self._parse_yolo_rows(input_file, minimum_values=6)
+        else:
+            rows = self._parse_yolo_rows(
+                input_file, minimum_values=4, maximum_values=4
+            )
         img_w, img_h = self.get_image_size(image_file)
-        image_size = np.array([img_w, img_h], np.float64)
-        for line in lines:
-            line = line.strip().split(" ")
-            class_index = int(line[0])
-            label = self.classes[class_index]
+        name = osp.basename(str(input_file))
+        for line_number, class_index, values in rows:
+            label = self._class_name(class_index, input_file, line_number)
             if mode == "hbb":
                 shape_type = "rectangle"
-                cx = float(line[1])
-                cy = float(line[2])
-                nw = float(line[3])
-                nh = float(line[4])
+                cx, cy, nw, nh = values
                 xmin = (cx - nw / 2) * img_w
                 ymin = (cy - nh / 2) * img_h
                 xmax = (cx + nw / 2) * img_w
@@ -730,13 +826,17 @@ class LabelConverter:
                     [xmax, ymax],
                     [xmin, ymax],
                 ]
-            elif mode == "seg":
+            else:
                 shape_type = "polygon"
-                points, masks = [], line[1:]
-                for x, y in zip(masks[0::2], masks[1::2]):
-                    point = [np.float64(x), np.float64(y)]
-                    point = np.array(point, np.float64) * image_size
-                    points.append(point.tolist())
+                if len(values) % 2:
+                    raise YoloAnnotationError(
+                        f"{name}:{line_number}: a polygon needs an even "
+                        f"number of coordinates, found {len(values)}"
+                    )
+                points = [
+                    [x * img_w, y * img_h]
+                    for x, y in zip(values[0::2], values[1::2])
+                ]
             shape = {
                 "label": label,
                 "shape_type": shape_type,
@@ -751,7 +851,9 @@ class LabelConverter:
         self.custom_data["imagePath"] = osp.basename(image_file)
         self.custom_data["imageHeight"] = img_h
         self.custom_data["imageWidth"] = img_w
-        self.save_json(self.custom_data, output_file)
+        if write:
+            self.save_json(self.custom_data, output_file)
+        return self.custom_data
 
     def voc_to_custom(self, input_file, output_file, image_filename, mode):
         self.reset()

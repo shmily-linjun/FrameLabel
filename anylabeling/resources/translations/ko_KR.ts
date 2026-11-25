@@ -195,6 +195,36 @@ Review the prompt before generating.</source>
         <translation>템플릿 내용을 비워둘 수 없습니다!</translation>
     </message>
 </context><context>
+    <name>AnnotationEditor</name>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="306" />
+        <location filename="..\..\views\labeling\annotation_editor.py" line="276" />
+        <location filename="..\..\views\labeling\annotation_editor.py" line="268" />
+        <source>Error saving label data</source>
+        <translation>라벨 데이터 저장 중 오류 발생</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="307" />
+        <location filename="..\..\views\labeling\annotation_editor.py" line="268" />
+        <source>&lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="277" />
+        <source>Current image is not registered in the dataset.</source>
+        <translation>현재 이미지가 데이터셋에 등록되어 있지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="387" />
+        <source>Invalid label</source>
+        <translation>유효하지 않은 라벨</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="388" />
+        <source>Invalid label '{}' with validation type '{}'</source>
+        <translation>유효성 검사 유형이 '{}' 인 유효하지 않은 레이블 '{}'</translation>
+    </message>
+</context><context>
     <name>ApiTokenDialog</name>
     <message>
         <location filename="..\..\views\labeling\widgets\api_token_dialog.py" line="29" />
@@ -220,6 +250,142 @@ Review the prompt before generating.</source>
         <location filename="..\..\views\labeling\widgets\api_token_dialog.py" line="89" />
         <source>Hide</source>
         <translation>숨기기</translation>
+    </message>
+</context><context>
+    <name>AppearanceController</name>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="147" />
+        <location filename="..\..\views\labeling\appearance.py" line="96" />
+        <source>Please restart the application to apply changes.</source>
+        <translation>변경 사항을 적용하려면 애플리케이션을 다시 시작하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="108" />
+        <source>Theme</source>
+        <translation>테마</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="121" />
+        <source>The new theme will take effect after restarting the application. Apply this setting now?</source>
+        <translation>새 테마는 애플리케이션을 다시 시작한 후 적용됩니다. 지금 이 설정을 적용하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="130" />
+        <source>Cancel</source>
+        <translation>취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="134" />
+        <source>OK</source>
+        <translation>확인</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="160" />
+        <source>Mode:</source>
+        <translation>모드:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="161" />
+        <source>Shortcuts:</source>
+        <translation>단축키:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="162" />
+        <source>Settings</source>
+        <translation>설정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="163" />
+        <source>Previous</source>
+        <translation>이전</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="164" />
+        <source>Next</source>
+        <translation>다음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="165" />
+        <source>Rectangle</source>
+        <translation>직사각형</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="166" />
+        <source>Polygon</source>
+        <translation>다각형</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="167" />
+        <source>Rotation</source>
+        <translation>회전</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="168" />
+        <source>Quadrilateral</source>
+        <translation>사각형</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="191" />
+        <source>Tip: Hold Alt and drag with the left mouse button, or drag with the middle mouse button, to pan the canvas while drawing.</source>
+        <translation>팁: 그리는 동안 Alt를 누른 채 마우스 왼쪽 버튼으로 드래그하거나 가운데 버튼으로 드래그하여 캔버스를 이동할 수 있습니다.</translation>
+    </message>
+</context><context>
+    <name>AttributesPanel</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\attributes_panel.py" line="66" />
+        <source>Invalid label</source>
+        <translation>유효하지 않은 라벨</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\attributes_panel.py" line="67" />
+        <source>Invalid label '{}' with validation type: {}!
+Reset the label as {}.</source>
+        <translation>유효성 검사 유형 {}에 맞지 않는 레이블 '{}'입니다!
+레이블을 {}로 재설정합니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\attributes_panel.py" line="167" />
+        <source>Value '{}' is not defined in the current attribute configuration.</source>
+        <translation>'{}' 값은 현재 속성 구성에 정의되어 있지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\attributes_panel.py" line="559" />
+        <source>Error saving label data</source>
+        <translation>라벨 데이터 저장 중 오류 발생</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\attributes_panel.py" line="559" />
+        <source>&lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+</context><context>
+    <name>AttributionLabel</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_bar.py" line="124" />
+        <source>Author: not recorded</source>
+        <translation>작성자: 기록 없음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_bar.py" line="132" />
+        <source>Last modified: %s</source>
+        <translation>최종 수정: %s</translation>
+    </message>
+</context><context>
+    <name>AutoLabelingHandoff</name>
+    <message>
+        <location filename="..\..\views\labeling\auto_labeling_handoff.py" line="148" />
+        <source>Image Description</source>
+        <translation>이미지 설명</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\auto_labeling_handoff.py" line="345" />
+        <source>Invalid label</source>
+        <translation>유효하지 않은 라벨</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\auto_labeling_handoff.py" line="346" />
+        <source>Invalid label '{}' with validation type '{}'</source>
+        <translation>유효성 검사 유형이 '{}' 인 유효하지 않은 레이블 '{}'</translation>
     </message>
 </context><context>
     <name>AutoLabelingWidget</name>
@@ -422,6 +588,28 @@ Example: person.car.bicycle</source>
         <translation>지원되지 않는 도형 유형이 있습니다. 감지 상자는 사각형, 회전, 다각형만 지원합니다.</translation>
     </message>
 </context><context>
+    <name>BaseDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="89" />
+        <source>Browse</source>
+        <translation>찾아보기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="113" />
+        <source>Cancel</source>
+        <translation>취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="119" />
+        <source>OK</source>
+        <translation>확인</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="142" />
+        <source>Warning</source>
+        <translation>경고</translation>
+    </message>
+</context><context>
     <name>BatchProcessDialog</name>
     <message>
         <location filename="..\..\views\labeling\chatbot\general.py" line="32" />
@@ -461,328 +649,344 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>BatchRangeDialog</name>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="55" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="67" />
         <source>Auto Run</source>
         <translation>자동 실행</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="85" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="97" />
         <source>Image range</source>
         <translation>이미지 범위</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="89" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="101" />
         <source>Select the first and last images to process.</source>
         <translation>처리할 첫 번째와 마지막 이미지를 선택하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="109" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="121" />
         <source>From</source>
         <translation>시작</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="110" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="122" />
         <source>To</source>
         <translation>끝</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="126" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="138" />
         <source>Skip statuses:</source>
         <translation>건너뛸 상태:</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="131" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="143" />
         <source>Pending</source>
         <translation>미검토</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="132" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="144" />
         <source>Passed</source>
         <translation>검토 통과</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="133" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="145" />
         <source>Failed</source>
         <translation>검토 실패</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="142" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="154" />
         <source>Status skipping is unavailable for video tracking and propagation.</source>
         <translation>동영상 추적 및 전파에서는 상태별 건너뛰기를 사용할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="163" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="175" />
         <source>%s to process, %s skipped</source>
         <translation>처리 %s개, 건너뛰기 %s개</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="166" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="178" />
         <source>%s of %s images selected</source>
         <translation>선택: %s / %s장</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="184" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="196" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="187" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="199" />
         <source>Run</source>
         <translation>실행</translation>
     </message>
 </context><context>
     <name>CameraConfigurationDialog</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="331" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="275" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="274" />
+        <source>Remove camera</source>
+        <translation>카메라 삭제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="290" />
+        <source>Image directory</source>
+        <translation>이미지 폴더</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="295" />
+        <source>Calibration JSON (optional)</source>
+        <translation>캘리브레이션 JSON (선택 사항)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="304" />
+        <source>Browse…</source>
+        <translation>찾아보기…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="335" />
         <source>JSON files (*.json)</source>
         <translation>JSON 파일 (*.json)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="345" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="348" />
         <source>Camera image</source>
         <translation>카메라 이미지</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="399" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="402" />
         <source>Add camera</source>
         <translation>카메라 추가</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="402" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="405" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="404" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="407" />
         <source>OK</source>
         <translation>확인</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="497" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="459" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="500" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="462" />
         <source>Camera {number}</source>
         <translation>카메라 {number}</translation>
     </message>
 </context><context>
     <name>CameraPanel</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1392" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1296" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="925" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="837" />
+        <source>Drag to resize camera image</source>
+        <translation>드래그하여 카메라 이미지 표시 크기 조정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1395" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1299" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="928" />
         <source>Projected points</source>
         <translation>투영 포인트</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1298" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="931" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1301" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="934" />
         <source>Load calibration to overlay points.</source>
         <translation>포인트 클라우드를 겹쳐 표시하려면 캘리브레이션을 불러오세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="936" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="939" />
         <source>Projected 3D boxes</source>
         <translation>3D 박스 투영</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="946" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="949" />
         <source>Projection settings</source>
         <translation>투영 설정</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="957" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="960" />
         <source>Fit image</source>
         <translation>이미지 맞춤</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1008" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1011" />
         <source>Depth</source>
         <translation>깊이</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1009" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1012" />
         <source>Point cloud colors</source>
         <translation>포인트 클라우드 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1021" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1024" />
         <source>Color</source>
         <translation>색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1042" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1045" />
         <source>Point size</source>
         <translation>포인트 크기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1047" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1050" />
         <source>Reset point size (1 px)</source>
         <translation>포인트 크기 초기화 (1 px)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1051" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1054" />
         <source>Opacity</source>
         <translation>불투명도</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1056" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1059" />
         <source>Reset opacity (65%)</source>
         <translation>불투명도 초기화 (65%)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1342" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1168" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1108" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1345" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1171" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1111" />
         <source>Near → Far</source>
         <translation>가까움 → 멂</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1188" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1191" />
         <source>Near {near:.3g} → Far {far:.3g}</source>
         <translation>가까움 {near:.3g} → 멂 {far:.3g}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1193" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1196" />
         <source>Camera depth in point-cloud units. Colors use the 2nd–98th percentile of this frame; values outside the range are clipped.</source>
         <translation>카메라 깊이는 포인트 클라우드와 같은 단위를 사용합니다. 색상 범위는 현재 프레임의 2~98 백분위수를 사용하며, 범위를 벗어난 값은 양 끝값으로 제한됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1248" />
-        <source>Hide camera images</source>
-        <translation>카메라 이미지 숨기기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1250" />
-        <source>Show camera images</source>
-        <translation>카메라 이미지 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1323" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1326" />
         <source>Open a point cloud to view its camera image.</source>
         <translation>해당 카메라 이미지를 보려면 포인트 클라우드를 여세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1360" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1363" />
         <source>No matching camera image for this frame.</source>
         <translation>이 프레임에 해당하는 카메라 이미지가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1379" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1382" />
         <source>Image size %1 x %2 does not match calibration %3 x %4. Projection disabled.</source>
         <translation>이미지 크기(%1 x %2)와 캘리브레이션 크기(%3 x %4)가 일치하지 않아 투영이 비활성화되었습니다.</translation>
     </message>
 </context><context>
     <name>CameraView</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="705" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="708" />
         <source>Previous camera</source>
         <translation>이전 카메라</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="706" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="709" />
         <source>Next camera</source>
         <translation>다음 카메라</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="736" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="739" />
         <source>Wheel: zoom · Arrows: switch camera</source>
         <translation>휠: 확대/축소 · 화살표: 카메라 전환</translation>
     </message>
 </context><context>
     <name>Canvas</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="276" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="282" />
         <source>Loading...</source>
         <translation>로딩 중...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="1649" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="1656" />
         <source>Auto Labeling</source>
         <translation>자동 라벨링</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="1652" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="1659" />
         <source>Magic Wand</source>
         <translation>마술봉</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="1653" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="1660" />
         <source>Drawing</source>
         <translation>그리기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="1655" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="1662" />
         <source>Editing</source>
         <translation>편집</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="1657" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="1664" />
         <source>Unknown</source>
         <translation>알 수 없음</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="1725" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="1753" />
         <source>Click &amp; drag to erase points of shape '%s'</source>
         <translation>도형 '%s'의 점을 지우려면 클릭한 채 드래그하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="1930" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="1958" />
         <source>Click or drag to rotate shape '%s'</source>
         <translation>클릭하거나 드래그하여 도형 '%s' 회전</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2501" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2532" />
         <source>Click &amp; drag to adjust cuboid depth of shape '%s'</source>
         <translation>도형 '%s'의 직육면체 깊이를 조절하려면 클릭한 채 드래그하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2508" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2539" />
         <source>Click &amp; drag to adjust rear edge of cuboid shape '%s'</source>
         <translation>도형 '%s'의 직육면체 뒤쪽 모서리를 조절하려면 클릭한 채 드래그하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2585" />
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2515" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2616" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2546" />
         <source>Click &amp; drag to move point of shape '%s'</source>
         <translation>도형 '%s'의 점을 이동하려면 클릭한 채 드래그하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2645" />
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2533" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2676" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2564" />
         <source>Click &amp; drag to move shape '%s'</source>
         <translation>도형 '%s'를 이동하려면 클릭한 채 드래그하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2553" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2584" />
         <source>Click &amp; drag to adjust cuboid %s face of shape '%s'</source>
         <translation>도형 '%s'의 직육면체 %s 면을 조절하려면 클릭한 채 드래그하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2607" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2638" />
         <source>Click to create point of shape '%s'</source>
         <translation>도형 '%s'에 점을 만들려면 클릭하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2637" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2668" />
         <source>Locked shape '%s'</source>
         <translation>도형 '%s'이(가) 잠겨 있습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="2640" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="2671" />
         <source>Click &amp; drag to move shape '%s %s'</source>
         <translation>클릭 후 드래그하여 도형 '%s %s' 이동</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="3688" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="3726" />
         <source>Group %s · %d shapes</source>
         <translation>그룹 %s · 도형 %d개</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="3690" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="3728" />
         <source>Locked %s</source>
         <translation>%s 잠김</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\canvas.py" line="3692" />
+        <location filename="..\..\views\labeling\widgets\canvas.py" line="3730" />
         <source>Click &amp; drag to move %s</source>
         <translation>클릭하고 드래그하여 %s 이동</translation>
     </message>
@@ -1746,7 +1950,7 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>CreateTaskDialog</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="472" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="466" />
         <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="82" />
         <source>Create task</source>
         <translation>작업 만들기</translation>
@@ -1783,7 +1987,7 @@ Example: person.car.bicycle</source>
         <translation>이전</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="472" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="466" />
         <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="162" />
         <source>Next</source>
         <translation>다음</translation>
@@ -1804,8 +2008,8 @@ Example: person.car.bicycle</source>
         <translation>새 클래스</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="419" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="397" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="415" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="395" />
         <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="217" />
         <source>Load classes</source>
         <translation>클래스 불러오기</translation>
@@ -1859,28 +2063,28 @@ Example: person.car.bicycle</source>
         <translation>클래스를 하나 이상 추가하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="399" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="397" />
         <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="373" />
         <source>Class definitions (*.json)</source>
         <translation>클래스 정의 (*.json)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="409" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="405" />
         <source>This file does not contain classes for the selected task.</source>
         <translation>이 파일에는 선택한 작업의 클래스가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="420" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="416" />
         <source>Replace all {task} classes in this setup with this file?</source>
         <translation>이 설정의 모든 {task} 클래스를 이 파일의 내용으로 교체하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="492" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="486" />
         <source>Choose a point cloud directory.</source>
         <translation>포인트 클라우드 폴더를 선택하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="509" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="503" />
         <source>Choose a writable save directory.</source>
         <translation>쓰기가 가능한 저장 폴더를 선택하세요.</translation>
     </message>
@@ -2189,79 +2393,116 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>DigitShortcutDialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="91" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="88" />
         <source>Digit Shortcut Manager</source>
         <translation>숫자 바로 가기 관리자</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="108" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="105" />
         <source>Configure digit keys (0-9) for quick shape creation:</source>
         <translation>빠른 도형 생성을 위한 숫자 키 (0-9) 구성:</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="118" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="115" />
         <source>Digit</source>
         <translation>숫자</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="118" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="115" />
         <source>Drawing Mode</source>
         <translation>그리기 모드</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="118" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="115" />
         <source>Label</source>
         <translation>레이블</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="147" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="144" />
         <source>None</source>
         <translation>없음</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="201" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="198" />
         <source>Reset</source>
         <translation>초기화</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="205" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="202" />
         <source>OK</source>
         <translation>확인</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="209" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="206" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="250" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="247" />
         <source>Required</source>
         <translation>필수 항목입니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="257" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="254" />
         <source>Confirm Reset</source>
         <translation>재설정 확인</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="258" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="255" />
         <source>Are you sure you want to reset all shortcuts? This cannot be undone.</source>
         <translation>정말 모든 단축키를 재설정하시겠습니까? 이 작업은 취소할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="306" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="303" />
         <source>Validation Error</source>
         <translation>유효성 검사 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="307" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="304" />
         <source>Please provide a label for each enabled drawing mode.</source>
         <translation>활성화된 각 그리기 모드에 대한 레이블을 제공하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="321" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="318" />
         <source>Digit shortcuts saved successfully</source>
         <translation>숫자 단축키가 성공적으로 저장되었습니다</translation>
+    </message>
+</context><context>
+    <name>DocumentStatus</name>
+    <message>
+        <location filename="..\..\views\labeling\status.py" line="171" />
+        <source>Forward %s Images</source>
+        <translation>%s장 다음으로</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\status.py" line="172" />
+        <source>Move forward by %s images</source>
+        <translation>%s장 뒤의 이미지로 이동</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\status.py" line="176" />
+        <source>Back %s Images</source>
+        <translation>%s장 이전으로</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\status.py" line="177" />
+        <source>Move back by %s images</source>
+        <translation>%s장 앞의 이미지로 이동</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\status.py" line="250" />
+        <source>Unchecked</source>
+        <translation>확인되지 않음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\status.py" line="251" />
+        <source>Check Passed</source>
+        <translation>검토 통과</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\status.py" line="252" />
+        <source>Check Failed</source>
+        <translation>검토 불합격</translation>
     </message>
 </context><context>
     <name>DropZone</name>
@@ -2355,12 +2596,12 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>ExifProcessingDialog</name>
     <message>
-        <location filename="..\..\views\labeling\utils\async_exif.py" line="103" />
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="110" />
         <source>EXIF Orientation Detected</source>
         <translation>EXIF 방향 감지됨</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\async_exif.py" line="104" />
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="111" />
         <source>Detected %s images with EXIF orientation data. Direct annotation without correction may cause training anomalies.
 
 We will process these images in background and create backups in 'x-anylabeling-exif-backup' folder under current directory. This may take some time.
@@ -2373,22 +2614,22 @@ Continue processing or ignore?</source>
 계속 처리하시겠습니까, 아니면 무시하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\async_exif.py" line="122" />
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="129" />
         <source>Processing EXIF orientation...</source>
         <translation>EXIF 방향 처리 중...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\async_exif.py" line="123" />
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="130" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\async_exif.py" line="131" />
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="138" />
         <source>Processing: %s</source>
         <translation>처리 중: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\async_exif.py" line="147" />
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="154" />
         <source>Successfully processed %s images.
 
 Original images backed up to:
@@ -2399,7 +2640,7 @@ Original images backed up to:
 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\async_exif.py" line="154" />
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="161" />
         <source>EXIF Processing Complete</source>
         <translation>EXIF 처리 완료</translation>
     </message>
@@ -2624,41 +2865,603 @@ Original images backed up to:
         <translation>디렉터리 내보내기 선택</translation>
     </message>
 </context><context>
-    <name>FrameExtractionDialog</name>
+    <name>FileListController</name>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="44" />
-        <source>Frame Extraction Settings</source>
-        <translation>프레임 추출 설정</translation>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="126" />
+        <source>Files</source>
+        <translation>Files</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="52" />
-        <source>Frame interval (fps: %.2f):</source>
-        <translation>프레임 간격 (fps: %.2f):</translation>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="659" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="127" />
+        <source>Objects</source>
+        <translation>객체</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="69" />
-        <source>Filename prefix:</source>
-        <translation>파일 이름 접두사:</translation>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="660" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="128" />
+        <source>Import Time</source>
+        <translation>Import Time</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="88" />
-        <source>Number sequence length:</source>
-        <translation>숫자 시퀀스 길이:</translation>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="661" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="129" />
+        <source>Inference</source>
+        <translation>Inference</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="113" />
-        <source>OK</source>
-        <translation>확인</translation>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="712" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="662" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="130" />
+        <source>Split</source>
+        <translation>Split</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="115" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="226" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="222" />
+        <source>None</source>
+        <translation>없음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="223" />
+        <source>Train</source>
+        <translation>훈련</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="224" />
+        <source>Val</source>
+        <translation>Val</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="225" />
+        <source>Test</source>
+        <translation>Test</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="253" />
+        <source>Editor: %s</source>
+        <translation>편집자: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="679" />
+        <source>Import Files</source>
+        <translation>파일 가져오기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="683" />
+        <source>Import Folder</source>
+        <translation>폴더 가져오기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="701" />
+        <source>Copy File Names</source>
+        <translation>파일 이름 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="703" />
+        <source>Copy File Name</source>
+        <translation>파일 이름 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="707" />
+        <source>Copy File Paths</source>
+        <translation>파일 경로 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="709" />
+        <source>Copy File Path</source>
+        <translation>파일 경로 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="731" />
+        <source>Set Tags…</source>
+        <translation>태그 설정…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="735" />
+        <source>Move to Folder…</source>
+        <translation>폴더로 이동…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="739" />
+        <source>Hide Thumbnails</source>
+        <translation>Hide Thumbnails</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="741" />
+        <source>Show Thumbnails</source>
+        <translation>Show Thumbnails</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="744" />
+        <source>Remove %d Files from List</source>
+        <translation>목록에서 %d개 파일 제거</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="746" />
+        <source>Remove from List</source>
+        <translation>Remove from List</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="838" />
+        <source>Failed to update split for %s</source>
+        <translation>Failed to update split for %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="844" />
+        <source>Split of %s set to %s</source>
+        <translation>Split of %s set to %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="852" />
+        <source>Split of %d files set to %s</source>
+        <translation>%d개 파일의 분할을 %s(으)로 설정했습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="899" />
+        <source>Batch Set Image Tags</source>
+        <translation>이미지 태그 일괄 설정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="900" />
+        <source>Delete all image tags from %d files?</source>
+        <translation>%d개 이미지에서 모든 이미지 태그를 삭제할까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="931" />
+        <source>Failed to update tags for %d files</source>
+        <translation>%d개 이미지의 태그를 업데이트하지 못했습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="936" />
+        <source>Tags updated for %d files</source>
+        <translation>%d개 이미지의 태그를 업데이트했습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="941" />
+        <source>Tags unchanged for %d files</source>
+        <translation>%d개 이미지의 태그가 변경되지 않았습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="979" />
+        <source>Remove "%s" from the file list?
+The image file and its annotation file will NOT be deleted.</source>
+        <translation>Remove "%s" from the file list?
+The image file and its annotation file will NOT be deleted.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="985" />
+        <source>Remove %d files from the file list?
+The image files and their annotation files will NOT be deleted.</source>
+        <translation>파일 목록에서 %d개 파일을 제거하시겠습니까?
+이미지 파일과 주석 파일은 삭제되지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="992" />
+        <source>Remove File</source>
+        <translation>Remove File</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1059" />
+        <source>Move to Folder</source>
+        <translation>폴더로 이동</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1087" />
+        <source>Move out of Dataset</source>
+        <translation>데이터세트에서 이동</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1088" />
+        <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
+        <translation>%d개 파일이 데이터세트에서 제거되고 현재 목록에서 삭제됩니다. 계속할까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1124" />
+        <source>Failed to move: %s</source>
+        <translation>이동 실패: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
+        <source>Moved %d files</source>
+        <translation>%d개 파일을 이동했습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1129" />
+        <source>(%d moved out of the dataset)</source>
+        <translation>(%d개가 데이터세트에서 이동됨)</translation>
+    </message>
+</context><context>
+    <name>FileSession</name>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="123" />
+        <source>Creating dataset database…</source>
+        <translation>데이터셋 데이터베이스 생성 중…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="129" />
+        <source>Dataset database</source>
+        <translation>데이터셋 데이터베이스</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="130" />
+        <source>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;에 데이터셋 데이터베이스를 만들 수 없습니다:&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="139" />
+        <source>Dataset database created: %s</source>
+        <translation>데이터셋 데이터베이스가 생성되었습니다: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="143" />
+        <source>Dataset database created with %d file errors; see logs.</source>
+        <translation>데이터셋 데이터베이스가 생성되었지만 %d개의 파일 오류가 있습니다. 로그를 확인하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="167" />
+        <source>Error opening dataset</source>
+        <translation>데이터셋을 열 수 없습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="541" />
+        <location filename="..\..\views\labeling\file_session.py" line="168" />
+        <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="208" />
+        <source>Import Project (X-AnyLabeling)</source>
+        <translation>프로젝트 가져오기(X-AnyLabeling)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="271" />
+        <location filename="..\..\views\labeling\file_session.py" line="217" />
+        <source>Import Project</source>
+        <translation>프로젝트 가져오기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="219" />
+        <source>A dataset database already exists in this directory.</source>
+        <translation>이 디렉터리에 이미 데이터셋 데이터베이스가 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="224" />
+        <source>Skip existing images or replace their annotations?</source>
+        <translation>기존 이미지를 건너뛸까요, 아니면 주석을 바꿀까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="229" />
+        <source>Skip Existing</source>
+        <translation>기존 건너뛰기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="233" />
+        <source>Replace Existing</source>
+        <translation>기존 바꾸기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="237" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="134" />
+        <location filename="..\..\views\labeling\file_session.py" line="252" />
+        <source>Import failed</source>
+        <translation>가져오기 실패</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="323" />
+        <location filename="..\..\views\labeling\file_session.py" line="252" />
+        <source>&lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="256" />
+        <source>Images: %d</source>
+        <translation>이미지: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="257" />
+        <source>Labeled: %d</source>
+        <translation>주석 있음: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="258" />
+        <source>Objects: %d</source>
+        <translation>객체: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="259" />
+        <source>Skipped: %d</source>
+        <translation>건너뜀: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="260" />
+        <source>Errors: %d</source>
+        <translation>오류: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="264" />
+        <source>Backup: %s</source>
+        <translation>백업: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="279" />
+        <source>Recycle bin is available in dataset mode only.</source>
+        <translation>휴지통은 데이터셋 모드에서만 사용할 수 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="293" />
+        <source>No dataset image is open.</source>
+        <translation>열린 데이터셋 이미지가 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="322" />
+        <location filename="..\..\views\labeling\file_session.py" line="310" />
+        <location filename="..\..\views\labeling\file_session.py" line="304" />
+        <source>Error deleting image</source>
+        <translation>이미지 삭제 실패</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="305" />
+        <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 존재하지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="311" />
+        <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 이미 존재합니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="330" />
+        <source>Image moved to the recycle bin.</source>
+        <translation>이미지를 휴지통으로 이동했습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="493" />
+        <source>Dataset database: %s</source>
+        <translation>데이터셋 데이터베이스: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="724" />
+        <location filename="..\..\views\labeling\file_session.py" line="646" />
+        <location filename="..\..\views\labeling\file_session.py" line="614" />
+        <location filename="..\..\views\labeling\file_session.py" line="540" />
+        <location filename="..\..\views\labeling\file_session.py" line="531" />
+        <location filename="..\..\views\labeling\file_session.py" line="523" />
+        <location filename="..\..\views\labeling\file_session.py" line="516" />
+        <source>Error opening file</source>
+        <translation>파일 열기 오류</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="517" />
+        <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 데이터셋 루트 밖에 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="524" />
+        <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>이미지가 데이터셋에 등록되어 있지 않습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="532" />
+        <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>이미지 파일을 열지 못했습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="615" />
+        <source>No such file: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>파일을 찾을 수 없습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="647" />
+        <source>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</source>
+        <translation>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;%s&lt;/i&gt;가 올바른 레이블 파일인지 확인하세요.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="730" />
+        <location filename="..\..\views\labeling\file_session.py" line="653" />
+        <source>Error reading %s</source>
+        <translation>%s 읽기 오류</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="679" />
+        <source>File Not Found</source>
+        <translation>파일을 찾을 수 없음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="682" />
+        <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; 파일이 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="686" />
+        <source>Remove it from the file list, or skip it for now?</source>
+        <translation>파일 목록에서 제거하거나 지금은 건너뛸까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="691" />
+        <source>Remove from List</source>
+        <translation>Remove from List</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="695" />
+        <source>Skip</source>
+        <translation>건너뛰기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="709" />
+        <source>Image Description</source>
+        <translation>이미지 설명</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="725" />
+        <source>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;i&gt;{0}&lt;/i&gt;가 올바른 이미지 파일인지 확인하세요.&lt;br/&gt;지원되는 이미지 형식: {1}&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="963" />
+        <source>Image &amp; Label files (%s)</source>
+        <translation>이미지 및 레이블 파일 (%s)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="970" />
+        <source>%s - Choose Image or Label file</source>
+        <translation>%s - 이미지 또는 레이블 파일 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="983" />
+        <source>Changing the output directory is not available in dataset mode.</source>
+        <translation>데이터셋 모드에서는 출력 디렉터리를 변경할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="996" />
+        <source>%s - Save/Load Annotations in Directory</source>
+        <translation>%s - 디렉토리에 주석 저장/로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1009" />
+        <source>%s . Annotations will be saved/loaded in %s</source>
+        <translation>%s. 주석은 %s에 저장되고 불러와집니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1039" />
+        <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
+        <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다. 주석은 데이터셋 데이터베이스에 저장됩니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1050" />
+        <source>Save As is not available in dataset mode yet.</source>
+        <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1055" />
+        <source>%s - Choose File</source>
+        <translation>%s - 파일 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1086" />
+        <location filename="..\..\views\labeling\file_session.py" line="1056" />
+        <source>Label files (*%s)</source>
+        <translation>레이블 파일 (*%s)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1084" />
+        <source>Choose File</source>
+        <translation>파일을 선택하세요</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1216" />
+        <location filename="..\..\views\labeling\file_session.py" line="1202" />
+        <location filename="..\..\views\labeling\file_session.py" line="1185" />
+        <location filename="..\..\views\labeling\file_session.py" line="1159" />
+        <location filename="..\..\views\labeling\file_session.py" line="1145" />
+        <location filename="..\..\views\labeling\file_session.py" line="1131" />
+        <source>Attention</source>
+        <translation>주의</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1186" />
+        <location filename="..\..\views\labeling\file_session.py" line="1132" />
+        <source>Move this image and its annotation to the recycle bin?</source>
+        <translation>이 이미지와 주석을 휴지통으로 이동할까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1146" />
+        <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
+        <translation>라벨 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1153" />
+        <source>You are about to permanently delete this label file, proceed anyway?</source>
+        <translation>이 라벨 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
+        <translation>이미지 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1210" />
+        <source>You are about to permanently delete this image file, proceed anyway?</source>
+        <translation>이 이미지 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1288" />
+        <source>Save annotations?</source>
+        <translation>주석을 저장하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1324" />
+        <source>%s - Import Files</source>
+        <translation>%s - 파일 가져오기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1326" />
+        <source>Image files (%s)</source>
+        <translation>이미지 파일(%s)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1347" />
+        <source>%s - Open Directory</source>
+        <translation>%s - 디렉토리 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1365" />
+        <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
+        <translation>데이터셋 모드에서는 파일 추가를 아직 사용할 수 없습니다. 데이터셋 가져오기/동기화 항목을 사용하세요.</translation>
+    </message>
+</context><context>
+    <name>FrameExtractionDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="51" />
+        <source>Frame Extraction Settings</source>
+        <translation>프레임 추출 설정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="59" />
+        <source>Frame interval (fps: %.2f):</source>
+        <translation>프레임 간격 (fps: %.2f):</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="76" />
+        <source>Filename prefix:</source>
+        <translation>파일 이름 접두사:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="95" />
+        <source>Number sequence length:</source>
+        <translation>숫자 시퀀스 길이:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="120" />
+        <source>OK</source>
+        <translation>확인</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="122" />
+        <source>Cancel</source>
+        <translation>취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="141" />
         <source>Example output: {example}</source>
         <translation>예제 출력: {example}</translation>
+    </message>
+</context><context>
+    <name>FrameMenuBar</name>
+    <message>
+        <location filename="..\..\widgets\frameless\menu_bar.py" line="102" />
+        <source>Show All Menus</source>
+        <translation>모든 메뉴 표시</translation>
+    </message>
+</context><context>
+    <name>FramelessWindow</name>
+    <message>
+        <location filename="..\..\widgets\frameless\window.py" line="53" />
+        <source>Toggle Full Screen</source>
+        <translation>전체 화면 전환</translation>
     </message>
 </context><context>
     <name>GroupIDFilterComboBox</name>
@@ -2670,32 +3473,32 @@ Original images backed up to:
 </context><context>
     <name>GroupIDModifyDialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="403" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="400" />
         <source>Group ID Change Manager</source>
         <translation>그룹 ID 변경 관리자</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="587" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="584" />
         <source>Enter new ID</source>
         <translation>새 ID 입력</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="617" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="614" />
         <source>Invalid Range</source>
         <translation>유효하지 않은 영역</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="618" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="615" />
         <source>Please enter a valid range.</source>
         <translation>유효한 범위를 입력하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="667" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="664" />
         <source>Group IDs modified successfully!</source>
         <translation>그룹 ID가 성공적으로 수정되었습니다!</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="675" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="672" />
         <source>An error occurred while updating the Group IDs.</source>
         <translation>그룹 ID를 업데이트하는 동안 오류가 발생했습니다.</translation>
     </message>
@@ -2805,89 +3608,90 @@ Original images backed up to:
 </context><context>
     <name>LabelDialog</name>
     <message>
-        <source>Object Edit</source>
-        <translation>객체 편집</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1369" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="760" />
         <source>Enter class</source>
         <translation>클래스 입력</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1450" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="770" />
+        <source>Object Edit</source>
+        <translation>객체 편집</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="842" />
         <source>Group ID</source>
         <translation>그룹 ID</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1460" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="852" />
         <source>useDifficult</source>
         <translation>useDifficult</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1473" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="865" />
         <source>Enter linking, e.g., [0,1]</source>
         <translation>링크 입력 (예: [0,1])</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1487" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="879" />
         <source>Add</source>
         <translation>추가</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="131" />
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1508" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="900" />
         <source>OK</source>
         <translation>확인</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1509" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="901" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1521" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="913" />
         <source>Object description</source>
         <translation>객체 설명</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1533" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="925" />
         <source>Pending</source>
         <translation>검토 대기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1534" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="926" />
         <source>Missed</source>
         <translation>미검출</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1535" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="927" />
         <source>False Positive</source>
         <translation>오검출</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1642" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1035" />
         <source>Duplicate Entry</source>
         <translation>중복 항목</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1643" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1036" />
         <source>This linking pair already exists.</source>
         <translation>이 연결 쌍은 이미 존재합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1659" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1052" />
         <source>Invalid Input</source>
         <translation>유효하지 않은 입력</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1660" />
+        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1053" />
         <source>Please enter a valid list of linking pairs like [1,2].</source>
         <translation>[1,2] 와 같은 링크 쌍의 유효한 목록을 입력하십시오.</translation>
     </message>
 </context><context>
     <name>LabelFile</name>
     <message>
-        <location filename="..\..\views\labeling\label_file.py" line="120" />
+        <location filename="..\..\views\labeling\label_file.py" line="122" />
         <source>Failed opening image file: %s</source>
         <translation>이미지 파일을 열 수 없습니다: %s</translation>
     </message>
@@ -2899,57 +3703,53 @@ Original images backed up to:
         <translation>라벨 필터</translation>
     </message>
 </context><context>
-    <name>LabelModifyDialog</name>
+    <name>LabelFilterController</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="793" />
-        <source>Label Change Manager</source>
-        <translation>라벨 변경 관리자</translation>
+        <location filename="..\..\views\labeling\label_filters.py" line="33" />
+        <source>Filter by Label</source>
+        <translation>라벨로 필터링</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="814" />
-        <source>Session-only category lock; independent of the file range</source>
-        <translation>범주 잠금은 현재 세션에만 적용되며 파일 범위와 무관합니다</translation>
+        <location filename="..\..\views\labeling\label_filters.py" line="34" />
+        <source>Filter by Group ID</source>
+        <translation>그룹 ID로 필터링</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="915" />
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="837" />
-        <source>Double-click to copy label text</source>
-        <translation>레이블 텍스트를 복사하려면 두 번 클릭하십시오</translation>
+        <location filename="..\..\views\labeling\label_filters.py" line="59" />
+        <source>All Labels</source>
+        <translation>모든 라벨 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1066" />
-        <source>Label copied to clipboard</source>
-        <translation>라벨이 클립보드에 복사됨</translation>
+        <location filename="..\..\views\labeling\label_filters.py" line="74" />
+        <source>All Group IDs</source>
+        <translation>모든 그룹 ID</translation>
+    </message>
+</context><context>
+    <name>LabelLoop</name>
+    <message>
+        <location filename="..\..\views\labeling\label_loop.py" line="86" />
+        <source>No objects to review</source>
+        <translation>검토할 도형이 없습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1079" />
-        <source>Select All</source>
-        <translation>전체 선택</translation>
+        <location filename="..\..\views\labeling\label_loop.py" line="88" />
+        <source>Review complete</source>
+        <translation>검토 완료</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1080" />
-        <source>Deselect All</source>
-        <translation>모두 선택 해제</translation>
+        <location filename="..\..\views\labeling\label_loop.py" line="150" />
+        <source>Reviewing {current} / {total}</source>
+        <translation>검토 중 {current} / {total}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1192" />
-        <source>Labels modified successfully!</source>
-        <translation>라벨이 성공적으로 수정되었습니다!</translation>
+        <location filename="..\..\views\labeling\label_loop.py" line="189" />
+        <source>Copied</source>
+        <translation>복사됨</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1200" />
-        <source>An error occurred while updating the labels.</source>
-        <translation>라벨을 업데이트하는 동안 오류가 발생했습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1330" />
-        <source>Invalid Range</source>
-        <translation>유효하지 않은 영역</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\label_dialog.py" line="1331" />
-        <source>Please enter a valid range.</source>
-        <translation>유효한 범위를 입력하십시오.</translation>
+        <location filename="..\..\views\labeling\label_loop.py" line="190" />
+        <source>The information has been copied to the clipboard.</source>
+        <translation>정보가 클립보드에 복사되었습니다.</translation>
     </message>
 </context><context>
     <name>LabelNameDialog</name>
@@ -3140,2412 +3940,255 @@ Continue?</source>
 </context><context>
     <name>LabelingWidget</name>
     <message>
-        <source>Images and labels are written to train/val/test/none subdirectories; data.yaml is generated.</source>
-        <translation>이미지와 라벨은 train/val/test/none 하위 디렉터리에 기록되고 data.yaml이 생성됩니다.</translation>
-    </message>
-    <message>
-        <source>Training Result Analysis</source>
-        <translation>학습 결과 분석</translation>
-    </message>
-    <message>
-        <source>Planned: analyze training runs and metrics</source>
-        <translation>계획: 학습 실행 및 지표 분석</translation>
-    </message>
-    <message>
-        <source>Planned: SAM prompt segmentation tool</source>
-        <translation>계획: SAM 프롬프트 분할 도구</translation>
-    </message>
-    <message>
-        <source>Planned: RF-DETR model support</source>
-        <translation>계획: RF-DETR 모델 지원</translation>
-    </message>
-    <message>
-        <source>Planned: Efficient model family support</source>
-        <translation>계획: Efficient 모델 제품군 지원</translation>
-    </message>
-    <message>
-        <source>%s is planned but not implemented yet.</source>
-        <translation>%s 기능은 계획 중이며 아직 구현되지 않았습니다.</translation>
-    </message>
-    <message>
-        <source>Move out of Dataset</source>
-        <translation>데이터세트에서 이동</translation>
-    </message>
-    <message>
-        <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
-        <translation>%d개 파일이 데이터세트에서 제거되고 현재 목록에서 삭제됩니다. 계속할까요?</translation>
-    </message>
-    <message>
-        <source>(%d moved out of the dataset)</source>
-        <translation>(%d개가 데이터세트에서 이동됨)</translation>
-    </message>
-    <message>
-        <source>Editor: %s</source>
-        <translation>편집자: %s</translation>
-    </message>
-    <message>
-        <source>Move to Folder…</source>
-        <translation>폴더로 이동…</translation>
-    </message>
-    <message>
-        <source>Move to Folder</source>
-        <translation>폴더로 이동</translation>
-    </message>
-    <message>
-        <source>Choose a folder inside the current dataset directory.</source>
-        <translation>현재 데이터세트 디렉터리 내의 폴더를 선택하세요.</translation>
-    </message>
-    <message>
-        <source>Failed to move: %s</source>
-        <translation>이동 실패: %s</translation>
-    </message>
-    <message>
-        <source>Moved %d files</source>
-        <translation>%d개 파일을 이동했습니다</translation>
-    </message>
-    <message>
-        <source>File Not Found</source>
-        <translation>파일을 찾을 수 없음</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
-        <translation>&lt;b&gt;%s&lt;/b&gt; 파일이 없습니다.</translation>
-    </message>
-    <message>
-        <source>Remove it from the file list, or skip it for now?</source>
-        <translation>파일 목록에서 제거하거나 지금은 건너뛸까요?</translation>
-    </message>
-    <message>
-        <source>Skip</source>
-        <translation>건너뛰기</translation>
-    </message>
-    <message>
-        <source>Batch Set Image Tags</source>
-        <translation>이미지 태그 일괄 설정</translation>
-    </message>
-    <message>
-        <source>Replace a specific tag</source>
-        <translation>특정 태그 바꾸기</translation>
-    </message>
-    <message>
-        <source>Delete all image tags</source>
-        <translation>모든 이미지 태그 삭제</translation>
-    </message>
-    <message>
-        <source>Tags to add (comma separated)</source>
-        <translation>추가할 태그(쉼표로 구분)</translation>
-    </message>
-    <message>
-        <source>Tag to replace</source>
-        <translation>바꿀 태그</translation>
-    </message>
-    <message>
-        <source>Replace with (comma separated)</source>
-        <translation>바꿀 내용(쉼표로 구분)</translation>
-    </message>
-    <message>
-        <source>Select or type the tag to replace</source>
-        <translation>바꿀 태그를 선택하거나 입력</translation>
-    </message>
-    <message>
-        <source>Add from tag library…</source>
-        <translation>태그 라이브러리에서 추가…</translation>
-    </message>
-    <message>
-        <source>This removes every image tag from %d images.</source>
-        <translation>%d개 이미지에서 모든 이미지 태그를 제거합니다.</translation>
-    </message>
-    <message>
-        <source>Enter at least one tag.</source>
-        <translation>태그를 하나 이상 입력하세요.</translation>
-    </message>
-    <message>
-        <source>Select the tag to replace.</source>
-        <translation>바꿀 태그를 선택하세요.</translation>
-    </message>
-    <message>
-        <source>Enter the replacement tag.</source>
-        <translation>바꿀 태그를 입력하세요.</translation>
-    </message>
-    <message>
-        <source>Delete all image tags from %d files?</source>
-        <translation>%d개 이미지에서 모든 이미지 태그를 삭제할까요?</translation>
-    </message>
-    <message>
-        <source>Tag Library</source>
-        <translation>태그 라이브러리</translation>
-    </message>
-    <message>
-        <source>Search tags…</source>
-        <translation>태그 검색…</translation>
-    </message>
-    <message>
-        <source>Collapse tag library</source>
-        <translation>태그 라이브러리 접기</translation>
-    </message>
-    <message>
-        <source>Expand tag library</source>
-        <translation>태그 라이브러리 펼치기</translation>
-    </message>
-    <message>
-        <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
-        <translation>더블클릭하여 추가합니다. 마우스 오른쪽 버튼 또는 Ctrl+클릭으로 이 태그를 사용하는 이미지를 표시합니다.</translation>
-    </message>
-    <message>
-        <source>Double-click to add.</source>
-        <translation>더블클릭하여 추가합니다.</translation>
-    </message>
-    <message>
-        <source>Show images with this tag</source>
-        <translation>이 태그를 사용하는 이미지 보기</translation>
-    </message>
-    <message>
-        <source>%s (used by %d images)</source>
-        <translation>%s (%d개 이미지에서 사용)</translation>
-    </message>
-    <message>
-        <source>No other tags in the current file list.</source>
-        <translation>현재 파일 목록에 다른 태그가 없습니다.</translation>
-    </message>
-    <message>
-        <source>No matching tags.</source>
-        <translation>일치하는 태그가 없습니다.</translation>
-    </message>
-    <message>
-        <source>Failed to save the new tag</source>
-        <translation>새 태그를 저장하지 못했습니다</translation>
-    </message>
-    <message>
-        <source>Tag added: %s</source>
-        <translation>태그 추가됨: %s</translation>
-    </message>
-    <message>
-        <source>Set Tags…</source>
-        <translation>태그 설정…</translation>
-    </message>
-    <message>
-        <source>Set Image Tags</source>
-        <translation>이미지 태그 설정</translation>
-    </message>
-    <message>
-        <source>Apply tags to the selected images (%d):</source>
-        <translation>선택한 이미지(%d개)에 태그 적용:</translation>
-    </message>
-    <message>
-        <source>Tags (comma separated)</source>
-        <translation>태그(쉼표로 구분)</translation>
-    </message>
-    <message>
-        <source>tag1, tag2</source>
-        <translation>예: 결함, 흐림</translation>
-    </message>
-    <message>
-        <source>Add to existing tags</source>
-        <translation>기존 태그에 추가</translation>
-    </message>
-    <message>
-        <source>Replace existing tags</source>
-        <translation>기존 태그 바꾸기</translation>
-    </message>
-    <message>
-        <source>Remove all image tags from %d files?</source>
-        <translation>%d개 이미지에서 모든 이미지 태그를 제거할까요?</translation>
-    </message>
-    <message>
-        <source>Failed to update tags for %d files</source>
-        <translation>%d개 이미지의 태그를 업데이트하지 못했습니다</translation>
-    </message>
-    <message>
-        <source>Tags updated for %d files</source>
-        <translation>%d개 이미지의 태그를 업데이트했습니다</translation>
-    </message>
-    <message>
-        <source>Tags unchanged for %d files</source>
-        <translation>%d개 이미지의 태그가 변경되지 않았습니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="477" />
+        <location filename="..\..\views\labeling\label_widget.py" line="246" />
         <source>Search files...</source>
         <translation>파일 검색...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="479" />
+        <location filename="..\..\views\labeling\label_widget.py" line="248" />
         <source>Supported search syntax:
 - Text: plain text matches the file name
 - Index: #N (e.g., #1, #10)
 - Regex: &lt;pattern&gt; (e.g., &lt;\.png$&gt;)
-- Attributes: label::xxx, tags::xxx, editor::张三, split::train,
-  shape::1, type::xxx, gid::0, difficult::1, score::[0,0.5],
-  description::1,
+- Attributes: label::xxx, tags::xxx, editor::张三,
+  split::train, shape::1, type::xxx, gid::0, difficult::1,
+  score::[0,0.5], description::1, review::pending
 - split values: none/train/val/test (also 未划分/训练/验证/测试)
 - Several values: label::cat|dog (or), label::cat,dog (and)
 - Combine conditions: label::cat,split::train
 - Negate: !label::cat
 - Group with parentheses: (label::cat|dog),split::train
 - ',' binds tighter than '|'; press Enter to search.</source>
-        <translation>지원되는 검색 구문:
-- 텍스트: 파일 이름에 포함된 일반 텍스트 검색
-- 번호: #N (예: #1, #10)
-- 정규식: &lt;pattern&gt; (예: &lt;\.png$&gt;)
-- 속성: label::xxx, split::train, shape::1, type::xxx,
-  gid::0, difficult::1, score::[0,0.5], description::1,
-- split 값: none/train/val/test (중국어 未划分/训练/验证/测试도 허용)
-- 여러 값: label::cat|dog (또는), label::cat,dog (그리고)
-- 조건 조합: label::cat,split::train
-- 부정: !label::cat
-- 괄호로 그룹화: (label::cat|dog),split::train
-- ','가 '|'보다 우선합니다. Enter 키를 눌러 검색합니다.</translation>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3279" />
-        <location filename="..\..\views\labeling\label_widget.py" line="887" />
-        <location filename="..\..\views\labeling\label_widget.py" line="502" />
+        <location filename="..\..\views\labeling\label_widget.py" line="271" />
         <source>Settings</source>
         <translation>설정</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="513" />
-        <source>Files</source>
-        <translation>Files</translation>
+        <location filename="..\..\views\labeling\label_widget.py" line="575" />
+        <source>Tag added: %s</source>
+        <translation>태그 추가됨: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5028" />
-        <location filename="..\..\views\labeling\label_widget.py" line="2922" />
-        <location filename="..\..\views\labeling\label_widget.py" line="514" />
-        <source>Objects</source>
-        <translation>객체</translation>
+        <location filename="..\..\views\labeling\label_widget.py" line="577" />
+        <source>Failed to save the new tag</source>
+        <translation>새 태그를 저장하지 못했습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5029" />
-        <location filename="..\..\views\labeling\label_widget.py" line="515" />
-        <source>Import Time</source>
-        <translation>Import Time</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5030" />
-        <location filename="..\..\views\labeling\label_widget.py" line="516" />
-        <source>Inference</source>
-        <translation>Inference</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5058" />
-        <location filename="..\..\views\labeling\label_widget.py" line="5031" />
-        <location filename="..\..\views\labeling\label_widget.py" line="517" />
-        <source>Split</source>
-        <translation>Split</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="778" />
-        <source>Open File</source>
-        <translation>파일 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="782" />
-        <source>Open image or label file</source>
-        <translation>이미지 또는 라벨 파일 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="785" />
-        <source>Open Video</source>
-        <translation>비디오 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="789" />
-        <source>Open video file</source>
-        <translation>비디오 파일 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="796" />
-        <location filename="..\..\views\labeling\label_widget.py" line="792" />
-        <source>Open Dir</source>
-        <translation>디렉터리 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="799" />
-        <source>Next Image</source>
-        <translation>다음 이미지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="803" />
-        <source>Open next image</source>
-        <translation>다음 이미지 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="807" />
-        <source>Prev Image</source>
-        <translation>이전 이미지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="811" />
-        <source>Open prev image</source>
-        <translation>이전 이미지 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3611" />
-        <location filename="..\..\views\labeling\label_widget.py" line="815" />
-        <source>Forward %s Images</source>
-        <translation>%s장 다음으로</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3612" />
-        <location filename="..\..\views\labeling\label_widget.py" line="818" />
-        <source>Move forward by %s images</source>
-        <translation>%s장 뒤의 이미지로 이동</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3616" />
-        <location filename="..\..\views\labeling\label_widget.py" line="823" />
-        <source>Back %s Images</source>
-        <translation>%s장 이전으로</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3617" />
-        <location filename="..\..\views\labeling\label_widget.py" line="826" />
-        <source>Move back by %s images</source>
-        <translation>%s장 앞의 이미지로 이동</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="831" />
-        <source>Next Unchecked Image</source>
-        <translation>다음 미확인 이미지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="835" />
-        <source>Open next unchecked image</source>
-        <translation>다음 미확인 이미지 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="839" />
-        <source>Prev Unchecked Image</source>
-        <translation>이전 미확인 이미지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="843" />
-        <source>Open previous unchecked image</source>
-        <translation>이전 미확인 이미지 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="847" />
-        <source>Save</source>
-        <translation>저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="851" />
-        <source>Save labels to file</source>
-        <translation>파일에 레이블 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="855" />
-        <source>Save As</source>
-        <translation>다른 이름으로 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="859" />
-        <source>Save labels to a different file</source>
-        <translation>라벨을 다른 파일에 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="863" />
-        <source>Auto Run</source>
-        <translation>자동 실행</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="867" />
-        <source>Auto run all images at once</source>
-        <translation>한 번에 모든 이미지 자동 실행</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="871" />
-        <source>Delete File</source>
-        <translation>파일 삭제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="875" />
-        <source>Delete current label file</source>
-        <translation>현재 라벨 파일 삭제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="879" />
-        <source>Delete Image File</source>
-        <translation>이미지 삭제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="883" />
-        <source>Delete current image file</source>
-        <translation>현재 이미지 삭제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5351" />
-        <location filename="..\..\views\labeling\label_widget.py" line="892" />
-        <source>Check Passed</source>
-        <translation>검토 통과</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5350" />
-        <location filename="..\..\views\labeling\label_widget.py" line="899" />
-        <source>Unchecked</source>
-        <translation>확인되지 않음</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5352" />
-        <location filename="..\..\views\labeling\label_widget.py" line="906" />
-        <source>Check Failed</source>
-        <translation>검토 불합격</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="913" />
-        <source>Check Status</source>
-        <translation>검토 상태</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="926" />
-        <source>Compare View</source>
-        <translation>비교 보기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="930" />
-        <source>Toggle split-screen compare view</source>
-        <translation>분할 화면 비교 보기 전환</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="935" />
-        <source>Change Output Dir</source>
-        <translation>출력 디렉터리 변경</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="939" />
-        <source>Change where annotations are loaded/saved</source>
-        <translation>주석을 로드/저장하는 위치 변경</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="943" />
-        <source>Save Automatically</source>
-        <translation>자동 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="946" />
-        <source>Save automatically</source>
-        <translation>자동 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="953" />
-        <source>Save With Image Data</source>
-        <translation>이미지 데이터로 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="956" />
-        <source>Save image data in label file</source>
-        <translation>라벨 파일에 이미지 데이터 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="180" />
-        <location filename="..\..\views\labeling\label_widget.py" line="962" />
-        <source>Close</source>
-        <translation>닫기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="966" />
-        <source>Close current file</source>
-        <translation>현재 파일 닫기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="970" />
-        <source>Keep Previous Annotation</source>
-        <translation>이전 주석 유지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="974" />
-        <source>Toggle "Keep Previous Annotation" mode</source>
-        <translation>"이전 주석 유지" 모드 전환</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="980" />
-        <source>Auto Use Last Label</source>
-        <translation>마지막 레이블 자동 사용</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="984" />
-        <source>Toggle "Auto Use Last Label" mode</source>
-        <translation>"마지막 레이블 자동 사용" 모드 전환</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="990" />
-        <source>Auto Use Last Group ID</source>
-        <translation>마지막 그룹 ID 자동 사용</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="994" />
-        <source>Toggle "Auto Use Last Group ID" mode</source>
-        <translation>"마지막 그룹 ID 자동 사용" 모드 전환</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1000" />
-        <source>Use System Clipboard</source>
-        <translation>시스템 클립보드 사용</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1002" />
-        <source>Use system clipboard for copy and paste</source>
-        <translation>복사 및 붙여넣기에 시스템 클립보드 사용</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1009" />
-        <source>Visibility Shapes</source>
-        <translation>도형 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1013" />
-        <source>Toggle "Visibility Shapes" mode</source>
-        <translation>"도형 표시" 모드 전환</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1019" />
-        <source>Create Polygons</source>
-        <translation>다각형 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1023" />
-        <source>Start drawing polygons</source>
-        <translation>다각형 그리기 시작</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1027" />
-        <source>Create Brush Polygons</source>
-        <translation>브러시 다각형 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1031" />
-        <source>Toggle brush mode for drawing polygons</source>
-        <translation>다각형을 그리기 위해 브러시 모드 전환</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1035" />
-        <source>Magic Wand</source>
-        <translation>마술봉</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1039" />
-        <source>Select a contiguous color region; drag to adjust tolerance; right-click to finish; press Esc to cancel</source>
-        <translation>연속된 색상 영역을 선택합니다. 드래그하여 허용 오차를 조정하고, 마우스 오른쪽 버튼으로 완료하며, Esc 키로 취소합니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1046" />
-        <source>Create Rectangle</source>
-        <translation>사각형 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1050" />
-        <source>Start drawing rectangles</source>
-        <translation>직사각형 그리기 시작</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1054" />
-        <source>Create Rotation</source>
-        <translation>회전 도형 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1058" />
-        <source>Start drawing rotations</source>
-        <translation>회전 그리기 시작</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1062" />
-        <source>Create Quadrilateral</source>
-        <translation>사각형 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1066" />
-        <source>Start drawing quadrilaterals (4 points, auto-closed)</source>
-        <translation>사각형 그리기 시작 (4점, 자동 닫힘)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1070" />
-        <source>Create Circle</source>
-        <translation>원 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1074" />
-        <source>Start drawing circles</source>
-        <translation>원 그리기 시작</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1078" />
-        <source>Create Line</source>
-        <translation>선 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1082" />
-        <source>Start drawing lines</source>
-        <translation>선 그리기 시작</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1086" />
-        <source>Create Point</source>
-        <translation>점 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1090" />
-        <source>Start drawing points</source>
-        <translation>점 그리기 시작</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1094" />
-        <source>Create LineStrip</source>
-        <translation>라인 스트립 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1098" />
-        <source>Start drawing linestrip. Ctrl+LeftClick ends creation.</source>
-        <translation>라인 스트립 그리기를 시작합니다. Ctrl+왼쪽 클릭으로 완료합니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1102" />
-        <source>Create Cuboid</source>
-        <translation>직육면체 생성</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1106" />
-        <source>Start drawing cuboids from rectangle</source>
-        <translation>직사각형에서 직육면체 그리기 시작</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1110" />
-        <source>Digit Shortcut 0</source>
-        <translation>숫자 단축키 0</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1117" />
-        <source>Digit Shortcut 1</source>
-        <translation>숫자 단축키 1</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1124" />
-        <source>Digit Shortcut 2</source>
-        <translation>숫자 단축키 2</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1131" />
-        <source>Digit Shortcut 3</source>
-        <translation>숫자 단축키 3</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1138" />
-        <source>Digit Shortcut 4</source>
-        <translation>숫자 단축키 4</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1145" />
-        <source>Digit Shortcut 5</source>
-        <translation>숫자 단축키 5</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1152" />
-        <source>Digit Shortcut 6</source>
-        <translation>숫자 단축키 6</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1159" />
-        <source>Digit Shortcut 7</source>
-        <translation>숫자 단축키 7</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1166" />
-        <source>Digit Shortcut 8</source>
-        <translation>숫자 단축키 8</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1173" />
-        <source>Digit Shortcut 9</source>
-        <translation>숫자 단축키 9</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1180" />
-        <source>Edit Object</source>
-        <translation>개체 편집</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1184" />
-        <source>Move and edit the selected polygons</source>
-        <translation>선택한 다각형 이동 및 편집</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1188" />
-        <source>Edit Brush</source>
-        <translation>브러시 편집</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1192" />
-        <source>Select one polygon, then paint to add, hold Ctrl to erase, and use Alt+Wheel to resize the brush</source>
-        <translation>다각형 하나를 선택한 후 칠하여 영역을 추가하고, Ctrl을 누른 채 지우며, Alt+휠로 브러시 크기를 조절합니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1201" />
-        <source>Group Selected Shapes</source>
-        <translation>선택한 도형 그룹화</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1205" />
-        <source>Group shapes by assigning a same group_id</source>
-        <translation>동일한 group_id를 할당해 도형을 그룹화</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1209" />
-        <source>Ungroup Selected Shapes</source>
-        <translation>선택한 도형 그룹 해제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1213" />
-        <source>Ungroup shapes</source>
-        <translation>도형 그룹 해제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="57" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1218" />
-        <source>Create Relation</source>
-        <translation>관계 생성</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1221" />
-        <source>Select exactly two shapes to create a directed relation</source>
-        <translation>두 객체를 선택하여 방향 관계 생성</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="158" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1227" />
-        <source>Manage Relations</source>
-        <translation>관계 관리</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1230" />
-        <source>Review and edit directed relations</source>
-        <translation>방향 관계 확인 및 편집</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="115" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1234" />
-        <source>Delete</source>
-        <translation>삭제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1238" />
-        <source>Delete the selected polygons</source>
-        <translation>선택한 다각형 삭제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1242" />
-        <source>Duplicate Polygons</source>
-        <translation>다각형 복제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1246" />
-        <source>Create a duplicate of the selected polygons</source>
-        <translation>선택한 다각형의 복제본 만들기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1250" />
-        <source>Copy Object</source>
-        <translation>개체 복사</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1254" />
-        <source>Copy selected polygons to clipboard</source>
-        <translation>선택한 다각형을 클립보드에 복사합니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1258" />
-        <source>Paste Object</source>
-        <translation>개체 붙여넣기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1262" />
-        <source>Paste copied polygons</source>
-        <translation>복사한 다각형 붙여넣기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1266" />
-        <source>Undo last point</source>
-        <translation>마지막 점 실행 취소</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1270" />
-        <source>Undo last drawn point</source>
-        <translation>마지막 그리기 지점 실행 취소</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1274" />
-        <source>Remove Selected Point</source>
-        <translation>선택한 포인트 제거</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1278" />
-        <source>Remove selected point from polygon</source>
-        <translation>다각형에서 선택한 점 제거</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1283" />
-        <source>Undo</source>
-        <translation>실행 취소</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1287" />
-        <source>Undo last add and edit of shape</source>
-        <translation>도형의 마지막 추가 및 편집 실행 취소</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1291" />
-        <source>Hide Selected Polygons</source>
-        <translation>선택한 다각형 숨기기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1295" />
-        <source>Hide selected polygons</source>
-        <translation>선택한 다각형 숨기기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1299" />
-        <source>Show Hidden Polygons</source>
-        <translation>숨겨진 다각형 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1303" />
-        <source>Show hidden polygons</source>
-        <translation>숨겨진 다각형 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1308" />
-        <source>Overview</source>
-        <translation>개요</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1312" />
-        <source>Show annotations statistics</source>
-        <translation>주석 통계 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1315" />
-        <source>Save Cropped Image</source>
-        <translation>잘린 이미지 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1318" />
-        <source>Save cropped image. (Support rectangle/rotation/polygon shape_type)</source>
-        <translation>잘라낸 이미지를 저장합니다. (직사각형/회전/다각형 도형 지원)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1323" />
-        <source>Save Visualization Image</source>
-        <translation>시각화 이미지 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1326" />
-        <source>Save visualization image</source>
-        <translation>시각화 이미지를 저장합니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1329" />
-        <source>Save Visualization Video</source>
-        <translation>시각화 동영상 저장</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1332" />
-        <source>Save visualization video</source>
-        <translation>시각화 동영상을 저장합니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1335" />
-        <source>Digit Shortcut Manager</source>
-        <translation>숫자 바로 가기 관리자</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1339" />
-        <source>Manage Digit Shortcuts: Assign Drawing Modes and Labels to Number Keys</source>
-        <translation>숫자 단축키 관리: 숫자 키에 그리기 모드 및 레이블 할당</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1344" />
-        <source>Label Manager</source>
-        <translation>라벨 관리자</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1348" />
-        <source>Manage Labels: Rename, Delete, Hide/Show, Adjust Color</source>
-        <translation>라벨 관리: 이름 바꾸기, 삭제, 숨기기/표시, 색상 조정</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1353" />
-        <source>Group ID Manager</source>
-        <translation>그룹 ID 관리자</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1357" />
-        <source>Manage Group ID</source>
-        <translation>그룹 ID 관리</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1360" />
-        <source>Shape Manager</source>
-        <translation>도형 관리자</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1364" />
-        <source>Manage Shapes: Add, Delete, Remove</source>
-        <translation>도형 관리: 추가, 삭제, 제거</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1368" />
-        <source>Copy Coordinates</source>
-        <translation>좌표 복사</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1371" />
-        <source>Copy shape coordinates to clipboard</source>
-        <translation>도형 좌표를 클립보드에 복사</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1375" />
-        <source>Union Selection</source>
-        <translation>선택 항목 합치기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1379" />
-        <source>Union multiple selected rectangle shapes</source>
-        <translation>선택한 여러 직사각형 도형을 합칩니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1383" />
-        <source>Lock Shape</source>
-        <translation>도형 잠금</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1385" />
-        <source>Prevent changes to the selected shapes' coordinates</source>
-        <translation>선택한 도형의 좌표 변경 방지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1390" />
-        <source>Shape Converter</source>
-        <translation>도형 변환기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1393" />
-        <source>Open shape converter</source>
-        <translation>도형 변환기 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1396" />
-        <source>ChatBot</source>
-        <translation>대화형 질의응답</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1400" />
-        <source>Open chatbot dialog</source>
-        <translation>대화형 질의응답 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1403" />
-        <source>VQA</source>
-        <translation>VQA</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1407" />
-        <source>Open VQA dialog</source>
-        <translation>VQA 대화상자 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1410" />
-        <source>Point Cloud</source>
-        <translation>포인트 클라우드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1414" />
-        <source>Open point cloud workspace</source>
-        <translation>포인트 클라우드 작업 공간 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1417" />
-        <source>Image Classifier</source>
-        <translation>이미지 분류기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1423" />
-        <source>Open image classifier dialog</source>
-        <translation>이미지 분류기 대화상자 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1426" />
-        <source>Video Classifier</source>
-        <translation>동영상 분류기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1430" />
-        <source>Open video classifier dialog</source>
-        <translation>동영상 분류기 대화상자 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1433" />
-        <source>Document Parser</source>
-        <translation>문서 분석기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1437" />
-        <source>Open document parser dialog</source>
-        <translation>문서 분석기 대화상자 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1440" />
-        <source>Documentation</source>
-        <translation>문서</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1443" />
-        <source>Show documentation</source>
-        <translation>문서 보기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1446" />
-        <source>Sponsor</source>
-        <translation>후원</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1449" />
-        <source>Open sponsor page</source>
-        <translation>후원 페이지 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1452" />
-        <source>About</source>
-        <translation>정보</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1455" />
-        <source>Open about dialog</source>
-        <translation>정보 대화상자 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1459" />
-        <source>Loop Through Labels</source>
-        <translation>레이블 순환</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1463" />
-        <source>Loop through labels</source>
-        <translation>레이블을 순차적으로 전환</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1467" />
-        <source>Loop Select Labels</source>
-        <translation>레이블 순환 선택</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1471" />
-        <source>Loop select labels</source>
-        <translation>레이블을 순차적으로 선택</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1475" />
-        <source>Toggle Shapes Visibility</source>
-        <translation>도형 표시/숨기기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3736" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1478" />
-        <source>Hide all shapes</source>
-        <translation>모든 도형 숨기기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1493" />
-        <source>Zoom in or out of the image. Also accessible with {} and {} from the canvas.</source>
-        <translation>이미지를 확대하거나 축소합니다. 캔버스에서도 {} 및 {}로 사용할 수 있습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1501" />
-        <source>Wheel</source>
-        <translation>휠</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1507" />
-        <source>Zoom In</source>
-        <translation>확대</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1511" />
-        <source>Increase zoom level</source>
-        <translation>확대/축소 수준 높이기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1515" />
-        <source>Zoom Out</source>
-        <translation>축소</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1519" />
-        <source>Decrease zoom level</source>
-        <translation>확대/축소 수준 낮추기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1523" />
-        <source>Original Size</source>
-        <translation>원래 크기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1527" />
-        <source>Zoom to original size</source>
-        <translation>원래 크기로 보기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1531" />
-        <source>Keep Previous Scale</source>
-        <translation>이전 척도 유지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1533" />
-        <source>Keep previous zoom scale</source>
-        <translation>이전 확대/축소 배율 유지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1539" />
-        <source>Keep Previous Brightness</source>
-        <translation>이전 밝기 유지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1541" />
-        <source>Keep previous brightness</source>
-        <translation>이전 밝기 유지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1547" />
-        <source>Keep Previous Contrast</source>
-        <translation>이전 대비 유지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1549" />
-        <source>Keep previous contrast</source>
-        <translation>이전 대비 유지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1563" />
-        <source>Fit Window</source>
-        <translation>창에 맞춤</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1567" />
-        <source>Zoom follows window size</source>
-        <translation>창 크기를 따라 확대/축소</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1573" />
-        <source>Fit Width</source>
-        <translation>너비 맞추기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1577" />
-        <source>Zoom follows window width</source>
-        <translation>창 너비를 따라 확대/축소</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1582" />
-        <source>Show Groups</source>
-        <translation>모든 그룹 보기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1584" />
-        <source>Show shape groups</source>
-        <translation>도형 그룹 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1592" />
-        <source>Show Masks</source>
-        <translation>마스크 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1595" />
-        <source>Show semi-transparent masks for shapes</source>
-        <translation>도형에 반투명 마스크 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1603" />
-        <source>Show Texts</source>
-        <translation>텍스트 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1606" />
-        <source>Show text above shapes</source>
-        <translation>도형 위에 텍스트 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1614" />
-        <source>Show Labels</source>
-        <translation>레이블만 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1617" />
-        <source>Show label inside shapes</source>
-        <translation>도형 내부에 레이블 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1625" />
-        <source>Show Scores</source>
-        <translation>점수 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1627" />
-        <source>Show score inside shapes</source>
-        <translation>도형 내부에 점수 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1635" />
-        <source>Show Attributes</source>
-        <translation>속성 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1638" />
-        <source>Show attribute inside shapes</source>
-        <translation>도형 내부에 속성 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1646" />
-        <source>Show Degress</source>
-        <translation>각도 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1648" />
-        <source>Show degrees above rotated shapes</source>
-        <translation>회전된 도형 위에 각도 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1656" />
-        <source>Show KIE Linking</source>
-        <translation>KIE 링크 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1659" />
-        <source>Show KIE linking between key and value</source>
-        <translation>키와 값 사이의 KIE 연결 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1705" />
-        <source>System</source>
-        <translation>시스템</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1706" />
-        <source>Light</source>
-        <translation>라이트</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1707" />
-        <source>Dark</source>
-        <translation>다크</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1723" />
-        <source>Image Flags</source>
-        <translation>이미지 플래그</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1727" />
-        <source>Upload Custom Image Flags File</source>
-        <translation>사용자 정의 이미지 플래그 파일 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1730" />
-        <source>Label Flags</source>
-        <translation>라벨 플래그</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1734" />
-        <source>Upload Custom Label Flags File</source>
-        <translation>사용자 지정 레이블 플래그 파일 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2864" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1737" />
-        <source>Attributes</source>
-        <translation>속성</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1741" />
-        <source>Upload Custom Attributes File</source>
-        <translation>사용자 정의 속성 파일 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1744" />
-        <source>Label Classes</source>
-        <translation>라벨 클래스</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1748" />
-        <source>Upload Custom Label Classes File</source>
-        <translation>사용자 지정 레이블 클래스 파일 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1882" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1751" />
-        <source>YOLO HBB</source>
-        <translation>YOLO HBB</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1755" />
-        <source>Upload Custom YOLO Horizontal Bounding Boxes Annotations</source>
-        <translation>사용자 정의 YOLO 수평 경계 상자 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1891" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1760" />
-        <source>YOLO OBB</source>
-        <translation>YOLO OBB</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1764" />
-        <source>Upload Custom YOLO Oriented Bounding Boxes Annotations</source>
-        <translation>사용자 정의 YOLO 지향 경계 상자 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1900" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1769" />
-        <source>YOLO Seg</source>
-        <translation>YOLO Seg</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1773" />
-        <source>Upload Custom YOLO Segmentation Annotations</source>
-        <translation>사용자 정의 YOLO 세그먼트 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1907" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1776" />
-        <source>YOLO Pose</source>
-        <translation>YOLO Pose</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1780" />
-        <source>Upload Custom YOLO Pose Annotations</source>
-        <translation>사용자 정의 YOLO Pose 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1914" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1783" />
-        <source>VOC Detection</source>
-        <translation>VOC 감지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1787" />
-        <source>Upload Custom Pascal VOC Detection Annotations</source>
-        <translation>사용자 지정 Pascal VOC 감지 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1921" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1790" />
-        <source>VOC Segmentation</source>
-        <translation>VOC 세분화</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1794" />
-        <source>Upload Custom Pascal VOC Segmentation Annotations</source>
-        <translation>사용자 지정 Pascal VOC 세분화 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1928" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1797" />
-        <source>COCO Detection</source>
-        <translation>COCO 감지</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1801" />
-        <source>Upload Custom COCO Detection Annotations</source>
-        <translation>사용자 정의 COCO 감지 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1935" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1804" />
-        <source>COCO Segmentation</source>
-        <translation>COCO 세분화</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1808" />
-        <source>Upload Custom COCO Instance Segmentation Annotations</source>
-        <translation>사용자 정의 COCO 인스턴스 분할 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1944" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1813" />
-        <source>COCO Keypoints</source>
-        <translation>COCO 키포인트</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1817" />
-        <source>Upload Custom COCO Keypoint Annotations</source>
-        <translation>사용자 정의 COCO 키포인트 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1951" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1820" />
-        <source>DOTA</source>
-        <translation>DOTA</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1824" />
-        <source>Upload Custom DOTA Annotations</source>
-        <translation>사용자 정의 DOTA 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1958" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1827" />
-        <source>MASK</source>
-        <translation>MASK</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1831" />
-        <source>Upload Custom MASK Annotations</source>
-        <translation>사용자 정의 MASK 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1965" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1834" />
-        <source>MOT</source>
-        <translation>MOT</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1838" />
-        <source>Upload Custom Multi-Object-Tracking Annotations</source>
-        <translation>사용자 지정 다중 개체 추적 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1981" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1841" />
-        <source>ODVG</source>
-        <translation>ODVG</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1845" />
-        <source>Upload Custom Object Detection Visual Grounding Annotations</source>
-        <translation>사용자 정의 객체 감지 비주얼 그라운딩 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1850" />
-        <source>MM-Grounding-DINO</source>
-        <translation>MM-Grounding-DINO</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1854" />
-        <source>Upload Custom MM-Grounding-DINO Annotations</source>
-        <translation>사용자 지정 MM-Grounding-DINO 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1990" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1857" />
-        <source>PPOCR Rec</source>
-        <translation>PPOCR Rec</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1861" />
-        <source>Upload Custom PPOCR Recognition Annotations</source>
-        <translation>사용자 정의 PPOCR 인식 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1997" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1864" />
-        <source>PPOCR KIE</source>
-        <translation>PPOCR KIE</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1868" />
-        <source>Upload Custom PPOCR Key Information Extraction (KIE - Semantic Entity Recognition &amp; Relation Extraction) Annotations</source>
-        <translation>사용자 정의 PPOCR 키 정보 추출 (KIE - 의미 엔터티 인식 및 관계 추출) 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2006" />
-        <location filename="..\..\views\labeling\label_widget.py" line="1873" />
-        <source>VLM-R1 OVD</source>
-        <translation>VLM-R1 OVD</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1877" />
-        <source>Upload Custom VLM-R1 OVD Annotations</source>
-        <translation>사용자 지정 VLM-R1 OVD 주석 업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1886" />
-        <source>Export Custom YOLO Horizontal Bounding Boxes Annotations</source>
-        <translation>사용자 정의 YOLO 수평 경계 상자 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1895" />
-        <source>Export Custom YOLO Oriented Bounding Boxes Annotations</source>
-        <translation>사용자 정의 YOLO 지향 경계 상자 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1904" />
-        <source>Export Custom YOLO Segmentation Annotations</source>
-        <translation>사용자 정의 YOLO 세그먼트 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1911" />
-        <source>Export Custom YOLO Pose Annotations</source>
-        <translation>사용자 정의 YOLO Pose 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1918" />
-        <source>Export Custom PASCAL VOC Detection Annotations</source>
-        <translation>사용자 지정 PASCAL VOC 감지 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1925" />
-        <source>Export Custom PASCAL VOC Segmentation Annotations</source>
-        <translation>사용자 지정 PASCAL VOC 세분화 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1932" />
-        <source>Export Custom COCO Rectangle Annotations</source>
-        <translation>사용자 정의 COCO 사각형 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1939" />
-        <source>Export Custom COCO Instance Segmentation Annotations</source>
-        <translation>사용자 정의 COCO 인스턴스 분할 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1948" />
-        <source>Export Custom COCO Keypoint Annotations</source>
-        <translation>사용자 정의 COCO 키포인트 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1955" />
-        <source>Export Custom DOTA Annotations</source>
-        <translation>사용자 지정 DOTA 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1962" />
-        <source>Export Custom MASK Annotations - RGB/Gray</source>
-        <translation>사용자 지정 MASK 주석 내보내기 - RGB/회색조</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1969" />
-        <source>Export Custom Multi-Object-Tracking Annotations</source>
-        <translation>사용자 지정 다중 개체 추적 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1972" />
-        <source>MOTS</source>
-        <translation>MOTS</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1976" />
-        <source>Export Custom Multi-Object-Tracking-Segmentation Annotations</source>
-        <translation>사용자 지정 다중 개체 추적-분할 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1985" />
-        <source>Export Custom Object Detection Visual Grounding Annotations</source>
-        <translation>사용자 정의 개체 감지 시각적 접지 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1994" />
-        <source>Export Custom PPOCR Recognition Annotations</source>
-        <translation>사용자 정의 PPOCR 인식 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2001" />
-        <source>Export Custom PPOCR Key Information Extraction (KIE - Semantic Entity Recognition &amp; Relation Extraction) Annotations</source>
-        <translation>사용자 정의 PPOCR 키 정보 추출 내보내기 (KIE - 의미 엔터티 인식 및 관계 추출) 주석</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2010" />
-        <source>Export Custom VLM-R1 OVD Annotations</source>
-        <translation>사용자 지정 VLM-R1 OVD 주석 내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2032" />
-        <source>Edit Label</source>
-        <translation>라벨 편집</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2036" />
-        <source>Modify the label of the selected polygon</source>
-        <translation>선택한 다각형의 레이블 수정</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2041" />
-        <source>Fill Drawing Polygon</source>
-        <translation>그리기 다각형 채우기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2045" />
-        <source>Fill polygon while drawing</source>
-        <translation>그리면서 다각형 채우기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2052" />
-        <source>Navigator</source>
-        <translation>내비게이터</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2056" />
-        <source>Show/hide the navigator window</source>
-        <translation>탐색기 창 표시/숨기기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2062" />
-        <source>Image Tags</source>
-        <translation>이미지 태그</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2065" />
-        <source>Show or hide image tags</source>
-        <translation>이미지 태그 표시 또는 숨기기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2092" />
-        <location filename="..\..\views\labeling\label_widget.py" line="2088" />
-        <source>Auto Labeling</source>
-        <translation>자동 라벨링</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2362" />
-        <source>File</source>
-        <translation>파일</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="172" />
-        <location filename="..\..\views\labeling\label_widget.py" line="2363" />
-        <source>Edit</source>
-        <translation>편집</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2364" />
-        <source>View</source>
-        <translation>보기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3225" />
-        <location filename="..\..\views\labeling\label_widget.py" line="2365" />
-        <source>Theme</source>
-        <translation>테마</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2366" />
-        <source>Language</source>
-        <translation>언어</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2367" />
-        <source>Upload</source>
-        <translation>업로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2368" />
-        <source>Export</source>
-        <translation>내보내기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2369" />
-        <source>Tool</source>
-        <translation>도구</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2370" />
-        <source>Workflow</source>
-        <translation>워크플로</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4702" />
-        <location filename="..\..\views\labeling\label_widget.py" line="2371" />
-        <source>Train</source>
-        <translation>훈련</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2372" />
-        <source>Help</source>
-        <translation>도움말</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2373" />
-        <source>Open Recent</source>
-        <translation>최근에 사용한 파일 열기(&amp;R)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2682" />
-        <source>Please wait...</source>
-        <translation>기다려 주세요...</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2718" />
-        <source>Toggle right panel</source>
-        <translation>오른쪽 패널 표시 전환</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2747" />
-        <source>Shortcuts</source>
-        <translation>단축키</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2763" />
-        <location filename="..\..\views\labeling\label_widget.py" line="2762" />
-        <source>Update available</source>
-        <translation>업데이트 사용 가능</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2783" />
-        <source>Color by label</source>
-        <translation>라벨별 색상 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2784" />
-        <source>Color by instance</source>
-        <translation>인스턴스별 색상 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2785" />
-        <source>Color by group</source>
-        <translation>그룹별 색상 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2786" />
-        <source>Binary mask</source>
-        <translation>이진 마스크</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2923" />
-        <source>Classes</source>
-        <translation>클래스</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2924" />
-        <source>Flags</source>
-        <translation>플래그</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8878" />
-        <location filename="..\..\views\labeling\label_widget.py" line="2925" />
-        <source>Description</source>
-        <translation>설명</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="2926" />
-        <source>Statistics</source>
-        <translation>통계</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3264" />
-        <location filename="..\..\views\labeling\label_widget.py" line="3213" />
-        <source>Please restart the application to apply changes.</source>
-        <translation>변경 사항을 적용하려면 애플리케이션을 다시 시작하세요.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3238" />
-        <source>The new theme will take effect after restarting the application. Apply this setting now?</source>
-        <translation>새 테마는 애플리케이션을 다시 시작한 후 적용됩니다. 지금 이 설정을 적용하시겠습니까?</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="124" />
-        <location filename="..\..\views\labeling\utils\export.py" line="519" />
-        <location filename="..\..\views\labeling\utils\export.py" line="502" />
-        <location filename="..\..\views\labeling\utils\export.py" line="374" />
-        <location filename="..\..\views\labeling\label_widget.py" line="3247" />
-        <source>Cancel</source>
-        <translation>취소</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="245" />
-        <location filename="..\..\views\labeling\utils\export.py" line="380" />
-        <location filename="..\..\views\labeling\label_widget.py" line="3251" />
-        <source>OK</source>
-        <translation>확인</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3277" />
-        <source>Mode:</source>
-        <translation>모드:</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3278" />
-        <source>Shortcuts:</source>
-        <translation>단축키:</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3280" />
-        <source>Previous</source>
-        <translation>이전</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3281" />
-        <source>Next</source>
-        <translation>다음</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3282" />
-        <source>Rectangle</source>
-        <translation>직사각형</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3283" />
-        <source>Polygon</source>
-        <translation>다각형</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3284" />
-        <source>Rotation</source>
-        <translation>회전</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3285" />
-        <source>Quadrilateral</source>
-        <translation>사각형</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3308" />
-        <source>Tip: Hold Alt and drag with the left mouse button, or drag with the middle mouse button, to pan the canvas while drawing.</source>
-        <translation>팁: 그리는 동안 Alt를 누른 채 마우스 왼쪽 버튼으로 드래그하거나 가운데 버튼으로 드래그하여 캔버스를 이동할 수 있습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3727" />
-        <source>Toggle shapes visibility is unavailable while a label or group filter is active</source>
-        <translation>라벨 또는 그룹 필터가 활성화된 동안에는 도형 표시 전환을 사용할 수 없습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3739" />
-        <source>Show all shapes</source>
-        <translation>모든 도형 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8779" />
-        <location filename="..\..\views\labeling\label_widget.py" line="6879" />
-        <location filename="..\..\views\labeling\label_widget.py" line="5643" />
-        <location filename="..\..\views\labeling\label_widget.py" line="5550" />
-        <location filename="..\..\views\labeling\label_widget.py" line="3779" />
-        <source>Invalid label</source>
-        <translation>유효하지 않은 라벨</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="3780" />
-        <source>Invalid label '{}' with validation type: {}!
-Reset the label as {}.</source>
-        <translation>유효성 검사 유형 {}에 맞지 않는 레이블 '{}'입니다!
-레이블을 {}로 재설정합니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4106" />
-        <location filename="..\..\views\labeling\label_widget.py" line="4017" />
-        <source>No images loaded</source>
-        <translation>불러온 이미지가 없습니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4018" />
-        <source>Please load an image folder before opening the VQA dialog.</source>
-        <translation>VQA 대화상자를 열기 전에 이미지 폴더를 불러오세요.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4044" />
-        <source>Point cloud unavailable</source>
-        <translation>포인트 클라우드를 사용할 수 없음</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4045" />
-        <source>Unable to open the point cloud workspace: %s</source>
-        <translation>포인트 클라우드 작업 공간을 열 수 없습니다: %s</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4076" />
-        <source>Video Classifier requires QtMultimedia, which this Qt build does not provide.</source>
-        <translation>비디오 분류기에는 QtMultimedia가 필요하지만 이 Qt 빌드에서는 제공되지 않습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4107" />
-        <source>Please load an image folder before opening the Classification dialog.</source>
-        <translation>분류 대화상자를 열기 전에 이미지 폴더를 불러오세요.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4188" />
-        <source>No objects to review</source>
-        <translation>검토할 도형이 없습니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4190" />
-        <source>Review complete</source>
-        <translation>검토 완료</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4252" />
-        <source>Reviewing {current} / {total}</source>
-        <translation>검토 중 {current} / {total}</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4291" />
-        <source>Copied</source>
-        <translation>복사됨</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4292" />
-        <source>The information has been copied to the clipboard.</source>
-        <translation>정보가 클립보드에 복사되었습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4493" />
+        <location filename="..\..\views\labeling\label_widget.py" line="881" />
         <source>Open Last Dir: %s</source>
         <translation>마지막 폴더 열기: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4705" />
-        <location filename="..\..\views\labeling\label_widget.py" line="4701" />
-        <source>None</source>
-        <translation>없음</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4703" />
-        <source>Val</source>
-        <translation>Val</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="4704" />
-        <source>Test</source>
-        <translation>Test</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5052" />
-        <source>Copy File Name</source>
-        <translation>파일 이름 복사</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5055" />
-        <source>Copy File Path</source>
-        <translation>파일 경로 복사</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5077" />
-        <source>Hide Thumbnails</source>
-        <translation>Hide Thumbnails</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5079" />
-        <source>Show Thumbnails</source>
-        <translation>Show Thumbnails</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5081" />
-        <source>Remove from List</source>
-        <translation>Remove from List</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5103" />
-        <source>Failed to update split for %s</source>
-        <translation>Failed to update split for %s</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5108" />
-        <source>Split of %s set to %s</source>
-        <translation>Split of %s set to %s</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5118" />
-        <source>Remove File</source>
-        <translation>Remove File</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5119" />
-        <source>Remove "%s" from the file list?
-The image file and its annotation file will NOT be deleted.</source>
-        <translation>Remove "%s" from the file list?
-The image file and its annotation file will NOT be deleted.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5209" />
-        <source>At least one panel must stay visible</source>
-        <translation>At least one panel must stay visible</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5285" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1004" />
         <source>Copy Successful</source>
         <translation>복사되었습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5403" />
-        <source>Filter by Label</source>
-        <translation>라벨로 필터링</translation>
+        <location filename="..\..\views\labeling\label_widget.py" line="1250" />
+        <source>L: %.2f px | Total: %.2f px</source>
+        <translation>L: %.2f px | 합계: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5404" />
-        <source>Filter by Group ID</source>
-        <translation>그룹 ID로 필터링</translation>
+        <location filename="..\..\views\labeling\label_widget.py" line="1254" />
+        <source>L: %.2f px</source>
+        <translation>L: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5429" />
-        <source>All Labels</source>
-        <translation>모든 라벨 표시</translation>
+        <location filename="..\..\views\labeling\label_widget.py" line="1258" />
+        <source>R: %.2f px | C: %.2f px</source>
+        <translation>R: %.2f px | 둘레: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5444" />
-        <source>All Group IDs</source>
-        <translation>모든 그룹 ID</translation>
+        <location filename="..\..\views\labeling\label_widget.py" line="1270" />
+        <source>H: %d, W: %d</source>
+        <translation>H: %d, W: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5513" />
-        <source>Batch Edit</source>
-        <translation>일괄 수정</translation>
+        <location filename="..\..\views\labeling\label_widget.py" line="1414" />
+        <source>Login to edit annotations</source>
+        <translation>로그인하면 주석을 편집할 수 있습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5514" />
-        <source>You are about to edit multiple shapes in batch mode. This operation cannot be undone.
-
-This warning will only be shown once. Do you want to continue?</source>
-        <translation>일괄 편집 모드에서 여러 도형을 편집하려고 합니다. 이 작업은 취소할 수 없습니다.
-
-이 경고는 한 번만 표시됩니다. 계속하시겠습니까?</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8780" />
-        <location filename="..\..\views\labeling\label_widget.py" line="6880" />
-        <location filename="..\..\views\labeling\label_widget.py" line="5644" />
-        <location filename="..\..\views\labeling\label_widget.py" line="5551" />
-        <source>Invalid label '{}' with validation type '{}'</source>
-        <translation>유효성 검사 유형이 '{}' 인 유효하지 않은 레이블 '{}'</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="5789" />
-        <source>Value '{}' is not defined in the current attribute configuration.</source>
-        <translation>'{}' 값은 현재 속성 구성에 정의되어 있지 않습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6705" />
-        <location filename="..\..\views\labeling\label_widget.py" line="6177" />
-        <source>Error saving label data</source>
-        <translation>라벨 데이터 저장 중 오류 발생</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6705" />
-        <location filename="..\..\views\labeling\label_widget.py" line="6177" />
-        <source>&lt;b&gt;%s&lt;/b&gt;</source>
-        <translation>&lt;b&gt;%s&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6432" />
-        <source>At least two shapes are required.</source>
-        <translation>객체가 두 개 이상 필요합니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6452" />
-        <source>Choose two different shapes and enter a relation label.</source>
-        <translation>서로 다른 두 객체를 선택하고 관계 레이블을 입력하세요.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6733" />
-        <source>Error pasting shapes</source>
-        <translation>도형 붙여넣기 오류</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6734" />
-        <source>Error decoding shapes: %s</source>
-        <translation>도형 디코딩 오류: %s</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6929" />
-        <source>X: %d, Y: %d | L: %.2f px | Total: %.2f px</source>
-        <translation>X: %d, Y: %d | 길이: %.2f px | 전체 길이: %.2f px</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6934" />
-        <source>X: %d, Y: %d | L: %.2f px</source>
-        <translation>X: %d, Y: %d | 길이: %.2f px</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6940" />
-        <source>X: %d, Y: %d | R: %.2f px | C: %.2f px</source>
-        <translation>X: %d, Y: %d | 반지름: %.2f px | 둘레: %.2f px</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6966" />
-        <location filename="..\..\views\labeling\label_widget.py" line="6956" />
-        <source>X: %d, Y: %d | H: %d, W: %d</source>
-        <translation>X: %d, Y: %d | H: %d, W: %d</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="6980" />
-        <location filename="..\..\views\labeling\label_widget.py" line="6972" />
-        <source>X: %d, Y: %d</source>
-        <translation>X: %d, Y: %d</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="7524" />
-        <location filename="..\..\views\labeling\label_widget.py" line="7485" />
-        <location filename="..\..\views\labeling\label_widget.py" line="7459" />
-        <source>Error opening file</source>
-        <translation>파일 열기 오류</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="7460" />
-        <source>No such file: &lt;b&gt;%s&lt;/b&gt;</source>
-        <translation>파일을 찾을 수 없습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="7486" />
-        <source>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</source>
-        <translation>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;%s&lt;/i&gt;가 올바른 레이블 파일인지 확인하세요.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="7530" />
-        <location filename="..\..\views\labeling\label_widget.py" line="7492" />
-        <source>Error reading %s</source>
-        <translation>%s 읽기 오류</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8870" />
-        <location filename="..\..\views\labeling\label_widget.py" line="8579" />
-        <location filename="..\..\views\labeling\label_widget.py" line="7510" />
-        <source>Image Description</source>
-        <translation>이미지 설명</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="7525" />
-        <source>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;i&gt;{0}&lt;/i&gt;가 올바른 이미지 파일인지 확인하세요.&lt;br/&gt;지원되는 이미지 형식: {1}&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="7956" />
-        <source>Image &amp; Label files (%s)</source>
-        <translation>이미지 및 레이블 파일 (%s)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="7963" />
-        <source>%s - Choose Image or Label file</source>
-        <translation>%s - 이미지 또는 레이블 파일 선택</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="7982" />
-        <source>%s - Save/Load Annotations in Directory</source>
-        <translation>%s - 디렉토리에 주석 저장/로드</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="7995" />
-        <source>%s . Annotations will be saved/loaded in %s</source>
-        <translation>%s. 주석은 %s에 저장되고 불러와집니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8026" />
-        <source>%s - Choose File</source>
-        <translation>%s - 파일 선택</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8057" />
-        <location filename="..\..\views\labeling\label_widget.py" line="8027" />
-        <source>Label files (*%s)</source>
-        <translation>레이블 파일 (*%s)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8055" />
-        <source>Choose File</source>
-        <translation>파일을 선택하세요</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8084" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1705" />
         <source>Please open an image first</source>
         <translation>먼저 이미지를 여세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8089" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1710" />
         <source>Select Compare Image Directory</source>
         <translation>비교 이미지 디렉터리 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8098" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1719" />
         <source>Invalid compare directory</source>
         <translation>올바르지 않은 비교 디렉터리</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8109" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1730" />
         <source>Close Compare View</source>
         <translation>비교 보기 닫기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8110" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1731" />
         <source>Are you sure you want to close the compare view?</source>
         <translation>정말 비교 보기를 닫으시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8202" />
-        <location filename="..\..\views\labeling\label_widget.py" line="8188" />
-        <location filename="..\..\views\labeling\label_widget.py" line="8158" />
-        <location filename="..\..\views\labeling\label_widget.py" line="8144" />
-        <source>Attention</source>
-        <translation>주의</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8145" />
-        <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
-        <translation>라벨 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8152" />
-        <source>You are about to permanently delete this label file, proceed anyway?</source>
-        <translation>이 라벨 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8189" />
-        <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
-        <translation>이미지 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8196" />
-        <source>You are about to permanently delete this image file, proceed anyway?</source>
-        <translation>이 이미지 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8275" />
-        <source>Save annotations?</source>
-        <translation>주석을 저장하시겠습니까?</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8328" />
-        <source>Delete Group</source>
-        <translation>그룹 삭제</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8329" />
-        <source>Deleting this group will remove %d shapes. This action cannot be undone. Do you want to continue?</source>
-        <translation>이 그룹을 삭제하면 도형 %d개가 제거됩니다. 이 작업은 실행 취소할 수 없습니다. 계속하시겠습니까?</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8379" />
-        <source>%s - Open Directory</source>
-        <translation>%s - 디렉토리 열기</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="8864" />
-        <source>Object Description</source>
-        <translation>개체 설명</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="101" />
+        <location filename="..\..\views\labeling\utils\export.py" line="133" />
         <source>Failed on image: %s</source>
         <translation>이미지 내보내기 실패: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="104" />
+        <location filename="..\..\views\labeling\utils\export.py" line="136" />
         <source>Export failed.</source>
         <translation>내보내기에 실패했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="107" />
+        <location filename="..\..\views\labeling\utils\export.py" line="139" />
         <source>Reason: Pose instance grouping is incomplete or mismatched.
 Please ensure that each instance has one bounding box and that its bounding box and keypoints use the same numeric group ID.</source>
         <translation>원인: 포즈 인스턴스의 그룹 정보가 불완전하거나 일치하지 않습니다.
 각 인스턴스에 바운딩 박스가 하나씩 있고 해당 박스와 키포인트가 동일한 숫자 그룹 ID를 사용하는지 확인하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="114" />
+        <location filename="..\..\views\labeling\utils\export.py" line="146" />
         <source>Reason: The bounding box label is not defined in the pose configuration.
 Please ensure that the bounding box label is listed under classes in the pose YAML file.</source>
         <translation>원인: 바운딩 박스 라벨이 포즈 설정에 정의되어 있지 않습니다.
 바운딩 박스 라벨이 포즈 YAML 파일의 classes에 포함되어 있는지 확인하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="121" />
+        <location filename="..\..\views\labeling\utils\export.py" line="153" />
         <source>Reason: %s</source>
         <translation>원인: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="128" />
+        <location filename="..\..\views\labeling\utils\export.py" line="160" />
         <source>Export Failed</source>
         <translation>내보내기 실패</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="216" />
+        <location filename="..\..\views\labeling\utils\export.py" line="336" />
         <source>Export Options</source>
         <translation>내보내기 옵션</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="221" />
+        <location filename="..\..\views\labeling\utils\export.py" line="341" />
         <source>Save with images?</source>
         <translation>이미지도 함께 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="226" />
+        <location filename="..\..\views\labeling\utils\export.py" line="346" />
         <source>Skip empty labels?</source>
         <translation>빈 레이블을 건너뛰시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="231" />
+        <location filename="..\..\views\labeling\utils\export.py" line="351" />
         <source>Skip unchecked?</source>
         <translation>미검수 건너뛰기?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="234" />
+        <location filename="..\..\views\labeling\utils\export.py" line="354" />
         <source>Skip passed?</source>
         <translation>합격 건너뛰기?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="237" />
+        <location filename="..\..\views\labeling\utils\export.py" line="357" />
         <source>Skip failed?</source>
         <translation>불합격 건너뛰기?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="269" />
+        <location filename="..\..\views\labeling\utils\export.py" line="389" />
         <source>Classes Files (*.yaml);;All Files (*)</source>
         <translation>클래스 파일 (*.yaml);;모든 파일 (*)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="274" />
+        <location filename="..\..\views\labeling\utils\export.py" line="394" />
         <source>Select a specific yolo-pose config file</source>
         <translation>YOLO-Pose 구성 파일 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="288" />
+        <location filename="..\..\views\labeling\utils\export.py" line="408" />
         <source>Invalid pose config file:
 %s</source>
         <translation>잘못된 포즈 구성 파일:
 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="299" />
+        <location filename="..\..\views\labeling\utils\export.py" line="423" />
         <source>Classes Files (*.txt);;All Files (*)</source>
         <translation>클래스 파일 (*.txt);;모든 파일 (*)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="304" />
+        <location filename="..\..\views\labeling\utils\export.py" line="428" />
         <source>Select a specific classes file</source>
         <translation>클래스 파일 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="320" />
+        <location filename="..\..\views\labeling\utils\export.py" line="444" />
         <source>Export options</source>
         <translation>내보내기 옵션</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="331" />
+        <location filename="..\..\views\labeling\utils\export.py" line="455" />
         <source>Export path</source>
         <translation>내보내기 경로</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="347" />
-        <location filename="..\..\views\labeling\utils\export.py" line="341" />
+        <location filename="..\..\views\labeling\utils\export.py" line="473" />
+        <location filename="..\..\views\labeling\utils\export.py" line="467" />
         <source>Select Export Directory</source>
         <translation>내보내기 디렉터리 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="357" />
+        <location filename="..\..\views\labeling\utils\export.py" line="482" />
         <source>Browse</source>
         <translation>찾아보기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="445" />
+        <location filename="..\..\views\labeling\utils\export.py" line="493" />
+        <source>Images and labels are written to train/val/test/none subdirectories; data.yaml is generated.</source>
+        <translation>이미지와 라벨은 train/val/test/none 하위 디렉터리에 기록되고 data.yaml이 생성됩니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="124" />
+        <location filename="..\..\views\labeling\utils\export.py" line="678" />
+        <location filename="..\..\views\labeling\utils\export.py" line="652" />
+        <location filename="..\..\views\labeling\utils\export.py" line="509" />
+        <source>Cancel</source>
+        <translation>취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="245" />
+        <location filename="..\..\views\labeling\utils\export.py" line="515" />
+        <source>OK</source>
+        <translation>확인</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="595" />
         <source>Out-of-bounds OBBs</source>
         <translation>경계를 벗어난 회전 바운딩 박스</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="450" />
+        <location filename="..\..\views\labeling\utils\export.py" line="600" />
         <source>Detected %d oriented bounding boxes with points outside the image boundaries. Keep them?</source>
         <translation>이미지 경계를 벗어난 점이 있는 회전 바운딩 박스 %d개를 감지했습니다. 유지하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="474" />
+        <location filename="..\..\views\labeling\utils\export.py" line="624" />
         <source>Output Directory Exists!</source>
         <translation>출력 디렉터리가 이미 존재합니다!</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="479" />
+        <location filename="..\..\views\labeling\utils\export.py" line="629" />
         <source>Directory already exists. Choose an action:</source>
         <translation>디렉터리가 이미 존재합니다. 작업을 선택하세요:</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="485" />
+        <location filename="..\..\views\labeling\utils\export.py" line="635" />
         <source>• Yes    - Merge with existing files
 • No     - Delete existing directory
 • Cancel - Abort export</source>
@@ -5554,27 +4197,27 @@ Please ensure that the bounding box label is listed under classes in the pose YA
 • 취소   - 내보내기 중단</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="494" />
+        <location filename="..\..\views\labeling\utils\export.py" line="644" />
         <source>Yes</source>
         <translation>예</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="498" />
+        <location filename="..\..\views\labeling\utils\export.py" line="648" />
         <source>No</source>
         <translation>아니요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="518" />
+        <location filename="..\..\views\labeling\utils\export.py" line="677" />
         <source>Exporting...</source>
         <translation>내보내는 중...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="526" />
+        <location filename="..\..\views\labeling\utils\export.py" line="685" />
         <source>Progress</source>
         <translation>진행</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="567" />
+        <location filename="..\..\views\labeling\utils\export.py" line="730" />
         <source>Exporting annotations successfully!
 Results have been saved to:
 %s</source>
@@ -5586,6 +4229,11 @@ Results have been saved to:
         <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="53" />
         <source>Edit Relation</source>
         <translation>관계 편집</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="57" />
+        <source>Create Relation</source>
+        <translation>관계 생성</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="75" />
@@ -5609,10 +4257,2165 @@ Results have been saved to:
         <translation>객체</translation>
     </message>
     <message>
-        <source>Model Directory</source>
-        <translation>모델 저장 폴더</translation>
+        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="115" />
+        <source>Delete</source>
+        <translation>삭제</translation>
     </message>
     <message>
+        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="158" />
+        <source>Manage Relations</source>
+        <translation>관계 관리</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="172" />
+        <source>Edit</source>
+        <translation>편집</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="180" />
+        <source>Close</source>
+        <translation>닫기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="37" />
+        <source>Open File</source>
+        <translation>파일 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="41" />
+        <source>Open image or label file</source>
+        <translation>이미지 또는 라벨 파일 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="44" />
+        <source>Open Video</source>
+        <translation>비디오 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="48" />
+        <source>Open video file</source>
+        <translation>비디오 파일 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="51" />
+        <source>Open Dir</source>
+        <translation>디렉터리 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="58" />
+        <source>Import Project (X-AnyLabeling)…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="62" />
+        <source>Import X-AnyLabeling JSON files into a dataset database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="65" />
+        <source>Recycle Bin…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="69" />
+        <source>Restore or permanently delete trashed images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="72" />
+        <source>Next Image</source>
+        <translation>다음 이미지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="76" />
+        <source>Open next image</source>
+        <translation>다음 이미지 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="80" />
+        <source>Prev Image</source>
+        <translation>이전 이미지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="84" />
+        <source>Open prev image</source>
+        <translation>이전 이미지 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="88" />
+        <source>Forward %s Images</source>
+        <translation>%s장 다음으로</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="91" />
+        <source>Move forward by %s images</source>
+        <translation>%s장 뒤의 이미지로 이동</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="96" />
+        <source>Back %s Images</source>
+        <translation>%s장 이전으로</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="99" />
+        <source>Move back by %s images</source>
+        <translation>%s장 앞의 이미지로 이동</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="104" />
+        <source>Next Unchecked Image</source>
+        <translation>다음 미확인 이미지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="108" />
+        <source>Open next unchecked image</source>
+        <translation>다음 미확인 이미지 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="112" />
+        <source>Prev Unchecked Image</source>
+        <translation>이전 미확인 이미지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="116" />
+        <source>Open previous unchecked image</source>
+        <translation>이전 미확인 이미지 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="120" />
+        <source>Save</source>
+        <translation>저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="124" />
+        <source>Save labels to file</source>
+        <translation>파일에 레이블 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="128" />
+        <source>Save As</source>
+        <translation>다른 이름으로 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="132" />
+        <source>Save labels to a different file</source>
+        <translation>라벨을 다른 파일에 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="136" />
+        <source>Auto Run</source>
+        <translation>자동 실행</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="140" />
+        <source>Auto run all images at once</source>
+        <translation>한 번에 모든 이미지 자동 실행</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="144" />
+        <source>Delete File</source>
+        <translation>파일 삭제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="148" />
+        <source>Delete current label file</source>
+        <translation>현재 라벨 파일 삭제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="152" />
+        <source>Delete Image File</source>
+        <translation>이미지 삭제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="156" />
+        <source>Delete current image file</source>
+        <translation>현재 이미지 삭제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="165" />
+        <source>Check Passed</source>
+        <translation>검토 통과</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="172" />
+        <source>Unchecked</source>
+        <translation>확인되지 않음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="179" />
+        <source>Check Failed</source>
+        <translation>검토 불합격</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="186" />
+        <source>Check Status</source>
+        <translation>검토 상태</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="199" />
+        <source>Compare View</source>
+        <translation>비교 보기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="203" />
+        <source>Toggle split-screen compare view</source>
+        <translation>분할 화면 비교 보기 전환</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="208" />
+        <source>Change Output Dir</source>
+        <translation>출력 디렉터리 변경</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="212" />
+        <source>Change where annotations are loaded/saved</source>
+        <translation>주석을 로드/저장하는 위치 변경</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="216" />
+        <source>Save Automatically</source>
+        <translation>자동 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="219" />
+        <source>Save automatically</source>
+        <translation>자동 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="226" />
+        <source>Save With Image Data</source>
+        <translation>이미지 데이터로 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="229" />
+        <source>Save image data in label file</source>
+        <translation>라벨 파일에 이미지 데이터 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="239" />
+        <source>Close current file</source>
+        <translation>현재 파일 닫기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="243" />
+        <source>Keep Previous Annotation</source>
+        <translation>이전 주석 유지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="247" />
+        <source>Toggle "Keep Previous Annotation" mode</source>
+        <translation>"이전 주석 유지" 모드 전환</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="253" />
+        <source>Auto Use Last Label</source>
+        <translation>마지막 레이블 자동 사용</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="257" />
+        <source>Toggle "Auto Use Last Label" mode</source>
+        <translation>"마지막 레이블 자동 사용" 모드 전환</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="263" />
+        <source>Auto Use Last Group ID</source>
+        <translation>마지막 그룹 ID 자동 사용</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="267" />
+        <source>Toggle "Auto Use Last Group ID" mode</source>
+        <translation>"마지막 그룹 ID 자동 사용" 모드 전환</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="273" />
+        <source>Use System Clipboard</source>
+        <translation>시스템 클립보드 사용</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="275" />
+        <source>Use system clipboard for copy and paste</source>
+        <translation>복사 및 붙여넣기에 시스템 클립보드 사용</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="282" />
+        <source>Visibility Shapes</source>
+        <translation>도형 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="286" />
+        <source>Toggle "Visibility Shapes" mode</source>
+        <translation>"도형 표시" 모드 전환</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="292" />
+        <source>Create Polygons</source>
+        <translation>다각형 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="296" />
+        <source>Start drawing polygons</source>
+        <translation>다각형 그리기 시작</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="300" />
+        <source>Create Brush Polygons</source>
+        <translation>브러시 다각형 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="304" />
+        <source>Toggle brush mode for drawing polygons</source>
+        <translation>다각형을 그리기 위해 브러시 모드 전환</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="308" />
+        <source>Magic Wand</source>
+        <translation>마술봉</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="312" />
+        <source>Select a contiguous color region; drag to adjust tolerance; right-click to finish; press Esc to cancel</source>
+        <translation>연속된 색상 영역을 선택합니다. 드래그하여 허용 오차를 조정하고, 마우스 오른쪽 버튼으로 완료하며, Esc 키로 취소합니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="319" />
+        <source>Create Rectangle</source>
+        <translation>사각형 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="323" />
+        <source>Start drawing rectangles</source>
+        <translation>직사각형 그리기 시작</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="327" />
+        <source>Create Rotation</source>
+        <translation>회전 도형 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="331" />
+        <source>Start drawing rotations</source>
+        <translation>회전 그리기 시작</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="335" />
+        <source>Create Quadrilateral</source>
+        <translation>사각형 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="339" />
+        <source>Start drawing quadrilaterals (4 points, auto-closed)</source>
+        <translation>사각형 그리기 시작 (4점, 자동 닫힘)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="343" />
+        <source>Create Circle</source>
+        <translation>원 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="347" />
+        <source>Start drawing circles</source>
+        <translation>원 그리기 시작</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="351" />
+        <source>Create Line</source>
+        <translation>선 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="355" />
+        <source>Start drawing lines</source>
+        <translation>선 그리기 시작</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="359" />
+        <source>Create Point</source>
+        <translation>점 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="363" />
+        <source>Start drawing points</source>
+        <translation>점 그리기 시작</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="367" />
+        <source>Create LineStrip</source>
+        <translation>라인 스트립 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="371" />
+        <source>Start drawing linestrip. Ctrl+LeftClick ends creation.</source>
+        <translation>라인 스트립 그리기를 시작합니다. Ctrl+왼쪽 클릭으로 완료합니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="375" />
+        <source>Create Cuboid</source>
+        <translation>직육면체 생성</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="379" />
+        <source>Start drawing cuboids from rectangle</source>
+        <translation>직사각형에서 직육면체 그리기 시작</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="383" />
+        <source>Digit Shortcut 0</source>
+        <translation>숫자 단축키 0</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="390" />
+        <source>Digit Shortcut 1</source>
+        <translation>숫자 단축키 1</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="397" />
+        <source>Digit Shortcut 2</source>
+        <translation>숫자 단축키 2</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="404" />
+        <source>Digit Shortcut 3</source>
+        <translation>숫자 단축키 3</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="411" />
+        <source>Digit Shortcut 4</source>
+        <translation>숫자 단축키 4</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="418" />
+        <source>Digit Shortcut 5</source>
+        <translation>숫자 단축키 5</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="425" />
+        <source>Digit Shortcut 6</source>
+        <translation>숫자 단축키 6</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="432" />
+        <source>Digit Shortcut 7</source>
+        <translation>숫자 단축키 7</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="439" />
+        <source>Digit Shortcut 8</source>
+        <translation>숫자 단축키 8</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="446" />
+        <source>Digit Shortcut 9</source>
+        <translation>숫자 단축키 9</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="453" />
+        <source>Edit Object</source>
+        <translation>개체 편집</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="457" />
+        <source>Move and edit the selected polygons</source>
+        <translation>선택한 다각형 이동 및 편집</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="461" />
+        <source>Edit Brush</source>
+        <translation>브러시 편집</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="465" />
+        <source>Select one polygon, then paint to add, hold Ctrl to erase, and use Alt+Wheel to resize the brush</source>
+        <translation>다각형 하나를 선택한 후 칠하여 영역을 추가하고, Ctrl을 누른 채 지우며, Alt+휠로 브러시 크기를 조절합니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="474" />
+        <source>Group Selected Shapes</source>
+        <translation>선택한 도형 그룹화</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="478" />
+        <source>Group shapes by assigning a same group_id</source>
+        <translation>동일한 group_id를 할당해 도형을 그룹화</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="482" />
+        <source>Ungroup Selected Shapes</source>
+        <translation>선택한 도형 그룹 해제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="486" />
+        <source>Ungroup shapes</source>
+        <translation>도형 그룹 해제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="494" />
+        <source>Select exactly two shapes to create a directed relation</source>
+        <translation>두 객체를 선택하여 방향 관계 생성</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="503" />
+        <source>Review and edit directed relations</source>
+        <translation>방향 관계 확인 및 편집</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="511" />
+        <source>Delete the selected polygons</source>
+        <translation>선택한 다각형 삭제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="515" />
+        <source>Duplicate Polygons</source>
+        <translation>다각형 복제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="519" />
+        <source>Create a duplicate of the selected polygons</source>
+        <translation>선택한 다각형의 복제본 만들기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="523" />
+        <source>Copy Object</source>
+        <translation>개체 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="527" />
+        <source>Copy selected polygons to clipboard</source>
+        <translation>선택한 다각형을 클립보드에 복사합니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="531" />
+        <source>Paste Object</source>
+        <translation>개체 붙여넣기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="535" />
+        <source>Paste copied polygons</source>
+        <translation>복사한 다각형 붙여넣기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="539" />
+        <source>Undo last point</source>
+        <translation>마지막 점 실행 취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="543" />
+        <source>Undo last drawn point</source>
+        <translation>마지막 그리기 지점 실행 취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="547" />
+        <source>Remove Selected Point</source>
+        <translation>선택한 포인트 제거</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="551" />
+        <source>Remove selected point from polygon</source>
+        <translation>다각형에서 선택한 점 제거</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="556" />
+        <source>Undo</source>
+        <translation>실행 취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="560" />
+        <source>Undo last add and edit of shape</source>
+        <translation>도형의 마지막 추가 및 편집 실행 취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="564" />
+        <source>Hide Selected Polygons</source>
+        <translation>선택한 다각형 숨기기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="568" />
+        <source>Hide selected polygons</source>
+        <translation>선택한 다각형 숨기기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="572" />
+        <source>Show Hidden Polygons</source>
+        <translation>숨겨진 다각형 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="576" />
+        <source>Show hidden polygons</source>
+        <translation>숨겨진 다각형 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="581" />
+        <source>Overview</source>
+        <translation>개요</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="585" />
+        <source>Show annotations statistics</source>
+        <translation>주석 통계 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="588" />
+        <source>Save Cropped Image</source>
+        <translation>잘린 이미지 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="591" />
+        <source>Save cropped image. (Support rectangle/rotation/polygon shape_type)</source>
+        <translation>잘라낸 이미지를 저장합니다. (직사각형/회전/다각형 도형 지원)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="596" />
+        <source>Save Visualization Image</source>
+        <translation>시각화 이미지 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="599" />
+        <source>Save visualization image</source>
+        <translation>시각화 이미지를 저장합니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="602" />
+        <source>Save Visualization Video</source>
+        <translation>시각화 동영상 저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="605" />
+        <source>Save visualization video</source>
+        <translation>시각화 동영상을 저장합니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="608" />
+        <source>Digit Shortcut Manager</source>
+        <translation>숫자 바로 가기 관리자</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="612" />
+        <source>Manage Digit Shortcuts: Assign Drawing Modes and Labels to Number Keys</source>
+        <translation>숫자 단축키 관리: 숫자 키에 그리기 모드 및 레이블 할당</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="617" />
+        <source>Label Manager</source>
+        <translation>라벨 관리자</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="621" />
+        <source>Manage Labels: Rename, Delete, Hide/Show, Adjust Color</source>
+        <translation>라벨 관리: 이름 바꾸기, 삭제, 숨기기/표시, 색상 조정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="626" />
+        <source>Group ID Manager</source>
+        <translation>그룹 ID 관리자</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="630" />
+        <source>Manage Group ID</source>
+        <translation>그룹 ID 관리</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="633" />
+        <source>Shape Manager</source>
+        <translation>도형 관리자</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="637" />
+        <source>Manage Shapes: Add, Delete, Remove</source>
+        <translation>도형 관리: 추가, 삭제, 제거</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="641" />
+        <source>Copy Coordinates</source>
+        <translation>좌표 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="644" />
+        <source>Copy shape coordinates to clipboard</source>
+        <translation>도형 좌표를 클립보드에 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="648" />
+        <source>Union Selection</source>
+        <translation>선택 항목 합치기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="652" />
+        <source>Union multiple selected rectangle shapes</source>
+        <translation>선택한 여러 직사각형 도형을 합칩니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="656" />
+        <source>Lock Shape</source>
+        <translation>도형 잠금</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="658" />
+        <source>Prevent changes to the selected shapes' coordinates</source>
+        <translation>선택한 도형의 좌표 변경 방지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="663" />
+        <source>Shape Converter</source>
+        <translation>도형 변환기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="666" />
+        <source>Open shape converter</source>
+        <translation>도형 변환기 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="669" />
+        <source>ChatBot</source>
+        <translation>대화형 질의응답</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="673" />
+        <source>Open chatbot dialog</source>
+        <translation>대화형 질의응답 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="676" />
+        <source>VQA</source>
+        <translation>VQA</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="680" />
+        <source>Open VQA dialog</source>
+        <translation>VQA 대화상자 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="683" />
+        <source>Point Cloud</source>
+        <translation>포인트 클라우드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="687" />
+        <source>Open point cloud workspace</source>
+        <translation>포인트 클라우드 작업 공간 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="690" />
+        <source>Image Classifier</source>
+        <translation>이미지 분류기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="696" />
+        <source>Open image classifier dialog</source>
+        <translation>이미지 분류기 대화상자 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="699" />
+        <source>Video Classifier</source>
+        <translation>동영상 분류기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="703" />
+        <source>Open video classifier dialog</source>
+        <translation>동영상 분류기 대화상자 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="706" />
+        <source>Document Parser</source>
+        <translation>문서 분석기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="710" />
+        <source>Open document parser dialog</source>
+        <translation>문서 분석기 대화상자 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="713" />
+        <source>Documentation</source>
+        <translation>문서</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="716" />
+        <source>Show documentation</source>
+        <translation>문서 보기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="719" />
+        <source>Sponsor</source>
+        <translation>후원</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="722" />
+        <source>Open sponsor page</source>
+        <translation>후원 페이지 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="725" />
+        <source>About</source>
+        <translation>정보</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="728" />
+        <source>Open about dialog</source>
+        <translation>정보 대화상자 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="732" />
+        <source>Loop Through Labels</source>
+        <translation>레이블 순환</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="736" />
+        <source>Loop through labels</source>
+        <translation>레이블을 순차적으로 전환</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="740" />
+        <source>Loop Select Labels</source>
+        <translation>레이블 순환 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="744" />
+        <source>Loop select labels</source>
+        <translation>레이블을 순차적으로 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="748" />
+        <source>Toggle Shapes Visibility</source>
+        <translation>도형 표시/숨기기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="751" />
+        <source>Hide all shapes</source>
+        <translation>모든 도형 숨기기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="764" />
+        <source>%s is planned but not implemented yet.</source>
+        <translation>%s 기능은 계획 중이며 아직 구현되지 않았습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="768" />
+        <source>Training Result Analysis</source>
+        <translation>학습 결과 분석</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="771" />
+        <source>Planned: analyze training runs and metrics</source>
+        <translation>계획: 학습 실행 및 지표 분석</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="777" />
+        <source>Planned: SAM prompt segmentation tool</source>
+        <translation>계획: SAM 프롬프트 분할 도구</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="783" />
+        <source>Planned: RF-DETR model support</source>
+        <translation>계획: RF-DETR 모델 지원</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="789" />
+        <source>Planned: Efficient model family support</source>
+        <translation>계획: Efficient 모델 제품군 지원</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="796" />
+        <source>Zoom in or out of the image. Also accessible with {} and {} from the canvas.</source>
+        <translation>이미지를 확대하거나 축소합니다. 캔버스에서도 {} 및 {}로 사용할 수 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="804" />
+        <source>Wheel</source>
+        <translation>휠</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="810" />
+        <source>Zoom In</source>
+        <translation>확대</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="814" />
+        <source>Increase zoom level</source>
+        <translation>확대/축소 수준 높이기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="818" />
+        <source>Zoom Out</source>
+        <translation>축소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="822" />
+        <source>Decrease zoom level</source>
+        <translation>확대/축소 수준 낮추기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="826" />
+        <source>Original Size</source>
+        <translation>원래 크기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="830" />
+        <source>Zoom to original size</source>
+        <translation>원래 크기로 보기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="834" />
+        <source>Keep Previous Scale</source>
+        <translation>이전 척도 유지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="836" />
+        <source>Keep previous zoom scale</source>
+        <translation>이전 확대/축소 배율 유지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="842" />
+        <source>Keep Previous Brightness</source>
+        <translation>이전 밝기 유지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="844" />
+        <source>Keep previous brightness</source>
+        <translation>이전 밝기 유지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="850" />
+        <source>Keep Previous Contrast</source>
+        <translation>이전 대비 유지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="852" />
+        <source>Keep previous contrast</source>
+        <translation>이전 대비 유지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="866" />
+        <source>Fit Window</source>
+        <translation>창에 맞추기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="870" />
+        <source>Zoom follows window size</source>
+        <translation>창 크기를 따라 확대/축소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="876" />
+        <source>Fit Width</source>
+        <translation>너비에 맞추기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="880" />
+        <source>Zoom follows window width</source>
+        <translation>창 너비를 따라 확대/축소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="885" />
+        <source>Show Groups</source>
+        <translation>모든 그룹 보기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="887" />
+        <source>Show shape groups</source>
+        <translation>도형 그룹 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="895" />
+        <source>Show Masks</source>
+        <translation>마스크 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="898" />
+        <source>Show semi-transparent masks for shapes</source>
+        <translation>도형에 반투명 마스크 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="906" />
+        <source>Show Texts</source>
+        <translation>텍스트 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="909" />
+        <source>Show text above shapes</source>
+        <translation>도형 위에 텍스트 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="917" />
+        <source>Show Labels</source>
+        <translation>레이블 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="920" />
+        <source>Show label inside shapes</source>
+        <translation>도형 내부에 레이블 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="928" />
+        <source>Show Scores</source>
+        <translation>점수 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="930" />
+        <source>Show score inside shapes</source>
+        <translation>도형 내부에 점수 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="938" />
+        <source>Show Attributes</source>
+        <translation>속성 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="941" />
+        <source>Show attribute inside shapes</source>
+        <translation>도형 내부에 속성 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="949" />
+        <source>Show Degress</source>
+        <translation>각도 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="951" />
+        <source>Show degrees above rotated shapes</source>
+        <translation>회전된 도형 위에 각도 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="959" />
+        <source>Show KIE Linking</source>
+        <translation>KIE 링크 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="962" />
+        <source>Show KIE linking between key and value</source>
+        <translation>키와 값 사이의 KIE 연결 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1008" />
+        <source>System</source>
+        <translation>시스템</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1009" />
+        <source>Light</source>
+        <translation>라이트</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1010" />
+        <source>Dark</source>
+        <translation>다크</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1026" />
+        <source>Image Flags</source>
+        <translation>이미지 플래그</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1030" />
+        <source>Upload Custom Image Flags File</source>
+        <translation>사용자 정의 이미지 플래그 파일 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1033" />
+        <source>Label Flags</source>
+        <translation>라벨 플래그</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1037" />
+        <source>Upload Custom Label Flags File</source>
+        <translation>사용자 지정 레이블 플래그 파일 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1040" />
+        <source>Attributes</source>
+        <translation>속성</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1044" />
+        <source>Upload Custom Attributes File</source>
+        <translation>사용자 정의 속성 파일 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1047" />
+        <source>Label Classes</source>
+        <translation>라벨 클래스</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1051" />
+        <source>Upload Custom Label Classes File</source>
+        <translation>사용자 지정 레이블 클래스 파일 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1054" />
+        <source>YOLO HBB</source>
+        <translation>YOLO HBB</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1058" />
+        <source>Upload Custom YOLO Horizontal Bounding Boxes Annotations</source>
+        <translation>사용자 정의 YOLO 수평 경계 상자 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1063" />
+        <source>YOLO OBB</source>
+        <translation>YOLO OBB</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1067" />
+        <source>Upload Custom YOLO Oriented Bounding Boxes Annotations</source>
+        <translation>사용자 정의 YOLO 지향 경계 상자 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1072" />
+        <source>YOLO Seg</source>
+        <translation>YOLO Seg</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1076" />
+        <source>Upload Custom YOLO Segmentation Annotations</source>
+        <translation>사용자 정의 YOLO 세그먼트 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1079" />
+        <source>YOLO Pose</source>
+        <translation>YOLO Pose</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1083" />
+        <source>Upload Custom YOLO Pose Annotations</source>
+        <translation>사용자 정의 YOLO Pose 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1086" />
+        <source>VOC Detection</source>
+        <translation>VOC 감지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1090" />
+        <source>Upload Custom Pascal VOC Detection Annotations</source>
+        <translation>사용자 지정 Pascal VOC 감지 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1093" />
+        <source>VOC Segmentation</source>
+        <translation>VOC 세분화</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1097" />
+        <source>Upload Custom Pascal VOC Segmentation Annotations</source>
+        <translation>사용자 지정 Pascal VOC 세분화 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1100" />
+        <source>COCO Detection</source>
+        <translation>COCO 감지</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1104" />
+        <source>Upload Custom COCO Detection Annotations</source>
+        <translation>사용자 정의 COCO 감지 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1107" />
+        <source>COCO Segmentation</source>
+        <translation>COCO 세분화</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1111" />
+        <source>Upload Custom COCO Instance Segmentation Annotations</source>
+        <translation>사용자 정의 COCO 인스턴스 분할 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1116" />
+        <source>COCO Keypoints</source>
+        <translation>COCO 키포인트</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1120" />
+        <source>Upload Custom COCO Keypoint Annotations</source>
+        <translation>사용자 정의 COCO 키포인트 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1123" />
+        <source>DOTA</source>
+        <translation>DOTA</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1127" />
+        <source>Upload Custom DOTA Annotations</source>
+        <translation>사용자 정의 DOTA 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1130" />
+        <source>MASK</source>
+        <translation>MASK</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1134" />
+        <source>Upload Custom MASK Annotations</source>
+        <translation>사용자 정의 MASK 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1137" />
+        <source>MOT</source>
+        <translation>MOT</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1141" />
+        <source>Upload Custom Multi-Object-Tracking Annotations</source>
+        <translation>사용자 지정 다중 개체 추적 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1144" />
+        <source>ODVG</source>
+        <translation>ODVG</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1148" />
+        <source>Upload Custom Object Detection Visual Grounding Annotations</source>
+        <translation>사용자 정의 객체 감지 비주얼 그라운딩 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1153" />
+        <source>MM-Grounding-DINO</source>
+        <translation>MM-Grounding-DINO</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1157" />
+        <source>Upload Custom MM-Grounding-DINO Annotations</source>
+        <translation>사용자 지정 MM-Grounding-DINO 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1160" />
+        <source>PPOCR Rec</source>
+        <translation>PPOCR Rec</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1164" />
+        <source>Upload Custom PPOCR Recognition Annotations</source>
+        <translation>사용자 정의 PPOCR 인식 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1167" />
+        <source>PPOCR KIE</source>
+        <translation>PPOCR KIE</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1171" />
+        <source>Upload Custom PPOCR Key Information Extraction (KIE - Semantic Entity Recognition &amp; Relation Extraction) Annotations</source>
+        <translation>사용자 정의 PPOCR 키 정보 추출 (KIE - 의미 엔터티 인식 및 관계 추출) 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1176" />
+        <source>VLM-R1 OVD</source>
+        <translation>VLM-R1 OVD</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1180" />
+        <source>Upload Custom VLM-R1 OVD Annotations</source>
+        <translation>사용자 지정 VLM-R1 OVD 주석 업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1189" />
+        <source>Export Custom YOLO Horizontal Bounding Boxes Annotations</source>
+        <translation>사용자 정의 YOLO 수평 경계 상자 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1198" />
+        <source>Export Custom YOLO Oriented Bounding Boxes Annotations</source>
+        <translation>사용자 정의 YOLO 지향 경계 상자 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1207" />
+        <source>Export Custom YOLO Segmentation Annotations</source>
+        <translation>사용자 정의 YOLO 세그먼트 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1214" />
+        <source>Export Custom YOLO Pose Annotations</source>
+        <translation>사용자 정의 YOLO Pose 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1221" />
+        <source>Export Custom PASCAL VOC Detection Annotations</source>
+        <translation>사용자 지정 PASCAL VOC 감지 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1228" />
+        <source>Export Custom PASCAL VOC Segmentation Annotations</source>
+        <translation>사용자 지정 PASCAL VOC 세분화 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1235" />
+        <source>Export Custom COCO Rectangle Annotations</source>
+        <translation>사용자 정의 COCO 사각형 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1242" />
+        <source>Export Custom COCO Instance Segmentation Annotations</source>
+        <translation>사용자 정의 COCO 인스턴스 분할 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1251" />
+        <source>Export Custom COCO Keypoint Annotations</source>
+        <translation>사용자 정의 COCO 키포인트 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1258" />
+        <source>Export Custom DOTA Annotations</source>
+        <translation>사용자 지정 DOTA 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1265" />
+        <source>Export Custom MASK Annotations - RGB/Gray</source>
+        <translation>사용자 지정 MASK 주석 내보내기 - RGB/회색조</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1272" />
+        <source>Export Custom Multi-Object-Tracking Annotations</source>
+        <translation>사용자 지정 다중 개체 추적 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1275" />
+        <source>MOTS</source>
+        <translation>MOTS</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1279" />
+        <source>Export Custom Multi-Object-Tracking-Segmentation Annotations</source>
+        <translation>사용자 지정 다중 개체 추적-분할 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1288" />
+        <source>Export Custom Object Detection Visual Grounding Annotations</source>
+        <translation>사용자 정의 개체 감지 시각적 접지 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1297" />
+        <source>Export Custom PPOCR Recognition Annotations</source>
+        <translation>사용자 정의 PPOCR 인식 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1304" />
+        <source>Export Custom PPOCR Key Information Extraction (KIE - Semantic Entity Recognition &amp; Relation Extraction) Annotations</source>
+        <translation>사용자 정의 PPOCR 키 정보 추출 내보내기 (KIE - 의미 엔터티 인식 및 관계 추출) 주석</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1313" />
+        <source>Export Custom VLM-R1 OVD Annotations</source>
+        <translation>사용자 지정 VLM-R1 OVD 주석 내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1335" />
+        <source>Edit Label</source>
+        <translation>라벨 편집</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1339" />
+        <source>Modify the label of the selected polygon</source>
+        <translation>선택한 다각형의 레이블 수정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1344" />
+        <source>Fill Drawing Polygon</source>
+        <translation>그리기 다각형 채우기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1348" />
+        <source>Fill polygon while drawing</source>
+        <translation>그리면서 다각형 채우기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1355" />
+        <source>Navigator</source>
+        <translation>내비게이터</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1359" />
+        <source>Show/hide the navigator window</source>
+        <translation>탐색기 창 표시/숨기기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1365" />
+        <source>Image Tags</source>
+        <translation>이미지 태그</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1368" />
+        <source>Edit image tags</source>
+        <translation>이미지 태그 편집</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\builder.py" line="1382" />
+        <source>Auto Labeling</source>
+        <translation>자동 라벨링</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="23" />
+        <source>File</source>
+        <translation>파일</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="25" />
+        <source>View</source>
+        <translation>보기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="26" />
+        <source>Theme</source>
+        <translation>테마</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="27" />
+        <source>Language</source>
+        <translation>언어</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="28" />
+        <source>Upload</source>
+        <translation>업로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="29" />
+        <source>Export</source>
+        <translation>내보내기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="30" />
+        <source>Tool</source>
+        <translation>도구</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="31" />
+        <source>Workflow</source>
+        <translation>워크플로</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="32" />
+        <source>Train</source>
+        <translation>훈련</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="33" />
+        <source>Help</source>
+        <translation>도움말</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\menus.py" line="34" />
+        <source>Open Recent</source>
+        <translation>최근에 사용한 파일 열기(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\toolbar.py" line="132" />
+        <source>Shortcuts</source>
+        <translation>단축키</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="268" />
+        <source>&lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="268" />
+        <source>Error saving label data</source>
+        <translation>라벨 데이터 저장 중 오류 발생</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="277" />
+        <source>Current image is not registered in the dataset.</source>
+        <translation>현재 이미지가 데이터셋에 등록되어 있지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="387" />
+        <source>Invalid label</source>
+        <translation>유효하지 않은 라벨</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\annotation_editor.py" line="388" />
+        <source>Invalid label '{}' with validation type '{}'</source>
+        <translation>유효성 검사 유형이 '{}' 인 유효하지 않은 레이블 '{}'</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="96" />
+        <source>Please restart the application to apply changes.</source>
+        <translation>변경 사항을 적용하려면 애플리케이션을 다시 시작하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="121" />
+        <source>The new theme will take effect after restarting the application. Apply this setting now?</source>
+        <translation>새 테마는 애플리케이션을 다시 시작한 후 적용됩니다. 지금 이 설정을 적용하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="160" />
+        <source>Mode:</source>
+        <translation>모드:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="161" />
+        <source>Shortcuts:</source>
+        <translation>단축키:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="163" />
+        <source>Previous</source>
+        <translation>이전</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="164" />
+        <source>Next</source>
+        <translation>다음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="165" />
+        <source>Rectangle</source>
+        <translation>직사각형</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="166" />
+        <source>Polygon</source>
+        <translation>다각형</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="167" />
+        <source>Rotation</source>
+        <translation>회전</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="168" />
+        <source>Quadrilateral</source>
+        <translation>사각형</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\appearance.py" line="191" />
+        <source>Tip: Hold Alt and drag with the left mouse button, or drag with the middle mouse button, to pan the canvas while drawing.</source>
+        <translation>팁: 그리는 동안 Alt를 누른 채 마우스 왼쪽 버튼으로 드래그하거나 가운데 버튼으로 드래그하여 캔버스를 이동할 수 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\auto_labeling_handoff.py" line="148" />
+        <source>Image Description</source>
+        <translation>이미지 설명</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="126" />
+        <source>Files</source>
+        <translation>Files</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="127" />
+        <source>Objects</source>
+        <translation>객체</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="128" />
+        <source>Import Time</source>
+        <translation>Import Time</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="129" />
+        <source>Inference</source>
+        <translation>Inference</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="130" />
+        <source>Split</source>
+        <translation>Split</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="222" />
+        <source>None</source>
+        <translation>없음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="224" />
+        <source>Val</source>
+        <translation>검증</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="225" />
+        <source>Test</source>
+        <translation>테스트</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="253" />
+        <source>Editor: %s</source>
+        <translation>편집자: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="679" />
+        <source>Import Files</source>
+        <translation>파일 가져오기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="683" />
+        <source>Import Folder</source>
+        <translation>폴더 가져오기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="701" />
+        <source>Copy File Names</source>
+        <translation>파일 이름 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="703" />
+        <source>Copy File Name</source>
+        <translation>파일 이름 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="707" />
+        <source>Copy File Paths</source>
+        <translation>파일 경로 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="709" />
+        <source>Copy File Path</source>
+        <translation>파일 경로 복사</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="731" />
+        <source>Set Tags…</source>
+        <translation>태그 설정…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="735" />
+        <source>Move to Folder…</source>
+        <translation>폴더로 이동…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="739" />
+        <source>Hide Thumbnails</source>
+        <translation>Hide Thumbnails</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="741" />
+        <source>Show Thumbnails</source>
+        <translation>Show Thumbnails</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="744" />
+        <source>Remove %d Files from List</source>
+        <translation>목록에서 %d개 파일 제거</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="746" />
+        <source>Remove from List</source>
+        <translation>Remove from List</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="838" />
+        <source>Failed to update split for %s</source>
+        <translation>Failed to update split for %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="844" />
+        <source>Split of %s set to %s</source>
+        <translation>Split of %s set to %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="852" />
+        <source>Split of %d files set to %s</source>
+        <translation>%d개 파일의 분할을 %s(으)로 설정했습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="899" />
+        <source>Batch Set Image Tags</source>
+        <translation>이미지 태그 일괄 설정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="900" />
+        <source>Delete all image tags from %d files?</source>
+        <translation>%d개 이미지에서 모든 이미지 태그를 삭제할까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="931" />
+        <source>Failed to update tags for %d files</source>
+        <translation>%d개 이미지의 태그를 업데이트하지 못했습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="936" />
+        <source>Tags updated for %d files</source>
+        <translation>%d개 이미지의 태그를 업데이트했습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="941" />
+        <source>Tags unchanged for %d files</source>
+        <translation>%d개 이미지의 태그가 변경되지 않았습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="979" />
+        <source>Remove "%s" from the file list?
+The image file and its annotation file will NOT be deleted.</source>
+        <translation>Remove "%s" from the file list?
+The image file and its annotation file will NOT be deleted.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="985" />
+        <source>Remove %d files from the file list?
+The image files and their annotation files will NOT be deleted.</source>
+        <translation>파일 목록에서 %d개 파일을 제거하시겠습니까?
+이미지 파일과 주석 파일은 삭제되지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="992" />
+        <source>Remove File</source>
+        <translation>Remove File</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1059" />
+        <source>Move to Folder</source>
+        <translation>폴더로 이동</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1087" />
+        <source>Move out of Dataset</source>
+        <translation>데이터세트에서 이동</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1088" />
+        <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
+        <translation>%d개 파일이 데이터세트에서 제거되고 현재 목록에서 삭제됩니다. 계속할까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1124" />
+        <source>Failed to move: %s</source>
+        <translation>이동 실패: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
+        <source>Moved %d files</source>
+        <translation>%d개 파일을 이동했습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1129" />
+        <source>(%d moved out of the dataset)</source>
+        <translation>(%d개가 데이터세트에서 이동됨)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="123" />
+        <source>Creating dataset database…</source>
+        <translation>데이터셋 데이터베이스 생성 중…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="129" />
+        <source>Dataset database</source>
+        <translation>데이터셋 데이터베이스</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="130" />
+        <source>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;에 데이터셋 데이터베이스를 만들 수 없습니다:&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="139" />
+        <source>Dataset database created: %s</source>
+        <translation>데이터셋 데이터베이스가 생성되었습니다: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="143" />
+        <source>Dataset database created with %d file errors; see logs.</source>
+        <translation>데이터셋 데이터베이스가 생성되었지만 %d개의 파일 오류가 있습니다. 로그를 확인하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="167" />
+        <source>Error opening dataset</source>
+        <translation>데이터셋을 열 수 없습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="168" />
+        <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="208" />
+        <source>Import Project (X-AnyLabeling)</source>
+        <translation>프로젝트 가져오기(X-AnyLabeling)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="217" />
+        <source>Import Project</source>
+        <translation>프로젝트 가져오기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="219" />
+        <source>A dataset database already exists in this directory.</source>
+        <translation>이 디렉터리에 이미 데이터셋 데이터베이스가 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="224" />
+        <source>Skip existing images or replace their annotations?</source>
+        <translation>기존 이미지를 건너뛸까요, 아니면 주석을 바꿀까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="229" />
+        <source>Skip Existing</source>
+        <translation>기존 건너뛰기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="233" />
+        <source>Replace Existing</source>
+        <translation>기존 바꾸기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="252" />
+        <source>Import failed</source>
+        <translation>가져오기 실패</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="256" />
+        <source>Images: %d</source>
+        <translation>이미지: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="257" />
+        <source>Labeled: %d</source>
+        <translation>주석 있음: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="258" />
+        <source>Objects: %d</source>
+        <translation>객체: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="259" />
+        <source>Skipped: %d</source>
+        <translation>건너뜀: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="260" />
+        <source>Errors: %d</source>
+        <translation>오류: %d</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="264" />
+        <source>Backup: %s</source>
+        <translation>백업: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="279" />
+        <source>Recycle bin is available in dataset mode only.</source>
+        <translation>휴지통은 데이터셋 모드에서만 사용할 수 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="293" />
+        <source>No dataset image is open.</source>
+        <translation>열린 데이터셋 이미지가 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="304" />
+        <source>Error deleting image</source>
+        <translation>이미지 삭제 실패</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="305" />
+        <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 존재하지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="311" />
+        <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 이미 존재합니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="330" />
+        <source>Image moved to the recycle bin.</source>
+        <translation>이미지를 휴지통으로 이동했습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="493" />
+        <source>Dataset database: %s</source>
+        <translation>데이터셋 데이터베이스: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="516" />
+        <source>Error opening file</source>
+        <translation>파일 열기 오류</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="517" />
+        <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 데이터셋 루트 밖에 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="524" />
+        <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>이미지가 데이터셋에 등록되어 있지 않습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="532" />
+        <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>이미지 파일을 열지 못했습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="615" />
+        <source>No such file: &lt;b&gt;%s&lt;/b&gt;</source>
+        <translation>파일을 찾을 수 없습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="647" />
+        <source>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</source>
+        <translation>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;%s&lt;/i&gt;가 올바른 레이블 파일인지 확인하세요.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="653" />
+        <source>Error reading %s</source>
+        <translation>%s 읽기 오류</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="679" />
+        <source>File Not Found</source>
+        <translation>파일을 찾을 수 없음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="682" />
+        <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
+        <translation>&lt;b&gt;%s&lt;/b&gt; 파일이 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="686" />
+        <source>Remove it from the file list, or skip it for now?</source>
+        <translation>파일 목록에서 제거하거나 지금은 건너뛸까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="695" />
+        <source>Skip</source>
+        <translation>건너뛰기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="725" />
+        <source>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;i&gt;{0}&lt;/i&gt;가 올바른 이미지 파일인지 확인하세요.&lt;br/&gt;지원되는 이미지 형식: {1}&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="963" />
+        <source>Image &amp; Label files (%s)</source>
+        <translation>이미지 및 레이블 파일 (%s)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="970" />
+        <source>%s - Choose Image or Label file</source>
+        <translation>%s - 이미지 또는 레이블 파일 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="983" />
+        <source>Changing the output directory is not available in dataset mode.</source>
+        <translation>데이터셋 모드에서는 출력 디렉터리를 변경할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="996" />
+        <source>%s - Save/Load Annotations in Directory</source>
+        <translation>%s - 디렉토리에 주석 저장/로드</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1009" />
+        <source>%s . Annotations will be saved/loaded in %s</source>
+        <translation>%s. 주석은 %s에 저장되고 불러와집니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1039" />
+        <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
+        <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다. 주석은 데이터셋 데이터베이스에 저장됩니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1050" />
+        <source>Save As is not available in dataset mode yet.</source>
+        <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1055" />
+        <source>%s - Choose File</source>
+        <translation>%s - 파일 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1056" />
+        <source>Label files (*%s)</source>
+        <translation>레이블 파일 (*%s)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1084" />
+        <source>Choose File</source>
+        <translation>파일을 선택하세요</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1131" />
+        <source>Attention</source>
+        <translation>주의</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1132" />
+        <source>Move this image and its annotation to the recycle bin?</source>
+        <translation>이 이미지와 주석을 휴지통으로 이동할까요?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1146" />
+        <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
+        <translation>라벨 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1153" />
+        <source>You are about to permanently delete this label file, proceed anyway?</source>
+        <translation>이 라벨 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
+        <translation>이미지 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1210" />
+        <source>You are about to permanently delete this image file, proceed anyway?</source>
+        <translation>이 이미지 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1288" />
+        <source>Save annotations?</source>
+        <translation>주석을 저장하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1324" />
+        <source>%s - Import Files</source>
+        <translation>%s - 파일 가져오기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1326" />
+        <source>Image files (%s)</source>
+        <translation>이미지 파일(%s)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1347" />
+        <source>%s - Open Directory</source>
+        <translation>%s - 디렉토리 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="1365" />
+        <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
+        <translation>데이터셋 모드에서는 파일 추가를 아직 사용할 수 없습니다. 데이터셋 가져오기/동기화 항목을 사용하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\label_filters.py" line="33" />
+        <source>Filter by Label</source>
+        <translation>라벨로 필터링</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\label_filters.py" line="34" />
+        <source>Filter by Group ID</source>
+        <translation>그룹 ID로 필터링</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\label_filters.py" line="59" />
+        <source>All Labels</source>
+        <translation>모든 라벨 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\label_filters.py" line="74" />
+        <source>All Group IDs</source>
+        <translation>모든 그룹 ID</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\label_loop.py" line="86" />
+        <source>No objects to review</source>
+        <translation>검토할 도형이 없습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\label_loop.py" line="88" />
+        <source>Review complete</source>
+        <translation>검토 완료</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\label_loop.py" line="150" />
+        <source>Reviewing {current} / {total}</source>
+        <translation>검토 중 {current} / {total}</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\label_loop.py" line="189" />
+        <source>Copied</source>
+        <translation>복사됨</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\label_loop.py" line="190" />
+        <source>The information has been copied to the clipboard.</source>
+        <translation>정보가 클립보드에 복사되었습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="107" />
+        <source>Toggle shapes visibility is unavailable while a label or group filter is active</source>
+        <translation>라벨 또는 그룹 필터가 활성화된 동안에는 도형 표시 전환을 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="119" />
+        <source>Show all shapes</source>
+        <translation>모든 도형 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="325" />
+        <source>Batch Edit</source>
+        <translation>일괄 수정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="326" />
+        <source>You are about to edit multiple shapes in batch mode. This operation cannot be undone.
+
+This warning will only be shown once. Do you want to continue?</source>
+        <translation>일괄 편집 모드에서 여러 도형을 편집하려고 합니다. 이 작업은 취소할 수 없습니다.
+
+이 경고는 한 번만 표시됩니다. 계속하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\operator\gate.py" line="202" />
+        <source>Browse mode - editing annotations requires login</source>
+        <translation>찾아보기 모드 — 주석을 편집하려면 로그인해야 합니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\relations.py" line="97" />
+        <source>At least two shapes are required.</source>
+        <translation>객체가 두 개 이상 필요합니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\relations.py" line="117" />
+        <source>Choose two different shapes and enter a relation label.</source>
+        <translation>서로 다른 두 객체를 선택하고 관계 레이블을 입력하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\right_sidebar.py" line="92" />
+        <source>This panel cannot be hidden</source>
+        <translation>이 패널은 숨길 수 없습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\right_sidebar.py" line="99" />
+        <source>At least one panel must stay visible</source>
+        <translation>At least one panel must stay visible</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="157" />
+        <source>Quit</source>
+        <translation>종료</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="163" />
+        <source>Open Settings</source>
+        <translation>설정 열기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="170" />
+        <source>Add Point To Edge</source>
+        <translation>변에 점 추가</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="177" />
+        <source>Auto Labeling Add Point</source>
+        <translation>자동 라벨링 점 추가</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="184" />
+        <source>Auto Labeling Remove Point</source>
+        <translation>자동 라벨링 점 제거</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="193" />
+        <source>Auto Labeling Run</source>
+        <translation>자동 라벨링 실행</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="200" />
+        <source>Auto Labeling Clear</source>
+        <translation>자동 라벨링 지우기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="207" />
+        <source>Auto Labeling Finish Object</source>
+        <translation>자동 라벨링 객체 완료</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="615" />
         <source>Some model files could not be moved to the new directory:
 {details}
 
@@ -5628,271 +6431,808 @@ You can download the models again in the new directory.</source>
 
 새 폴더에서 모델을 다시 다운로드할 수 있습니다.</translation>
     </message>
-    <message><source>L: %.2f px</source><translation>L: %.2f px</translation></message>
-    <message><source>L: %.2f px | Total: %.2f px</source><translation>L: %.2f px | 합계: %.2f px</translation></message>
-    <message><source>R: %.2f px | C: %.2f px</source><translation>R: %.2f px | 둘레: %.2f px</translation></message>
-    <message><source>H: %d, W: %d</source><translation>H: %d, W: %d</translation></message>
-    <message><source>Import</source><translation>가져오기</translation></message>
-    <message><source>Import Files</source><translation>파일 가져오기</translation></message>
-    <message><source>Import Folder</source><translation>폴더 가져오기</translation></message>
-    <message><source>%s - Import Files</source><translation>%s - 파일 가져오기</translation></message>
-    <message><source>Image files (%s)</source><translation>이미지 파일(%s)</translation></message>
     <message>
-        <source>Tags</source>
-        <translation>태그</translation>
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="624" />
+        <source>Model Directory</source>
+        <translation>모델 저장 폴더</translation>
     </message>
     <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="180" />
+        <source>Error pasting shapes</source>
+        <translation>도형 붙여넣기 오류</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="181" />
+        <source>Error decoding shapes: %s</source>
+        <translation>도형 디코딩 오류: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="272" />
+        <source>Delete Group</source>
+        <translation>그룹 삭제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="273" />
+        <source>Deleting this group will remove %d shapes. This action cannot be undone. Do you want to continue?</source>
+        <translation>이 그룹을 삭제하면 도형 %d개가 제거됩니다. 이 작업은 실행 취소할 수 없습니다. 계속하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="306" />
+        <source>Object Description</source>
+        <translation>개체 설명</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="320" />
+        <source>Description</source>
+        <translation>설명</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="109" />
+        <source>No images loaded</source>
+        <translation>이미지가 로드되지 않았습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="110" />
+        <source>Please load an image folder before opening the VQA dialog.</source>
+        <translation>VQA 대화상자를 열기 전에 이미지 폴더를 불러오세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="136" />
+        <source>Point cloud unavailable</source>
+        <translation>포인트 클라우드를 사용할 수 없음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="137" />
+        <source>Unable to open the point cloud workspace: %s</source>
+        <translation>포인트 클라우드 작업 공간을 열 수 없습니다: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="168" />
+        <source>Video Classifier requires QtMultimedia, which this Qt build does not provide.</source>
+        <translation>비디오 분류기에는 QtMultimedia가 필요하지만 이 Qt 빌드에서는 제공되지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="199" />
+        <source>Please load an image folder before opening the Classification dialog.</source>
+        <translation>분류 대화상자를 열기 전에 이미지 폴더를 불러오세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="110" />
+        <source>EXIF Orientation Detected</source>
+        <translation>EXIF 방향 감지됨</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="111" />
+        <source>Detected %s images with EXIF orientation data. Direct annotation without correction may cause training anomalies.
+
+We will process these images in background and create backups in 'x-anylabeling-exif-backup' folder under current directory. This may take some time.
+
+Continue processing or ignore?</source>
+        <translation>EXIF 방향 데이터가 있는 이미지 %s개가 감지되었습니다. 이를 보정하지 않고 바로 주석 작업을 하면 학습 과정에서 문제가 생길 수 있습니다.
+
+이 이미지는 백그라운드에서 처리되며, 현재 디렉터리 아래의 'x-anylabeling-exif-backup' 폴더에 원본 백업이 생성됩니다. 이 작업에는 다소 시간이 걸릴 수 있습니다.
+
+계속 처리하시겠습니까, 아니면 무시하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="129" />
+        <source>Processing EXIF orientation...</source>
+        <translation>EXIF 방향 처리 중...</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="138" />
+        <source>Processing: %s</source>
+        <translation>처리 중: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="154" />
+        <source>Successfully processed %s images.
+
+Original images backed up to:
+%s</source>
+        <translation>이미지 %s개를 성공적으로 처리했습니다.
+
+원본 이미지는 다음 위치에 백업되었습니다:
+%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\async_exif.py" line="161" />
+        <source>EXIF Processing Complete</source>
+        <translation>EXIF 처리 완료</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\batch.py" line="383" />
+        <source>Processing completed successfully!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\batch.py" line="755" />
+        <source>Error occurred while processing images!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\batch.py" line="774" />
+        <source>Processing...</source>
+        <translation>처리 중...</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\batch.py" line="781" />
+        <source>Batch Processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\batch.py" line="882" />
+        <source>Model is not loaded. Choose a mode to continue.</source>
+        <translation>모델이 로드되지 않았습니다. 계속하려면 모드를 선택하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\batch.py" line="896" />
+        <source>Invalid model type, please choose a valid model_type to run.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\batch.py" line="963" />
+        <source>Unable to read annotation status: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\batch.py" line="974" />
+        <source>No images to process with the selected skip statuses.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\batch.py" line="1005" />
+        <source>Batch processing is not supported for the current task.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\crop.py" line="240" />
+        <source>Please load an image folder before proceeding!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\crop.py" line="249" />
+        <source>Cropped Image Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\crop.py" line="257" />
+        <source>Save Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\crop.py" line="267" />
+        <source>Select Save Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\crop.py" line="292" />
+        <source>Minimum width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\crop.py" line="300" />
+        <source>Minimum height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\crop.py" line="339" />
+        <source>• Overwrite - Overwrite existing directory
+• Cancel - Abort export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\crop.py" line="345" />
+        <source>Overwrite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\crop.py" line="462" />
+        <source>Error occurred while exporting cropped images!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="949" />
+        <source>Select a specific coco-pose config file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1354" />
+        <source>Select a specific color_map file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1410" />
+        <source>Include images without labels?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1416" />
+        <source>Only export checked images?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1888" />
+        <source>Export VLM-R1 OVD Annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1898" />
+        <source>Export to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1914" />
+        <source>Select Export File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1944" />
+        <source>Prefix:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1955" />
+        <source>Optional prefix for image filenames (e.g., 'path/to/images/')</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1970" />
+        <source>{}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="1980" />
+        <source>Use specific classes? (Optional)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="2015" />
+        <source>Hint: If you don't upload a specific classes file, all unique labels found in one of the annotations will be used for the export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="2055" />
+        <source>File Exists!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="2056" />
+        <source>File already exists. Choose an action:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="2058" />
+        <source>• Overwrite - Replace existing file
+• Cancel - Abort export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\export.py" line="2088" />
+        <source>Error initializing export: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\shape.py" line="355" />
+        <source>Warning</source>
+        <translation>경고</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\shape.py" line="356" />
+        <source>Current annotation will be changed</source>
+        <translation>현재 어노테이션이 변경됩니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\shape.py" line="358" />
+        <source>Are you sure you want to perform this conversion?</source>
+        <translation>이 변환을 수행하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\shape.py" line="370" />
+        <source>Converting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\shape.py" line="394" />
+        <source>Conversion completed successfully!</source>
+        <translation>변환이 성공적으로 완료되었습니다!</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\shape.py" line="406" />
+        <source>Error occurred while converting shapes!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="83" />
+        <source>This annotation format cannot be imported into a dataset yet.
+Dataset import currently supports YOLO detection, segmentation, OBB and pose uploads only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="209" />
+        <source>Select a custom vlm_r1_ovd annotation file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="253" />
+        <source>Uploading annotations successfully!
+Results have been saved to:
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="292" />
+        <source>Select a custom annotation file (Label.txt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="304" />
+        <source>Select a custom annotation file (ppocr_kie.json)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="332" />
+        <source>Uploading annotations successfully!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="367" />
+        <source>Select a specific OD file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="439" />
+        <source>Error reading classes file: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="453" />
+        <source>Please select a folder containing annotation files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="464" />
+        <source>Please select at least one category!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="565" />
+        <source>Select a specific gt file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="572" />
+        <source>Please select a specific gt file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="835" />
+        <source>Select a custom coco annotation file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1000" />
+        <source>No class names found in: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1027" />
+        <source>Classes: %d from the dataset categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1028" />
+        <source>Classes: %d from %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1139" />
+        <source>Label folder does not exist: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1244" />
+        <source>Uploaded: %d images, %d objects.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1245" />
+        <source>Skipped (no matching .txt): %d images.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1249" />
+        <source>Skipped (not in the dataset): %d images.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1252" />
+        <source>Failed: %d images.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1255" />
+        <source>First errors:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1270" />
+        <source>Select a specific label classes file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1283" />
+        <source>No labels found in the file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1293" />
+        <source>Current labels will be lost</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1295" />
+        <source>You are going to upload new labels to this task. Continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1323" />
+        <source>Successfully loaded %d labels!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1485" />
+        <source>Select a specific shape attributes file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1513" />
+        <source>Uploading shape attributes file successfully!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1537" />
+        <source>Select a specific flags file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\upload.py" line="1561" />
+        <source>Uploading flags file successfully!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="243" />
+        <source>Extracting frames using ffmpeg...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="317" />
+        <source>Verifying extracted frames...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="333" />
+        <source>ffmpeg failed. Check logs.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="373" />
+        <source>Completed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="388" />
+        <source>ffmpeg not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="401" />
+        <source>Error running ffmpeg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="420" />
+        <source>Extracting frames (OpenCV)... Please wait...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="549" />
+        <source>Open Video file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\video.py" line="568" />
+        <source>Directory Already Exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="96" />
+        <source>Visualization Image Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="98" />
+        <source>Visualization Video Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="114" />
+        <source>Export Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="117" />
+        <source>Current Frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="118" />
+        <source>All Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="136" />
+        <source>Select Save File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="160" />
+        <source>FPS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="169" />
+        <source>Shape Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="181" />
+        <source>Visualization Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="186" />
+        <source>Save Labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="188" />
+        <source>Save Scores</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="190" />
+        <source>Save Group IDs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="192" />
+        <source>Save Texts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="194" />
+        <source>Save Semi-transparent Masks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="196" />
+        <source>Skip Empty Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="226" />
+        <source>Shape Types Required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="228" />
+        <source>No shape types selected. Please select at least one shape type before exporting.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="282" />
+        <source>Batch zip export does not support nested or mixed directories yet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="296" />
+        <source>PNG Image (*.png);;All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="302" />
+        <source>Save Visualization Images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="304" />
+        <source>Zip Archive (*.zip);;All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="332" />
+        <source>No files to export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="354" />
+        <source>Current environment cannot write mp4 files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="382" />
+        <source>Error occurred while exporting visualization video!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="397" />
+        <source>Visualization video saved to:
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="414" />
+        <source>Error occurred while exporting visualization image!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="422" />
+        <source>Visualization image saved to:
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="464" />
+        <source>Error occurred while exporting visualization images!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="480" />
+        <source>Visualization images saved to:
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="567" />
+        <source>Preparing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="585" />
+        <source>Error occurred while preparing visualization video!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="597" />
+        <source>Checking frame sizes...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="613" />
+        <source>Video export requires all frames to have the same size.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="626" />
+        <source>Error occurred while checking frame sizes!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="799" />
+        <source>Output File Exists!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\utils\visualization.py" line="802" />
+        <source>• Overwrite - Overwrite existing file
+• Cancel - Abort export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\attributes_panel.py" line="67" />
+        <source>Invalid label '{}' with validation type: {}!
+Reset the label as {}.</source>
+        <translation>유효성 검사 유형 {}에 맞지 않는 레이블 '{}'입니다!
+레이블을 {}로 재설정합니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\attributes_panel.py" line="167" />
+        <source>Value '{}' is not defined in the current attribute configuration.</source>
+        <translation>'{}' 값은 현재 속성 구성에 정의되어 있지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="296" />
+        <source>Please wait...</source>
+        <translation>기다려 주세요...</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="346" />
+        <source>Toggle right panel</source>
+        <translation>오른쪽 패널 표시 전환</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="377" />
+        <source>Update available</source>
+        <translation>업데이트 사용 가능</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="399" />
+        <source>Color by label</source>
+        <translation>라벨별 색상 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="400" />
+        <source>Color by instance</source>
+        <translation>인스턴스별 색상 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="401" />
+        <source>Color by group</source>
+        <translation>그룹별 색상 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="402" />
+        <source>Binary mask</source>
+        <translation>이진 마스크</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="594" />
+        <source>Classes</source>
+        <translation>레이블 필터</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="595" />
         <source>Image Attributes</source>
         <translation>이미지 속성</translation>
     </message>
     <message>
-        <source>Edit image tags</source>
-        <translation>이미지 태그 편집</translation>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="597" />
+        <source>Statistics</source>
+        <translation>통계</translation>
     </message>
     <message>
-        <source>Copy File Names</source>
-        <translation>파일 이름 복사</translation>
-    </message>
-    <message>
-        <source>Copy File Paths</source>
-        <translation>파일 경로 복사</translation>
-    </message>
-    <message>
-        <source>Remove %d Files from List</source>
-        <translation>목록에서 %d개 파일 제거</translation>
-    </message>
-    <message>
-        <source>Remove %d files from the file list?
-The image files and their annotation files will NOT be deleted.</source>
-        <translation>파일 목록에서 %d개 파일을 제거하시겠습니까?
-이미지 파일과 주석 파일은 삭제되지 않습니다.</translation>
-    </message>
-    <message>
-        <source>Split of %d files set to %s</source>
-        <translation>%d개 파일의 분할을 %s(으)로 설정했습니다</translation>
-    </message>
-    <message>
-        <source>This panel cannot be hidden</source>
-        <translation>이 패널은 숨길 수 없습니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Error opening dataset</source>
-        <translation>데이터셋을 열 수 없습니다</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
-        <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Dataset database: %s</source>
-        <translation>데이터셋 데이터베이스: %s</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
-        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 데이터셋 루트 밖에 있습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
-        <translation>이미지가 데이터셋에 등록되어 있지 않습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
-        <translation>이미지 파일을 열지 못했습니다: &lt;b&gt;%s&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
-        <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다. 주석은 데이터셋 데이터베이스에 저장됩니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Save As is not available in dataset mode yet.</source>
-        <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Deleting annotations is not available in dataset mode yet.</source>
-        <translation>데이터셋 모드에서는 주석 삭제를 아직 사용할 수 없습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Deleting image files is not available in dataset mode yet.</source>
-        <translation>데이터셋 모드에서는 이미지 파일 삭제를 아직 사용할 수 없습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Changing the output directory is not available in dataset mode.</source>
-        <translation>데이터셋 모드에서는 출력 디렉터리를 변경할 수 없습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
-        <translation>데이터셋 모드에서는 파일 추가를 아직 사용할 수 없습니다. 데이터셋 가져오기/동기화 항목을 사용하세요.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Search filters are not available in dataset mode yet.</source>
-        <translation>데이터셋 모드에서는 검색 필터를 아직 사용할 수 없습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" />
-        <source>Current image is not registered in the dataset.</source>
-        <translation>현재 이미지가 데이터셋에 등록되어 있지 않습니다.</translation>
-    </message>
-    <message>
-        <source>Import Project (X-AnyLabeling)</source>
-        <translation>프로젝트 가져오기(X-AnyLabeling)</translation>
-    </message>
-    <message>
-        <source>Import Project</source>
-        <translation>프로젝트 가져오기</translation>
-    </message>
-    <message>
-        <source>A dataset database already exists in this directory.</source>
-        <translation>이 디렉터리에 이미 데이터셋 데이터베이스가 있습니다.</translation>
-    </message>
-    <message>
-        <source>Skip existing images or replace their annotations?</source>
-        <translation>기존 이미지를 건너뛸까요, 아니면 주석을 바꿀까요?</translation>
-    </message>
-    <message>
-        <source>Skip Existing</source>
-        <translation>기존 건너뛰기</translation>
-    </message>
-    <message>
-        <source>Replace Existing</source>
-        <translation>기존 바꾸기</translation>
-    </message>
-    <message>
-        <source>Import failed</source>
-        <translation>가져오기 실패</translation>
-    </message>
-    <message>
-        <source>Images: %d</source>
-        <translation>이미지: %d</translation>
-    </message>
-    <message>
-        <source>Labeled: %d</source>
-        <translation>주석 있음: %d</translation>
-    </message>
-    <message>
-        <source>Objects: %d</source>
-        <translation>객체: %d</translation>
-    </message>
-    <message>
-        <source>Skipped: %d</source>
-        <translation>건너뜀: %d</translation>
-    </message>
-    <message>
-        <source>Errors: %d</source>
-        <translation>오류: %d</translation>
-    </message>
-    <message>
-        <source>Backup: %s</source>
-        <translation>백업: %s</translation>
-    </message>
-    <message>
-        <source>Recycle bin is available in dataset mode only.</source>
-        <translation>휴지통은 데이터셋 모드에서만 사용할 수 있습니다.</translation>
-    </message>
-    <message>
-        <source>No dataset image is open.</source>
-        <translation>열린 데이터셋 이미지가 없습니다.</translation>
-    </message>
-    <message>
-        <source>Error deleting image</source>
-        <translation>이미지 삭제 실패</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
-        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 존재하지 않습니다.</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
-        <translation>&lt;b&gt;%s&lt;/b&gt;이(가) 이미 존재합니다.</translation>
-    </message>
-    <message>
-        <source>Image moved to the recycle bin.</source>
-        <translation>이미지를 휴지통으로 이동했습니다.</translation>
-    </message>
-    <message>
-        <source>Move this image and its annotation to the recycle bin?</source>
-        <translation>이 이미지와 주석을 휴지통으로 이동할까요?</translation>
-    </message>
-    <message>
-        <source>Creating dataset database…</source>
-        <translation>데이터셋 데이터베이스 생성 중…</translation>
-    </message>
-    <message>
-        <source>Dataset database</source>
-        <translation>데이터셋 데이터베이스</translation>
-    </message>
-    <message>
-        <source>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</source>
-        <translation>&lt;b&gt;%s&lt;/b&gt;에 데이터셋 데이터베이스를 만들 수 없습니다:&lt;br/&gt;%s</translation>
-    </message>
-    <message>
-        <source>Dataset database created: %s</source>
-        <translation>데이터셋 데이터베이스가 생성되었습니다: %s</translation>
-    </message>
-    <message>
-        <source>Dataset database created with %d file errors; see logs.</source>
-        <translation>데이터셋 데이터베이스가 생성되었지만 %d개의 파일 오류가 있습니다. 로그를 확인하세요.</translation>
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="652" />
+        <source>Import</source>
+        <translation>가져오기</translation>
     </message>
 </context><context>
     <name>MainWindow</name>
     <message>
-        <source>Full Screen</source>
-        <translation>전체 화면</translation>
-    </message>
-    <message>
+        <location filename="..\..\views\mainwindow.py" line="237" />
         <source>Exit Full Screen</source>
         <translation>전체 화면 종료</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="176" />
-        <location filename="..\..\views\mainwindow.py" line="150" />
+        <location filename="..\..\views\mainwindow.py" line="239" />
+        <source>Full Screen</source>
+        <translation>전체 화면</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\mainwindow.py" line="460" />
+        <location filename="..\..\views\mainwindow.py" line="434" />
         <source>Dock Toolbar at Top</source>
         <translation>Dock Toolbar at Top</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="177" />
-        <location filename="..\..\views\mainwindow.py" line="158" />
+        <location filename="..\..\views\mainwindow.py" line="461" />
+        <location filename="..\..\views\mainwindow.py" line="442" />
         <source>Dock Toolbar at Left</source>
         <translation>Dock Toolbar at Left</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="165" />
+        <location filename="..\..\views\mainwindow.py" line="449" />
         <source>Show Toolbar</source>
         <translation>Show Toolbar</translation>
     </message>
     <message>
-        <location filename="..\..\views\mainwindow.py" line="179" />
+        <location filename="..\..\views\mainwindow.py" line="463" />
         <source>Hide Toolbar</source>
         <translation>Hide Toolbar</translation>
     </message>
 </context><context>
     <name>Model</name>
     <message>
-        <location filename="..\..\services\auto_labeling\clrnet.py" line="40" />
-        <source>Line</source>
-        <translation>라인</translation>
-    </message>
-    <message>
-        <location filename="..\..\services\auto_labeling\clrnet.py" line="51" />
-        <source>Could not download or initialize CLRNet model.</source>
-        <translation>CLRNet 모델을 다운로드하거나 초기화할 수 없습니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\services\auto_labeling\__base__\yolo.py" line="55" />
-        <location filename="..\..\services\auto_labeling\__base__\ram.py" line="38" />
-        <location filename="..\..\services\auto_labeling\yolo_nas.py" line="245" />
         <location filename="..\..\services\auto_labeling\yolox_dwpose.py" line="41" />
         <location filename="..\..\services\auto_labeling\yolox.py" line="40" />
         <location filename="..\..\services\auto_labeling\yolov8_sam2.py" line="51" />
@@ -5906,6 +7246,7 @@ The image files and their annotation files will NOT be deleted.</source>
         <location filename="..\..\services\auto_labeling\yolov5_car_plate.py" line="32" />
         <location filename="..\..\services\auto_labeling\yolov10.py" line="24" />
         <location filename="..\..\services\auto_labeling\yoloe.py" line="76" />
+        <location filename="..\..\services\auto_labeling\yolo_nas.py" line="245" />
         <location filename="..\..\services\auto_labeling\yolo26_sahi.py" line="42" />
         <location filename="..\..\services\auto_labeling\yolo11_sahi.py" line="44" />
         <location filename="..\..\services\auto_labeling\upn.py" line="47" />
@@ -5914,8 +7255,8 @@ The image files and their annotation files will NOT be deleted.</source>
         <location filename="..\..\services\auto_labeling\segment_anything_2.py" line="57" />
         <location filename="..\..\services\auto_labeling\segment_anything.py" line="52" />
         <location filename="..\..\services\auto_labeling\scrfd.py" line="53" />
-        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="209" />
-        <location filename="..\..\services\auto_labeling\sam_hq.py" line="289" />
+        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="212" />
+        <location filename="..\..\services\auto_labeling\sam_hq.py" line="295" />
         <location filename="..\..\services\auto_labeling\rtmdet_pose.py" line="28" />
         <location filename="..\..\services\auto_labeling\rtdetrv2.py" line="37" />
         <location filename="..\..\services\auto_labeling\rtdetr.py" line="38" />
@@ -5929,7 +7270,7 @@ The image files and their annotation files will NOT be deleted.</source>
         <location filename="..\..\services\auto_labeling\model.py" line="109" />
         <location filename="..\..\services\auto_labeling\internimage_cls.py" line="30" />
         <location filename="..\..\services\auto_labeling\grounding_sam2.py" line="62" />
-        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="244" />
+        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="247" />
         <location filename="..\..\services\auto_labeling\grounding_dino_api.py" line="42" />
         <location filename="..\..\services\auto_labeling\grounding_dino.py" line="41" />
         <location filename="..\..\services\auto_labeling\geco.py" line="197" />
@@ -5942,16 +7283,22 @@ The image files and their annotation files will NOT be deleted.</source>
         <location filename="..\..\services\auto_labeling\depth_anything.py" line="231" />
         <location filename="..\..\services\auto_labeling\deimv2.py" line="36" />
         <location filename="..\..\services\auto_labeling\damo_yolo.py" line="40" />
+        <location filename="..\..\services\auto_labeling\__base__\yolo.py" line="55" />
+        <location filename="..\..\services\auto_labeling\__base__\ram.py" line="38" />
         <source>Rectangle</source>
         <translation>직사각형</translation>
     </message>
     <message>
-        <location filename="..\..\services\auto_labeling\damo_yolo.py" line="51" />
-        <source>Could not download or initialize DAMO_YOLO model.</source>
-        <translation>DAMO_YOLO 모델을 다운로드하거나 초기화할 수 없습니다.</translation>
+        <location filename="..\..\services\auto_labeling\yolox_dwpose.py" line="42" />
+        <location filename="..\..\services\auto_labeling\yolov6_face.py" line="28" />
+        <location filename="..\..\services\auto_labeling\yolov5_car_plate.py" line="31" />
+        <location filename="..\..\services\auto_labeling\yolov10.py" line="22" />
+        <location filename="..\..\services\auto_labeling\rtmdet_pose.py" line="29" />
+        <location filename="..\..\services\auto_labeling\__base__\yolo.py" line="53" />
+        <source>Point</source>
+        <translation>포인트</translation>
     </message>
     <message>
-        <location filename="..\..\services\auto_labeling\__base__\yolo.py" line="54" />
         <location filename="..\..\services\auto_labeling\yolov8_sam2.py" line="50" />
         <location filename="..\..\services\auto_labeling\yolov5_sam.py" line="50" />
         <location filename="..\..\services\auto_labeling\yolov10.py" line="23" />
@@ -5960,18 +7307,34 @@ The image files and their annotation files will NOT be deleted.</source>
         <location filename="..\..\services\auto_labeling\segment_anything_2_video.py" line="67" />
         <location filename="..\..\services\auto_labeling\segment_anything_2.py" line="56" />
         <location filename="..\..\services\auto_labeling\segment_anything.py" line="51" />
-        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="208" />
-        <location filename="..\..\services\auto_labeling\sam_hq.py" line="288" />
+        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="211" />
+        <location filename="..\..\services\auto_labeling\sam_hq.py" line="294" />
         <location filename="..\..\services\auto_labeling\rfdetr_seg.py" line="26" />
         <location filename="..\..\services\auto_labeling\rfdetr.py" line="38" />
         <location filename="..\..\services\auto_labeling\open_vision.py" line="70" />
         <location filename="..\..\services\auto_labeling\grounding_sam2.py" line="61" />
-        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="243" />
+        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="246" />
         <location filename="..\..\services\auto_labeling\efficientvit_sam.py" line="225" />
         <location filename="..\..\services\auto_labeling\edge_sam.py" line="51" />
         <location filename="..\..\services\auto_labeling\dfine_seg.py" line="43" />
+        <location filename="..\..\services\auto_labeling\__base__\yolo.py" line="54" />
         <source>Polygon</source>
         <translation>다각형</translation>
+    </message>
+    <message>
+        <location filename="..\..\services\auto_labeling\clrnet.py" line="40" />
+        <source>Line</source>
+        <translation>라인</translation>
+    </message>
+    <message>
+        <location filename="..\..\services\auto_labeling\clrnet.py" line="51" />
+        <source>Could not download or initialize CLRNet model.</source>
+        <translation>CLRNet 모델을 다운로드하거나 초기화할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\services\auto_labeling\damo_yolo.py" line="51" />
+        <source>Could not download or initialize DAMO_YOLO model.</source>
+        <translation>DAMO_YOLO 모델을 다운로드하거나 초기화할 수 없습니다.</translation>
     </message>
     <message>
         <location filename="..\..\services\auto_labeling\yolov8_sam2.py" line="52" />
@@ -5980,12 +7343,12 @@ The image files and their annotation files will NOT be deleted.</source>
         <location filename="..\..\services\auto_labeling\segment_anything_2_video.py" line="69" />
         <location filename="..\..\services\auto_labeling\segment_anything_2.py" line="58" />
         <location filename="..\..\services\auto_labeling\segment_anything.py" line="53" />
-        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="210" />
-        <location filename="..\..\services\auto_labeling\sam_hq.py" line="290" />
+        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="213" />
+        <location filename="..\..\services\auto_labeling\sam_hq.py" line="296" />
         <location filename="..\..\services\auto_labeling\rio_detr.py" line="39" />
         <location filename="..\..\services\auto_labeling\open_vision.py" line="71" />
         <location filename="..\..\services\auto_labeling\grounding_sam2.py" line="63" />
-        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="245" />
+        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="248" />
         <location filename="..\..\services\auto_labeling\efficientvit_sam.py" line="227" />
         <location filename="..\..\services\auto_labeling\edge_sam.py" line="53" />
         <source>Rotation</source>
@@ -6004,7 +7367,7 @@ The image files and their annotation files will NOT be deleted.</source>
     <message>
         <location filename="..\..\services\auto_labeling\yolov5_sam.py" line="114" />
         <location filename="..\..\services\auto_labeling\segment_anything.py" line="72" />
-        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="227" />
+        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="230" />
         <location filename="..\..\services\auto_labeling\efficientvit_sam.py" line="243" />
         <source>Could not download or initialize encoder of Segment Anything.</source>
         <translation>Segment Anything의 인코더를 다운로드하거나 초기화할 수 없습니다.</translation>
@@ -6012,7 +7375,7 @@ The image files and their annotation files will NOT be deleted.</source>
     <message>
         <location filename="..\..\services\auto_labeling\yolov5_sam.py" line="127" />
         <location filename="..\..\services\auto_labeling\segment_anything.py" line="84" />
-        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="239" />
+        <location filename="..\..\services\auto_labeling\sam_med2d.py" line="242" />
         <location filename="..\..\services\auto_labeling\efficientvit_sam.py" line="255" />
         <source>Could not download or initialize decoder of Segment Anything.</source>
         <translation>Segment Anything의 디코더를 다운로드하거나 초기화할 수 없습니다.</translation>
@@ -6033,14 +7396,14 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>GeCo의 디코더를 다운로드하거나 초기화할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\services\auto_labeling\sam_hq.py" line="309" />
-        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="292" />
+        <location filename="..\..\services\auto_labeling\sam_hq.py" line="315" />
+        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="295" />
         <source>Could not download or initialize encoder of SAM_HQ.</source>
         <translation>SAM_HQ의 인코더를 다운로드하거나 초기화할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\services\auto_labeling\sam_hq.py" line="321" />
-        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="304" />
+        <location filename="..\..\services\auto_labeling\sam_hq.py" line="327" />
+        <location filename="..\..\services\auto_labeling\grounding_sam.py" line="307" />
         <source>Could not download or initialize decoder of SAM_HQ.</source>
         <translation>SAM_HQ의 디코더를 다운로드하거나 초기화할 수 없습니다.</translation>
     </message>
@@ -6087,16 +7450,6 @@ The image files and their annotation files will NOT be deleted.</source>
         <location filename="..\..\services\auto_labeling\model.py" line="417" />
         <source>Downloading {download_url}: {percent}%</source>
         <translation>{download_url} 다운로드 중: {percent} %</translation>
-    </message>
-    <message>
-        <location filename="..\..\services\auto_labeling\__base__\yolo.py" line="53" />
-        <location filename="..\..\services\auto_labeling\yolox_dwpose.py" line="42" />
-        <location filename="..\..\services\auto_labeling\yolov6_face.py" line="28" />
-        <location filename="..\..\services\auto_labeling\yolov5_car_plate.py" line="31" />
-        <location filename="..\..\services\auto_labeling\yolov10.py" line="22" />
-        <location filename="..\..\services\auto_labeling\rtmdet_pose.py" line="29" />
-        <source>Point</source>
-        <translation>포인트</translation>
     </message>
     <message>
         <location filename="..\..\services\auto_labeling\rtmdet_pose.py" line="42" />
@@ -6554,6 +7907,158 @@ Continue?</source>
 계속하시겠습니까?</translation>
     </message>
 </context><context>
+    <name>ObjectEditor</name>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="107" />
+        <source>Toggle shapes visibility is unavailable while a label or group filter is active</source>
+        <translation>라벨 또는 그룹 필터가 활성화된 동안에는 도형 표시 전환을 사용할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="116" />
+        <source>Hide all shapes</source>
+        <translation>모든 도형 숨기기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="119" />
+        <source>Show all shapes</source>
+        <translation>모든 도형 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="325" />
+        <source>Batch Edit</source>
+        <translation>일괄 수정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="326" />
+        <source>You are about to edit multiple shapes in batch mode. This operation cannot be undone.
+
+This warning will only be shown once. Do you want to continue?</source>
+        <translation>일괄 편집 모드에서 여러 도형을 편집하려고 합니다. 이 작업은 취소할 수 없습니다.
+
+이 경고는 한 번만 표시됩니다. 계속하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="456" />
+        <location filename="..\..\views\labeling\object_editor.py" line="362" />
+        <source>Invalid label</source>
+        <translation>유효하지 않은 라벨</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\object_editor.py" line="457" />
+        <location filename="..\..\views\labeling\object_editor.py" line="363" />
+        <source>Invalid label '{}' with validation type '{}'</source>
+        <translation>유효성 검사 유형이 '{}' 인 유효하지 않은 레이블 '{}'</translation>
+    </message>
+</context><context>
+    <name>OperatorBar</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_bar.py" line="51" />
+        <source>Login</source>
+        <translation>로그인</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_bar.py" line="57" />
+        <source>Logout</source>
+        <translation>로그아웃</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_bar.py" line="90" />
+        <location filename="..\..\views\labeling\widgets\operator_bar.py" line="64" />
+        <source>Browse mode - editing annotations requires login</source>
+        <translation>찾아보기 모드 — 주석을 편집하려면 로그인해야 합니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_bar.py" line="83" />
+        <source>Not logged in</source>
+        <translation>로그인 안 됨</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_bar.py" line="101" />
+        <location filename="..\..\views\labeling\widgets\operator_bar.py" line="94" />
+        <source>Annotation mode: %s</source>
+        <translation>주석 모드: %s</translation>
+    </message>
+</context><context>
+    <name>OperatorDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="57" />
+        <source>Unknown operator or wrong password.</source>
+        <translation>작업자가 없거나 비밀번호가 올바르지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="59" />
+        <source>This operator is disabled.</source>
+        <translation>이 작업자는 비활성화되었습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="61" />
+        <source>This operator name is already registered.</source>
+        <translation>이 작업자 이름은 이미 등록되었습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="63" />
+        <source>This name is reserved.</source>
+        <translation>이 이름은 예약되어 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="65" />
+        <source>Password must be at least %d characters.</source>
+        <translation>비밀번호는 %d자 이상이어야 합니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="69" />
+        <source>The operator name is not valid.</source>
+        <translation>작업자 이름이 올바르지 않습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="71" />
+        <source>This operator cannot manage other accounts.</source>
+        <translation>이 작업자는 다른 계정을 관리할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="73" />
+        <source>Cannot open the operator database: %s</source>
+        <translation>작업자 데이터베이스를 열 수 없습니다: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="78" />
+        <source>The operator operation failed: %s</source>
+        <translation>작업자 작업에 실패했습니다: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="278" />
+        <source>Operator Login</source>
+        <translation>작업자 로그인</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="327" />
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="287" />
+        <source>Login to edit annotations</source>
+        <translation>로그인하면 주석을 편집할 수 있습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="334" />
+        <source>Register operator</source>
+        <translation>작업자 등록</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="342" />
+        <source>Select an operator.</source>
+        <translation>작업자를 선택하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="355" />
+        <source>The passwords do not match.</source>
+        <translation>비밀번호가 일치하지 않습니다.</translation>
+    </message>
+</context><context>
+    <name>OperatorGate</name>
+    <message>
+        <location filename="..\..\views\labeling\operator\gate.py" line="202" />
+        <source>Browse mode - editing annotations requires login</source>
+        <translation>찾아보기 모드 — 주석을 편집하려면 로그인해야 합니다</translation>
+    </message>
+</context><context>
     <name>OverviewDialog</name>
     <message>
         <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="102" />
@@ -6804,126 +8309,126 @@ Results have been saved to:
         <translation>PaddleOCR 입력 파일 (*.pdf *.png *.jpg *.jpeg *.bmp *.gif *.tif *.tiff *.webp *.cif)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1081" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1080" />
         <source>Confirm Parsing</source>
         <translation>파싱 확인</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1082" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1081" />
         <source>Start parsing selected files?</source>
         <translation>선택한 파일의 파싱을 시작하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1086" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1085" />
         <source>...and {0} more</source>
         <translation>...외 {0}개</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1092" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1091" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1096" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1095" />
         <source>Start Parsing</source>
         <translation>파싱 시작</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1109" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1108" />
         <source>Import Failed</source>
         <translation>가져오기에 실패했습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1246" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1245" />
         <source>Parsing failed.</source>
         <translation>파싱에 실패했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1287" />
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1264" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1286" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1263" />
         <source>Cancelling parsing task. Waiting for current step to finish.</source>
         <translation>파싱 작업을 취소하는 중입니다. 현재 단계가 완료될 때까지 기다려 주세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1273" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1272" />
         <source>File {0}/{1}: {2}  Page {3}/{4}</source>
         <translation>파일 {0}/{1}: {2}  페이지 {3}/{4}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1283" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1282" />
         <source>Parsing is running for this file.</source>
         <translation>이 파일은 현재 파싱 중입니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1292" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1291" />
         <source>Waiting in the parsing queue.</source>
         <translation>파싱 대기열에서 기다리는 중입니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1295" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1294" />
         <source>Waiting to parse this file.</source>
         <translation>이 파일의 파싱을 기다리는 중입니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1366" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1365" />
         <source>Parsing</source>
         <translation>파싱 중</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1651" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1650" />
         <source>Download Document Parsing</source>
         <translation>문서 파싱 결과 다운로드</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1653" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1652" />
         <source>ZIP Files (*.zip)</source>
         <translation>ZIP 파일 (*.zip)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2112" />
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1727" />
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1700" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2109" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1724" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1698" />
         <source>Save Failed</source>
         <translation>저장에 실패했습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1729" />
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1702" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1726" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1700" />
         <source>Download Successful</source>
         <translation>다운로드가 완료되었습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1714" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1712" />
         <source>Download JSON</source>
         <translation>JSON 다운로드</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1716" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1714" />
         <source>JSON Files (*.json)</source>
         <translation>JSON 파일 (*.json)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1798" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1795" />
         <source>Page {0}</source>
         <translation>페이지 {0}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2099" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2096" />
         <source>Block content exceeds the available editor height</source>
         <translation>블록 내용이 편집기의 사용 가능한 높이를 초과합니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2147" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2144" />
         <source>Delete File</source>
         <translation>파일 삭제</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2148" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2145" />
         <source>Are you sure you want to delete this file? This action cannot be undone and will remove all associated data.</source>
         <translation>이 파일을 삭제하시겠습니까? 이 작업은 되돌릴 수 없으며 관련된 모든 데이터도 함께 삭제됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2447" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2444" />
         <source>Copy Successful</source>
         <translation>복사되었습니다</translation>
     </message>
@@ -7210,7 +8715,61 @@ Results have been saved to:
         <translation>내용 입력</translation>
     </message>
 </context><context>
+    <name>PasswordResetDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="426" />
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="379" />
+        <source>Reset password</source>
+        <translation>비밀번호 재설정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="394" />
+        <source>Administrator</source>
+        <translation>관리자</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="398" />
+        <source>Administrator password</source>
+        <translation>관리자 비밀번호</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="402" />
+        <source>Target operator</source>
+        <translation>대상 작업자</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="406" />
+        <source>New password</source>
+        <translation>새 비밀번호</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="410" />
+        <source>Confirm password</source>
+        <translation>비밀번호 확인</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="423" />
+        <source>Cancel</source>
+        <translation>취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="471" />
+        <source>The passwords do not match.</source>
+        <translation>비밀번호가 일치하지 않습니다.</translation>
+    </message>
+</context><context>
     <name>PointCloudDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1251" />
+        <source>Hide camera images</source>
+        <translation>카메라 이미지 숨기기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="424" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1253" />
+        <source>Show camera images</source>
+        <translation>카메라 이미지 표시</translation>
+    </message>
     <message>
         <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="335" />
         <source>Delete instance</source>
@@ -7228,12 +8787,7 @@ Results have been saved to:
         <translation>카메라 조작 버튼 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="424" />
-        <source>Show camera images</source>
-        <translation>카메라 이미지 표시</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1476" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1472" />
         <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="447" />
         <source>Detection</source>
         <translation>객체 검출</translation>
@@ -7330,7 +8884,7 @@ Results have been saved to:
         <translation>다각형 (Ctrl+왼쪽 드래그로 이동, 휠로 확대/축소)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3166" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3150" />
         <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="711" />
         <source>Finish polygon selection</source>
         <translation>다각형 선택 완료</translation>
@@ -7441,19 +8995,19 @@ Results have been saved to:
         <translation>포인트 크기 (px)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1478" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1474" />
         <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="963" />
         <source>Segmentation</source>
         <translation>분할</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2771" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2755" />
         <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="977" />
         <source>Classes</source>
         <translation>클래스</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2785" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2769" />
         <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="980" />
         <source>Lock all classes</source>
         <translation>모든 클래스 잠금</translation>
@@ -7469,7 +9023,7 @@ Results have been saved to:
         <translation>클래스: ID / 이름 / 전체 프레임 포인트 수</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2790" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2774" />
         <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1017" />
         <source>Instances</source>
         <translation>인스턴스</translation>
@@ -7495,7 +9049,7 @@ Results have been saved to:
         <translation>인스턴스: 클래스 / ID / 전체 프레임 포인트 수</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2814" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2798" />
         <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1153" />
         <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1137" />
         <source>Point Cloud</source>
@@ -7527,533 +9081,533 @@ Results have been saved to:
         <translation>포인트 클라우드 (*.bin *.ply *.pcd)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1238" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1236" />
         <source>Open point cloud directory</source>
         <translation>포인트 클라우드 폴더 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1287" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1283" />
         <source>Choose label source</source>
         <translation>레이블 원본 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1288" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1284" />
         <source>Multiple matching label files exist. Choose the source for this frame:</source>
         <translation>일치하는 레이블 파일이 여러 개 있습니다. 이 프레임의 원본을 선택하세요:</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1370" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1366" />
         <source>Loading and validating point cloud…</source>
         <translation>포인트 클라우드를 불러오고 검증하는 중…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1371" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1367" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1483" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1479" />
         <source>Create a new task to change the task type.</source>
         <translation>작업 유형을 변경하려면 새 작업을 만드세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1495" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1491" />
         <source>Loaded {name}: {count} points.</source>
         <translation>{name} 불러옴: {count}개 포인트.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1505" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1501" />
         <source>Loading cancelled. Previous work has been retained.</source>
         <translation>불러오기가 취소되었습니다. 이전 작업은 유지됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1589" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1585" />
         <source>Exported {frames} frames and {objects} objects to {path}</source>
         <translation>프레임 {frames}개와 객체 {objects}개를 {path}로 내보냈습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1662" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1658" />
         <source>Imported {objects} objects into {frames} frames.</source>
         <translation>프레임 {frames}개에 객체 {objects}개를 가져왔습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1735" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1731" />
         <source>Reviewed</source>
         <translation>검토 완료</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1735" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1731" />
         <source>Not reviewed</source>
         <translation>미검토</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1755" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1751" />
         <source>Mark as not reviewed</source>
         <translation>미검토로 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1757" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1753" />
         <source>Mark as reviewed</source>
         <translation>검토 완료로 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1778" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1774" />
         <source>Open this frame before marking it as reviewed.</source>
         <translation>검토 완료로 표시하기 전에 이 프레임을 여세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1825" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1821" />
         <source>Choose labels for current frame</source>
         <translation>현재 프레임의 레이블 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2029" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1827" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2019" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1823" />
         <source>Point labels (*.label)</source>
         <translation>포인트 레이블 (*.label)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1835" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1829" />
         <source>Bind {label} to {cloud}? Their file names differ.</source>
         <translation>{label}을(를) {cloud}에 연결할까요? 파일 이름이 다릅니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1851" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1845" />
         <source>Choose label directory</source>
         <translation>레이블 폴더 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1859" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1851" />
         <source>Use this label directory for the entire sequence? This replaces {count} explicit frame associations.</source>
         <translation>이 레이블 폴더를 전체 시퀀스에 사용할까요? 개별 지정한 프레임 연결 {count}개가 대체됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1875" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1867" />
         <source>Change output directory</source>
         <translation>출력 폴더 변경</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1924" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1914" />
         <source>Replace the existing label file at {path}?</source>
         <translation>{path}의 기존 레이블 파일을 교체할까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1941" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1931" />
         <source>Could not save labels to {path}: {error}</source>
         <translation>{path}에 레이블을 저장할 수 없습니다: {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1954" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1944" />
         <source>Saved {count} labels to {path}.</source>
         <translation>레이블 {count}개를 {path}에 저장했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1966" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1956" />
         <source>Replace the existing cuboid file at {path}?</source>
         <translation>{path}에 있는 기존 3D 박스 파일을 교체하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1984" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1974" />
         <source>Could not save cuboids to {path}: {error}</source>
         <translation>{path}에 3D 박스를 저장할 수 없습니다: {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1993" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1983" />
         <source>Saved {count} cuboids to {path}.</source>
         <translation>3D 박스 {count}개를 {path}에 저장했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2013" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2003" />
         <source>Label save completed; class definitions remain unsaved.</source>
         <translation>레이블 저장이 완료되었습니다. 클래스 정의는 아직 저장되지 않았습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2027" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2017" />
         <source>Save complete frame labels</source>
         <translation>전체 프레임 레이블 저장</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2038" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2026" />
         <source>Save labels for {cloud} as {label}? Keep this association when reopening.</source>
         <translation>{cloud}의 레이블을 {label}(으)로 저장할까요? 다시 열 때도 이 연결을 유지합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2047" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2035" />
         <source>Labels: {labels}. Class definitions: {config}.</source>
         <translation>레이블: {labels}. 클래스 정의: {config}.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2049" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2037" />
         <source>Unlabeled only</source>
         <translation>레이블 없는 포인트만</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2073" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2061" />
         <source>Save class definitions</source>
         <translation>클래스 정의 저장</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2128" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2075" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2114" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2063" />
         <source>Class definitions (*.json)</source>
         <translation>클래스 정의 (*.json)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2088" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2074" />
         <source>Class definitions must use a separate JSON file.</source>
         <translation>클래스 정의는 별도의 JSON 파일을 사용해야 합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2097" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2083" />
         <source>Could not save class definitions to {path}: {error}</source>
         <translation>{path}에 클래스 정의를 저장할 수 없습니다: {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2116" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2102" />
         <source>Class definitions saved to {path}.</source>
         <translation>클래스 정의를 {path}에 저장했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2126" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2112" />
         <source>Load class definitions</source>
         <translation>클래스 정의 불러오기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2138" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2122" />
         <source>This file does not contain classes for the current task.</source>
         <translation>이 파일에는 현재 작업의 클래스가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2148" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2132" />
         <source>Replace the current task's unsaved class definitions with this file? Annotation IDs and the other task's classes are unchanged.</source>
         <translation>현재 작업의 저장되지 않은 클래스 정의를 이 파일의 내용으로 교체하시겠습니까? 어노테이션 ID와 다른 작업의 클래스는 변경되지 않습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2281" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2265" />
         <source>Unlock the class and its instances before deleting it.</source>
         <translation>클래스를 삭제하기 전에 클래스와 해당 인스턴스의 잠금을 해제하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2288" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2272" />
         <source>ID 0 is reserved for unlabeled points and cannot be removed.</source>
         <translation>ID 0은 레이블 없는 포인트용으로 예약되어 있어 삭제할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2299" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2283" />
         <source>Delete this class and clear semantic and instance labels from {count} points in the current frame? Other frames are unchanged. Point label changes can be undone.</source>
         <translation>이 클래스를 삭제하고 현재 프레임의 포인트 {count}개에서 시맨틱 및 인스턴스 레이블을 지울까요? 다른 프레임은 변경되지 않습니다. 포인트 레이블 변경은 실행 취소할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2326" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2310" />
         <source>Create or select a class in Classes before painting.</source>
         <translation>칠하기 전에 클래스에서 클래스를 생성하거나 선택하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2383" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2367" />
         <source>Through selection includes visible points at all depths. Hidden points remain excluded.</source>
         <translation>관통 선택에는 모든 깊이의 표시된 포인트가 포함됩니다. 숨겨진 포인트는 제외됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2417" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2401" />
         <source>No editable points selected.</source>
         <translation>편집 가능한 포인트가 선택되지 않았습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2429" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2413" />
         <source>Select a class before painting.</source>
         <translation>칠하기 전에 클래스를 선택하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2443" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2427" />
         <source>Select a nonzero class or a valid target instance first.</source>
         <translation>먼저 ID가 0이 아닌 클래스 또는 유효한 대상 인스턴스를 선택하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2454" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2438" />
         <source>Transfer {count} points from their existing instances? Other semantic classes are excluded.</source>
         <translation>기존 인스턴스에서 포인트 {count}개를 이동할까요? 다른 시맨틱 클래스는 제외됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2467" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2451" />
         <source>Select an instance first.</source>
         <translation>먼저 인스턴스를 선택하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2477" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2461" />
         <source>Modified {count} points.</source>
         <translation>포인트 {count}개를 수정했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2479" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2463" />
         <source>Excluded {count} points belonging to other semantic classes.</source>
         <translation>다른 시맨틱 클래스에 속한 포인트 {count}개를 제외했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2501" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2485" />
         <source>Unlock the class or instance before deleting it.</source>
         <translation>삭제하기 전에 클래스 또는 인스턴스의 잠금을 해제하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2507" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2491" />
         <source>Delete instance {key} from all {count} points, including {hidden} hidden points? Semantic labels are retained.</source>
         <translation>숨겨진 포인트 {hidden}개를 포함한 전체 포인트 {count}개에서 인스턴스 {key}을(를) 삭제할까요? 시맨틱 레이블은 유지됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2526" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2510" />
         <source>Select at least two instances. The current row is the retained target.</source>
         <translation>인스턴스를 두 개 이상 선택하세요. 현재 행이 유지할 대상입니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2533" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2517" />
         <source>Instances from different semantic classes cannot be merged.</source>
         <translation>서로 다른 시맨틱 클래스의 인스턴스는 병합할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2540" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2524" />
         <source>Unlock the selected instances before merging.</source>
         <translation>병합하기 전에 선택한 인스턴스의 잠금을 해제하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2548" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2532" />
         <source>Merge {count} points, including {hidden} hidden points, into instance {target}? The target ID is retained.</source>
         <translation>숨겨진 포인트 {hidden}개를 포함한 포인트 {count}개를 인스턴스 {target}(으)로 병합할까요? 대상 ID는 유지됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2569" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2553" />
         <source>Adjust display filters to reveal the entire current instance?</source>
         <translation>현재 인스턴스 전체가 보이도록 표시 필터를 조정할까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2626" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2610" />
         <source>Unlock the class before unlocking its instances.</source>
         <translation>인스턴스의 잠금을 해제하기 전에 클래스의 잠금을 해제하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2783" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2767" />
         <source>Unlock all classes</source>
         <translation>모든 클래스 잠금 해제</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2898" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2882" />
         <source>Intensity: {low:.3g} → {high:.3g} (display normalization only)</source>
         <translation>반사 강도: {low:.3g} → {high:.3g} (표시만 정규화)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2920" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2904" />
         <source>Original: source RGB colors or white when RGB is absent; labels are unchanged.</source>
         <translation>원본: 원본 RGB 색상을 표시하며, RGB가 없으면 흰색으로 표시합니다. 라벨은 변경되지 않습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2944" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2928" />
         <source>Colors identify class IDs or (class, instance) pairs. Dimmed points have no instance.</source>
         <translation>색상은 클래스 ID 또는 (클래스, 인스턴스) 쌍을 나타냅니다. 흐리게 표시된 포인트에는 인스턴스가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3058" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3042" />
         <source>Modified</source>
         <translation>수정됨</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3061" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3045" />
         <source>Saved</source>
         <translation>저장됨</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3063" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3047" />
         <source>No result file</source>
         <translation>결과 파일 없음</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3067" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3051" />
         <source>{total} points · {visible} visible · {unlabeled} unlabeled · {state}</source>
         <translation>포인트 {total}개 · 표시 {visible}개 · 레이블 없음 {unlabeled}개 · {state}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3079" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3063" />
         <source> · {count} cuboids</source>
         <translation> · 3D 박스 {count}개</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3083" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3067" />
         <source>No points match the display filters. Check the class and instance eye icons.</source>
         <translation>표시 필터에 일치하는 포인트가 없습니다. 클래스 및 인스턴스의 눈 아이콘을 확인하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3097" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3081" />
         <source>3D Detection</source>
         <translation>3D 객체 검출</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3099" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3083" />
         <source>Draw cuboid</source>
         <translation>3D 박스 그리기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3100" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3084" />
         <source>Focus cuboid</source>
         <translation>3D 박스에 초점 맞추기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3101" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3085" />
         <source>Delete cuboid</source>
         <translation>3D 박스 삭제</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3102" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3086" />
         <source>Duplicate cuboid</source>
         <translation>3D 박스 복제</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3103" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3087" />
         <source>Copy / Paste cuboid</source>
         <translation>3D 박스 복사 / 붙여넣기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3104" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3088" />
         <source>Pan 3D view</source>
         <translation>3D 뷰 이동</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3154" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3104" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3138" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3088" />
         <source>Right drag</source>
         <translation>오른쪽 드래그</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3105" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3089" />
         <source>Rotate 3D view</source>
         <translation>3D 뷰 회전</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3160" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3105" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3144" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3089" />
         <source>Left drag</source>
         <translation>왼쪽 드래그</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3107" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3091" />
         <source>Edit cuboid in side views</source>
         <translation>3면 뷰에서 3D 박스 편집</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3108" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3092" />
         <source>Left or right drag on the box or handles</source>
         <translation>박스나 핸들을 왼쪽 또는 오른쪽 버튼으로 드래그</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3110" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3094" />
         <source>Move cuboid</source>
         <translation>3D 박스 이동</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3110" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3094" />
         <source>Arrow keys</source>
         <translation>방향키</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3114" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3098" />
         <source>3D camera</source>
         <translation>3D 카메라</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3121" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3105" />
         <source>Tools</source>
         <translation>도구</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3123" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3107" />
         <source>Browse</source>
         <translation>탐색</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3124" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3108" />
         <source>Brush</source>
         <translation>브러시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3126" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3110" />
         <source>Polygon</source>
         <translation>다각형</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3132" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3116" />
         <source>Editing</source>
         <translation>편집</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3141" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3125" />
         <source>Navigation</source>
         <translation>탐색 이동</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3143" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3127" />
         <source>Previous frame</source>
         <translation>이전 프레임</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3144" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3128" />
         <source>Next frame</source>
         <translation>다음 프레임</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3149" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3133" />
         <source>Mouse controls</source>
         <translation>마우스 조작</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3152" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3136" />
         <source>Pan (Browse)</source>
         <translation>이동 (탐색)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3155" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3139" />
         <source>Middle drag</source>
         <translation>가운데 드래그</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3159" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3143" />
         <source>Rotate</source>
         <translation>회전</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3162" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3146" />
         <source>Zoom</source>
         <translation>확대/축소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3162" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3146" />
         <source>Wheel</source>
         <translation>휠</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3163" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3147" />
         <source>Adjust brush size</source>
         <translation>브러시 크기 조절</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3163" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3147" />
         <source>Ctrl+Wheel</source>
         <translation>Ctrl+휠</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3164" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3148" />
         <source>Pan (Polygon)</source>
         <translation>이동 (다각형)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3164" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3148" />
         <source>Ctrl+Left drag</source>
         <translation>Ctrl+왼쪽 드래그</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3167" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3151" />
         <source>Double-click</source>
         <translation>두 번 클릭</translation>
     </message>
 </context><context>
     <name>PointCloudExportDialog</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="198" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="194" />
         <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="107" />
         <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="34" />
         <source>Export 3D objects</source>
@@ -8101,31 +9655,31 @@ Results have been saved to:
         <translation>ZIP 압축 파일 (*.zip)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="132" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="128" />
         <source>Choose a ZIP file in an existing directory.</source>
         <translation>기존 폴더에서 ZIP 파일의 저장 경로를 선택하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="140" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="136" />
         <source>Replace the existing file?
 {path}</source>
         <translation>기존 파일을 교체하시겠습니까?
 {path}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="187" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="183" />
         <source>Exporting 3D objects ({completed}/{total})…</source>
         <translation>3D 객체 내보내는 중 ({completed}/{total})…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="213" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="209" />
         <source>Cancelling export…</source>
         <translation>내보내기 취소 중…</translation>
     </message>
 </context><context>
     <name>PointCloudImportDialog</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="131" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="130" />
         <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="66" />
         <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="42" />
         <source>Import 3D objects</source>
@@ -8153,32 +9707,32 @@ Results have been saved to:
         <translation>ZIP 압축 파일 (*.zip)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="85" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="84" />
         <source>Choose an existing annotation ZIP file.</source>
         <translation>기존 어노테이션 ZIP 파일을 선택하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="111" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="110" />
         <source>Validating import…</source>
         <translation>가져올 데이터 확인 중…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="113" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="112" />
         <source>Importing 3D objects…</source>
         <translation>3D 객체 가져오는 중…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="120" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="119" />
         <source>Importing 3D objects ({completed}/{total})…</source>
         <translation>3D 객체 가져오는 중 ({completed}/{total})…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="150" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="149" />
         <source>The import contains classes outside this task. Create a new task with these classes before importing.</source>
         <translation>가져올 데이터에 현재 작업에 없는 클래스가 포함되어 있습니다. 해당 클래스를 포함한 새 작업을 만든 후 가져오세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="155" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="154" />
         <source>Import {objects} objects into {frames} frames?
 This replaces {previous} existing objects, including locked objects, and adds {classes} classes.
 Point segmentation and unmatched frames are preserved.</source>
@@ -8187,7 +9741,7 @@ Point segmentation and unmatched frames are preserved.</source>
 포인트별 분할 결과와 일치하지 않는 프레임은 유지됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="182" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="181" />
         <source>Cancelling import…</source>
         <translation>가져오기 취소 중…</translation>
     </message>
@@ -8368,6 +9922,18 @@ The main application remains available.</source>
         <translation>이 템플릿을 삭제하시겠습니까?</translation>
     </message>
 </context><context>
+    <name>RelationController</name>
+    <message>
+        <location filename="..\..\views\labeling\relations.py" line="97" />
+        <source>At least two shapes are required.</source>
+        <translation>객체가 두 개 이상 필요합니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\relations.py" line="117" />
+        <source>Choose two different shapes and enter a relation label.</source>
+        <translation>서로 다른 두 객체를 선택하고 관계 레이블을 입력하세요.</translation>
+    </message>
+</context><context>
     <name>RemoteServer</name>
     <message>
         <location filename="..\..\services\auto_labeling\remote_server.py" line="616" />
@@ -8438,6 +10004,18 @@ The main application remains available.</source>
         <translation>숨기기</translation>
     </message>
 </context><context>
+    <name>RightSidebarTabs</name>
+    <message>
+        <location filename="..\..\views\labeling\right_sidebar.py" line="92" />
+        <source>This panel cannot be hidden</source>
+        <translation>이 패널은 숨길 수 없습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\right_sidebar.py" line="99" />
+        <source>At least one panel must stay visible</source>
+        <translation>At least one panel must stay visible</translation>
+    </message>
+</context><context>
     <name>SegmentEditDialog</name>
     <message>
         <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="640" />
@@ -8494,220 +10072,240 @@ The main application remains available.</source>
 </context><context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="393" />
-        <location filename="..\..\views\labeling\settings\dialog.py" line="106" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="397" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="109" />
         <source>Settings</source>
         <translation>설정</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="123" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="126" />
         <source>Ready to edit settings</source>
         <translation>설정 수정 준비 완료</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="564" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="568" />
         <source>Reset</source>
         <translation>초기화</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="309" />
-        <location filename="..\..\views\labeling\settings\dialog.py" line="580" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="311" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="584" />
         <source>Save</source>
         <translation>저장</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="716" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="720" />
         <source>Ready to edit shortcuts</source>
         <translation>단축키를 수정할 준비가 되었습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="717" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="721" />
         <source>Ready to edit {page} settings</source>
         <translation>{page} 설정 편집 준비 완료</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="723" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="727" />
         <source>Shortcut changes are pending. Click Save to persist.</source>
         <translation>단축키 변경 사항이 있습니다. 저장을 클릭해 반영하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="726" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="730" />
         <source>{page} changes are pending. Click Save to persist.</source>
         <translation>{page} 변경 사항이 있습니다. 저장을 클릭해 반영하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="742" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="746" />
         <source>Pending changes exist in other pages. Click Save to persist.</source>
         <translation>다른 페이지에 저장되지 않은 변경 사항이 있습니다. 저장을 클릭해 반영하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1074" />
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1048" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="826" />
+        <source>Toolbar changes are applied immediately</source>
+        <translation>도구 모음 변경 사항은 즉시 적용됩니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\dialog.py" line="866" />
+        <source>Show Tool Labels</source>
+        <translation>도구 라벨 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\dialog.py" line="871" />
+        <source>Show a short label under every tool; turn it off to show more tools without scrolling.</source>
+        <translation>각 도구 아래에 짧은 라벨을 표시합니다. 끄면 스크롤하지 않고 더 많은 도구를 표시할 수 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\dialog.py" line="882" />
+        <source>Select All</source>
+        <translation>모두 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1176" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1150" />
         <source>None</source>
         <translation>없음</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1077" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1179" />
         <source>Direct Zoom</source>
         <translation>Direct Zoom</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1078" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1180" />
         <source>Traditional Navigation</source>
         <translation>Traditional Navigation</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1182" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1284" />
         <source>System Default</source>
         <translation>시스템 기본값</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1251" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1353" />
         <source>Default location</source>
         <translation>기본 위치</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1262" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1364" />
         <source>Browse</source>
         <translation>찾아보기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1312" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1414" />
         <source>Select Model Directory</source>
         <translation>모델 저장 폴더 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1451" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1555" />
         <source>Usually used to enable batch labeling mode.</source>
         <translation>일반적으로 일괄 라벨링 모드를 활성화하는 데 사용됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1454" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1558" />
         <source>Open the auto-labeling panel.</source>
         <translation>자동 라벨링 패널을 엽니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1455" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1559" />
         <source>Add a positive prompt point.</source>
         <translation>긍정 프롬프트 점을 추가합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1458" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1562" />
         <source>Clear all prompt points added to the current image.</source>
         <translation>현재 이미지에 추가된 모든 프롬프트 점을 지웁니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1461" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1565" />
         <source>Finish the current object annotation.</source>
         <translation>현재 객체 어노테이션을 완료합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1464" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1568" />
         <source>Add a negative prompt point.</source>
         <translation>부정 프롬프트 점을 추가합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1467" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1571" />
         <source>Run auto-labeling on the current image.</source>
         <translation>현재 이미지에서 자동 라벨링을 실행합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1470" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1574" />
         <source>Close the current file.</source>
         <translation>현재 파일을 닫습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1471" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1575" />
         <source>Delete the current label file.</source>
         <translation>현재 라벨 파일을 삭제합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1472" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1576" />
         <source>Delete the current image file.</source>
         <translation>현재 이미지 파일을 삭제합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1475" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1579" />
         <source>Open an image or label file.</source>
         <translation>이미지 또는 라벨 파일을 엽니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1476" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1580" />
         <source>Open an image directory.</source>
         <translation>이미지 디렉터리를 엽니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1477" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1581" />
         <source>Open a video file.</source>
         <translation>비디오 파일을 엽니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1478" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1582" />
         <source>Quit the application.</source>
         <translation>애플리케이션을 종료합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1479" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1583" />
         <source>Save labels to file.</source>
         <translation>레이블을 파일에 저장합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1480" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1584" />
         <source>Save labels to another file.</source>
         <translation>레이블을 다른 파일에 저장합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1481" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1585" />
         <source>Change the output directory.</source>
         <translation>출력 디렉터리를 변경합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1482" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1586" />
         <source>Open the next image.</source>
         <translation>다음 이미지를 엽니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1483" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1587" />
         <source>Open the next unchecked image.</source>
         <translation>다음 미확인 이미지를 엽니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1486" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1590" />
         <source>Open the previous image.</source>
         <translation>이전 이미지를 엽니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1487" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1591" />
         <source>Open the previous unchecked image.</source>
         <translation>이전 미확인 이미지를 엽니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1710" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1814" />
         <source>No shortcuts in the current category.</source>
         <translation>현재 카테고리에 단축키가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1930" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2034" />
         <source>No settings changes to save</source>
         <translation>저장할 설정 변경 사항이 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1959" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2063" />
         <source>Current page has no resettable fields</source>
         <translation>현재 페이지에는 초기화할 수 있는 항목이 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1966" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2070" />
         <source>No settings found in {page}</source>
         <translation>{page}에서 설정을 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1973" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2077" />
         <source>Reset Settings</source>
         <translation>설정 초기화</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1974" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2078" />
         <source>Reset all settings in '{page}' to defaults?
 
 Changes will not be saved until you click Save.</source>
@@ -8716,32 +10314,32 @@ Changes will not be saved until you click Save.</source>
 저장을 클릭하기 전까지 변경 사항은 저장되지 않습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1996" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2100" />
         <source>{page} defaults restored. Click Save to persist.</source>
         <translation>{page} 기본값이 복원되었습니다. 저장을 클릭해 반영하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2008" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2112" />
         <source>{page} values are already defaults</source>
         <translation>{page} 값은 이미 기본값입니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2017" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2121" />
         <source>No shortcut category selected</source>
         <translation>선택된 단축키 카테고리가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2022" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2126" />
         <source>No shortcuts found in category: {group}</source>
         <translation>카테고리 '{group}'에서 단축키를 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2029" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2133" />
         <source>Reset Shortcuts</source>
         <translation>단축키 초기화</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2030" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2134" />
         <source>Reset all shortcuts in '{group}' to defaults?
 
 Changes will not be saved until you click Save.</source>
@@ -8750,1029 +10348,1029 @@ Changes will not be saved until you click Save.</source>
 저장을 클릭하기 전까지 변경 사항은 저장되지 않습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2043" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2147" />
         <source>Shortcut values in '{group}' are already defaults</source>
         <translation>'{group}'의 단축키 값은 이미 기본값입니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2081" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2185" />
         <source>Shortcut defaults restored for '{group}'. Click Save to persist.</source>
         <translation>'{group}'의 단축키 기본값이 복원되었습니다. 저장을 클릭해 반영하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2091" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2195" />
         <source>Settings saved</source>
         <translation>설정이 저장되었습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2096" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2200" />
         <source>Save failed: {message}</source>
         <translation>저장에 실패했습니다: {message}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2105" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2209" />
         <source>Restart Required</source>
         <translation>다시 시작이 필요합니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2107" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2211" />
         <source>Qt image allocation limit changes will take effect after restarting the application.</source>
         <translation>Qt 이미지 할당 제한 변경 사항은 애플리케이션을 다시 시작한 후 적용됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="43" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="44" />
         <source>Shortcuts</source>
         <translation>단축키</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="44" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="45" />
         <source>General</source>
         <translation>일반</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="45" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="46" />
+        <source>Toolbar</source>
+        <translation>도구 모음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\settings\schema.py" line="47" />
         <source>Shape</source>
         <translation>도형</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="46" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="48" />
         <source>Canvas</source>
         <translation>캔버스</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="47" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="49" />
         <source>AI</source>
         <translation>AI</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="48" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="50" />
         <source>Dialog</source>
         <translation>대화 상자</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="49" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="51" />
         <source>Open Point Cloud Workspace</source>
         <translation>포인트 클라우드 작업 공간 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="50" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="52" />
         <source>File</source>
         <translation>파일</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="51" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="53" />
         <source>View</source>
         <translation>보기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="52" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="54" />
         <source>Display Label Popup</source>
         <translation>레이블 팝업 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="53" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="55" />
         <source>Auto Highlight Shape</source>
         <translation>도형 자동 강조</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="54" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="56" />
         <source>In edit mode, automatically highlight vertices of selected objects.</source>
         <translation>편집 모드에서 선택한 객체의 꼭짓점을 자동으로 강조합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="58" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="60" />
         <source>Auto Switch To Edit Mode</source>
         <translation>편집 모드로 자동 전환</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="59" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="61" />
         <source>Automatically switch selected objects into edit mode.</source>
         <translation>선택한 객체를 자동으로 편집 모드로 전환합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="63" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="65" />
         <source>Enable EXIF Scan</source>
         <translation>EXIF 스캔 활성화</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="64" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="66" />
         <source>Scan EXIF metadata when loading directories; this adds overhead.</source>
         <translation>디렉터리를 불러올 때 EXIF 메타데이터를 스캔합니다. 이 기능은 추가 처리 시간을 유발합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="68" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="70" />
         <source>Toggle Annotation Checked</source>
         <translation>주석 검사 상태 전환</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="69" />
-        <source>Edit Image Tags</source>
-        <translation>이미지 태그 편집</translation>
+        <location filename="..\..\views\labeling\settings\schema.py" line="71" />
+        <source>Toggle Image Tags</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="70" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="72" />
         <source>Image Jump Step</source>
         <translation>이미지 이동 간격</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="71" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="73" />
         <source>Number of images to skip when navigating.</source>
         <translation>이동할 이미지 수를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="74" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="76" />
         <source>Use System Clipboard</source>
         <translation>시스템 클립보드 사용</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="75" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="77" />
         <source>Application Font</source>
         <translation>애플리케이션 글꼴</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="76" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="78" />
         <source>Choose from fonts available on this system.</source>
         <translation>이 시스템에서 사용할 수 있는 글꼴 중에서 선택합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="79" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="81" />
         <source>Shape Color Strategy</source>
         <translation>도형 색상 전략</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="80" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="82" />
         <source>Default Shape Color</source>
         <translation>기본 도형 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="81" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="83" />
         <source>Auto Color Shift</source>
         <translation>자동 색상 변경</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="82" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="84" />
         <source>Line Color</source>
         <translation>선 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="83" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="85" />
         <source>Fill Color</source>
         <translation>채우기 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="84" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="86" />
         <source>Vertex Fill Color</source>
         <translation>꼭짓점 채우기 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="85" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="87" />
         <source>Select Line Color</source>
         <translation>선택 선 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="86" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="88" />
         <source>Select Fill Color</source>
         <translation>선택 채우기 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="87" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="89" />
         <source>Hover Vertex Fill Color</source>
         <translation>호버 시 꼭짓점 채우기 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="88" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="90" />
         <source>Point Size</source>
         <translation>점 크기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="89" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="91" />
         <source>Line Width</source>
         <translation>선 너비</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="90" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="92" />
         <source>Selection Epsilon</source>
         <translation>선택 허용 오차</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="91" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="93" />
         <source>Distance threshold in pixels for selecting nearby vertices or edges.</source>
         <translation>가까운 꼭짓점이나 변을 선택할 때의 픽셀 거리 임계값입니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="95" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="97" />
         <source>Double Click</source>
         <translation>더블 클릭</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="96" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="98" />
         <source>Set to 'close' to finish the current shape with a double click.</source>
         <translation>더블 클릭으로 현재 도형을 완료하려면 'close'로 설정하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="100" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="102" />
         <source>Double Click Edit Label</source>
         <translation>더블 클릭으로 라벨 편집</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="101" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="103" />
         <source>Undo Backups</source>
         <translation>실행 취소 백업 수</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="102" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="104" />
         <source>Enable Wheel Rectangle Editing</source>
         <translation>마우스 휠 사각형 편집 활성화</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="105" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="107" />
         <source>Adjust Step</source>
         <translation>조정 단계</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="106" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="108" />
         <source>Scale Step</source>
         <translation>배율 단계</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="107" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="109" />
         <source>Rendering</source>
         <translation>렌더링</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="108" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="110" />
         <source>Labels</source>
         <translation>라벨</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="109" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="111" />
         <source>Label Font Size</source>
         <translation>라벨 글꼴 크기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="110" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="112" />
         <source>Font Size</source>
         <translation>글꼴 크기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="111" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="113" />
         <source>Set the on-screen font size of attribute overlays.</source>
         <translation>속성 오버레이의 화면상 글꼴 크기를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="114" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="116" />
         <source>Set the on-screen font size of annotation labels.</source>
         <translation>주석 라벨의 화면 글꼴 크기를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="117" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="119" />
         <source>Show Crosshair</source>
         <translation>십자선 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="118" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="120" />
         <source>Crosshair Width</source>
         <translation>십자선 너비</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="119" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="121" />
         <source>Crosshair Color</source>
         <translation>십자선 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="120" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="122" />
         <source>Crosshair Opacity</source>
         <translation>십자선 불투명도</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="121" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="123" />
         <source>Background Color</source>
         <translation>배경 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="122" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="124" />
         <source>Border Color</source>
         <translation>테두리 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="123" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="125" />
         <source>Text Color</source>
         <translation>텍스트 색상</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="124" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="126" />
         <source>Large Increment</source>
         <translation>큰 증분</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="125" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="127" />
         <source>Small Increment</source>
         <translation>작은 증분</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="126" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="128" />
         <source>Brush Point Distance</source>
         <translation>브러시 점 간격</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="127" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="129" />
         <source>Brush Simplification Tolerance</source>
         <translation>브러시 단순화 허용 오차</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="130" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="132" />
         <source>Set polygon simplification tolerance in image pixels. Use 0 to preserve the extracted contour.</source>
         <translation>다각형 단순화 허용 오차를 이미지 픽셀 단위로 설정합니다. 0으로 설정하면 추출된 윤곽선을 유지합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="135" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="137" />
         <source>Default Depth Vector</source>
         <translation>기본 깊이 벡터</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="136" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="138" />
         <source>Min Depth</source>
         <translation>최소 깊이</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="137" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="139" />
         <source>Mask Opacity</source>
         <translation>마스크 불투명도</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="138" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="140" />
         <source>Model Hub</source>
         <translation>모델 허브</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="139" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="141" />
         <source>Model download source.</source>
         <translation>모델 다운로드 소스입니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="140" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="142" />
         <source>Model Directory</source>
         <translation>모델 저장 폴더</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="141" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="143" />
         <source>Folder used to store downloaded auto-labeling models. Leave empty to use the default location.</source>
         <translation>다운로드한 자동 라벨링 모델을 저장할 폴더입니다. 비워 두면 기본 위치를 사용합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="146" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="148" />
         <source>Logger Level</source>
         <translation>로그 레벨</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="147" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="149" />
         <source>Qt Image Allocation Limit</source>
         <translation>Qt 이미지 할당 제한</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="148" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="150" />
         <source>Qt default is 256 MB. Use 0 to disable the limit.</source>
         <translation>Qt 기본값은 256 MB입니다. 0으로 설정하면 이 제한을 비활성화할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="152" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="154" />
         <source>Use the operating system clipboard for copy and paste actions.</source>
         <translation>복사 및 붙여넣기 작업에 운영 체제 클립보드를 사용합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="156" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="158" />
         <source>Shift the generated color index when automatic coloring is enabled.</source>
         <translation>자동 색상 지정이 활성화된 경우 생성되는 색상 인덱스를 이동합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="160" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="162" />
         <source>Set the default outline color for shapes.</source>
         <translation>도형의 기본 윤곽선 색상을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="163" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="165" />
         <source>Set the default fill color for shapes.</source>
         <translation>도형의 기본 채우기 색상을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="166" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="168" />
         <source>Set the default fill color for shape vertices.</source>
         <translation>도형 꼭짓점의 기본 채우기 색상을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="169" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="171" />
         <source>Set the outline color for selected shapes.</source>
         <translation>선택한 도형의 윤곽선 색상을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="172" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="174" />
         <source>Set the fill color for selected shapes.</source>
         <translation>선택한 도형의 채우기 색상을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="175" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="177" />
         <source>Set the highlight color for hovered vertices.</source>
         <translation>마우스를 올린 꼭짓점의 강조 색상을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="178" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="180" />
         <source>Control the displayed size of shape vertices.</source>
         <translation>도형 꼭짓점의 표시 크기를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="181" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="183" />
         <source>Control the default stroke width for shapes.</source>
         <translation>도형의 기본 선 너비를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="184" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="186" />
         <source>Open label editing when a shape is double-clicked in edit mode.</source>
         <translation>편집 모드에서 도형을 두 번 클릭하면 라벨 편집을 엽니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="188" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="190" />
         <source>Set how many undo history snapshots are kept in memory.</source>
         <translation>메모리에 유지할 실행 취소 기록 스냅샷 수를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="192" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="194" />
         <source>Use Alt+Wheel to adjust rectangle geometry while editing. Disabled by default.</source>
         <translation>편집 중 Alt+휠로 사각형의 모양을 조절합니다. 기본적으로 비활성화되어 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="196" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="198" />
         <source>Set the step size for wheel-based rectangle adjustments.</source>
         <translation>마우스 휠 기반 사각형 조정의 단계 크기를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="200" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="202" />
         <source>Set the scale ratio applied by each wheel adjustment.</source>
         <translation>각 마우스 휠 조정에 적용할 배율을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="204" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="206" />
         <source>Show crosshair guides on the canvas.</source>
         <translation>캔버스에 십자선 안내선을 표시합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="207" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="209" />
         <source>Set the stroke width of the crosshair guides.</source>
         <translation>십자선 안내선의 선 너비를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="210" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="212" />
         <source>Set the display color of the crosshair guides.</source>
         <translation>십자선 안내선의 표시 색상을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="213" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="215" />
         <source>Set the opacity of the crosshair guides.</source>
         <translation>십자선 안내선의 불투명도를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="216" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="218" />
         <source>Set the background color of attribute overlays.</source>
         <translation>속성 오버레이의 배경색을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="219" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="221" />
         <source>Set the border color of attribute overlays.</source>
         <translation>속성 오버레이의 테두리 색상을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="222" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="224" />
         <source>Set the text color of attribute overlays.</source>
         <translation>속성 오버레이의 텍스트 색상을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="225" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="227" />
         <source>Set the larger step used for rotation adjustments.</source>
         <translation>회전 조정에 사용할 큰 단계 값을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="228" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="230" />
         <source>Set the smaller step used for rotation adjustments.</source>
         <translation>회전 조정에 사용할 작은 단계 값을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="231" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="233" />
         <source>Set the spacing between sampled brush points.</source>
         <translation>샘플링된 브러시 점 사이의 간격을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="234" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="236" />
         <source>Magic Wand</source>
         <translation>마술봉</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="235" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="237" />
         <source>Magic Wand Default Threshold</source>
         <translation>마술봉 기본 임계값</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="238" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="240" />
         <source>Set the initial color tolerance for magic wand selections.</source>
         <translation>마술봉 선택의 초기 색상 허용 범위를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="242" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="244" />
         <source>Magic Wand Drag Sensitivity</source>
         <translation>마술봉 드래그 감도</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="243" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="245" />
         <source>Set the screen-pixel distance required for each tolerance step.</source>
         <translation>허용 범위를 한 단계 조정하는 데 필요한 화면 픽셀 거리를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="247" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="249" />
         <source>Magic Wand Luminance Weight</source>
         <translation>마술봉 명도 가중치</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="248" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="250" />
         <source>Set how strongly lightness differences affect color matching.</source>
         <translation>명도 차이가 색상 일치에 미치는 영향 정도를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="252" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="254" />
         <source>Magic Wand Simplification Tolerance</source>
         <translation>마술봉 단순화 허용 오차</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="255" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="257" />
         <source>Set magic wand polygon simplification tolerance in image pixels. Use 0 to preserve the extracted contour.</source>
         <translation>마술봉 폴리곤의 단순화 허용 오차를 이미지 픽셀 단위로 설정합니다. 0으로 설정하면 추출된 윤곽선을 유지합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="260" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="262" />
         <source>Magic Wand Preview Opacity</source>
         <translation>마술봉 미리보기 불투명도</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="261" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="263" />
         <source>Set the opacity of the live magic wand preview.</source>
         <translation>마술봉 실시간 미리보기의 불투명도를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="265" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="267" />
         <source>Set the default depth direction for newly created cuboids.</source>
         <translation>새로 생성되는 직육면체의 기본 깊이 방향을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="269" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="271" />
         <source>Set the minimum depth allowed for cuboid shapes.</source>
         <translation>직육면체 도형에 허용되는 최소 깊이를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="272" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="274" />
         <source>Set the opacity used when rendering masks.</source>
         <translation>마스크 렌더링에 사용할 불투명도를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="275" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="277" />
         <source>Set the minimum log level shown in the application.</source>
         <translation>애플리케이션에 표시할 최소 로그 레벨을 설정합니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="279" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="281" />
         <source>Auto Run</source>
         <translation>자동 실행</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="280" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="282" />
         <source>Auto Label</source>
         <translation>자동 라벨링</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="281" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="283" />
         <source>Add Point</source>
         <translation>점 추가</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="282" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="284" />
         <source>Clear</source>
         <translation>지우기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="283" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="285" />
         <source>Finish Object</source>
         <translation>객체 완료</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="284" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="286" />
         <source>Remove Point</source>
         <translation>점 제거</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="285" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="287" />
         <source>Run</source>
         <translation>실행</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="286" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="288" />
         <source>Open Settings Dialog</source>
         <translation>설정 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="287" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="289" />
         <source>Open Chatbot Dialog</source>
         <translation>대화형 질의응답 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="288" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="290" />
         <source>Open VQA Dialog</source>
         <translation>시각적 질의응답 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="289" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="291" />
         <source>Open Image Classifier Dialog</source>
         <translation>이미지 분류기 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="292" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="294" />
         <source>Open Video Classifier</source>
         <translation>비디오 분류기 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="293" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="295" />
         <source>Open Document Parser Dialog</source>
         <translation>문서 분석기 대화상자 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="294" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="296" />
         <source>Open Overview Dialog</source>
         <translation>개요 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="295" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="297" />
         <source>Show Navigator Dialog</source>
         <translation>내비게이터 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="296" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="298" />
         <source>Open Digit Shortcut Manager Dialog</source>
         <translation>숫자 단축키 관리자 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="299" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="301" />
         <source>Open Group ID Manager</source>
         <translation>그룹 ID 관리자 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="300" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="302" />
         <source>Open Label Manager Dialog</source>
         <translation>라벨 관리자 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="301" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="303" />
         <source>Open Shape Manager Dialog</source>
         <translation>객체 관리자 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="302" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="304" />
         <source>Close</source>
         <translation>닫기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="303" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="305" />
         <source>Delete File</source>
         <translation>파일 삭제</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="304" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="306" />
         <source>Delete Image File</source>
         <translation>이미지 삭제</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="305" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="307" />
         <source>Open</source>
         <translation>파일 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="306" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="308" />
         <source>Open Dir</source>
         <translation>디렉터리 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="307" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="309" />
         <source>Open Video</source>
         <translation>비디오 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="308" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="310" />
         <source>Quit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="310" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="312" />
         <source>Save As</source>
         <translation>다른 이름으로 저장</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="311" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="313" />
         <source>Save To</source>
         <translation>저장 폴더 설정</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="312" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="314" />
         <source>Switch Next Image</source>
         <translation>다음 이미지</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="313" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="315" />
         <source>Switch Next Unchecked Image</source>
         <translation>다음 미확인 이미지</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="314" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="316" />
         <source>Switch Prev Image</source>
         <translation>이전 이미지</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="315" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="317" />
         <source>Switch Prev Unchecked Image</source>
         <translation>이전 미확인 이미지</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="316" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="318" />
         <source>Add Point To Edge</source>
         <translation>변에 점 추가</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="317" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="319" />
         <source>Copy Polygon</source>
         <translation>객체 복사</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="318" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="320" />
         <source>Create Brush Polygon</source>
         <translation>브러시로 다각형 그리기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="319" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="321" />
         <source>Create Magic Wand</source>
         <translation>마술봉 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="320" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="322" />
         <source>Create Circle</source>
         <translation>원 만들기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="321" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="323" />
         <source>Create Cuboid</source>
         <translation>직육면체 생성</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="322" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="324" />
         <source>Create Line</source>
         <translation>선 만들기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="323" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="325" />
         <source>Create Linestrip</source>
         <translation>연결선 만들기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="324" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="326" />
         <source>Create Point</source>
         <translation>점 만들기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="325" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="327" />
         <source>Create Polygon</source>
         <translation>다각형 만들기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="326" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="328" />
         <source>Create Quadrilateral</source>
         <translation>사각형 만들기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="327" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="329" />
         <source>Create Rectangle</source>
         <translation>사각형 만들기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="328" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="330" />
         <source>Create Rotation</source>
         <translation>회전 도형 만들기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="329" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="331" />
         <source>Delete Polygon</source>
         <translation>객체 삭제</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="330" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="332" />
         <source>Duplicate Polygon</source>
         <translation>객체 복제</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="331" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="333" />
         <source>Edit Brush Mode</source>
         <translation>브러시 편집 모드</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="332" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="334" />
         <source>Edit Label</source>
         <translation>라벨 편집</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="333" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="335" />
         <source>Edit Polygon</source>
         <translation>객체 편집</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="334" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="336" />
         <source>Group Selected Shapes</source>
         <translation>선택한 도형 그룹화</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="335" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="337" />
         <source>Ungroup Selected Shapes</source>
         <translation>선택한 도형 그룹 해제</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="336" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="338" />
         <source>Loop Thru Labels</source>
         <translation>라벨 순환</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="337" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="339" />
         <source>Loop Select Labels</source>
         <translation>레이블 순환 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="338" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="340" />
         <source>Hide Selected Polygons</source>
         <translation>선택한 다각형 숨기기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="339" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="341" />
         <source>Paste Polygon</source>
         <translation>객체 붙여넣기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="340" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="342" />
         <source>Remove Selected Point</source>
         <translation>선택한 포인트 제거</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="341" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="343" />
         <source>Show Hidden Polygons</source>
         <translation>숨겨진 다각형 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="342" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="344" />
         <source>Undo</source>
         <translation>실행 취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="343" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="345" />
         <source>Undo Last Point</source>
         <translation>마지막 점 실행 취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="344" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="346" />
         <source>Union Selected Shapes</source>
         <translation>선택한 객체 합치기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="345" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="347" />
         <source>Fit Width</source>
         <translation>너비 맞추기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="346" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="348" />
         <source>Fit Window</source>
         <translation>창에 맞춤</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="347" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="349" />
         <source>Show Attributes</source>
         <translation>속성 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="348" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="350" />
         <source>Show Labels</source>
         <translation>레이블만 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="349" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="351" />
         <source>Show Linking</source>
         <translation>연결 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="350" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="352" />
         <source>Show Masks</source>
         <translation>마스크 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="351" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="353" />
         <source>Show Texts</source>
         <translation>텍스트 표시</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="352" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="354" />
         <source>Toggle Auto Use Last Gid</source>
         <translation>이전 그룹 ID 자동 사용 전환</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="353" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="355" />
         <source>Toggle Auto Use Last Label</source>
         <translation>이전 라벨 자동 사용 전환</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="354" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="356" />
         <source>Toggle Compare View</source>
         <translation>비교 보기 전환</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="355" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="357" />
         <source>Toggle Keep Prev Mode</source>
         <translation>이전 라벨 유지 전환</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="356" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="358" />
         <source>Toggle Visibility Shapes</source>
         <translation>객체 표시 전환</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="357" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="359" />
         <source>Zoom In</source>
         <translation>확대</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="358" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="360" />
         <source>Zoom Out</source>
         <translation>축소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\schema.py" line="359" />
+        <location filename="..\..\views\labeling\settings\schema.py" line="361" />
         <source>Zoom To Original</source>
         <translation>원래 크기</translation>
     </message>
-    <message><source>Toolbar</source><translation>도구 모음</translation></message>
-    <message><source>Show Tool Labels</source><translation>도구 라벨 표시</translation></message>
-    <message><source>Show a short label under every tool; turn it off to show more tools without scrolling.</source><translation>각 도구 아래에 짧은 라벨을 표시합니다. 끄면 스크롤하지 않고 더 많은 도구를 표시할 수 있습니다.</translation></message>
-    <message><source>Select All</source><translation>모두 선택</translation></message>
-    <message><source>Toolbar changes are applied immediately</source><translation>도구 모음 변경 사항은 즉시 적용됩니다</translation></message>
 </context><context>
     <name>SettingsRuntimeApplier</name>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="150" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="157" />
         <source>Quit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="156" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="163" />
         <source>Open Settings</source>
         <translation>설정 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="163" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="170" />
         <source>Add Point To Edge</source>
         <translation>변에 점 추가</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="170" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="177" />
         <source>Auto Labeling Add Point</source>
         <translation>자동 라벨링 점 추가</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="177" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="184" />
         <source>Auto Labeling Remove Point</source>
         <translation>자동 라벨링 점 제거</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="186" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="193" />
         <source>Auto Labeling Run</source>
         <translation>자동 라벨링 실행</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="193" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="200" />
         <source>Auto Labeling Clear</source>
         <translation>자동 라벨링 지우기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="200" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="207" />
         <source>Auto Labeling Finish Object</source>
         <translation>자동 라벨링 객체 완료</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="223" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="230" />
         <source>Zoom in or out of the image. Also accessible with {} and {} from the canvas.</source>
         <translation>이미지를 확대하거나 축소합니다. 캔버스에서도 {} 및 {}로 사용할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="229" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="236" />
         <source>Wheel</source>
         <translation>휠</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="608" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="615" />
         <source>Some model files could not be moved to the new directory:
 {details}
 
@@ -9789,9 +11387,46 @@ You can download the models again in the new directory.</source>
 새 폴더에서 모델을 다시 다운로드할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="617" />
+        <location filename="..\..\views\labeling\settings\runtime_applier.py" line="624" />
         <source>Model Directory</source>
         <translation>모델 저장 폴더</translation>
+    </message>
+</context><context>
+    <name>ShapeCommands</name>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="180" />
+        <source>Error pasting shapes</source>
+        <translation>도형 붙여넣기 오류</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="181" />
+        <source>Error decoding shapes: %s</source>
+        <translation>도형 디코딩 오류: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="272" />
+        <source>Delete Group</source>
+        <translation>그룹 삭제</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="273" />
+        <source>Deleting this group will remove %d shapes. This action cannot be undone. Do you want to continue?</source>
+        <translation>이 그룹을 삭제하면 도형 %d개가 제거됩니다. 이 작업은 실행 취소할 수 없습니다. 계속하시겠습니까?</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="306" />
+        <source>Object Description</source>
+        <translation>개체 설명</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="312" />
+        <source>Image Description</source>
+        <translation>이미지 설명</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\shape_commands.py" line="320" />
+        <source>Description</source>
+        <translation>설명</translation>
     </message>
 </context><context>
     <name>ShapeConverterDialog</name>
@@ -10005,38 +11640,37 @@ You can download the models again in the new directory.</source>
         <translation>일치하는 단축키 없음</translation>
     </message>
 </context><context>
-    <name>StatisticsTable</name>
+    <name>SpecialWorkspaces</name>
     <message>
-        <source>Statistics</source>
-        <translation>통계</translation>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="198" />
+        <location filename="..\..\views\labeling\special_workspaces.py" line="109" />
+        <source>No images loaded</source>
+        <translation>불러온 이미지가 없습니다</translation>
     </message>
     <message>
-        <source>Class</source>
-        <translation>클래스</translation>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="110" />
+        <source>Please load an image folder before opening the VQA dialog.</source>
+        <translation>VQA 대화상자를 열기 전에 이미지 폴더를 불러오세요.</translation>
     </message>
     <message>
-        <source>Train</source>
-        <translation>훈련</translation>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="136" />
+        <source>Point cloud unavailable</source>
+        <translation>포인트 클라우드를 사용할 수 없음</translation>
     </message>
     <message>
-        <source>Val</source>
-        <translation>검증</translation>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="137" />
+        <source>Unable to open the point cloud workspace: %s</source>
+        <translation>포인트 클라우드 작업 공간을 열 수 없습니다: %s</translation>
     </message>
     <message>
-        <source>Test</source>
-        <translation>테스트</translation>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="168" />
+        <source>Video Classifier requires QtMultimedia, which this Qt build does not provide.</source>
+        <translation>비디오 분류기에는 QtMultimedia가 필요하지만 이 Qt 빌드에서는 제공되지 않습니다.</translation>
     </message>
     <message>
-        <source>Unassigned</source>
-        <translation>미지정</translation>
-    </message>
-    <message>
-        <source>Total</source>
-        <translation>합계</translation>
-    </message>
-    <message>
-        <source>(No objects)</source>
-        <translation>(객체 없음)</translation>
+        <location filename="..\..\views\labeling\special_workspaces.py" line="199" />
+        <source>Please load an image folder before opening the Classification dialog.</source>
+        <translation>분류 대화상자를 열기 전에 이미지 폴더를 불러오세요.</translation>
     </message>
 </context><context>
     <name>StatisticsViewDialog</name>
@@ -10053,19 +11687,65 @@ You can download the models again in the new directory.</source>
 </context><context>
     <name>TextInputDialog</name>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="209" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="221" />
         <source>Enter Text Prompt</source>
         <translation>텍스트 프롬프트 입력</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="219" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="231" />
         <source>Please enter your text prompt:</source>
         <translation>텍스트 프롬프트를 입력하세요:</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\batch.py" line="226" />
+        <location filename="..\..\views\labeling\utils\batch.py" line="238" />
         <source>Enter prompt here...</source>
         <translation>여기에 프롬프트를 입력하세요...</translation>
+    </message>
+</context><context>
+    <name>ThumbnailPreview</name>
+    <message>
+        <location filename="..\..\views\labeling\utils\qt.py" line="255" />
+        <source>Thumbnail - Click anywhere to close</source>
+        <translation type="unfinished" />
+    </message>
+</context><context>
+    <name>TitleBar</name>
+    <message>
+        <location filename="..\..\widgets\frameless\title_bar.py" line="236" />
+        <source>Restore</source>
+        <translation>이전 크기로</translation>
+    </message>
+    <message>
+        <location filename="..\..\widgets\frameless\title_bar.py" line="239" />
+        <source>Maximize</source>
+        <translation>최대화</translation>
+    </message>
+    <message>
+        <location filename="..\..\widgets\frameless\title_bar.py" line="241" />
+        <source>Minimize</source>
+        <translation>최소화</translation>
+    </message>
+    <message>
+        <location filename="..\..\widgets\frameless\title_bar.py" line="250" />
+        <source>Menus</source>
+        <translation>메뉴 표시</translation>
+    </message>
+    <message>
+        <location filename="..\..\widgets\frameless\title_bar.py" line="263" />
+        <source>Close</source>
+        <translation>닫기</translation>
+    </message>
+</context><context>
+    <name>ToolbarPolicy</name>
+    <message>
+        <location filename="..\..\views\labeling\actions\toolbar.py" line="131" />
+        <source>Settings</source>
+        <translation>설정</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\actions\toolbar.py" line="132" />
+        <source>Shortcuts</source>
+        <translation>단축키</translation>
     </message>
 </context><context>
     <name>UltralyticsDialog</name>
@@ -10678,6 +12358,95 @@ If not, please manually modify the `Name` field value.</source>
         <location filename="..\..\views\labeling\widgets\update_panel.py" line="157" />
         <source>Cancel download</source>
         <translation>다운로드 취소</translation>
+    </message>
+</context><context>
+    <name>UploadCategorySection</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="131" />
+        <source>Category Settings</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="151" />
+        <source>Threshold:</source>
+        <translation type="unfinished" />
+    </message>
+</context><context>
+    <name>UploadConfirmDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="82" />
+        <source>Warning</source>
+        <translation>경고</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="92" />
+        <source>New annotations will be merged with existing ones</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="95" />
+        <source>You are going to add new annotations to this task. Existing annotations will be preserved. Continue?</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="101" />
+        <source>Current annotation will be lost</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="103" />
+        <source>You are going to upload new annotations to this task. Continue?</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="111" />
+        <source>Current labels will be lost</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="113" />
+        <source>You are going to upload new labels to this task. Continue?</source>
+        <translation type="unfinished" />
+    </message>
+</context><context>
+    <name>UploadFolderDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="41" />
+        <source>Upload Options</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="44" />
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="43" />
+        <source>Select Upload Folder</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="54" />
+        <source>Preserve existing annotations</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="72" />
+        <source>Upload folder path cannot be empty!</source>
+        <translation type="unfinished" />
+    </message>
+</context><context>
+    <name>UploadProgressDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="174" />
+        <source>Progress</source>
+        <translation>진행</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="175" />
+        <source>Uploading...</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\upload_dialogs.py" line="176" />
+        <source>Cancel</source>
+        <translation>취소</translation>
     </message>
 </context><context>
     <name>VQADialog</name>
@@ -11438,6 +13207,32 @@ Response preview:
         <translation>ffmpeg 필요</translation>
     </message>
 </context><context>
+    <name>WindowButton</name>
+    <message>
+        <location filename="..\..\widgets\frameless\window_buttons.py" line="54" />
+        <location filename="..\..\widgets\frameless\window_buttons.py" line="37" />
+        <source>Minimize</source>
+        <translation>최소화</translation>
+    </message>
+    <message>
+        <location filename="..\..\widgets\frameless\window_buttons.py" line="55" />
+        <location filename="..\..\widgets\frameless\window_buttons.py" line="38" />
+        <source>Maximize</source>
+        <translation>최대화</translation>
+    </message>
+    <message>
+        <location filename="..\..\widgets\frameless\window_buttons.py" line="56" />
+        <location filename="..\..\widgets\frameless\window_buttons.py" line="39" />
+        <source>Restore</source>
+        <translation>이전 크기로</translation>
+    </message>
+    <message>
+        <location filename="..\..\widgets\frameless\window_buttons.py" line="57" />
+        <location filename="..\..\widgets\frameless\window_buttons.py" line="40" />
+        <source>Close</source>
+        <translation>닫기</translation>
+    </message>
+</context><context>
     <name>ZoomWidget</name>
     <message>
         <location filename="..\..\views\labeling\widgets\zoom_widget.py" line="15" />
@@ -11445,34 +13240,36 @@ Response preview:
         <translation>확대/축소 비율</translation>
     </message>
 </context><context>
-    <name>_CameraResizeHandle</name>
+    <name>_LoginPage</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="834" />
-        <source>Drag to resize camera image</source>
-        <translation>드래그하여 카메라 이미지 표시 크기 조정</translation>
-    </message>
-</context><context>
-    <name>_CameraSourceFields</name>
-    <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="270" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="269" />
-        <source>Remove camera</source>
-        <translation>카메라 삭제</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="116" />
+        <source>Operator name</source>
+        <translation>작업자 이름</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="285" />
-        <source>Image directory</source>
-        <translation>이미지 폴더</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="122" />
+        <source>Password</source>
+        <translation>비밀번호</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="290" />
-        <source>Calibration JSON (optional)</source>
-        <translation>캘리브레이션 JSON (선택 사항)</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="137" />
+        <source>Forgot password?</source>
+        <translation>비밀번호를 잊으셨나요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="299" />
-        <source>Browse…</source>
-        <translation>찾아보기…</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="142" />
+        <source>Register new operator</source>
+        <translation>새 작업자 등록</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="147" />
+        <source>Cancel</source>
+        <translation>취소</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="150" />
+        <source>Login</source>
+        <translation>로그인</translation>
     </message>
 </context><context>
     <name>_PointCloudGLWidget</name>
@@ -11482,525 +13279,40 @@ Response preview:
         <translation>OpenGL 디스플레이 컨텍스트를 생성할 수 없습니다.</translation>
     </message>
 </context><context>
-    <name>auto_labeling_form</name>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Form</source>
-        <translation>Form</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>No Model</source>
-        <translation>모델 없음</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Output</source>
-        <translation>출력</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>polygon</source>
-        <translation>polygon</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>rectangle</source>
-        <translation>rectangle</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>rotation</source>
-        <translation>rotation</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>coarse_grained_prompt</source>
-        <translation>coarse_grained_prompt</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>fine_grained_prompt</source>
-        <translation>fine_grained_prompt</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>caption</source>
-        <translation>caption</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>detailed_cap</source>
-        <translation>detailed_cap</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>more_detailed_cap</source>
-        <translation>more_detailed_cap</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>od</source>
-        <translation>od</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>region_proposal</source>
-        <translation>region_proposal</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>dense_region_cap</source>
-        <translation>dense_region_cap</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>cap_to_pg</source>
-        <translation>cap_to_pg</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>refer_exp_seg</source>
-        <translation>refer_exp_seg</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>region_to_seg</source>
-        <translation>region_to_seg</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>ovd</source>
-        <translation>ovd</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>region_to_cat</source>
-        <translation>region_to_cat</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>region_to_desc</source>
-        <translation>region_to_desc</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>ocr</source>
-        <translation>ocr</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>ocr_with_region</source>
-        <translation>ocr_with_region</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>GroundingDino_1_6_Pro</source>
-        <translation>GroundingDino_1_6_Pro</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>GroundingDino_1_6_Edge</source>
-        <translation>GroundingDino_1_6_Edge</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>GroundingDino_1_5_Pro</source>
-        <translation>GroundingDino_1_5_Pro</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>GroundingDino_1_5_Edge</source>
-        <translation>GroundingDino_1_5_Edge</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Run (i)</source>
-        <translation>실행 (i)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Enter text prompt here, e.g., person.car.bicycle</source>
-        <translation>텍스트 프롬프트 입력 (예: person.car.bicycle)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Send</source>
-        <translation>전송</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Box threshold</source>
-        <translation>박스 임계값</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Confidence</source>
-        <translation>신뢰도</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>IoU</source>
-        <translation>IoU</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Point (q)</source>
-        <translation>점 (q)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Point (e)</source>
-        <translation>점 (e)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>+Rect</source>
-        <translation>+사각형</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>-Rect</source>
-        <translation>-사각형</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Clear (b)</source>
-        <translation>지우기 (b)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Run Rect</source>
-        <translation>사각형 실행</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Finish (f)</source>
-        <translation>완료 (f)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>AMG</source>
-        <translation>AMG</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Skip Det (Off)</source>
-        <translation>감지 건너뛰기 (꺼짐)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Replace (On)</source>
-        <translation>덮어쓰기 (켜짐)</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Set API Token</source>
-        <translation>API 토큰 설정</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Classes</source>
-        <translation>레이블 필터</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Reset Tracker</source>
-        <translation>트래커 재설정</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>0.001</source>
-        <translation>0.001</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.ui" line="0" />
-        <source>Ready!</source>
-        <translation>준비 완료!</translation>
-    </message>
-</context><context>
-    <name>OperatorBar</name>
-    <message><source>Not logged in</source><translation>로그인 안 됨</translation></message>
-    <message><source>Login</source><translation>로그인</translation></message>
-    <message><source>Logout</source><translation>로그아웃</translation></message>
-    <message><source>Browse mode - editing annotations requires login</source><translation>찾아보기 모드 — 주석을 편집하려면 로그인해야 합니다</translation></message>
-    <message><source>Annotation mode: %s</source><translation>주석 모드: %s</translation></message>
-    <message><source>Author: not recorded</source><translation>작성자: 기록 없음</translation></message>
-    <message><source>Last modified: %s</source><translation>최종 수정: %s</translation></message>
-</context>
-<context>
-    <name>OperatorDialog</name>
-    <message><source>Operator Login</source><translation>작업자 로그인</translation></message>
-    <message><source>Login to edit annotations</source><translation>로그인하면 주석을 편집할 수 있습니다</translation></message>
-    <message><source>Register operator</source><translation>작업자 등록</translation></message>
-    <message><source>Select an operator.</source><translation>작업자를 선택하세요.</translation></message>
-    <message><source>The passwords do not match.</source><translation>비밀번호가 일치하지 않습니다.</translation></message>
-    <message><source>Unknown operator or wrong password.</source><translation>작업자가 없거나 비밀번호가 올바르지 않습니다.</translation></message>
-    <message><source>This operator is disabled.</source><translation>이 작업자는 비활성화되었습니다.</translation></message>
-    <message><source>This operator name is already registered.</source><translation>이 작업자 이름은 이미 등록되었습니다.</translation></message>
-    <message><source>This name is reserved.</source><translation>이 이름은 예약되어 있습니다.</translation></message>
-    <message><source>Password must be at least %d characters.</source><translation>비밀번호는 %d자 이상이어야 합니다.</translation></message>
-    <message><source>The operator name is not valid.</source><translation>작업자 이름이 올바르지 않습니다.</translation></message>
-    <message><source>This operator cannot manage other accounts.</source><translation>이 작업자는 다른 계정을 관리할 수 없습니다.</translation></message>
-    <message><source>Cannot open the operator database: %s</source><translation>작업자 데이터베이스를 열 수 없습니다: %s</translation></message>
-    <message><source>The operator operation failed: %s</source><translation>작업자 작업에 실패했습니다: %s</translation></message>
-</context>
-<context>
-    <name>_LoginPage</name>
-    <message><source>Operator name</source><translation>작업자 이름</translation></message>
-    <message><source>Password</source><translation>비밀번호</translation></message>
-    <message><source>Forgot password?</source><translation>비밀번호를 잊으셨나요?</translation></message>
-    <message><source>Register new operator</source><translation>새 작업자 등록</translation></message>
-    <message><source>Cancel</source><translation>취소</translation></message>
-    <message><source>Login</source><translation>로그인</translation></message>
-</context>
-<context>
     <name>_RegisterPage</name>
-    <message><source>Operator name</source><translation>작업자 이름</translation></message>
-    <message><source>Password</source><translation>비밀번호</translation></message>
-    <message><source>Confirm password</source><translation>비밀번호 확인</translation></message>
-    <message><source>Back to login</source><translation>로그인으로 돌아가기</translation></message>
-    <message><source>Cancel</source><translation>취소</translation></message>
-    <message><source>Register</source><translation>등록</translation></message>
-    <message><source>The first registered account becomes the administrator.</source><translation>처음 등록된 계정이 관리자가 됩니다.</translation></message>
-</context>
-<context>
-    <name>PasswordResetDialog</name>
-    <message><source>Reset password</source><translation>비밀번호 재설정</translation></message>
-    <message><source>Administrator</source><translation>관리자</translation></message>
-    <message><source>Administrator password</source><translation>관리자 비밀번호</translation></message>
-    <message><source>Target operator</source><translation>대상 작업자</translation></message>
-    <message><source>New password</source><translation>새 비밀번호</translation></message>
-    <message><source>Confirm password</source><translation>비밀번호 확인</translation></message>
-    <message><source>Cancel</source><translation>취소</translation></message>
-    <message><source>The passwords do not match.</source><translation>비밀번호가 일치하지 않습니다.</translation></message>
-    <message><source>Unknown operator or wrong password.</source><translation>작업자가 없거나 비밀번호가 올바르지 않습니다.</translation></message>
-    <message><source>This operator is disabled.</source><translation>이 작업자는 비활성화되었습니다.</translation></message>
-    <message><source>This operator name is already registered.</source><translation>이 작업자 이름은 이미 등록되었습니다.</translation></message>
-    <message><source>This name is reserved.</source><translation>이 이름은 예약되어 있습니다.</translation></message>
-    <message><source>Password must be at least %d characters.</source><translation>비밀번호는 %d자 이상이어야 합니다.</translation></message>
-    <message><source>The operator name is not valid.</source><translation>작업자 이름이 올바르지 않습니다.</translation></message>
-    <message><source>This operator cannot manage other accounts.</source><translation>이 작업자는 다른 계정을 관리할 수 없습니다.</translation></message>
-    <message><source>Cannot open the operator database: %s</source><translation>작업자 데이터베이스를 열 수 없습니다: %s</translation></message>
-    <message><source>The operator operation failed: %s</source><translation>작업자 작업에 실패했습니다: %s</translation></message>
-</context><context>
-    <name>AttributionLabel</name>
-    <message><source>Author: not recorded</source><translation>작성자: 기록 없음</translation></message>
-    <message><source>Last modified: %s</source><translation>최종 수정: %s</translation></message>
-</context><context>
-    <name>FramelessWindow</name>
-    <message><source>Toggle Full Screen</source><translation>전체 화면 전환</translation></message>
-</context>
-<context>
-    <name>FrameMenuBar</name>
-    <message><source>Show All Menus</source><translation>모든 메뉴 표시</translation></message>
-</context>
-<context>
-    <name>TitleBar</name>
-    <message><source>Restore</source><translation>이전 크기로</translation></message>
-    <message><source>Maximize</source><translation>최대화</translation></message>
-    <message><source>Minimize</source><translation>최소화</translation></message>
-    <message><source>Close</source><translation>닫기</translation></message>
-    <message><source>Menus</source><translation>메뉴 표시</translation></message>
-</context>
-<context>
-    <name>WindowButton</name>
-    <message><source>Minimize</source><translation>최소화</translation></message>
-    <message><source>Maximize</source><translation>최대화</translation></message>
-    <message><source>Restore</source><translation>이전 크기로</translation></message>
-    <message><source>Close</source><translation>닫기</translation></message>
-</context>  <context>
-    <name>LabelManagerPanel</name>
     <message>
-        <source>Batch import categories…</source>
-        <translation>카테고리 일괄 가져오기…</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="199" />
+        <source>Operator name</source>
+        <translation>작업자 이름</translation>
     </message>
     <message>
-        <source>Batch Import Categories</source>
-        <translation>카테고리 일괄 가져오기</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="203" />
+        <source>Password</source>
+        <translation>비밀번호</translation>
     </message>
     <message>
-        <source>Enter category names separated by commas, spaces, or newlines:</source>
-        <translation>카테고리 이름을 입력하세요(쉼표, 공백 또는 줄바꿈으로 구분):</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="207" />
+        <source>Confirm password</source>
+        <translation>비밀번호 확인</translation>
     </message>
     <message>
-        <source>Batch import is only available for dataset folders.</source>
-        <translation>일괄 가져오기는 데이터세트 폴더에서만 사용할 수 있습니다.</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="228" />
+        <source>Back to login</source>
+        <translation>로그인으로 돌아가기</translation>
     </message>
     <message>
-        <source>Enter at least one category.</source>
-        <translation>카테고리를 하나 이상 입력하세요.</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="233" />
+        <source>Cancel</source>
+        <translation>취소</translation>
     </message>
     <message>
-        <source>An error occurred while importing categories.</source>
-        <translation>카테고리를 가져오는 중 오류가 발생했습니다.</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="236" />
+        <source>Register</source>
+        <translation>등록</translation>
     </message>
     <message>
-        <source>Imported %d categories.</source>
-        <translation>카테고리 %d개를 가져왔습니다.</translation>
+        <location filename="..\..\views\labeling\widgets\operator_dialog.py" line="255" />
+        <source>The first registered account becomes the administrator.</source>
+        <translation>처음 등록된 계정이 관리자가 됩니다.</translation>
     </message>
-    <message>
-        <source>Category</source>
-        <translation>카테고리</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation>삭제</translation>
-    </message>
-    <message>
-        <source>Visible</source>
-        <translation>표시</translation>
-    </message>
-    <message>
-        <source>Lock</source>
-        <translation>잠금</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation>색상</translation>
-    </message>
-    <message>
-        <source>From</source>
-        <translation>시작</translation>
-    </message>
-    <message>
-        <source>To</source>
-        <translation>끝</translation>
-    </message>
-    <message>
-        <source>Go</source>
-        <translation>적용</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>모두 선택</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>선택 해제</translation>
-    </message>
-    <message>
-        <source>Copy Category</source>
-        <translation>카테고리 복사</translation>
-    </message>
-    <message>
-        <source>Double-click to rename the category</source>
-        <translation>두 번 클릭하여 카테고리 이름 변경</translation>
-    </message>
-    <message>
-        <source>Delete this category from the images in the range</source>
-        <translation>범위 내 이미지에서 이 카테고리 삭제</translation>
-    </message>
-    <message>
-        <source>Show or hide the category in this session</source>
-        <translation>이 세션에서 카테고리 표시/숨기기</translation>
-    </message>
-    <message>
-        <source>Session-only category lock; independent of the file range</source>
-        <translation>세션 전용 카테고리 잠금(파일 범위와 무관)</translation>
-    </message>
-    <message>
-        <source>Category cannot be empty</source>
-        <translation>카테고리는 비워 둘 수 없습니다</translation>
-    </message>
-    <message>
-        <source>Duplicate category: %s</source>
-        <translation>카테고리 중복: %s</translation>
-    </message>
-    <message>
-        <source>No images loaded</source>
-        <translation>이미지가 로드되지 않았습니다</translation>
-    </message>
-    <message>
-        <source>Please enter a valid range.</source>
-        <translation>올바른 범위를 입력하세요.</translation>
-    </message>
-    <message>
-        <source>An error occurred while updating the labels.</source>
-        <translation>카테고리를 업데이트하는 중 오류가 발생했습니다.</translation>
-    </message>
-    <message>
-        <source>Labels modified successfully!</source>
-        <translation>카테고리를 수정했습니다!</translation>
-    </message>
-    <message>
-        <source>Browse mode - editing annotations requires login</source>
-        <translation>찾아보기 모드 - 주석 편집에는 로그인이 필요합니다</translation>
-    </message>
-    <message>
-        <source>Move Up</source>
-        <translation>위로 이동</translation>
-    </message>
-    <message>
-        <source>Move Down</source>
-        <translation>아래로 이동</translation>
-    </message>
-    <message>
-        <source>Category order is stored in the dataset database</source>
-        <translation>카테고리 순서는 데이터셋 데이터베이스에 저장됩니다</translation>
-    </message>
-    <message>
-        <source>An error occurred while reordering the categories.</source>
-        <translation>카테고리 순서를 변경하는 중 오류가 발생했습니다.</translation>
-    </message>
-  </context>
-<context><name>TrashDialog</name>
-    <message>
-        <source>Recycle Bin</source>
-        <translation>휴지통</translation>
-    </message>
-    <message>
-        <source>Image</source>
-        <translation>이미지</translation>
-    </message>
-    <message>
-        <source>Deleted at</source>
-        <translation>삭제 시각</translation>
-    </message>
-    <message>
-        <source>Restore</source>
-        <translation>복원</translation>
-    </message>
-    <message>
-        <source>Delete Permanently</source>
-        <translation>영구 삭제</translation>
-    </message>
-    <message>
-        <source>Empty Recycle Bin</source>
-        <translation>휴지통 비우기</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation>닫기</translation>
-    </message>
-    <message>
-        <source>Restore failed</source>
-        <translation>복원 실패</translation>
-    </message>
-    <message>
-        <source>The trashed file is missing: %s</source>
-        <translation>휴지통 파일이 없습니다: %s</translation>
-    </message>
-    <message>
-        <source>The original path already exists: %s</source>
-        <translation>원래 경로가 이미 존재합니다: %s</translation>
-    </message>
-    <message>
-        <source>Permanently delete this image? This cannot be undone.</source>
-        <translation>이 이미지를 영구 삭제할까요? 되돌릴 수 없습니다.</translation>
-    </message>
-    <message>
-        <source>Permanently delete every trashed image?</source>
-        <translation>휴지통의 모든 이미지를 영구 삭제할까요?</translation>
-    </message>
-    <message>
-        <source>The database row could not be deleted.</source>
-        <translation>데이터베이스 행을 삭제할 수 없습니다.</translation>
-    </message>
-    <message>
-        <source>Some database rows could not be deleted.</source>
-        <translation>일부 데이터베이스 행을 삭제할 수 없습니다.</translation>
-    </message>
-</context>
-</TS>
+</context></TS>

@@ -1,5 +1,6 @@
 import json
 import os
+import pathlib
 import tempfile
 import unittest
 from unittest import mock
@@ -13,6 +14,7 @@ from anylabeling.views.labeling.label_converter import (
     LabelConverter,
     PoseClassError,
     PoseGroupError,
+    YoloAnnotationError,
 )
 
 
@@ -717,3 +719,90 @@ class TestLabelConverterCocoRleImport(unittest.TestCase):
                 self.assertFalse(
                     os.path.exists(os.path.join(self.temp_dir, "image.json"))
                 )
+
+
+class TestLabelConverterYoloImport(unittest.TestCase):
+    """fork.49: tolerate real-world .txt files and report bad rows."""
+
+    def setUp(self):
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp_dir.cleanup)
+        self.root = pathlib.Path(self.temp_dir.name)
+        self.image = self.root / "a.png"
+        Image.fromarray(np.zeros((100, 200, 3), np.uint8)).save(self.image)
+        self.classes = self.root / "classes.txt"
+        self.classes.write_text("face\nperson\n", encoding="utf-8")
+        self.label = self.root / "a.txt"
+        self.output = self.root / "a.json"
+
+    def convert(self, text, mode="seg", converter=None, **kwargs):
+        self.label.write_text(text, encoding="utf-8")
+        converter = converter or LabelConverter(
+            classes_file=str(self.classes)
+        )
+        return converter.yolo_to_custom(
+            input_file=str(self.label),
+            output_file=str(self.output),
+            image_file=str(self.image),
+            mode=mode,
+            **kwargs,
+        )
+
+    def test_accepts_tabs_double_spaces_and_blank_lines(self):
+        payload = self.convert(
+            "0\t0.1 0.1\t0.2 0.1  0.2 0.2\n\n0 0.5 0.5 0.6 0.5 0.6 0.6\n"
+        )
+        self.assertEqual(len(payload["shapes"]), 2)
+        self.assertEqual(payload["shapes"][0]["label"], "face")
+        self.assertTrue(self.output.is_file())
+
+    def test_accepts_float_class_index(self):
+        payload = self.convert("0.0 0.1 0.1 0.2 0.1 0.2 0.2\n")
+        self.assertEqual(payload["shapes"][0]["label"], "face")
+
+    def test_class_index_out_of_range_names_file_and_line(self):
+        with self.assertRaises(YoloAnnotationError) as context:
+            self.convert("0 0.1 0.1 0.2 0.1 0.2 0.2\n3 0.1 0.1 0.2 0.1 0.2 0.2\n")
+        message = str(context.exception)
+        self.assertIn("a.txt:2", message)
+        self.assertIn("class index 3", message)
+        self.assertIn("classes.txt", message)
+
+    def test_seg_rejects_odd_coordinate_count(self):
+        with self.assertRaises(YoloAnnotationError) as context:
+            self.convert("0 0.1 0.1 0.2 0.1 0.2 0.2 0.1\n")
+        self.assertIn("even number of coordinates", str(context.exception))
+
+    def test_hbb_rejects_extra_columns(self):
+        with self.assertRaises(YoloAnnotationError) as context:
+            self.convert("0 0.5 0.5 0.2 0.2 0.9\n", mode="hbb")
+        self.assertIn("expected 4 values", str(context.exception))
+
+    def test_obb_requires_eight_values(self):
+        self.label.write_text("0 0.1 0.1 0.2 0.1\n", encoding="utf-8")
+        converter = LabelConverter(classes_file=str(self.classes))
+        with self.assertRaises(YoloAnnotationError) as context:
+            converter.yolo_obb_to_custom(
+                input_file=str(self.label),
+                output_file=str(self.output),
+                image_file=str(self.image),
+            )
+        self.assertIn("at least 8 values", str(context.exception))
+
+    def test_write_false_returns_payload_without_creating_json(self):
+        payload = self.convert("0 0.1 0.1 0.2 0.1 0.2 0.2\n", write=False)
+        self.assertEqual(len(payload["shapes"]), 1)
+        self.assertFalse(self.output.exists())
+
+    def test_polygon_points_use_pixel_coordinates(self):
+        payload = self.convert("0 0.1 0.1 0.2 0.1 0.2 0.2 0.1 0.2\n")
+        points = payload["shapes"][0]["points"]
+        self.assertEqual(points[0], [20.0, 10.0])
+        self.assertEqual(points[2], [40.0, 20.0])
+
+    def test_dataset_classes_do_not_require_classes_file(self):
+        converter = LabelConverter(
+            classes=["face", "person"], classes_source="dataset categories"
+        )
+        payload = self.convert("1 0.1 0.1 0.2 0.1 0.2 0.2\n", converter=converter)
+        self.assertEqual(payload["shapes"][0]["label"], "person")

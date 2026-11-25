@@ -17,6 +17,13 @@ from .logger import logger
 from .utils.dataset_statistics import FileStatisticsEntry
 from .utils.file_search import escape_query_value
 
+# pylupdate6 only records `tr()` calls inside class bodies.  These
+# modules also translate text through `host.tr`/`self.tr` in free
+# functions and helpers, where the receiver is the LabelingWidget; the
+# constant tells `scripts/translation_scan.py` which context to use
+# (see docs/dev/CODE_STRUCTURE_REPORT.md).
+TR_CONTEXT = "LabelingWidget"
+
 #: Tabs that may not be hidden.  The "Image Attributes" tab is the only place
 #: where image tags and image flags are edited, so hiding it would leave that
 #: metadata without any UI.

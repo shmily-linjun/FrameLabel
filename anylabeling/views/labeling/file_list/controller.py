@@ -80,6 +80,13 @@ from .table import (
     FileTableWidget,
 )
 
+# pylupdate6 only records `tr()` calls inside class bodies.  These
+# modules also translate text through `host.tr`/`self.tr` in free
+# functions and helpers, where the receiver is the LabelingWidget; the
+# constant tells `scripts/translation_scan.py` which context to use
+# (see docs/dev/CODE_STRUCTURE_REPORT.md).
+TR_CONTEXT = "LabelingWidget"
+
 
 class FileListController:
     """Own the file table and every row/column/selection rule around it."""

@@ -7,18 +7,41 @@ import yaml
 
 from PyQt6 import QtWidgets
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
-from PyQt6.QtWidgets import (
-    QHBoxLayout,
-    QVBoxLayout,
-    QProgressDialog,
-)
 
+from anylabeling.services.dataset.annotation_import import (
+    OUTCOME_SKIPPED,
+    OUTCOME_WRITTEN,
+    store_annotation,
+)
 from anylabeling.views.labeling.label_converter import LabelConverter
 from anylabeling.views.labeling.logger import logger
 from anylabeling.views.labeling.widgets import Popup
+from anylabeling.views.labeling.widgets.upload_dialogs import (
+    UploadCategorySection,
+    UploadConfirmDialog,
+    UploadFolderDialog,
+    UploadProgressDialog,
+)
 from anylabeling.views.labeling.utils.qt import new_icon_path
 from anylabeling.views.labeling.utils.style import *
 from anylabeling.views.labeling.utils.export import _check_filename_exist
+from anylabeling.views.labeling.utils.yolo_import import (
+    ClassSource,
+    SOURCE_DATASET,
+    SOURCE_PICKED,
+    dataset_category_names,
+    detect_class_source,
+    guess_label_dir,
+    read_classes_file,
+    resolve_label_dir,
+)
+
+# pylupdate6 only records `tr()` calls inside class bodies.  These
+# modules also translate text through `host.tr`/`self.tr` in free
+# functions and helpers, where the receiver is the LabelingWidget; the
+# constant tells `scripts/translation_scan.py` which context to use
+# (see docs/dev/CODE_STRUCTURE_REPORT.md).
+TR_CONTEXT = "LabelingWidget"
 
 
 def _refresh_uploaded_file_items(self):
@@ -43,6 +66,30 @@ def _refresh_after_annotation_upload(self):
     panel = getattr(self, "label_manager_widget", None)
     if panel is not None:
         panel.invalidate()
+
+
+def _reject_dataset_mode_upload(host):
+    """Refuse a JSON-only upload while a dataset database is open.
+
+    The dataset tables are authoritative in database mode, so writing a JSON
+    sidecar would look successful and change nothing.  Only the YOLO formats
+    can be stored in the database so far (fork.49); the remaining adapters
+    arrive with the P3b import work.
+    """
+
+    if getattr(host, "dataset_repository", None) is None:
+        return False
+    popup = Popup(
+        host.tr(
+            "This annotation format cannot be imported into a dataset yet.\n"
+            "Dataset import currently supports YOLO detection, segmentation, "
+            "OBB and pose uploads only."
+        ),
+        host,
+        icon=new_icon_path("warning", "svg"),
+    )
+    popup.show_popup(host, position="center")
+    return True
 
 
 class UploadPPOCRThread(QThread):
@@ -153,6 +200,9 @@ def upload_vlm_r1_ovd_annotation(self):
     if not _check_filename_exist(self):
         return
 
+    if _reject_dataset_mode_upload(self):
+        return
+
     filter = "Attribute Files (*.jsonl);;All Files (*)"
     input_file, _ = QtWidgets.QFileDialog.getOpenFileName(
         self,
@@ -168,35 +218,11 @@ def upload_vlm_r1_ovd_annotation(self):
     if self.output_dir:
         output_dir_path = self.output_dir
 
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    response.setText(self.tr("Current annotation will be lost"))
-    response.setInformativeText(
-        self.tr(
-            "You are going to upload new annotations to this task. Continue?"
-        )
-    )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
-
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    if not UploadConfirmDialog(self).ask_annotations(False):
         return
 
     image_list = self.image_list if self.image_list else [self.filename]
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."), self.tr("Cancel"), 0, len(image_list), self
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setStyleSheet(
-        get_progress_dialog_style(color="#1d1d1f", height=20)
-    )
+    progress_dialog = UploadProgressDialog(self, maximum=len(image_list))
 
     converter = LabelConverter()
 
@@ -256,6 +282,9 @@ def upload_ppocr_annotation(self, mode):
     if not _check_filename_exist(self):
         return
 
+    if _reject_dataset_mode_upload(self):
+        return
+
     if mode == "rec":
         filter = "Attribute Files (*.txt);;All Files (*)"
         input_file, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -280,33 +309,10 @@ def upload_ppocr_annotation(self, mode):
         if not input_file:
             return
 
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    response.setText(self.tr("Current annotation will be lost"))
-    response.setInformativeText(
-        self.tr(
-            "You are going to upload new annotations to this task. Continue?"
-        )
-    )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
-
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    if not UploadConfirmDialog(self).ask_annotations(False):
         return
 
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."), self.tr("Cancel"), 0, 0, self
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setRange(0, 0)
-    progress_dialog.setStyleSheet(get_progress_dialog_style())
+    progress_dialog = UploadProgressDialog(self, maximum=0)
 
     converter = LabelConverter()
     image_path = osp.dirname(self.filename)
@@ -352,6 +358,9 @@ def upload_odvg_annotation(self):
     if not _check_filename_exist(self):
         return
 
+    if _reject_dataset_mode_upload(self):
+        return
+
     filter = "OD Files (*.json *.jsonl);;All Files (*)"
     input_file, _ = QtWidgets.QFileDialog.getOpenFileName(
         self,
@@ -363,33 +372,10 @@ def upload_odvg_annotation(self):
     if not input_file:
         return
 
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    response.setText(self.tr("Current annotation will be lost"))
-    response.setInformativeText(
-        self.tr(
-            "You are going to upload new annotations to this task. Continue?"
-        )
-    )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
-
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    if not UploadConfirmDialog(self).ask_annotations(False):
         return
 
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."), self.tr("Cancel"), 0, 0, self
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setRange(0, 0)
-    progress_dialog.setStyleSheet(get_progress_dialog_style())
+    progress_dialog = UploadProgressDialog(self, maximum=0)
 
     converter = LabelConverter()
     output_path = osp.dirname(self.filename)
@@ -432,6 +418,9 @@ def upload_mmgd_annotation(self, LABEL_OPACITY):
     if not _check_filename_exist(self):
         return
 
+    if _reject_dataset_mode_upload(self):
+        return
+
     filter = "Classes Files (*.txt);;All Files (*)"
     classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
         self,
@@ -454,126 +443,23 @@ def upload_mmgd_annotation(self, LABEL_OPACITY):
         popup.show_popup(self, position="center")
         return
 
-    dialog = QtWidgets.QDialog(self)
-    dialog.setWindowTitle(self.tr("Upload Options"))
-    dialog.setMinimumWidth(500)
-    dialog.setStyleSheet(get_export_option_style())
+    section = UploadCategorySection(classes)
 
-    layout = QVBoxLayout()
-    layout.setContentsMargins(24, 24, 24, 24)
-    layout.setSpacing(16)
+    def build_categories(dialog):
+        dialog.body.addWidget(section)
 
-    folder_layout = QVBoxLayout()
-    folder_label = QtWidgets.QLabel(self.tr("Select Upload Folder"))
-    folder_layout.addWidget(folder_label)
-
-    folder_input_layout = QHBoxLayout()
-    folder_input_layout.setSpacing(8)
-
-    path_edit = QtWidgets.QLineEdit()
-    path_edit.setPlaceholderText(
-        self.tr("Please select a folder containing annotation files")
+    dialog = UploadFolderDialog(
+        self,
+        placeholder=self.tr(
+            "Please select a folder containing annotation files"
+        ),
+        extra_builder=build_categories,
     )
-
-    def browse_json_folder():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Select Upload Folder"),
-            None,
-            QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
-        )
-        if path:
-            path_edit.setText(path)
-
-    folder_button = QtWidgets.QPushButton(self.tr("Browse"))
-    folder_button.clicked.connect(browse_json_folder)
-    folder_button.setStyleSheet(get_cancel_btn_style())
-
-    folder_input_layout.addWidget(path_edit)
-    folder_input_layout.addWidget(folder_button)
-    folder_layout.addLayout(folder_input_layout)
-    layout.addLayout(folder_layout)
-
-    category_layout = QVBoxLayout()
-    category_label = QtWidgets.QLabel(self.tr("Category Settings"))
-    category_layout.addWidget(category_label)
-
-    scroll_area = QtWidgets.QScrollArea()
-    scroll_area.setWidgetResizable(True)
-    scroll_area.setMaximumHeight(200)
-    scroll_widget = QtWidgets.QWidget()
-    scroll_layout = QVBoxLayout(scroll_widget)
-
-    category_widgets = {}
-    for i, class_name in enumerate(classes):
-        row_layout = QHBoxLayout()
-
-        checkbox = QtWidgets.QCheckBox(class_name)
-        checkbox.setChecked(True)
-
-        threshold_label = QtWidgets.QLabel(self.tr("Threshold:"))
-        threshold_input = QtWidgets.QDoubleSpinBox()
-        threshold_input.setRange(0.0, 1.0)
-        threshold_input.setSingleStep(0.01)
-        threshold_input.setValue(0.20)
-        threshold_input.setDecimals(2)
-
-        row_layout.addWidget(checkbox)
-        row_layout.addStretch()
-        row_layout.addWidget(threshold_label)
-        row_layout.addWidget(threshold_input)
-
-        scroll_layout.addLayout(row_layout)
-        category_widgets[class_name] = (checkbox, threshold_input)
-
-    scroll_area.setWidget(scroll_widget)
-    category_layout.addWidget(scroll_area)
-    layout.addLayout(category_layout)
-
-    button_layout = QHBoxLayout()
-    button_layout.setContentsMargins(0, 16, 0, 0)
-    button_layout.setSpacing(8)
-
-    cancel_button = QtWidgets.QPushButton(self.tr("Cancel"))
-    cancel_button.clicked.connect(dialog.reject)
-    cancel_button.setStyleSheet(get_cancel_btn_style())
-
-    ok_button = QtWidgets.QPushButton(self.tr("OK"))
-
-    def on_ok_clicked():
-        if not path_edit.text().strip():
-            QtWidgets.QMessageBox.warning(
-                self,
-                self.tr("Warning"),
-                self.tr("Upload folder path cannot be empty!"),
-            )
-            return
-
-        dialog.accept()
-
-    ok_button.clicked.connect(on_ok_clicked)
-    ok_button.setStyleSheet(get_ok_btn_style())
-
-    button_layout.addStretch()
-    button_layout.addWidget(cancel_button)
-    button_layout.addWidget(ok_button)
-    layout.addLayout(button_layout)
-
-    dialog.setLayout(layout)
-    result = dialog.exec()
-
-    if not result:
+    if dialog.exec() != QtWidgets.QDialog.DialogCode.Accepted:
         return
 
-    labels = []
-    thresholds = {}
-    for class_name, (checkbox, threshold_input) in category_widgets.items():
-        if checkbox.isChecked():
-            labels.append(class_name)
-            thresholds[class_name] = threshold_input.value()
-
-    if not labels:
+    selected = section.selected()
+    if not selected:
         popup = Popup(
             self.tr("Please select at least one category!"),
             self,
@@ -581,46 +467,20 @@ def upload_mmgd_annotation(self, LABEL_OPACITY):
         )
         popup.show_popup(self, position="center")
         return
+    labels = [name for name, _threshold in selected]
+    thresholds = dict(selected)
 
-    label_dir_path = path_edit.text()
+    label_dir_path = dialog.folder()
     image_dir_path = osp.dirname(self.filename)
     image_file_list = os.listdir(image_dir_path)
     label_file_list = os.listdir(label_dir_path)
     output_dir_path = self.output_dir if self.output_dir else image_dir_path
     converter = LabelConverter(classes_file=classes_file)
 
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    response.setText(self.tr("Current annotation will be lost"))
-    response.setInformativeText(
-        self.tr(
-            "You are going to upload new annotations to this task. Continue?"
-        )
-    )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
-
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    if not UploadConfirmDialog(self).ask_annotations(False):
         return
 
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."),
-        self.tr("Cancel"),
-        0,
-        len(image_file_list),
-        self,
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setStyleSheet(
-        get_progress_dialog_style(color="#1d1d1f", height=20)
-    )
+    progress_dialog = UploadProgressDialog(self, maximum=len(image_file_list))
 
     try:
         for i, image_filename in enumerate(image_file_list):
@@ -685,6 +545,9 @@ def upload_mot_annotation(self, LABEL_OPACITY):
     if not _check_filename_exist(self):
         return
 
+    if _reject_dataset_mode_upload(self):
+        return
+
     filter = "Classes Files (*.txt);;All Files (*)"
     classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
         self,
@@ -713,22 +576,7 @@ def upload_mot_annotation(self, LABEL_OPACITY):
         popup.show_popup(self, position="center")
         return
 
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    response.setText(self.tr("Current annotation will be lost"))
-    response.setInformativeText(
-        self.tr(
-            "You are going to upload new annotations to this task. Continue?"
-        )
-    )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
-
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    if not UploadConfirmDialog(self).ask_annotations(False):
         return
 
     # Initialize unique labels
@@ -743,15 +591,7 @@ def upload_mot_annotation(self, LABEL_OPACITY):
                     item, label, rgb, LABEL_OPACITY
                 )
 
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."), self.tr("Cancel"), 0, 0, self
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setRange(0, 0)
-    progress_dialog.setStyleSheet(get_progress_dialog_style())
+    progress_dialog = UploadProgressDialog(self, maximum=0)
 
     converter = LabelConverter(classes_file=classes_file)
     image_path = osp.dirname(self.filename)
@@ -797,6 +637,9 @@ def upload_mask_annotation(self, LABEL_OPACITY):
     if not _check_filename_exist(self):
         return
 
+    if _reject_dataset_mode_upload(self):
+        return
+
     filter = "Attribute Files (*.json);;All Files (*)"
     color_map_file, _ = QtWidgets.QFileDialog.getOpenFileName(
         self,
@@ -808,84 +651,17 @@ def upload_mask_annotation(self, LABEL_OPACITY):
     if not color_map_file:
         return
 
-    dialog = QtWidgets.QDialog(self)
-    dialog.setWindowTitle(self.tr("Upload Options"))
-    dialog.setMinimumWidth(500)
-    dialog.setStyleSheet(get_export_option_style())
-
-    layout = QVBoxLayout()
-    layout.setContentsMargins(24, 24, 24, 24)
-    layout.setSpacing(16)
-
-    path_layout = QVBoxLayout()
-    path_label = QtWidgets.QLabel(self.tr("Select Upload Folder"))
-    path_layout.addWidget(path_label)
-
-    path_input_layout = QHBoxLayout()
-    path_input_layout.setSpacing(8)
-
-    path_edit = QtWidgets.QLineEdit()
-    path_edit.setText(osp.dirname(osp.dirname(self.filename)))
-
-    def browse_upload_folder():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Select Upload Folder"),
-            path_edit.text(),
-            QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
-        )
-        if path:
-            path_edit.setText(path)
-
-    path_button = QtWidgets.QPushButton(self.tr("Browse"))
-    path_button.clicked.connect(browse_upload_folder)
-    path_button.setStyleSheet(get_cancel_btn_style())
-
-    path_input_layout.addWidget(path_edit)
-    path_input_layout.addWidget(path_button)
-    path_layout.addLayout(path_input_layout)
-    layout.addLayout(path_layout)
-
-    button_layout = QHBoxLayout()
-    button_layout.setContentsMargins(0, 16, 0, 0)
-    button_layout.setSpacing(8)
-
-    cancel_button = QtWidgets.QPushButton(self.tr("Cancel"))
-    cancel_button.clicked.connect(dialog.reject)
-    cancel_button.setStyleSheet(get_cancel_btn_style())
-
-    ok_button = QtWidgets.QPushButton(self.tr("OK"))
-    ok_button.clicked.connect(dialog.accept)
-    ok_button.setStyleSheet(get_ok_btn_style())
-
-    button_layout.addStretch()
-    button_layout.addWidget(cancel_button)
-    button_layout.addWidget(ok_button)
-    layout.addLayout(button_layout)
-
-    dialog.setLayout(layout)
-    result = dialog.exec()
-
-    if not result:
+    dialog = UploadFolderDialog(
+        self,
+        initial_path=osp.dirname(osp.dirname(self.filename)),
+        placeholder=self.tr(
+            "Please select a folder containing annotation files"
+        ),
+    )
+    if dialog.exec() != QtWidgets.QDialog.DialogCode.Accepted:
         return
 
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    response.setText(self.tr("Current annotation will be lost"))
-    response.setInformativeText(
-        self.tr(
-            "You are going to upload new annotations to this task. Continue?"
-        )
-    )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
-
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    if not UploadConfirmDialog(self).ask_annotations(False):
         return
 
     # Initialize unique labels
@@ -901,7 +677,7 @@ def upload_mask_annotation(self, LABEL_OPACITY):
                     item, label, rgb, LABEL_OPACITY
                 )
 
-    label_dir_path = path_edit.text()
+    label_dir_path = dialog.folder()
     image_dir_path = osp.dirname(self.filename)
     image_file_list = os.listdir(image_dir_path)
     label_file_list = os.listdir(label_dir_path)
@@ -909,16 +685,7 @@ def upload_mask_annotation(self, LABEL_OPACITY):
     converter = LabelConverter()
 
     image_list = self.image_list if self.image_list else [self.filename]
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."), self.tr("Cancel"), 0, len(image_list), self
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setStyleSheet(
-        get_progress_dialog_style(color="#1d1d1f", height=20)
-    )
+    progress_dialog = UploadProgressDialog(self, maximum=len(image_list))
 
     try:
         for i, image_filename in enumerate(image_file_list):
@@ -978,104 +745,30 @@ def upload_dota_annotation(self):
     if not _check_filename_exist(self):
         return
 
-    dialog = QtWidgets.QDialog(self)
-    dialog.setWindowTitle(self.tr("Upload Options"))
-    dialog.setMinimumWidth(500)
-    dialog.setStyleSheet(get_export_option_style())
-
-    layout = QVBoxLayout()
-    layout.setContentsMargins(24, 24, 24, 24)
-    layout.setSpacing(16)
-
-    path_layout = QVBoxLayout()
-    path_label = QtWidgets.QLabel(self.tr("Select Upload Folder"))
-    path_layout.addWidget(path_label)
-
-    path_input_layout = QHBoxLayout()
-    path_input_layout.setSpacing(8)
-
-    path_edit = QtWidgets.QLineEdit()
-    path_edit.setText(osp.dirname(osp.dirname(self.filename)))
-
-    def browse_upload_folder():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Select Upload Folder"),
-            path_edit.text(),
-            QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
-        )
-        if path:
-            path_edit.setText(path)
-
-    path_button = QtWidgets.QPushButton(self.tr("Browse"))
-    path_button.clicked.connect(browse_upload_folder)
-    path_button.setStyleSheet(get_cancel_btn_style())
-
-    path_input_layout.addWidget(path_edit)
-    path_input_layout.addWidget(path_button)
-    path_layout.addLayout(path_input_layout)
-    layout.addLayout(path_layout)
-
-    # Button section
-    button_layout = QHBoxLayout()
-    button_layout.setContentsMargins(0, 16, 0, 0)
-    button_layout.setSpacing(8)
-
-    cancel_button = QtWidgets.QPushButton(self.tr("Cancel"))
-    cancel_button.clicked.connect(dialog.reject)
-    cancel_button.setStyleSheet(get_cancel_btn_style())
-
-    ok_button = QtWidgets.QPushButton(self.tr("OK"))
-    ok_button.clicked.connect(dialog.accept)
-    ok_button.setStyleSheet(get_ok_btn_style())
-
-    button_layout.addStretch()
-    button_layout.addWidget(cancel_button)
-    button_layout.addWidget(ok_button)
-    layout.addLayout(button_layout)
-
-    dialog.setLayout(layout)
-    result = dialog.exec()
-
-    if not result:
+    if _reject_dataset_mode_upload(self):
         return
 
-    label_dir_path = path_edit.text()
+    dialog = UploadFolderDialog(
+        self,
+        initial_path=osp.dirname(osp.dirname(self.filename)),
+        placeholder=self.tr(
+            "Please select a folder containing annotation files"
+        ),
+    )
+    if dialog.exec() != QtWidgets.QDialog.DialogCode.Accepted:
+        return
+
+    label_dir_path = dialog.folder()
     image_dir_path = osp.dirname(self.filename)
     label_file_list = os.listdir(label_dir_path)
     output_dir_path = self.output_dir if self.output_dir else image_dir_path
     converter = LabelConverter()
 
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    response.setText(self.tr("Current annotation will be lost"))
-    response.setInformativeText(
-        self.tr(
-            "You are going to upload new annotations to this task. Continue?"
-        )
-    )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
-
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    if not UploadConfirmDialog(self).ask_annotations(False):
         return
 
     image_list = self.image_list if self.image_list else [self.filename]
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."), self.tr("Cancel"), 0, len(image_list), self
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setStyleSheet(
-        get_progress_dialog_style(color="#1d1d1f", height=20)
-    )
+    progress_dialog = UploadProgressDialog(self, maximum=len(image_list))
 
     try:
         for i, image_path in enumerate(image_list):
@@ -1133,6 +826,9 @@ def upload_coco_annotation(self, mode):
     if not _check_filename_exist(self):
         return
 
+    if _reject_dataset_mode_upload(self):
+        return
+
     filter = "Attribute Files (*.json);;All Files (*)"
     input_file, _ = QtWidgets.QFileDialog.getOpenFileName(
         self,
@@ -1148,33 +844,10 @@ def upload_coco_annotation(self, mode):
     if self.output_dir:
         output_dir_path = self.output_dir
 
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    response.setText(self.tr("Current annotation will be lost"))
-    response.setInformativeText(
-        self.tr(
-            "You are going to upload new annotations to this task. Continue?"
-        )
-    )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
-
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    if not UploadConfirmDialog(self).ask_annotations(False):
         return
 
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."), self.tr("Cancel"), 0, 0, self
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setRange(0, 0)
-    progress_dialog.setStyleSheet(get_progress_dialog_style())
+    progress_dialog = UploadProgressDialog(self, maximum=0)
 
     self.upload_thread = UploadCocoThread(
         LabelConverter(), input_file, output_dir_path, mode
@@ -1215,103 +888,30 @@ def upload_voc_annotation(self, mode):
     if not _check_filename_exist(self):
         return
 
-    dialog = QtWidgets.QDialog(self)
-    dialog.setWindowTitle(self.tr("Upload Options"))
-    dialog.setMinimumWidth(500)
-    dialog.setStyleSheet(get_export_option_style())
-
-    layout = QVBoxLayout()
-    layout.setContentsMargins(24, 24, 24, 24)
-    layout.setSpacing(16)
-
-    path_layout = QVBoxLayout()
-    path_label = QtWidgets.QLabel(self.tr("Select Upload Folder"))
-    path_layout.addWidget(path_label)
-
-    path_input_layout = QHBoxLayout()
-    path_input_layout.setSpacing(8)
-
-    path_edit = QtWidgets.QLineEdit()
-    path_edit.setText(osp.dirname(osp.dirname(self.filename)))
-
-    def browse_upload_folder():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Select Upload Folder"),
-            path_edit.text(),
-            QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
-        )
-        if path:
-            path_edit.setText(path)
-
-    path_button = QtWidgets.QPushButton(self.tr("Browse"))
-    path_button.clicked.connect(browse_upload_folder)
-    path_button.setStyleSheet(get_cancel_btn_style())
-
-    path_input_layout.addWidget(path_edit)
-    path_input_layout.addWidget(path_button)
-    path_layout.addLayout(path_input_layout)
-    layout.addLayout(path_layout)
-
-    button_layout = QHBoxLayout()
-    button_layout.setContentsMargins(0, 16, 0, 0)
-    button_layout.setSpacing(8)
-
-    cancel_button = QtWidgets.QPushButton(self.tr("Cancel"))
-    cancel_button.clicked.connect(dialog.reject)
-    cancel_button.setStyleSheet(get_cancel_btn_style())
-
-    ok_button = QtWidgets.QPushButton(self.tr("OK"))
-    ok_button.clicked.connect(dialog.accept)
-    ok_button.setStyleSheet(get_ok_btn_style())
-
-    button_layout.addStretch()
-    button_layout.addWidget(cancel_button)
-    button_layout.addWidget(ok_button)
-    layout.addLayout(button_layout)
-
-    dialog.setLayout(layout)
-    result = dialog.exec()
-
-    if not result:
+    if _reject_dataset_mode_upload(self):
         return
 
-    label_dir_path = path_edit.text()
+    dialog = UploadFolderDialog(
+        self,
+        initial_path=osp.dirname(osp.dirname(self.filename)),
+        placeholder=self.tr(
+            "Please select a folder containing annotation files"
+        ),
+    )
+    if dialog.exec() != QtWidgets.QDialog.DialogCode.Accepted:
+        return
+
+    label_dir_path = dialog.folder()
     image_dir_path = osp.dirname(self.filename)
     label_file_list = os.listdir(label_dir_path)
     output_dir_path = self.output_dir if self.output_dir else image_dir_path
     converter = LabelConverter()
 
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    response.setText(self.tr("Current annotation will be lost"))
-    response.setInformativeText(
-        self.tr(
-            "You are going to upload new annotations to this task. Continue?"
-        )
-    )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
-
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    if not UploadConfirmDialog(self).ask_annotations(False):
         return
 
     image_list = self.image_list if self.image_list else [self.filename]
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."), self.tr("Cancel"), 0, len(image_list), self
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setStyleSheet(
-        get_progress_dialog_style(color="#1d1d1f", height=20)
-    )
+    progress_dialog = UploadProgressDialog(self, maximum=len(image_list))
 
     try:
         for i, image_path in enumerate(image_list):
@@ -1364,9 +964,118 @@ def upload_voc_annotation(self, mode):
         popup.show_popup(self, position="center")
 
 
+def _dataset_class_source(host):
+    """Class names stored in the open dataset ("Classes" tab order)."""
+
+    names = dataset_category_names(getattr(host, "dataset_repository", None))
+    if not names:
+        return None
+    return ClassSource(tuple(names), SOURCE_DATASET)
+
+
+def _pick_classes_file(host):
+    """Fallback picker used when no class source can be detected."""
+
+    file_filter = "Classes Files (*.txt);;All Files (*)"
+    path, _selected = QtWidgets.QFileDialog.getOpenFileName(
+        host,
+        host.tr("Select a specific classes file"),
+        "",
+        file_filter,
+    )
+    if not path:
+        return None
+    try:
+        names = read_classes_file(path)
+    except OSError as exc:
+        popup = Popup(
+            host.tr("Error reading classes file: %s") % str(exc),
+            host,
+            icon=new_icon_path("error", "svg"),
+        )
+        popup.show_popup(host, position="center")
+        return None
+    if not names:
+        popup = Popup(
+            host.tr("No class names found in: %s") % path,
+            host,
+            icon=new_icon_path("error", "svg"),
+        )
+        popup.show_popup(host, position="center")
+        return None
+    host.classes_file = path
+    return ClassSource(tuple(names), SOURCE_PICKED, path)
+
+
+def _resolve_yolo_class_source(host, image_dir):
+    """Dataset categories first, then a detected file, then the picker."""
+
+    source = _dataset_class_source(host)
+    if source is not None:
+        return source
+    source = detect_class_source(image_dir)
+    if source is not None:
+        return source
+    return _pick_classes_file(host)
+
+
+def _class_source_text(host, source):
+    """Operator-facing description of where the class names came from."""
+
+    count = len(source.names)
+    if source.kind == SOURCE_DATASET:
+        return host.tr("Classes: %d from the dataset categories") % count
+    return host.tr("Classes: %d from %s") % (count, source.path)
+
+
+def _read_existing_shapes(output_file):
+    """Shapes already stored in a JSON sidecar (JSON mode, preserve option)."""
+
+    if not osp.isfile(output_file):
+        return []
+    try:
+        with open(output_file, "r", encoding="utf-8") as handle:
+            data = json.load(handle)
+    except (OSError, ValueError):
+        return []
+    shapes = data.get("shapes") if isinstance(data, dict) else None
+    return list(shapes) if isinstance(shapes, list) else []
+
+
+def _merge_existing_shapes(output_file, payload, existing_shapes):
+    """Rewrite the payload with the preserved shapes placed first."""
+
+    payload["shapes"] = list(existing_shapes) + list(
+        payload.get("shapes") or []
+    )
+    with open(output_file, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, ensure_ascii=False)
+
+
+def _refresh_after_dataset_upload(host, written):
+    """Refresh the table, statistics and canvas after a database upload."""
+
+    files = getattr(host, "files", None)
+    for image_path, shape_count in written:
+        if files is None:
+            break
+        row = files.row_of(image_path)
+        if row is not None:
+            files.apply_row_state(row, shape_count)
+    if files is not None:
+        files.invalidate_label_manager()
+    host._refresh_statistics_if_visible()
+    if host.filename:
+        host.load_file(host.filename)
+
+
 def upload_yolo_annotation(self, mode, LABEL_OPACITY):
     if not _check_filename_exist(self):
         return
+
+    repository = getattr(self, "dataset_repository", None)
+    dataset_root = getattr(self, "dataset_root", None)
+    image_dir = osp.dirname(self.filename) if self.filename else ""
 
     if mode == "pose":
         filter = "Classes Files (*.yaml);;All Files (*)"
@@ -1395,222 +1104,163 @@ def upload_yolo_annotation(self, mode, LABEL_OPACITY):
         for class_name, keypoint_name in converter.pose_classes.items():
             labels.append(class_name)
             labels.extend(keypoint_name)
-
-    elif mode in ["hbb", "obb", "seg"]:
-        filter = "Classes Files (*.txt);;All Files (*)"
-        self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            self.tr("Select a specific classes file"),
-            "",
-            filter,
-        )
-        if not self.classes_file:
-            return
-
-        with open(self.classes_file, "r", encoding="utf-8") as f:
-            labels = f.read().splitlines()
-        converter = LabelConverter(classes_file=self.classes_file)
-
-    dialog = QtWidgets.QDialog(self)
-    dialog.setWindowTitle(self.tr("Upload Options"))
-    dialog.setMinimumWidth(500)
-    dialog.setStyleSheet(get_export_option_style())
-
-    layout = QVBoxLayout()
-    layout.setContentsMargins(24, 24, 24, 24)
-    layout.setSpacing(16)
-
-    path_layout = QVBoxLayout()
-    path_label = QtWidgets.QLabel(self.tr("Select Upload Folder"))
-    path_layout.addWidget(path_label)
-
-    path_input_layout = QHBoxLayout()
-    path_input_layout.setSpacing(8)
-
-    path_edit = QtWidgets.QLineEdit()
-    path_edit.setText(osp.dirname(osp.dirname(self.filename)))
-
-    def browse_upload_folder():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Select Upload Folder"),
-            path_edit.text(),
-            QtWidgets.QFileDialog.Option.ShowDirsOnly
-            | QtWidgets.QFileDialog.Option.DontResolveSymlinks,
-        )
-        if path:
-            path_edit.setText(path)
-
-    path_button = QtWidgets.QPushButton(self.tr("Browse"))
-    path_button.clicked.connect(browse_upload_folder)
-    path_button.setStyleSheet(get_cancel_btn_style())
-
-    path_input_layout.addWidget(path_edit)
-    path_input_layout.addWidget(path_button)
-    path_layout.addLayout(path_input_layout)
-    layout.addLayout(path_layout)
-
-    preserve_checkbox = QtWidgets.QCheckBox(
-        self.tr("Preserve existing annotations")
-    )
-    preserve_checkbox.setChecked(False)
-    layout.addWidget(preserve_checkbox)
-
-    button_layout = QHBoxLayout()
-    button_layout.setContentsMargins(0, 16, 0, 0)
-    button_layout.setSpacing(8)
-
-    cancel_button = QtWidgets.QPushButton(self.tr("Cancel"))
-    cancel_button.clicked.connect(dialog.reject)
-    cancel_button.setStyleSheet(get_cancel_btn_style())
-
-    ok_button = QtWidgets.QPushButton(self.tr("OK"))
-    ok_button.clicked.connect(dialog.accept)
-    ok_button.setStyleSheet(get_ok_btn_style())
-
-    button_layout.addStretch()
-    button_layout.addWidget(cancel_button)
-    button_layout.addWidget(ok_button)
-    layout.addLayout(button_layout)
-
-    dialog.setLayout(layout)
-    result = dialog.exec()
-
-    if not result:
-        return
-
-    label_dir_path = path_edit.text()
-    preserve_existing = preserve_checkbox.isChecked()
-    image_dir_path = osp.dirname(self.filename)
-    image_file_list = os.listdir(image_dir_path)
-    label_file_list = os.listdir(label_dir_path)
-    output_dir_path = self.output_dir if self.output_dir else image_dir_path
-
-    response = QtWidgets.QMessageBox()
-    response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-    response.setWindowTitle(self.tr("Warning"))
-    if preserve_existing:
-        response.setText(
-            self.tr("New annotations will be merged with existing ones")
-        )
-        response.setInformativeText(
-            self.tr(
-                "You are going to add new annotations to this task. Existing annotations will be preserved. Continue?"
-            )
+        class_text = self.tr("Classes: %d from %s") % (
+            len(converter.classes),
+            osp.basename(self.yaml_file),
         )
     else:
-        response.setText(self.tr("Current annotation will be lost"))
-        response.setInformativeText(
-            self.tr(
-                "You are going to upload new annotations to this task. Continue?"
-            )
+        source = _resolve_yolo_class_source(self, image_dir)
+        if source is None:
+            return
+        converter = LabelConverter(
+            classes=list(source.names),
+            classes_source=source.path or "dataset categories",
         )
-    response.setStandardButtons(
-        QtWidgets.QMessageBox.StandardButton.Cancel
-        | QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    response.setStyleSheet(get_msg_box_style())
+        labels = list(source.names)
+        class_text = _class_source_text(self, source)
 
-    if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+    label_dir = guess_label_dir(image_dir, dataset_root)
+
+    dialog = UploadFolderDialog(
+        self,
+        initial_path=label_dir,
+        hint_text=class_text,
+        placeholder=self.tr(
+            "Please select a folder containing annotation files"
+        ),
+        preserve_option=True,
+    )
+    if dialog.exec() != QtWidgets.QDialog.DialogCode.Accepted:
         return
 
-    progress_dialog = QProgressDialog(
-        self.tr("Uploading..."),
-        self.tr("Cancel"),
-        0,
-        len(image_file_list),
-        self,
-    )
-    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-    progress_dialog.setWindowTitle(self.tr("Progress"))
-    progress_dialog.setMinimumWidth(500)
-    progress_dialog.setMinimumHeight(150)
-    progress_dialog.setStyleSheet(
-        get_progress_dialog_style(color="#1d1d1f", height=20)
-    )
-
-    try:
-        for i, image_filename in enumerate(image_file_list):
-            if image_filename.endswith(".json"):
-                continue
-            label_filename = osp.splitext(image_filename)[0] + ".txt"
-            data_filename = osp.splitext(image_filename)[0] + ".json"
-            if label_filename not in label_file_list:
-                continue
-            input_file = osp.join(label_dir_path, label_filename)
-            output_file = osp.join(output_dir_path, data_filename)
-            image_file = osp.join(image_dir_path, image_filename)
-
-            existing_shapes = []
-            if preserve_existing and osp.exists(output_file):
-                with open(output_file, "r", encoding="utf-8") as f:
-                    existing_data = json.load(f)
-                    existing_shapes = existing_data.get("shapes", [])
-
-            if mode in ["hbb", "seg"]:
-                converter.yolo_to_custom(
-                    input_file=input_file,
-                    output_file=output_file,
-                    image_file=image_file,
-                    mode=mode,
-                )
-            elif mode == "obb":
-                converter.yolo_obb_to_custom(
-                    input_file=input_file,
-                    output_file=output_file,
-                    image_file=image_file,
-                )
-            elif mode == "pose":
-                converter.yolo_pose_to_custom(
-                    input_file=input_file,
-                    output_file=output_file,
-                    image_file=image_file,
-                )
-
-            # Merge with existing shapes if needed
-            if preserve_existing and existing_shapes:
-                with open(output_file, "r", encoding="utf-8") as f:
-                    new_data = json.load(f)
-                new_data["shapes"] = existing_shapes + new_data.get(
-                    "shapes", []
-                )
-                with open(output_file, "w", encoding="utf-8") as f:
-                    json.dump(new_data, f, indent=2, ensure_ascii=False)
-
-            progress_dialog.setValue(i)
-            if progress_dialog.wasCanceled():
-                break
-
-        progress_dialog.close()
-        _refresh_after_annotation_upload(self)
+    label_dir = resolve_label_dir(dialog.folder(), image_dir)
+    if not osp.isdir(label_dir):
         popup = Popup(
-            self.tr("Upload completed successfully!"),
-            self,
-            icon=new_icon_path("copy-green", "svg"),
-        )
-        popup.show_popup(self, position="center")
-
-        # Initialize unique labels
-        for label in labels:
-            if not self.unique_label_list.find_items_by_label(label):
-                item = self.unique_label_list.create_item_from_label(label)
-                self.unique_label_list.addItem(item)
-                rgb = self._get_rgb_by_label(label)
-                self.unique_label_list.set_item_label(
-                    item, label, rgb, LABEL_OPACITY
-                )
-
-    except Exception as e:
-        progress_dialog.close()
-        message = f"Error occurred while uploading annotations: {str(e)}"
-        logger.error(message)
-
-        popup = Popup(
-            message,
+            self.tr("Label folder does not exist: %s") % label_dir,
             self,
             icon=new_icon_path("error", "svg"),
         )
         popup.show_popup(self, position="center")
+        return
+
+    preserve_existing = dialog.preserve_existing
+    if not UploadConfirmDialog(self).ask_annotations(preserve_existing):
+        return
+
+    output_dir = self.output_dir if self.output_dir else image_dir
+    image_names = sorted(
+        name
+        for name in os.listdir(image_dir)
+        if osp.splitext(name)[1].lower() != ".json"
+    )
+    progress = UploadProgressDialog(self, maximum=len(image_names))
+    written = []
+    errors = []
+    skipped = 0
+    not_registered = 0
+    objects = 0
+
+    try:
+        for index, image_name in enumerate(image_names):
+            if progress.wasCanceled():
+                break
+            progress.setValue(index + 1)
+            stem = osp.splitext(image_name)[0]
+            label_file = osp.join(label_dir, stem + ".txt")
+            if not osp.isfile(label_file):
+                skipped += 1
+                continue
+            image_file = osp.join(image_dir, image_name)
+            output_file = osp.join(output_dir, stem + ".json")
+            existing_shapes = []
+            if repository is None and preserve_existing:
+                existing_shapes = _read_existing_shapes(output_file)
+            try:
+                if mode in ("hbb", "seg"):
+                    payload = converter.yolo_to_custom(
+                        input_file=label_file,
+                        output_file=output_file,
+                        image_file=image_file,
+                        mode=mode,
+                        write=repository is None,
+                    )
+                elif mode == "obb":
+                    payload = converter.yolo_obb_to_custom(
+                        input_file=label_file,
+                        output_file=output_file,
+                        image_file=image_file,
+                        write=repository is None,
+                    )
+                else:
+                    payload = converter.yolo_pose_to_custom(
+                        input_file=label_file,
+                        output_file=output_file,
+                        image_file=image_file,
+                        write=repository is None,
+                    )
+                if repository is None:
+                    if existing_shapes:
+                        _merge_existing_shapes(
+                            output_file, payload, existing_shapes
+                        )
+                    shape_count = len(payload.get("shapes") or [])
+                    written.append((image_file, shape_count))
+                    objects += shape_count
+                else:
+                    outcome, shape_count, reason = store_annotation(
+                        repository,
+                        dataset_root,
+                        image_file,
+                        payload,
+                        preserve_existing=preserve_existing,
+                    )
+                    if outcome == OUTCOME_WRITTEN:
+                        written.append((image_file, shape_count))
+                        objects += shape_count
+                    elif outcome == OUTCOME_SKIPPED:
+                        not_registered += 1
+                    else:
+                        errors.append(f"{image_name}: {reason}")
+            except Exception as e:  # noqa: BLE001 - reported per file
+                errors.append(str(e))
+    finally:
+        progress.close()
+
+    if repository is None:
+        _refresh_after_annotation_upload(self)
+    else:
+        _refresh_after_dataset_upload(self, written)
+
+    for label in labels:
+        if not self.unique_label_list.find_items_by_label(label):
+            item = self.unique_label_list.create_item_from_label(label)
+            self.unique_label_list.addItem(item)
+            rgb = self._get_rgb_by_label(label)
+            self.unique_label_list.set_item_label(
+                item, label, rgb, LABEL_OPACITY
+            )
+
+    lines = [
+        self.tr("Uploaded: %d images, %d objects.") % (len(written), objects),
+        self.tr("Skipped (no matching .txt): %d images.") % skipped,
+    ]
+    if repository is not None:
+        lines.append(
+            self.tr("Skipped (not in the dataset): %d images.")
+            % not_registered
+        )
+    lines.append(self.tr("Failed: %d images.") % len(errors))
+    if errors:
+        lines.append("")
+        lines.append(self.tr("First errors:"))
+        lines.extend(errors[:5])
+        logger.warning("YOLO upload finished with errors: %s", errors)
+    popup = Popup(
+        "\n".join(lines),
+        self,
+        icon=new_icon_path("copy-green" if written else "error", "svg"),
+    )
+    popup.show_popup(self, position="center")
 
 
 def upload_label_classes_file(self):
@@ -1637,22 +1287,7 @@ def upload_label_classes_file(self):
             popup.show_popup(self, position="center")
             return
 
-        response = QtWidgets.QMessageBox()
-        response.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-        response.setWindowTitle(self.tr("Warning"))
-        response.setText(self.tr("Current labels will be lost"))
-        response.setInformativeText(
-            self.tr(
-                "You are going to upload new labels to this task. Continue?"
-            )
-        )
-        response.setStandardButtons(
-            QtWidgets.QMessageBox.StandardButton.Cancel
-            | QtWidgets.QMessageBox.StandardButton.Ok
-        )
-        response.setStyleSheet(get_msg_box_style())
-
-        if response.exec() != QtWidgets.QMessageBox.StandardButton.Ok:
+        if not UploadConfirmDialog(self).ask_labels():
             return
 
         # Update unique_label_list

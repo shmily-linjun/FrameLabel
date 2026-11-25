@@ -18,6 +18,13 @@ from .. import utils
 from ..pointcloud.icons import get_icon
 from ..utils.theme import get_theme
 
+# pylupdate6 only records `tr()` calls inside class bodies.  These
+# modules also translate text through `host.tr`/`self.tr` in free
+# functions and helpers, where the receiver is the LabelingWidget; the
+# constant tells `scripts/translation_scan.py` which context to use
+# (see docs/dev/CODE_STRUCTURE_REPORT.md).
+TR_CONTEXT = "LabelingWidget"
+
 class ToolbarPolicy:
     """Short labels, visibility preferences and geometry of the tool bar."""
 

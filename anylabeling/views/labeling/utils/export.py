@@ -26,6 +26,13 @@ from anylabeling.views.labeling.utils.qt import new_icon_path
 from anylabeling.views.labeling.utils.style import *
 from anylabeling.views.labeling.utils.dataset_statistics import normalize_split
 
+# pylupdate6 only records `tr()` calls inside class bodies.  These
+# modules also translate text through `host.tr`/`self.tr` in free
+# functions and helpers, where the receiver is the LabelingWidget; the
+# constant tells `scripts/translation_scan.py` which context to use
+# (see docs/dev/CODE_STRUCTURE_REPORT.md).
+TR_CONTEXT = "LabelingWidget"
+
 
 class ExportThread(QThread):
     finished = pyqtSignal(bool, str)

@@ -595,26 +595,32 @@ X-AnyLabeling 支持调整当前图片的显示效果和标注对象的可见性
 
 X-AnyLabeling 支持导入和导出 YOLO 目标检测、实例分割、旋转框检测及关键点检测标签（`*.txt`）。
 
-在导入/导出 YOLO 标注文件之前，需要准备一份标签配置文件，具体如下：
+**导入**时类别的来源按以下顺序自动确定，不强制要求 `classes.txt`：
 
-1. 对于 YOLO 目标检测、实例分割和旋转框检测任务，请参考 [classes.txt](../../../assets/classes.txt) 准备配置文件，每一行代表一个类别，编号从上至下从 0 开始依次递增。
+1. 已打开数据库数据集时，直接使用右侧 **类别/Classes** 页的顺序（`category.sort_index`），与导出保持一致；
+2. 否则自动向上查找最近的 `classes.txt`（也接受 `obj.names`/`names.txt`）；
+3. 再找不到时读取最近的 `data.yaml`/`data.yml` 的 `names`（数字键按编号排序）；
+4. 以上都没有时，才弹文件选择框让你指定类别文件（取消即放弃上传）。
+
+**导出**时仍使用同样的规则（数据库模式读“类别”页顺序）。YOLO 关键点（Pose）导入/导出都需要关键点配置文件，参考 [yolov8_pose.yaml](../../../assets/yolov8_pose.yaml)，其中 `has_visible` 参数请参考[官方定义](https://docs.ultralytics.com/datasets/pose/#ultralytics-yolo-format)。
 
 > **数据库数据集**：正常打开一个图片文件夹时，如果目录里没有 `xanylabeling.db`，应用会先自动建库并把现有 JSON 标注迁移进去；之后所有读写都走数据库，不再进入单独的“JSON 模式”。因此导出 YOLO（检测/分割/旋转框）、COCO（矩形/多边形）、DOTA、MOT/MOTS/ODVG 时不再询问 `classes.txt`，而是直接使用右侧 **类别/Classes** 页的顺序（`category.sort_index`）。请先在“类别”页用上移/下移调整导出顺序；这样导出的类别编号与界面顺序一致。YOLO Pose/COCO Pose 仍需选择关键点配置文件（其中包含类别与关键点定义）。
-2. 对于 YOLO 关键点检测任务，请参考 [yolov8_pose.yaml](../../../assets/yolov8_pose.yaml) 进行准备，其中 `has_visible` 参数请参考[官方定义](https://docs.ultralytics.com/datasets/pose/#ultralytics-yolo-format)。
-
+>
+> 数据库模式下，**上传 YOLO 检测/分割/旋转框/姿态**会直接写入当前数据集（自动建立缺失类别），不再生成 JSON 旁边文件；上传后文件表对象数、统计与画布会立即刷新。其他上传格式（COCO/VOC/DOTA/MOT/MMGD/Mask/ODVG/PPOCR/VLM-R1）暂不支持写入数据集，会给出提示而不是静默无效果。
+>
 > 要导出 YOLO Pose 格式，需要为每组检测框及其关键点指定 `group_id`，以记录对象之间的从属关系。
 
 > [!NOTE]
-> 请勿将 YOLO 标签文件（`*.txt`）与图像文件放在同一目录下。
+> 请勿将 YOLO 标签文件（`*.txt`）与图像文件放在同一目录下。常见布局是图片在 `images/train`、标注在 `labels/train`；上传对话框会自动把图片目录里的 `images` 段替换为 `labels` 作为默认标注目录，你也可以手动选择 `labels`（会自动下钻到同名划分目录）。
 
 **导入任务**：
 
 1. 点击上方菜单栏的 `上传` 按钮。
-2. 选择对应的任务。
-3. 上传准备好的配置文件。
-4. 选择标签文件所在目录。
-5. 可选择勾选"保留现有标注"选项，将新标注与现有标注合并。
-6. 点击确定即可。
+2. 选择对应的任务（YOLO 检测/分割/旋转框/姿态）。
+3. （仅 Pose）选择关键点配置文件。
+4. 确认“选择上传文件夹”（已自动填入 `labels/<split>`，不对可点“浏览”修改）。
+5. 可选择勾选“保留已有标注”，将新标注与现有标注合并。
+6. 点击确定。完成后会汇总“已上传 / 跳过（无同名 .txt）/ 跳过（不在数据集）/ 失败”，失败会列出前几条原因（带文件名与行号），完整内容见日志。
 
 **导出任务**：
 

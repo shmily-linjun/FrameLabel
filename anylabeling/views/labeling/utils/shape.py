@@ -20,6 +20,13 @@ from anylabeling.views.labeling.utils.qt import new_icon_path
 from anylabeling.views.labeling.utils.style import *
 from anylabeling.services.auto_labeling.utils import calculate_rotation_theta
 
+# pylupdate6 only records `tr()` calls inside class bodies.  These
+# modules also translate text through `host.tr`/`self.tr` in free
+# functions and helpers, where the receiver is the LabelingWidget; the
+# constant tells `scripts/translation_scan.py` which context to use
+# (see docs/dev/CODE_STRUCTURE_REPORT.md).
+TR_CONTEXT = "LabelingWidget"
+
 CONVERSION_TARGETS = {
     "polygon": ["rectangle", "rotation"],
     "rectangle": ["rotation", "polygon", "circle", "quadrilateral"],

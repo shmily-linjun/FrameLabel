@@ -34,6 +34,13 @@ from .utils.file_search import (
     parse_search_query,
 )
 
+# pylupdate6 only records `tr()` calls inside class bodies.  These
+# modules also translate text through `host.tr`/`self.tr` in free
+# functions and helpers, where the receiver is the LabelingWidget; the
+# constant tells `scripts/translation_scan.py` which context to use
+# (see docs/dev/CODE_STRUCTURE_REPORT.md).
+TR_CONTEXT = "LabelingWidget"
+
 
 def _unescape_filter_value(value):
     """Remove one level of backslash escaping from a raw filter value."""
