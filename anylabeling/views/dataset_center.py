@@ -222,30 +222,32 @@ class DatasetCenterWindow(QtWidgets.QDialog):
         )
         overview_layout.addWidget(self.overview_hint)
 
-        self.summary_table = QtWidgets.QTableWidget(0, 3, overview_box)
+        self.detail_tabs = QtWidgets.QTabWidget(overview_box)
+        self.summary_table = QtWidgets.QTableWidget(0, 3, self.detail_tabs)
         self.summary_table.setHorizontalHeaderLabels(
             [self.tr("Metric"), self.tr("Value"), self.tr("Share")]
         )
-        self.summary_table.verticalHeader().setVisible(False)
-        self.summary_table.horizontalHeader().setStretchLastSection(True)
-        self.summary_table.setEditTriggers(
-            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers
+        self.classes_table = QtWidgets.QTableWidget(
+            0, 5, self.detail_tabs
         )
-        self.summary_table.setSelectionBehavior(
-            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows
-        )
-        overview_layout.addWidget(self.summary_table, 1)
-
-        self.detail_tabs = QtWidgets.QTabWidget(overview_box)
-        self.classes_table = QtWidgets.QTableWidget(0, 3, self.detail_tabs)
         self.classes_table.setHorizontalHeaderLabels(
-            [self.tr("Category"), self.tr("Images"), self.tr("Objects")]
+            [
+                self.tr("Category"),
+                self.tr("Images"),
+                self.tr("Objects"),
+                self.tr("Image share"),
+                self.tr("Object share"),
+            ]
         )
-        self.tags_table = QtWidgets.QTableWidget(0, 2, self.detail_tabs)
+        self.tags_table = QtWidgets.QTableWidget(0, 3, self.detail_tabs)
         self.tags_table.setHorizontalHeaderLabels(
-            [self.tr("Tag"), self.tr("Images")]
+            [self.tr("Tag"), self.tr("Images"), self.tr("Image share")]
         )
-        for table in (self.classes_table, self.tags_table):
+        for table in (
+            self.summary_table,
+            self.classes_table,
+            self.tags_table,
+        ):
             table.verticalHeader().setVisible(False)
             table.horizontalHeader().setStretchLastSection(True)
             table.setEditTriggers(
@@ -254,9 +256,11 @@ class DatasetCenterWindow(QtWidgets.QDialog):
             table.setSelectionBehavior(
                 QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows
             )
+        self.detail_tabs.addTab(self.summary_table, self.tr("Summary"))
         self.detail_tabs.addTab(self.classes_table, self.tr("Classes"))
         self.detail_tabs.addTab(self.tags_table, self.tr("Tags"))
-        overview_layout.addWidget(self.detail_tabs, 2)
+        self.detail_tabs.setCurrentIndex(0)
+        overview_layout.addWidget(self.detail_tabs, 1)
         detail_layout.addWidget(overview_box, 1)
 
         note_box = QtWidgets.QGroupBox(self.tr("Dataset note"), detail)
@@ -511,17 +515,29 @@ class DatasetCenterWindow(QtWidgets.QDialog):
             (self.tr("Tag kinds"), totals["tag_kinds"], ""),
         ]
         self._set_rows(self.summary_table, rows)
+
+        def object_share(count: int) -> str:
+            if not totals["objects"]:
+                return "-"
+            return "%.1f%%" % (count * 100.0 / totals["objects"])
+
         self._set_rows(
             self.classes_table,
             [
-                (row["name"], row["image_count"], row["object_count"])
+                (
+                    row["name"],
+                    row["image_count"],
+                    row["object_count"],
+                    share(row["image_count"]),
+                    object_share(row["object_count"]),
+                )
                 for row in overview["categories"]
             ],
         )
         self._set_rows(
             self.tags_table,
             [
-                (row["tag"], row["image_count"])
+                (row["tag"], row["image_count"], share(row["image_count"]))
                 for row in overview["tags"]
             ],
         )

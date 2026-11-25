@@ -2319,22 +2319,22 @@ Example: person.car.bicycle</source>
         <translation>名前</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="503" />
-        <location filename="..\..\views\dataset_center.py" line="246" />
-        <location filename="..\..\views\dataset_center.py" line="242" />
+        <location filename="..\..\views\dataset_center.py" line="507" />
+        <location filename="..\..\views\dataset_center.py" line="244" />
+        <location filename="..\..\views\dataset_center.py" line="236" />
         <location filename="..\..\views\dataset_center.py" line="188" />
         <source>Images</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="510" />
-        <location filename="..\..\views\dataset_center.py" line="257" />
+        <location filename="..\..\views\dataset_center.py" line="514" />
+        <location filename="..\..\views\dataset_center.py" line="260" />
         <location filename="..\..\views\dataset_center.py" line="189" />
         <source>Classes</source>
         <translation>クラス</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="258" />
+        <location filename="..\..\views\dataset_center.py" line="261" />
         <location filename="..\..\views\dataset_center.py" line="190" />
         <source>Tags</source>
         <translation type="unfinished" />
@@ -2355,256 +2355,272 @@ Example: person.car.bicycle</source>
         <translation>統計概要</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="469" />
+        <location filename="..\..\views\dataset_center.py" line="473" />
         <location filename="..\..\views\dataset_center.py" line="217" />
         <source>Select a dataset to see its overview.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="227" />
+        <location filename="..\..\views\dataset_center.py" line="228" />
         <source>Metric</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="227" />
+        <location filename="..\..\views\dataset_center.py" line="228" />
         <source>Value</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="227" />
+        <location filename="..\..\views\dataset_center.py" line="228" />
         <source>Share</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="242" />
+        <location filename="..\..\views\dataset_center.py" line="235" />
         <source>Category</source>
         <translation>カテゴリ</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="509" />
-        <location filename="..\..\views\dataset_center.py" line="242" />
+        <location filename="..\..\views\dataset_center.py" line="513" />
+        <location filename="..\..\views\dataset_center.py" line="237" />
         <source>Objects</source>
         <translation>オブジェクト</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="246" />
+        <location filename="..\..\views\dataset_center.py" line="244" />
+        <location filename="..\..\views\dataset_center.py" line="238" />
+        <source>Image share</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="239" />
+        <source>Object share</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="244" />
         <source>Tag</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="262" />
-        <source>Dataset note</source>
+        <location filename="..\..\views\dataset_center.py" line="259" />
+        <source>Summary</source>
         <translation type="unfinished" />
     </message>
     <message>
         <location filename="..\..\views\dataset_center.py" line="266" />
+        <source>Dataset note</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\dataset_center.py" line="270" />
         <source>Notes about this dataset (requires login)</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="272" />
+        <location filename="..\..\views\dataset_center.py" line="276" />
         <source>Save Note</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="379" />
+        <location filename="..\..\views\dataset_center.py" line="383" />
         <source>No datasets yet. Use Add Folder… to register one.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="467" />
+        <location filename="..\..\views\dataset_center.py" line="471" />
         <source>%d datasets selected.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="480" />
+        <location filename="..\..\views\dataset_center.py" line="484" />
         <source>This dataset is %s: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="492" />
+        <location filename="..\..\views\dataset_center.py" line="496" />
         <source>Name: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="494" />
+        <location filename="..\..\views\dataset_center.py" line="498" />
         <source>Path: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="504" />
+        <location filename="..\..\views\dataset_center.py" line="508" />
         <source>Recycle bin</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="505" />
+        <location filename="..\..\views\dataset_center.py" line="509" />
         <source>Train</source>
         <translation>訓練</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="506" />
+        <location filename="..\..\views\dataset_center.py" line="510" />
         <source>Val</source>
         <translation>Val</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="507" />
+        <location filename="..\..\views\dataset_center.py" line="511" />
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="508" />
+        <location filename="..\..\views\dataset_center.py" line="512" />
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="511" />
+        <location filename="..\..\views\dataset_center.py" line="515" />
         <source>Tag kinds</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="543" />
+        <location filename="..\..\views\dataset_center.py" line="559" />
         <source>Login required</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="544" />
+        <location filename="..\..\views\dataset_center.py" line="560" />
         <source>Please log in before changing a dataset.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="565" />
+        <location filename="..\..\views\dataset_center.py" line="581" />
         <source>Add Dataset Folder</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="576" />
+        <location filename="..\..\views\dataset_center.py" line="592" />
         <source>Cannot add dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="577" />
+        <location filename="..\..\views\dataset_center.py" line="593" />
         <source>The folder must contain an existing xanylabeling.db dataset database.
 
 %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="594" />
+        <location filename="..\..\views\dataset_center.py" line="610" />
         <source>Dataset unavailable</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="595" />
+        <location filename="..\..\views\dataset_center.py" line="611" />
         <source>This dataset is missing or deleted.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="617" />
+        <location filename="..\..\views\dataset_center.py" line="633" />
         <source>Rename Dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="618" />
+        <location filename="..\..\views\dataset_center.py" line="634" />
         <source>New name:</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="627" />
+        <location filename="..\..\views\dataset_center.py" line="643" />
         <source>Rename failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="640" />
+        <location filename="..\..\views\dataset_center.py" line="656" />
         <source>Select the folder that contains xanylabeling.db</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="652" />
+        <location filename="..\..\views\dataset_center.py" line="668" />
         <source>Relocate failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="681" />
-        <location filename="..\..\views\dataset_center.py" line="671" />
+        <location filename="..\..\views\dataset_center.py" line="697" />
+        <location filename="..\..\views\dataset_center.py" line="687" />
         <source>Cannot save the note</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="713" />
+        <location filename="..\..\views\dataset_center.py" line="729" />
         <source>Dataset is open</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="714" />
+        <location filename="..\..\views\dataset_center.py" line="730" />
         <source>This dataset is open in the labeling window. Switch to another dataset before deleting it.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="723" />
+        <location filename="..\..\views\dataset_center.py" line="739" />
         <source>Delete dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="726" />
+        <location filename="..\..\views\dataset_center.py" line="742" />
         <source>Delete “%s”?</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="729" />
+        <location filename="..\..\views\dataset_center.py" line="745" />
         <source>The database is backed up first. “Database and images” also deletes the image files and cannot be undone.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="735" />
+        <location filename="..\..\views\dataset_center.py" line="751" />
         <source>Database only</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="738" />
+        <location filename="..\..\views\dataset_center.py" line="754" />
         <source>Database and images</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="756" />
+        <location filename="..\..\views\dataset_center.py" line="772" />
         <source>Backup failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="757" />
+        <location filename="..\..\views\dataset_center.py" line="773" />
         <source>The dataset was not deleted.
 
 %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="765" />
+        <location filename="..\..\views\dataset_center.py" line="781" />
         <source>Delete failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="766" />
+        <location filename="..\..\views\dataset_center.py" line="782" />
         <source>Backup: %s
 
 %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="817" />
+        <location filename="..\..\views\dataset_center.py" line="833" />
         <source>Remove record</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="818" />
+        <location filename="..\..\views\dataset_center.py" line="834" />
         <source>Remove %d record(s) from the registry? The dataset files are not touched.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="847" />
+        <location filename="..\..\views\dataset_center.py" line="863" />
         <source>Merge datasets</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="848" />
+        <location filename="..\..\views\dataset_center.py" line="864" />
         <source>Select at least one available dataset to merge.</source>
         <translation type="unfinished" />
     </message>
@@ -3832,68 +3848,68 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>ファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1114" />
+        <location filename="..\..\views\labeling\file_session.py" line="1121" />
         <source>Dataset closed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1233" />
-        <location filename="..\..\views\labeling\file_session.py" line="1219" />
-        <location filename="..\..\views\labeling\file_session.py" line="1202" />
-        <location filename="..\..\views\labeling\file_session.py" line="1176" />
-        <location filename="..\..\views\labeling\file_session.py" line="1162" />
-        <location filename="..\..\views\labeling\file_session.py" line="1148" />
+        <location filename="..\..\views\labeling\file_session.py" line="1240" />
+        <location filename="..\..\views\labeling\file_session.py" line="1226" />
+        <location filename="..\..\views\labeling\file_session.py" line="1209" />
+        <location filename="..\..\views\labeling\file_session.py" line="1183" />
+        <location filename="..\..\views\labeling\file_session.py" line="1169" />
+        <location filename="..\..\views\labeling\file_session.py" line="1155" />
         <source>Attention</source>
         <translation>注意</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1203" />
-        <location filename="..\..\views\labeling\file_session.py" line="1149" />
+        <location filename="..\..\views\labeling\file_session.py" line="1210" />
+        <location filename="..\..\views\labeling\file_session.py" line="1156" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>この画像と注釈をごみ箱に移動しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1163" />
+        <location filename="..\..\views\labeling\file_session.py" line="1170" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>ラベルファイルを削除する前に「前のアノテーションを保持」を無効にしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1170" />
+        <location filename="..\..\views\labeling\file_session.py" line="1177" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>このラベルファイルを永久に削除しようとしています。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1220" />
+        <location filename="..\..\views\labeling\file_session.py" line="1227" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>画像ファイルを削除する前に「前のアノテーションを保持」を無効にしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1227" />
+        <location filename="..\..\views\labeling\file_session.py" line="1234" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>この画像ファイルを永久に削除しようとしています。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1305" />
+        <location filename="..\..\views\labeling\file_session.py" line="1312" />
         <source>Save annotations?</source>
         <translation>アノテーションを保存しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1341" />
+        <location filename="..\..\views\labeling\file_session.py" line="1348" />
         <source>%s - Import Files</source>
         <translation>%s - ファイルをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1343" />
+        <location filename="..\..\views\labeling\file_session.py" line="1350" />
         <source>Image files (%s)</source>
         <translation>画像ファイル（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1364" />
+        <location filename="..\..\views\labeling\file_session.py" line="1371" />
         <source>%s - Open Directory</source>
         <translation>%s - ディレクトリを開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1408" />
+        <location filename="..\..\views\labeling\file_session.py" line="1415" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>データセットモードではファイルの追加はまだ利用できません。データセットのインポート/同期入口を使用してください。</translation>
     </message>
@@ -6721,62 +6737,62 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>ファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1114" />
+        <location filename="..\..\views\labeling\file_session.py" line="1121" />
         <source>Dataset closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1148" />
+        <location filename="..\..\views\labeling\file_session.py" line="1155" />
         <source>Attention</source>
         <translation>注意</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1149" />
+        <location filename="..\..\views\labeling\file_session.py" line="1156" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>この画像と注釈をごみ箱に移動しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1163" />
+        <location filename="..\..\views\labeling\file_session.py" line="1170" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>ラベルファイルを削除する前に「前のアノテーションを保持」を無効にしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1170" />
+        <location filename="..\..\views\labeling\file_session.py" line="1177" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>このラベルファイルを永久に削除しようとしています。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1220" />
+        <location filename="..\..\views\labeling\file_session.py" line="1227" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>画像ファイルを削除する前に「前のアノテーションを保持」を無効にしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1227" />
+        <location filename="..\..\views\labeling\file_session.py" line="1234" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>この画像ファイルを永久に削除しようとしています。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1305" />
+        <location filename="..\..\views\labeling\file_session.py" line="1312" />
         <source>Save annotations?</source>
         <translation>アノテーションを保存しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1341" />
+        <location filename="..\..\views\labeling\file_session.py" line="1348" />
         <source>%s - Import Files</source>
         <translation>%s - ファイルをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1343" />
+        <location filename="..\..\views\labeling\file_session.py" line="1350" />
         <source>Image files (%s)</source>
         <translation>画像ファイル（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1364" />
+        <location filename="..\..\views\labeling\file_session.py" line="1371" />
         <source>%s - Open Directory</source>
         <translation>%s - ディレクトリを開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1408" />
+        <location filename="..\..\views\labeling\file_session.py" line="1415" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>データセットモードではファイルの追加はまだ利用できません。データセットのインポート/同期入口を使用してください。</translation>
     </message>
@@ -7671,22 +7687,22 @@ Reset the label as {}.</source>
         <translation>二値マスク</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\workspace.py" line="594" />
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="595" />
         <source>Classes</source>
         <translation>クラス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\workspace.py" line="595" />
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="596" />
         <source>Image Attributes</source>
         <translation>画像属性</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\workspace.py" line="597" />
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="598" />
         <source>Statistics</source>
         <translation>統計</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\workspace.py" line="652" />
+        <location filename="..\..\views\labeling\widgets\workspace.py" line="653" />
         <source>Import</source>
         <translation>インポート</translation>
     </message>
@@ -12457,55 +12473,65 @@ You can download the models again in the new directory.</source>
 </context><context>
     <name>TagLibraryWidget</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="42" />
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="33" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="44" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="35" />
         <source>Tag Library</source>
         <translation>タグライブラリ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="57" />
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="52" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="59" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="54" />
         <source>Search tags…</source>
         <translation>タグを検索…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="203" />
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="62" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="205" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="64" />
         <source>Collapse tag library</source>
         <translation>タグライブラリを折りたたむ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="155" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="157" />
         <source>Double-click to add; right-click or Ctrl+click to show images using it.</source>
         <translation>ダブルクリックで追加。右クリックまたは Ctrl+クリックで、このタグを使う画像を表示します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="201" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="203" />
         <source>Expand tag library</source>
         <translation>タグライブラリを展開</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="243" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="247" />
         <source>%s (used by %d images)</source>
         <translation>%s（%d 枚の画像で使用）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="245" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="249" />
         <source>Double-click to add.</source>
         <translation>ダブルクリックで追加。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="256" />
-        <source>No other tags in the current file list.</source>
-        <translation>現在のファイル一覧に他のタグはありません。</translation>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="251" />
+        <source>Already on this image.</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="260" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="265" />
+        <source>No tags in the current file list.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="269" />
         <source>No matching tags.</source>
         <translation>一致するタグがありません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\tag_library.py" line="303" />
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="296" />
+        <source>This tag is already on the image.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\tag_library.py" line="317" />
         <source>Show images with this tag</source>
         <translation>このタグを使う画像を表示</translation>
     </message>
@@ -12536,27 +12562,27 @@ You can download the models again in the new directory.</source>
 </context><context>
     <name>TitleBar</name>
     <message>
-        <location filename="..\..\widgets\frameless\title_bar.py" line="236" />
+        <location filename="..\..\widgets\frameless\title_bar.py" line="284" />
         <source>Restore</source>
         <translation>元に戻す</translation>
     </message>
     <message>
-        <location filename="..\..\widgets\frameless\title_bar.py" line="239" />
+        <location filename="..\..\widgets\frameless\title_bar.py" line="287" />
         <source>Maximize</source>
         <translation>最大化</translation>
     </message>
     <message>
-        <location filename="..\..\widgets\frameless\title_bar.py" line="241" />
+        <location filename="..\..\widgets\frameless\title_bar.py" line="289" />
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="..\..\widgets\frameless\title_bar.py" line="250" />
+        <location filename="..\..\widgets\frameless\title_bar.py" line="298" />
         <source>Menus</source>
         <translation>メニュー表示</translation>
     </message>
     <message>
-        <location filename="..\..\widgets\frameless\title_bar.py" line="263" />
+        <location filename="..\..\widgets\frameless\title_bar.py" line="311" />
         <source>Close</source>
         <translation>閉じる</translation>
     </message>

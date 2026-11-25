@@ -1387,7 +1387,15 @@ def test_tag_library_click_adds_tag_and_writes_attribution(
             list_widget.item(index).text()
             for index in range(list_widget.count())
         ]
-        assert "defect" not in remaining
+        # fork.58: the applied tag stays in the library (marked, still
+        # searchable); a second double-click must not add it again.
+        assert "defect" in remaining
+        list_widget.itemDoubleClicked.emit(
+            list_widget.item(remaining.index("defect"))
+        )
+        QTest.qWait(30)
+        app.processEvents()
+        assert widget.image_tags_widget.tags.count("defect") == 1
         assert widget.dirty is False
 
         # Ctrl+click / the context menu turns a tag into a tags:: search.

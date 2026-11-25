@@ -1,12 +1,13 @@
 """Tag library shown in the "Image Attributes" tab (fork.34).
 
-The widget only renders the vocabulary; adding a tag to the current image and
-persisting it is driven by ``LabelingWidget``.  Tags already present on the
-current image are hidden: the row of chips above is the place to inspect or
-remove them.
+The widget renders the whole tag vocabulary of the current file list.
+Adding a tag to the current image and persisting it is driven by
+``LabelingWidget``.  Tags already present on the current image stay in the
+list (marked) so the vocabulary is stable for search and the same widget
+can be reused by the batch dialog (fork.58).
 """
 
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..utils.theme import get_theme
 
@@ -14,6 +15,7 @@ from ..utils.theme import get_theme
 class TagLibraryWidget(QtWidgets.QWidget):
     tag_clicked = QtCore.pyqtSignal(str)
     tag_search_requested = QtCore.pyqtSignal(str)
+    status_message = QtCore.pyqtSignal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -207,26 +209,22 @@ class TagLibraryWidget(QtWidgets.QWidget):
     def _toggle_collapsed(self):
         self.set_collapsed(not self._collapsed)
 
-    def _missing_entries(self):
-        return [
-            (tag, count)
-            for tag, count in self._entries
-            if tag not in self._current
-        ]
-
-    def _matching_entries(self, missing):
+    def _matching_entries(self, entries):
         query = self.search_edit.text().strip().casefold()
         if not query:
-            return missing
+            return entries
         return [
             (tag, count)
-            for tag, count in missing
+            for tag, count in entries
             if query in tag.casefold()
         ]
 
     def _rebuild(self):
-        missing = self._missing_entries()
-        matching = self._matching_entries(missing)
+        # fork.58: the library always shows the whole tag vocabulary.  Applied
+        # tags are marked instead of removed, so the list stays stable for
+        # searching and the same widget can be reused by the batch dialog.
+        entries = list(self._entries)
+        matching = self._matching_entries(entries)
         metrics = self.list_widget.fontMetrics()
         longest = max(
             (metrics.horizontalAdvance(tag) for tag, _ in matching),
@@ -239,21 +237,32 @@ class TagLibraryWidget(QtWidgets.QWidget):
             item = QtWidgets.QListWidgetItem(tag)
             item.setData(QtCore.Qt.ItemDataRole.UserRole, tag)
             item.setSizeHint(QtCore.QSize(cell_width, 28))
+            applied = tag in self._current
+            item.setForeground(
+                QtGui.QColor(self._theme["text_secondary"])
+                if applied
+                else self.palette().color(QtGui.QPalette.ColorRole.Text)
+            )
             item.setToolTip(
                 self.tr("%s (used by %d images)") % (tag, count)
                 + "\n"
                 + self.tr("Double-click to add.")
+                + (
+                    "\n" + self.tr("Already on this image.")
+                    if applied
+                    else ""
+                )
             )
             self.list_widget.addItem(item)
 
         self.count_label.setText(
-            "(%d)" % len(missing) if missing else ""
+            "(%d)" % len(entries) if entries else ""
         )
         self.list_widget.setVisible(bool(matching))
-        self.hint_label.setVisible(bool(missing))
-        if not missing:
+        self.hint_label.setVisible(bool(entries))
+        if not entries:
             self.empty_label.setText(
-                self.tr("No other tags in the current file list.")
+                self.tr("No tags in the current file list.")
             )
             self.empty_label.setVisible(True)
         elif not matching:
@@ -281,6 +290,11 @@ class TagLibraryWidget(QtWidgets.QWidget):
             return
         tag = item.data(QtCore.Qt.ItemDataRole.UserRole)
         if not tag:
+            return
+        if tag in self._current:
+            self.status_message.emit(
+                self.tr("This tag is already on the image.")
+            )
             return
         QtCore.QTimer.singleShot(
             0, lambda value=str(tag): self.tag_clicked.emit(value)

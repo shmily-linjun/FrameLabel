@@ -44,9 +44,9 @@ class TagLibraryWidgetTest(unittest.TestCase):
             for index in range(self.widget.list_widget.count())
         ]
 
-    def test_only_missing_tags_are_listed(self):
-        assert self._item_texts() == ["scratch", "blur"]
-        assert self.widget.count_label.text() == "(2)"
+    def test_the_whole_vocabulary_stays_listed(self):
+        assert self._item_texts() == ["defect", "scratch", "blur"]
+        assert self.widget.count_label.text() == "(3)"
 
     def test_header_search_is_readable_and_count_follows_title(self):
         assert self.widget.search_edit.height() >= 24
@@ -60,7 +60,7 @@ class TagLibraryWidgetTest(unittest.TestCase):
     def test_search_filters_the_list(self):
         self.widget.search_edit.setText("blu")
         assert self._item_texts() == ["blur"]
-        assert self.widget.count_label.text() == "(2)"
+        assert self.widget.count_label.text() == "(3)"
 
         self.widget.search_edit.setText("zzz")
         assert self._item_texts() == []
@@ -74,11 +74,20 @@ class TagLibraryWidgetTest(unittest.TestCase):
         assert self.clicked == []
 
     def test_double_click_adds(self):
-        item = self.widget.list_widget.item(0)
+        item = self.widget.list_widget.item(1)
         self.widget.list_widget.itemDoubleClicked.emit(item)
         self.app.processEvents()
         assert self.clicked == ["scratch"]
         assert self.searches == []
+
+    def test_double_click_on_an_applied_tag_is_a_no_op(self):
+        statuses = []
+        self.widget.status_message.connect(statuses.append)
+        item = self.widget.list_widget.item(0)
+        self.widget.list_widget.itemDoubleClicked.emit(item)
+        self.app.processEvents()
+        assert self.clicked == []
+        assert statuses == ["This tag is already on the image."]
 
     def test_long_tag_is_not_truncated_to_a_tiny_cell(self):
         self.widget.set_entries(
@@ -90,11 +99,20 @@ class TagLibraryWidgetTest(unittest.TestCase):
 
     def test_ctrl_click_requests_a_tag_search(self):
         self.widget._is_search_gesture = lambda: True
-        item = self.widget.list_widget.item(0)
+        item = self.widget.list_widget.item(1)
         self.widget.list_widget.itemClicked.emit(item)
         self.app.processEvents()
         assert self.searches == ["scratch"]
         assert self.clicked == []
+
+    def test_applied_tags_remain_searchable(self):
+        # The applied tag stays in the list, so its right-click search still
+        # works (fork.58 motivation).
+        self.widget._is_search_gesture = lambda: True
+        item = self.widget.list_widget.item(0)
+        self.widget.list_widget.itemClicked.emit(item)
+        self.app.processEvents()
+        assert self.searches == ["defect"]
 
     def test_collapse_hides_the_body(self):
         self.widget.set_collapsed(True)

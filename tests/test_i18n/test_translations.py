@@ -322,7 +322,7 @@ def test_image_attributes_tag_library_is_translated():
             widget.set_entries([], [])
             assert (
                 widget.empty_label.text()
-                == "当前文件列表中没有其他标签。"
+                == "当前文件列表中没有标签。"
             )
         finally:
             widget.deleteLater()

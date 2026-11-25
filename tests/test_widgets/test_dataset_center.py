@@ -50,9 +50,15 @@ def test_lists_dataset_and_shows_overview(window):
     assert center.table.rowCount() == 1
     assert center.table.item(0, 1).text() == "Demo"
     assert center.table.item(0, 2).text() == "1"
+    assert center.detail_tabs.count() == 3
+    assert center.detail_tabs.tabText(0) == "Summary"
+    assert center.detail_tabs.tabText(1) == "Classes"
+    assert center.detail_tabs.tabText(2) == "Tags"
     assert center.summary_table.rowCount() == 9
     assert center.summary_table.item(0, 0).text() == "Images"
     assert center.summary_table.item(0, 1).text() == "1"
+    assert center.classes_table.columnCount() == 5
+    assert center.tags_table.columnCount() == 3
     assert "Demo" in center.overview_hint.text()
 
 
