@@ -93,6 +93,124 @@ class DatasetRepository:
             raise DatasetNotFoundError("dataset row disappeared")
         return dict(row)
 
+    def update_dataset_metadata(
+        self,
+        *,
+        name: str | None = None,
+        description: str | None = None,
+    ) -> dict[str, Any]:
+        """Update the dataset display name and/or its free-text note.
+
+        Both fields are dataset-level metadata: the dataset center writes them
+        (fork.53).  ``updated_at`` is refreshed on every write; ``description``
+        is capped so a pasted document cannot bloat the database.
+        """
+
+        if name is not None:
+            if not isinstance(name, str) or not name.strip():
+                raise DatasetFormatError("dataset name must not be empty")
+            name = name.strip()
+            if len(name) > 128:
+                raise DatasetFormatError("dataset name is too long")
+        if description is not None:
+            if not isinstance(description, str):
+                raise DatasetFormatError("dataset description must be a string")
+            if len(description) > 10000:
+                raise DatasetFormatError("dataset description is too long")
+        current = self.dataset()
+        values = []
+        assignments = []
+        if name is not None:
+            assignments.append("name = ?")
+            values.append(name)
+        if description is not None:
+            assignments.append("description = ?")
+            values.append(description)
+        if not assignments:
+            return current
+        assignments.append("updated_at = ?")
+        values.append(_now())
+        values.append(self.dataset_id)
+        self.db.execute(
+            "UPDATE dataset SET " + ", ".join(assignments) + " WHERE id = ?",
+            tuple(values),
+        )
+        return self.dataset()
+
+    def overview(self) -> dict[str, Any]:
+        """Return the dataset-center counters.
+
+        Everything is aggregated in SQL (no image decoding, no JSON scan):
+        active/trashed images, objects, categories, split counts, per-category
+        image/object counts and the image-tag vocabulary.
+        """
+
+        totals = self.db.query_one(
+            "SELECT "
+            "(SELECT COUNT(*) FROM image_file "
+            " WHERE dataset_id = ? AND is_deleted = 0) AS images, "
+            "(SELECT COUNT(*) FROM image_file "
+            " WHERE dataset_id = ? AND is_deleted = 1) AS trashed, "
+            "(SELECT COUNT(*) FROM annotation_object o "
+            " JOIN image_file f ON f.id = o.image_id "
+            " WHERE f.dataset_id = ? AND f.is_deleted = 0 "
+            "   AND o.is_deleted = 0) AS objects, "
+            "(SELECT COUNT(*) FROM category "
+            " WHERE dataset_id = ? AND is_deleted = 0) AS categories",
+            (self.dataset_id,) * 4,
+        )
+        split_rows = self.db.query(
+            "SELECT split, COUNT(*) AS count FROM image_file "
+            "WHERE dataset_id = ? AND is_deleted = 0 GROUP BY split",
+            (self.dataset_id,),
+        )
+        splits = {str(row["split"]): int(row["count"]) for row in split_rows}
+        category_rows = self.db.query(
+            "SELECT c.name AS name, "
+            " (SELECT COUNT(DISTINCT o.image_id) FROM annotation_object o "
+            "  JOIN image_file f ON f.id = o.image_id "
+            "  WHERE o.category_id = c.id AND o.is_deleted = 0 "
+            "    AND f.is_deleted = 0) AS image_count, "
+            " (SELECT COUNT(*) FROM annotation_object o "
+            "  JOIN image_file f ON f.id = o.image_id "
+            "  WHERE o.category_id = c.id AND o.is_deleted = 0 "
+            "    AND f.is_deleted = 0) AS object_count "
+            "FROM category c "
+            "WHERE c.dataset_id = ? AND c.is_deleted = 0 "
+            "ORDER BY c.sort_index, c.name COLLATE NOCASE",
+            (self.dataset_id,),
+        )
+        tags = self.tag_counts()
+        return {
+            "dataset": self.dataset(),
+            "totals": {
+                "images": int(totals["images"]),
+                "trashed": int(totals["trashed"]),
+                "objects": int(totals["objects"]),
+                "categories": int(totals["categories"]),
+                "tag_kinds": len(tags),
+            },
+            "splits": {
+                split: int(splits.get(split, 0))
+                for split in ("train", "val", "test", "none")
+            },
+            "categories": [
+                {
+                    "name": row["name"],
+                    "image_count": int(row["image_count"]),
+                    "object_count": int(row["object_count"]),
+                }
+                for row in category_rows
+            ],
+            "tags": [
+                {
+                    "tag": row["tag"],
+                    "image_count": int(row["image_count"]),
+                }
+                for row in tags
+            ],
+        }
+
     def list_categories(self) -> list[dict[str, Any]]:
         rows = self.db.query(
             "SELECT id, name, color, sort_index, in_class_list, description "

@@ -20,9 +20,10 @@ import sqlite3
 import threading
 from dataclasses import dataclass
 
+from ..app_state import APP_SCHEMA_VERSION, ensure_app_schema
 from . import passwords
 
-SCHEMA_VERSION = "1"
+SCHEMA_VERSION = APP_SCHEMA_VERSION
 MAX_NAME_LENGTH = 64
 
 #: Names that must never be registered because they are reserved sentinels in
@@ -142,33 +143,10 @@ class OperatorStore:
         with self._schema_lock:
             if self._schema_ready:
                 return
-            connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS operator (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    name_key TEXT NOT NULL UNIQUE,
-                    password_hash TEXT NOT NULL,
-                    password_salt TEXT NOT NULL,
-                    password_iterations INTEGER NOT NULL,
-                    is_admin INTEGER NOT NULL DEFAULT 0,
-                    disabled INTEGER NOT NULL DEFAULT 0,
-                    created_at TEXT NOT NULL
-                )
-                """
-            )
-            connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS meta (
-                    key TEXT PRIMARY KEY,
-                    value TEXT NOT NULL
-                )
-                """
-            )
-            connection.execute(
-                "INSERT OR IGNORE INTO meta (key, value) VALUES (?, ?)",
-                ("schema_version", SCHEMA_VERSION),
-            )
+            # Shared app-state schema: operator accounts + dataset registry
+            # + registry audit events (fork.53).  Idempotent, so a
+            # pre-fork.53 operators.db is upgraded in place.
+            ensure_app_schema(connection)
             connection.commit()
             self._schema_ready = True
 

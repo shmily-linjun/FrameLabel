@@ -14,6 +14,7 @@ from anylabeling.services.identity import (
     ensure_attribution,
     legacy_database_path,
     migrate_legacy_database,
+    previous_database_path,
     read_attribution,
     stamp_attribution,
 )
@@ -158,13 +159,60 @@ class TestAccountDatabaseLocation(unittest.TestCase):
     def test_default_path_is_not_derived_from_work_directory(self):
         path = default_database_path()
         self.assertTrue(
-            path.endswith(os.path.join("operators", "operators.db"))
+            path.endswith(os.path.join("platform", "platform.db"))
         )
         self.assertIn("X-AnyLabeling", path)
         self.assertNotEqual(
             os.path.normcase(path),
             os.path.normcase(legacy_database_path(os.path.join("C:", "p"))),
         )
+        self.assertTrue(
+            previous_database_path().endswith(
+                os.path.join("operators", "operators.db")
+            )
+        )
+
+    def test_schema_has_registry_tables_and_version_two(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = os.path.join(directory, "platform.db")
+            store = OperatorStore(target)
+            store.register("张三", "abcd")
+            import sqlite3
+
+            connection = sqlite3.connect(target)
+            try:
+                tables = {
+                    row[0]
+                    for row in connection.execute(
+                        "SELECT name FROM sqlite_master WHERE type = 'table'"
+                    )
+                }
+                version = connection.execute(
+                    "SELECT value FROM meta WHERE key = 'schema_version'"
+                ).fetchone()[0]
+            finally:
+                connection.close()
+            self.assertIn("operator", tables)
+            self.assertIn("dataset_registry", tables)
+            self.assertIn("dataset_registry_event", tables)
+            self.assertEqual(version, "2")
+
+    def test_migrates_previous_operators_database(self):
+        with tempfile.TemporaryDirectory() as directory:
+            previous = os.path.join(directory, "operators", "operators.db")
+            os.makedirs(os.path.dirname(previous))
+            OperatorStore(previous).register("李四", "abcd")
+            target = os.path.join(directory, "platform", "platform.db")
+            from unittest import mock
+
+            with mock.patch(
+                "anylabeling.services.identity.session.previous_database_path",
+                return_value=previous,
+            ):
+                self.assertTrue(migrate_legacy_database(target))
+            self.assertTrue(os.path.exists(target))
+            self.assertTrue(os.path.exists(previous))
+            self.assertEqual(OperatorStore(target).count(), 1)
 
     def test_migrates_legacy_database_once(self):
         with tempfile.TemporaryDirectory() as directory:

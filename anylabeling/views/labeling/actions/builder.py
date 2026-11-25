@@ -61,6 +61,13 @@ def build_actions(host):  # noqa: C901
         None,
         host.tr("Import X-AnyLabeling JSON files into a dataset database"),
     )
+    dataset_center = action(
+        host.tr("Dataset Center…"),
+        host.open_dataset_center,
+        None,
+        None,
+        host.tr("Manage known datasets: overview, notes, merge and delete"),
+    )
     show_trash = action(
         host.tr("Recycle Bin…"),
         host.show_trash_dialog,
@@ -1401,6 +1408,7 @@ def build_actions(host):  # noqa: C901
         open_video=openvideo,
         open_dir=opendir,
         import_project=import_project,
+        dataset_center=dataset_center,
         show_trash=show_trash,
         close=close,
         toggle_compare_view=toggle_compare_view,

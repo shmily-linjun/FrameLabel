@@ -25,8 +25,14 @@ from .store import Operator, OperatorStore
 logger = logging.getLogger(__name__)
 
 APP_DIRNAME = "X-AnyLabeling"
-DEFAULT_IDENTITY_DIRNAME = "operators"
-DEFAULT_DATABASE_FILENAME = "operators.db"
+#: Machine-scoped state directory below the per-user application data
+#: directory.  fork.53 renamed it from ``operators`` because the database now
+#: also stores the dataset registry, not only the operator accounts.
+DEFAULT_STATE_DIRNAME = "platform"
+DEFAULT_DATABASE_FILENAME = "platform.db"
+#: Pre-fork.53 location of the same database; migrated on first launch.
+PREVIOUS_STATE_DIRNAME = "operators"
+PREVIOUS_DATABASE_FILENAME = "operators.db"
 #: Legacy location: written below the configurable work directory until
 #: fork.5, which made accounts disappear when ``--work-dir`` changed.
 LEGACY_DATA_DIRNAME = "xanylabeling_data"
@@ -49,15 +55,24 @@ def _platform_data_directory() -> str:
 
 
 def default_database_path() -> str:
-    """Return the account database path (machine-scoped, not project-scoped).
+    """Return the application-state database path (machine-scoped).
 
-    The operator accounts follow the application, not the dataset directory,
-    so this path must not depend on ``--work-dir``.
+    The operator accounts and the dataset registry follow the application, not
+    the dataset directory, so this path must not depend on ``--work-dir``.
     """
     return osp.join(
         _platform_data_directory(),
-        DEFAULT_IDENTITY_DIRNAME,
+        DEFAULT_STATE_DIRNAME,
         DEFAULT_DATABASE_FILENAME,
+    )
+
+
+def previous_database_path() -> str:
+    """Return the pre-fork.53 ``operators/operators.db`` location."""
+    return osp.join(
+        _platform_data_directory(),
+        PREVIOUS_STATE_DIRNAME,
+        PREVIOUS_DATABASE_FILENAME,
     )
 
 
@@ -70,7 +85,7 @@ def legacy_database_path(work_dir: str | None = None) -> str:
     return osp.join(
         work_dir,
         LEGACY_DATA_DIRNAME,
-        DEFAULT_IDENTITY_DIRNAME,
+        DEFAULT_STATE_DIRNAME,
         DEFAULT_DATABASE_FILENAME,
     )
 
@@ -78,31 +93,41 @@ def legacy_database_path(work_dir: str | None = None) -> str:
 def migrate_legacy_database(
     target_path: str | None = None, legacy_path: str | None = None
 ) -> bool:
-    """Copy a pre-fork.5 account database to the stable location.
+    """Copy an older account database to the current location.
 
-    The legacy file is copied, not moved: it is the only source of the
-    account names and removing it is left to the user.
+    Two older locations are supported, newest first:
+
+    1. the pre-fork.53 ``%APPDATA%/X-AnyLabeling/operators/operators.db``;
+    2. the pre-fork.5 ``<work_dir>/xanylabeling_data/.../operators.db``.
+
+    ``legacy_path`` overrides the second one (tests use it).  The source file
+    is copied, not moved: it stays as a fallback and removing it is left to the
+    user.
     """
     target = target_path or default_database_path()
     if osp.exists(target):
         return False
-    legacy = (
-        legacy_path if legacy_path is not None else legacy_database_path()
+    candidates = []
+    if legacy_path is not None:
+        candidates.append(legacy_path)
+    else:
+        candidates.append(previous_database_path())
+        candidates.append(legacy_database_path())
+    source = next(
+        (path for path in candidates if path and osp.exists(path)), None
     )
-    if not legacy or not osp.exists(legacy):
+    if source is None:
         return False
     directory = osp.dirname(target)
     try:
         if directory:
             os.makedirs(directory, exist_ok=True)
-        shutil.copy2(legacy, target)
+        shutil.copy2(source, target)
     except OSError:
-        logger.warning(
-            "Could not migrate the operator database from %s", legacy
-        )
+        logger.warning("Could not migrate the app database from %s", source)
         return False
     logger.info(
-        "Migrated the operator database from %s to %s", legacy, target
+        "Migrated the app database from %s to %s", source, target
     )
     return True
 

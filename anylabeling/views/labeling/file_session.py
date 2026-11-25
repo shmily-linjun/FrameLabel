@@ -1352,6 +1352,32 @@ class FileSession:
         )
         self.host.import_image_folder(target_dir_path)
 
+    def open_dataset_center(self):
+        """Show the dataset center window (one instance per labeling window)."""
+
+        from ..dataset_center import DatasetCenterWindow
+
+        window = getattr(self.host, "_dataset_center_window", None)
+        if window is not None:
+            window.refresh()
+            window.show()
+            window.raise_()
+            window.activateWindow()
+            return
+        window = DatasetCenterWindow(
+            operator_service=getattr(self.host, "operator_service", None),
+            current_dataset_provider=lambda: getattr(
+                self.host, "dataset_root", None
+            ),
+            parent=self.host,
+        )
+        window.open_requested.connect(self.import_image_folder)
+        window.finished.connect(
+            lambda *_: setattr(self.host, "_dataset_center_window", None)
+        )
+        self.host._dataset_center_window = window
+        window.show()
+
     @property
     def image_list(self):
         return [

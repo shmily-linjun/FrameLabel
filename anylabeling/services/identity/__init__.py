@@ -29,6 +29,7 @@ from .session import (
     get_operator_service,
     legacy_database_path,
     migrate_legacy_database,
+    previous_database_path,
     reset_operator_service,
 )
 from .store import (
@@ -66,6 +67,7 @@ __all__ = [
     "format_display_time",
     "get_operator_service",
     "legacy_database_path",
+    "previous_database_path",
     "migrate_legacy_database",
     "normalize_author",
     "read_attribution",

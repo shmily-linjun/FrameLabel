@@ -93,8 +93,16 @@ def test_compiled_qm_matches_the_ts_files(scan_result):
     assert translator.load(str(TRANSLATIONS / "zh_CN.qm"))
     app.installTranslator(translator)
     try:
+        existing = scanner.read_ts(str(TRANSLATIONS / "zh_CN.ts"))
         entries = sorted(
-            {(entry.context, entry.text) for entry in scan_result.entries}
+            {
+                (entry.context, entry.text)
+                for entry in scan_result.entries
+                # Proper nouns are translated as themselves ("YOLO Pose",
+                # "Form"); Qt returning the source text is correct for them.
+                if existing.get((entry.context, entry.text), "")
+                and existing[(entry.context, entry.text)] != entry.text
+            }
         )
         # Sample deterministically: the cost of checking all 2000+ strings is
         # not worth it, but a fixed sample catches a stale .qm.

@@ -461,7 +461,8 @@ _MESSAGE_BLOCK = re.compile(
     r"<message>(?:(?!</message>).)*?</message>", flags=re.DOTALL
 )
 _TRANSLATION = re.compile(
-    r"<translation([^>]*)>(.*?)</translation>", flags=re.DOTALL
+    r"<translation(?P<attrs>[^>]*?)(?:/>|>(?P<body>.*?)</translation>)",
+    flags=re.DOTALL,
 )
 
 
@@ -499,8 +500,8 @@ def fill_translations(ts_path, memory) -> int:
         translation_match = _TRANSLATION.search(block)
         if translation_match is None:
             return block
-        attributes = translation_match.group(1)
-        body = translation_match.group(2)
+        attributes = translation_match.group("attrs")
+        body = translation_match.group("body") or ""
         if body.strip() and 'type="unfinished"' not in attributes:
             return block
         filled += 1
@@ -510,6 +511,46 @@ def fill_translations(ts_path, memory) -> int:
         return (
             block[: translation_match.start()]
             + replacement
+            + block[translation_match.end() :]
+        )
+
+    text = _MESSAGE_BLOCK.sub(replace_block, text)
+    if filled:
+        Path(ts_path).write_text(text, encoding="utf-8", newline="\n")
+    return filled
+
+
+def fill_identity(ts_path) -> int:
+    """Use the source text as the translation for empty messages.
+
+    ``en_US`` is the extraction language: every new message must still carry a
+    translation, otherwise ``lrelease`` drops it and the English UI falls back
+    to the source only by accident.  Identity translations are also legitimate
+    for proper nouns in the other languages, so this helper is generic; the
+    generator calls it for ``en_US`` only.
+    """
+
+    text = Path(ts_path).read_text(encoding="utf-8")
+    filled = 0
+
+    def replace_block(match):
+        nonlocal filled
+        block = match.group(0)
+        source_match = re.search(
+            r"<source>(.*?)</source>", block, flags=re.DOTALL
+        )
+        translation_match = _TRANSLATION.search(block)
+        if source_match is None or translation_match is None:
+            return block
+        attributes = translation_match.group("attrs")
+        body = translation_match.group("body") or ""
+        if body.strip() and 'type="unfinished"' not in attributes:
+            return block
+        filled += 1
+        source = _unescape(source_match.group(1))
+        return (
+            block[: translation_match.start()]
+            + f"<translation>{escape(source)}</translation>"
             + block[translation_match.end() :]
         )
 

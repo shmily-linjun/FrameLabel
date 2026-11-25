@@ -1798,6 +1798,9 @@ class LabelingWidget(LabelDialog):
     def open_folder_dialog(self, _value=False, dirpath=None):
         return FileSession(self).open_folder_dialog(_value, dirpath)
 
+    def open_dataset_center(self):
+        return FileSession(self).open_dataset_center()
+
     @property
     def image_list(self):
         return FileSession(self).image_list

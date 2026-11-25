@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from translation_scan import (  # noqa: E402
     add_missing,
     fill_translations,
+    fill_identity,
     missing_entries,
     scan,
     translation_memory,
@@ -178,6 +179,8 @@ for language in supported_languages:
     )
     added = add_missing(ts_path, pending, english, memory)
     restored = fill_translations(ts_path, memory)
+    if language == "en_US":
+        restored += fill_identity(ts_path)
     print(
         f"{language}: {len(pending)} supplemental strings, {added} added, "
         f"{restored} translations restored from the previous file"

@@ -6,6 +6,86 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.53 — 2026-11-25
+
+### 1. 背景与需求
+
+用户确认数据集中心方案（设计书 §4.7）：P0（数据集中心：概览统计、注释、切换、重命名、删除、移除记录）
+与 P1（数据集合并）同批实现，并要求把 app 级数据库从 `operators.db` 改名（因为现在同时存账号与数据集注册表）。
+
+### 2. 主要实现
+
+- **数据库更名**：`%APPDATA%/X-AnyLabeling/operators/operators.db` → `platform/platform.db`；
+  `session.py` 的 `default_database_path()` 指向新位置，首次访问 `OperatorService.store` 时
+  `migrate_legacy_database()` 依次尝试旧 app 目录与 pre-fork.5 工作目录并复制（不删除源文件）。
+- **共享 app schema**：新增 `anylabeling/services/app_state.py`（`APP_SCHEMA_VERSION = "2"`，
+  `operator` + `meta` + `dataset_registry` + `dataset_registry_event`），由 `OperatorStore` 与
+  `RegistryStore` 共用；幂等 `CREATE TABLE IF NOT EXISTS`，旧库原地升级。
+- **RegistryStore**（`services/dataset/registry.py`，无 Qt）：`add/add_from_folder/list/get/get_by_path/
+  rename/touch/mark_missing/relocate/mark_deleted/remove_record/events/check_dataset`；状态
+  `active|missing|deleted`，事件表记录 `add/rename/open/merge_source/merge_target/delete/
+  delete_aborted/mark_missing/relocate/remove_record`。
+- **Repository 扩展**：`overview()`（图片/回收站/对象/类别/标签种类、split 计数、每类图片/对象数、
+  标签词表，全 SQL 聚合）与 `update_dataset_metadata(name/description)`（长度校验 + `updated_at`）。
+- **数据集中心窗口**（`views/dataset_center.py`）：独立非模态窗口，列表 + 概览 + 注释编辑器；支持
+  添加文件夹、刷新、打开、重命名、重新定位、合并、删除、移除记录、搜索；打开时校验并自动把
+  失效项置 `missing`；删除需二次登录（`OperatorStore.authenticate`）+ 先备份（`VACUUM INTO`）+
+  写注册表事件 + 应用日志；删除模式分“仅数据库/数据库和图片”。
+- **合并服务**（`services/dataset/merge.py`，无 Qt）：`plan_merge()` dry-run 与
+  `merge_datasets()`；图片复制到 `<目标>/imported/<源slug>-<session>/`；类别同名归并 + 可选
+  跨名映射；对象 `uuid` 重建、`group_id`/几何/属性保留；`split` 默认保留源；疑似重复（同名+大小+
+  mtime）只提示；合并前备份目标；写 `import_session(source_format='dataset-merge')` 溯源；
+  分批事务 + 每图 SAVEPOINT，单图失败不中断；支持 `cancel_check`。
+- **合并向导**（`views/dataset_center_merge.py`）：目标选择（已有数据集/新建）、类别映射表、
+  split/空类别/疑似重复选项、预检报告、后台线程执行 + 进度、结果与错误摘要；新建目标后自动
+  注册并可在完成后直接打开。
+- **菜单接入**：`文件 → 数据集中心…`（`builder.py`/`menus.py`），`LabelingWidget.open_dataset_center`
+  转 `FileSession`，窗口单实例并复用打开数据集回调。
+- **i18n**：新增 98 条文案（`DatasetCenterWindow`/`MergeDialog`/`_SecondLoginDialog`/菜单），
+  `.ts/.qm` 四语言重建；`fill_identity()` 修复 `pylupdate6` 自闭合 `<translation/>` 无法被 TM 填充
+  的缺陷；四个 `.qm` 各 2730 条，zh/en 0 未翻译。
+
+### 3. 涉及模块
+
+- 新增：`anylabeling/services/app_state.py`、`anylabeling/services/dataset/registry.py`、
+  `anylabeling/services/dataset/merge.py`、`anylabeling/views/dataset_center.py`、
+  `anylabeling/views/dataset_center_merge.py`、`tests/test_dataset_db/test_registry.py`、
+  `tests/test_dataset_db/test_merge.py`、`tests/test_widgets/test_dataset_center.py`
+- 修改：`identity/session.py`、`identity/store.py`、`identity/__init__.py`、
+  `dataset/repository.py`、`labeling/actions/builder.py`、`labeling/actions/menus.py`、
+  `labeling/file_session.py`、`labeling/label_widget.py`、`scripts/translation_scan.py`、
+  `scripts/generate_languages.py`、`tests/test_identity/test_operator_store.py`、
+  `tests/test_i18n/test_translations.py`、翻译资源、`app_info.py`、`CHANGELOG-fork.md`、
+  `docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+
+### 4. 行为、接口与兼容性影响
+
+- 旧 `operators.db` 在首次访问账号/注册表时自动复制到新位置，账号不丢；旧文件保留。
+- 数据集中心是新增窗口，不影响原有标注/上传/导出流程；`DatasetRepository` 仅新增方法。
+- 合并会**复制**图片并在目标库写入新行，源库只读；类别同名归并（schema 唯一约束），
+  跨名映射只由用户显式指定。
+- 删除数据集需要二次登录并先备份；外部删除会在下次刷新时标记 `missing`，不会抛异常。
+
+### 5. 实际验证内容
+
+- `tests/test_dataset_db + test_widgets + test_utils + test_identity + test_i18n`：
+  **374 passed / 108 subtests**（含 registry 4、overview 1、merge 4、数据集中心 3）。
+- `tests/test_labeling`：**256 passed / 10 failed**，失败与 fork.49 记录的既有测试债一致
+  （4 文件表 DB 模式、3 `SimpleNamespace` 桩、3 上传属性），本批未触碰这些用例。
+- 离屏翻译核对：`数据集中心`/`添加文件夹…`/`图片：%d（回收站：%d）`/`划分：训练 …`/
+  `确认密码`/`合并数据集`/`开始合并`/`数据集中心…` 均为中文。
+- 生成器幂等性：重跑 `generate_languages.py --no-resources` 后译文零增减（仅 `<location line>` 变化）。
+- 四语言 `.qm` 各 2730 条（zh/en 0 未翻译；ja/ko 未翻译数增加，运行时回退英文）。
+- **未执行**：真实桌面人工点击“数据集中心”与合并向导（本机无 GUI 会话）。
+
+### 6. 已知限制
+
+- 合并暂无内容哈希去重（`image_file.sha256` 仍延期），疑似重复仅提示。
+- 数据集中心不支持多窗口打开（U12 已登记）；注册表随 `platform.db`，若用户删除该库则列表丢失
+  （数据集文件仍在，可重新“添加文件夹”）。
+- ja/ko 仍有未翻译文案。
+- 推送仍受本机凭据/网络阻塞；本地 `main` 已领先远端 6 个提交。
+
 ## 文档：新增设计书 §4.7 数据集管理与合并契约（2026-11-25，不升 fork 版本）
 
 纯文档变更，不改变代码结构、接口或行为，故不升 fork 版本号。

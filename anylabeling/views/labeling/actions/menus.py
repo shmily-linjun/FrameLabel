@@ -51,6 +51,7 @@ def build_menus(host):
             host.actions.open_dir,
             host.actions.open_video,
             host.actions.import_project,
+            host.actions.dataset_center,
             host.actions.show_trash,
             host.actions.toggle_compare_view,
             menus.recent_files,
