@@ -29,3 +29,20 @@ def pytest_configure(config):
     for variable in ("TEMP", "TMP", "TMPDIR"):
         os.environ[variable] = str(process_temp)
     tempfile.tempdir = str(process_temp)
+
+
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def _skip_duplicate_review_dialog(monkeypatch):
+    """Keep UI tests headless: folder import must not open a modal dialog.
+
+    The duplicate review is covered by service-level tests
+    (``tests/test_dataset_db/test_duplicates.py``) and the dialog test
+    (``tests/test_widgets/test_duplicate_review.py``).
+    """
+
+    from anylabeling.services.dataset import importer
+
+    monkeypatch.setattr(importer, "scan_duplicates", lambda folder: [])

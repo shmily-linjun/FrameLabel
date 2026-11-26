@@ -28,10 +28,20 @@ import os
 import re
 import shutil
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace as dataclass_replace
 from pathlib import Path
 
+from .codec import row_to_shape
 from .connection import DatasetDatabase
+from .duplicates import (
+    ACTION_KEEP_ONE,
+    ACTION_MERGE_ANNOTATIONS,
+    DuplicateEntry,
+    annotation_hash,
+    entry_key,
+    group_duplicates,
+    sha256_file,
+)
 from .errors import DatasetError
 from .repository import DatasetRepository
 
@@ -54,6 +64,7 @@ class MergeOptions:
     category_map: dict = field(default_factory=dict)
     skip_empty_categories: bool = False
     check_duplicates: bool = True
+    duplicate_actions: dict = field(default_factory=dict)
     batch_size: int = 200
     backup: bool = True
     cancel_check: object = None
@@ -92,6 +103,7 @@ class MergePlan:
     missing_images: int = 0
     categories: list = field(default_factory=list)
     issues: list = field(default_factory=list)
+    duplicate_groups: list = field(default_factory=list)
 
     def summary(self) -> dict:
         return {
@@ -109,6 +121,8 @@ class MergeReport:
     imported_images: int = 0
     imported_objects: int = 0
     skipped_images: int = 0
+    skipped_duplicates: int = 0
+    merged_annotations: int = 0
     errors: list = field(default_factory=list)
     import_session_id: int | None = None
     target_root: str = ""
@@ -172,7 +186,7 @@ def _read_source(db_path: str) -> _SourceData:
         image_ids = {int(row["id"]) for row in images}
         objects = {}
         for row in database.query(
-            "SELECT o.id, o.image_id, o.category_id, o.shape_type, "
+            "SELECT o.id, o.uuid, o.image_id, o.category_id, o.shape_type, "
             "o.sort_index, o.points_json, o.score, o.group_id, "
             "o.difficult, o.direction, o.description, o.review_status, "
             "o.source, o.source_model, o.attributes_json, o.flags_json, "
@@ -217,6 +231,111 @@ def _read_source(db_path: str) -> _SourceData:
         database.close()
 
 
+def _target_annotation_hash(database, dataset_id: int, image_id: int) -> str:
+    rows = database.query(
+        "SELECT o.*, c.name AS category_name FROM annotation_object o "
+        "JOIN category c ON c.id = o.category_id "
+        "WHERE o.image_id = ? AND o.is_deleted = 0 "
+        "ORDER BY o.sort_index, o.id",
+        (image_id,),
+    )
+    shapes = [row_to_shape(row, row["category_name"]) for row in rows]
+    tags = [
+        row["tag"]
+        for row in database.query(
+            "SELECT tag FROM image_tag WHERE image_id = ? "
+            "ORDER BY sort_index, tag",
+            (image_id,),
+        )
+    ]
+    return annotation_hash(shapes, tags)
+
+
+def _source_annotation_hash(source, image) -> str:
+    shapes = []
+    for obj in source.objects.get(int(image["id"]), []):
+        category = source.categories.get(int(obj["category_id"]))
+        if category is None or category["is_deleted"]:
+            continue
+        shapes.append(row_to_shape(obj, category["name"]))
+    tags = [
+        tag["tag"] for tag in source.tags.get(int(image["id"]), [])
+    ]
+    return annotation_hash(shapes, tags)
+
+
+def _target_sha_map(target, dataset_id: int) -> dict:
+    """``sha256 -> (image id, rel path)`` for images already in the target."""
+
+    has_sha = target.has_column("image_file", "content_sha256")
+    columns = "id, rel_path, content_sha256" if has_sha else "id, rel_path"
+    rows = target.query(
+        f"SELECT {columns} FROM image_file WHERE dataset_id = ? "
+        "AND is_deleted = 0",
+        (dataset_id,),
+    )
+    root_row = target.query_one(
+        "SELECT root_path FROM dataset WHERE id = ?", (dataset_id,)
+    )
+    root = Path(root_row["root_path"] or Path(target.path).parent)
+    mapping = {}
+    for row in rows:
+        sha = row["content_sha256"] if has_sha else ""
+        if not sha:
+            try:
+                sha = sha256_file(root / row["rel_path"])
+            except OSError:
+                continue
+            if has_sha:
+                target.execute(
+                    "UPDATE image_file SET content_sha256 = ? WHERE id = ?",
+                    (sha, row["id"]),
+                )
+        mapping.setdefault(sha, (int(row["id"]), row["rel_path"]))
+    return mapping
+
+
+def _merge_into_target(
+    target,
+    repository,
+    target_image_id,
+    source,
+    image,
+    target_category_names,
+    category_ids,
+):
+    """Append one source image's objects/tags to an existing target image."""
+
+    existing = repository.load_annotation(target_image_id)
+    known = {shape.get("shape_id") for shape in existing.shapes}
+    appended = 0
+    for obj in source.objects.get(int(image["id"]), []):
+        category = source.categories.get(int(obj["category_id"]))
+        if category is None or category["is_deleted"]:
+            continue
+        target_id = category_ids.get(
+            (source.name, category["name"].casefold())
+        )
+        if target_id is None:
+            continue
+        shape = row_to_shape(
+            obj, target_category_names.get(int(target_id), category["name"])
+        )
+        if shape.get("shape_id") in known:
+            shape["shape_id"] = uuid.uuid4().hex
+        known.add(shape["shape_id"])
+        existing.shapes.append(shape)
+        appended += 1
+    existing.tags = list(
+        dict.fromkeys(
+            list(existing.tags)
+            + [tag["tag"] for tag in source.tags.get(int(image["id"]), [])]
+        )
+    )
+    repository.save_annotation(target_image_id, existing)
+    return appended
+
+
 def _target_existing_keys(database: DatasetDatabase, dataset_id: int) -> set:
     return {
         (
@@ -255,60 +374,125 @@ def plan_merge(
             for row in repository.list_categories()
         }
         existing = _target_existing_keys(target, repository.dataset_id)
-    finally:
-        target.close()
-
-    plan = MergePlan(
-        sources=[str(path) for path in source_paths],
-        target_db=target_path,
-        target_root=target_root,
-    )
-    for source_path in source_paths:
-        source = _read_source(source_path)
-        for category_id, category in source.categories.items():
-            if category["is_deleted"]:
-                continue
-            used = any(
-                int(obj["category_id"]) == category_id
-                for objects in source.objects.values()
-                for obj in objects
+        has_sha = target.has_column("image_file", "content_sha256")
+        columns = "id, rel_path, content_sha256" if has_sha else "id, rel_path"
+        target_entries = []
+        for row in target.query(
+            f"SELECT {columns} FROM image_file WHERE dataset_id = ? "
+            "AND is_deleted = 0",
+            (repository.dataset_id,),
+        ):
+            sha = row["content_sha256"] if has_sha else ""
+            if not sha:
+                try:
+                    sha = sha256_file(Path(target_root) / row["rel_path"])
+                except OSError:
+                    continue
+            target_entries.append(
+                DuplicateEntry(
+                    key=entry_key(target_path, row["id"]),
+                    source="target",
+                    path=row["rel_path"],
+                    sha256=sha,
+                    annotation_hash="",
+                    image_id=int(row["id"]),
+                )
             )
-            if options.skip_empty_categories and not used:
+        plan = MergePlan(
+            sources=[str(path) for path in source_paths],
+            target_db=target_path,
+            target_root=target_root,
+        )
+        source_entries = []
+        for source_path in source_paths:
+            source = _read_source(source_path)
+            for category_id, category in source.categories.items():
+                if category["is_deleted"]:
+                    continue
+                used = any(
+                    int(obj["category_id"]) == category_id
+                    for objects in source.objects.values()
+                    for obj in objects
+                )
+                if options.skip_empty_categories and not used:
+                    plan.categories.append(
+                        CategoryDecision(
+                            source.name, category["name"], "", "skipped"
+                        )
+                    )
+                    continue
+                requested = options.category_map.get(
+                    category["name"], category["name"]
+                )
+                target_name = target_names.get(requested.casefold(), requested)
+                if target_name.casefold() in target_names:
+                    action = (
+                        "mapped" if requested != category["name"] else "merged"
+                    )
+                else:
+                    action = "created"
+                    target_names[target_name.casefold()] = target_name
                 plan.categories.append(
                     CategoryDecision(
-                        source.name, category["name"], "", "skipped"
+                        source.name, category["name"], target_name, action
                     )
                 )
-                continue
-            requested = options.category_map.get(category["name"], category["name"])
-            target_name = target_names.get(requested.casefold(), requested)
-            if target_name.casefold() in target_names:
-                action = "mapped" if requested != category["name"] else "merged"
-            else:
-                action = "created"
-                target_names[target_name.casefold()] = target_name
-            plan.categories.append(
-                CategoryDecision(
-                    source.name, category["name"], target_name, action
+            for image in source.images:
+                plan.new_images += 1
+                plan.new_objects += len(
+                    source.objects.get(int(image["id"]), [])
                 )
+                src = Path(source.root) / image["rel_path"]
+                if not src.is_file():
+                    plan.missing_images += 1
+                    plan.issues.append(
+                        MergeIssue(
+                            source.name, image["rel_path"], "file not found"
+                        )
+                    )
+                    continue
+                if options.check_duplicates:
+                    source_entries.append(
+                        DuplicateEntry(
+                            key=entry_key(source_path, image["id"]),
+                            source=source.name,
+                            path=image["rel_path"],
+                            sha256=sha256_file(src),
+                            annotation_hash=_source_annotation_hash(
+                                source, image
+                            ),
+                            object_count=len(
+                                source.objects.get(int(image["id"]), [])
+                            ),
+                            tag_count=len(
+                                source.tags.get(int(image["id"]), [])
+                            ),
+                            image_id=int(image["id"]),
+                        )
+                    )
+        if options.check_duplicates:
+            groups = group_duplicates(
+                list(target_entries) + source_entries
             )
-        for image in source.images:
-            plan.new_images += 1
-            plan.new_objects += len(source.objects.get(int(image["id"]), []))
-            src = Path(source.root) / image["rel_path"]
-            if not src.is_file():
-                plan.missing_images += 1
-                plan.issues.append(
-                    MergeIssue(source.name, image["rel_path"], "file not found")
-                )
-                continue
-            if options.check_duplicates and (
-                image["file_name"],
-                image["size_bytes"],
-                image["mtime_ns"],
-            ) in existing:
-                plan.duplicate_images += 1
-    return plan
+            for group in groups:
+                fixed = []
+                for entry in group.entries:
+                    if entry.source == "target":
+                        entry = dataclass_replace(
+                            entry,
+                            annotation_hash=_target_annotation_hash(
+                                target, repository.dataset_id, entry.image_id
+                            ),
+                        )
+                    fixed.append(entry)
+                group.entries = fixed
+            plan.duplicate_groups = groups
+            plan.duplicate_images = sum(
+                len(group.entries) - 1 for group in groups
+            )
+        return plan
+    finally:
+        target.close()
 
 
 def create_target_dataset(
@@ -362,6 +546,12 @@ def merge_datasets(
         category_ids = _prepare_target_categories(
             repository, source_paths, options, report
         )
+        sha_to_target = _target_sha_map(target, dataset_id)
+        accepted_shas = set(sha_to_target)
+        target_category_names = {
+            int(row["id"]): row["name"]
+            for row in repository.list_categories()
+        }
         total = plan.new_images
         done = 0
         for source_path in source_paths:
@@ -386,20 +576,55 @@ def merge_datasets(
                         f"{source.name}: missing file {image['rel_path']}"
                     )
                     continue
+                content_sha256 = sha256_file(src)
+                action = options.duplicate_actions.get(
+                    entry_key(source_path, image["id"]), ""
+                )
+                existing_target = sha_to_target.get(content_sha256)
+                duplicate_seen = (
+                    content_sha256 in accepted_shas
+                    or content_sha256 in {
+                        item[5] for item in pending
+                    }
+                )
+                if duplicate_seen and action == ACTION_KEEP_ONE:
+                    report.skipped_duplicates += 1
+                    continue
+                if (
+                    existing_target is not None
+                    and action == ACTION_MERGE_ANNOTATIONS
+                ):
+                    appended = _merge_into_target(
+                        target,
+                        repository,
+                        existing_target[0],
+                        source,
+                        image,
+                        target_category_names,
+                        category_ids,
+                    )
+                    report.merged_annotations += 1
+                    report.imported_objects += appended
+                    continue
                 dest_rel = str(
                     Path(prefix) / image["rel_path"]
                 ).replace(os.sep, "/")
                 dest_abs = Path(plan.target_root) / dest_rel
                 try:
                     dest_abs.parent.mkdir(parents=True, exist_ok=True)
-                    if not dest_abs.exists() or dest_abs.stat().st_size != src.stat().st_size:
+                    if (
+                        not dest_abs.exists()
+                        or dest_abs.stat().st_size != src.stat().st_size
+                    ):
                         shutil.copy2(src, dest_abs)
                 except OSError as error:
                     report.skipped_images += 1
                     report.errors.append(
-                        f"{source.name}: cannot copy {image['rel_path']}: {error}"
+                        f"{source.name}: cannot copy "
+                        f"{image['rel_path']}: {error}"
                     )
                     continue
+                accepted_shas.add(content_sha256)
                 pending.append(
                     (
                         source,
@@ -407,12 +632,27 @@ def merge_datasets(
                         dest_rel,
                         category_ids,
                         session_id,
+                        content_sha256,
                     )
                 )
                 if len(pending) >= max(1, int(options.batch_size)):
-                    _flush_batch(target, repository, pending, options, report)
+                    _flush_batch(
+                        target,
+                        repository,
+                        pending,
+                        options,
+                        report,
+                        sha_to_target,
+                    )
                     pending = []
-            _flush_batch(target, repository, pending, options, report)
+            _flush_batch(
+                target,
+                repository,
+                pending,
+                options,
+                report,
+                sha_to_target,
+            )
             if report.cancelled:
                 break
         _finish_import_session(target, session_id, report)
@@ -421,11 +661,20 @@ def merge_datasets(
     return report
 
 
-def _flush_batch(target, repository, pending, options, report) -> None:
+def _flush_batch(
+    target, repository, pending, options, report, sha_to_target
+) -> None:
     if not pending:
         return
     with target.transaction() as connection:
-        for source, image, dest_rel, category_ids, session_id in pending:
+        for (
+            source,
+            image,
+            dest_rel,
+            category_ids,
+            session_id,
+            content_sha256,
+        ) in pending:
             connection.execute("SAVEPOINT merge_image")
             try:
                 image_id = _insert_image(
@@ -435,6 +684,7 @@ def _flush_batch(target, repository, pending, options, report) -> None:
                     dest_rel,
                     options,
                     session_id,
+                    content_sha256,
                 )
                 object_map = _insert_objects(
                     connection,
@@ -448,6 +698,9 @@ def _flush_batch(target, repository, pending, options, report) -> None:
                 connection.execute("RELEASE merge_image")
                 report.imported_images += 1
                 report.imported_objects += len(object_map)
+                sha_to_target.setdefault(
+                    content_sha256, (image_id, dest_rel)
+                )
             except Exception as error:  # noqa: BLE001 - keep going
                 connection.execute("ROLLBACK TO merge_image")
                 connection.execute("RELEASE merge_image")
@@ -554,15 +807,21 @@ def _category_id(category_ids: dict, source_name: str, category_name: str) -> in
 
 
 def _insert_image(
-    connection, dataset_id: int, image: dict, rel_path: str, options, session_id
+    connection,
+    dataset_id: int,
+    image: dict,
+    rel_path: str,
+    options,
+    session_id,
+    content_sha256: str = "",
 ) -> int:
     cursor = connection.execute(
         "INSERT INTO image_file "
         "(dataset_id, rel_path, file_name, ext, width, height, size_bytes, "
         " mtime_ns, split, description, flags_json, extra_json, editor, "
         " modified_at, import_session_id, source_label_path, "
-        " source_label_format) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        " source_label_format, content_sha256) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         (
             dataset_id,
             rel_path,
@@ -581,6 +840,7 @@ def _insert_image(
             session_id,
             image["source_label_path"],
             image["source_label_format"],
+            content_sha256,
         ),
     )
     return int(cursor.lastrowid)

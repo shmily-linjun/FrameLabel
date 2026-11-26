@@ -4,34 +4,34 @@
   <context>
     <name>AIDescriptionDialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="701" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="702" />
         <source>AI Description</source>
         <translation>AI説明</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="719" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="720" />
         <source>Current model: {model}</source>
         <translation>現在のモデル: {model}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="731" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="732" />
         <source>Use full video</source>
         <translation>動画全体を使用</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="752" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="753" />
         <source>Tip: The AI model is configured in Chatbot.
 Review the prompt before generating.</source>
         <translation>ヒント: AIモデルはChatbotで設定します。
 生成前にプロンプトを確認してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="760" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="761" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="764" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="765" />
         <source>Generate</source>
         <translation>生成</translation>
     </message>
@@ -594,22 +594,22 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>BaseDialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="89" />
+        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="90" />
         <source>Browse</source>
         <translation>参照</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="113" />
+        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="114" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="119" />
+        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="120" />
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="142" />
+        <location filename="..\..\views\labeling\widgets\base_dialog.py" line="143" />
         <source>Warning</source>
         <translation>警告</translation>
     </message>
@@ -808,173 +808,173 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>CameraConfigurationDialog</name>
     <message>
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="276" />
         <location filename="..\..\views\labeling\pointcloud\camera.py" line="275" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="274" />
         <source>Remove camera</source>
         <translation>カメラを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="290" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="291" />
         <source>Image directory</source>
         <translation>画像フォルダー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="295" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="296" />
         <source>Calibration JSON (optional)</source>
         <translation>キャリブレーション JSON（任意）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="304" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="305" />
         <source>Browse…</source>
         <translation>参照…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="335" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="336" />
         <source>JSON files (*.json)</source>
         <translation>JSON ファイル (*.json)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="348" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="349" />
         <source>Camera image</source>
         <translation>カメラ画像</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="402" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="403" />
         <source>Add camera</source>
         <translation>カメラを追加</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="405" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="406" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="407" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="408" />
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="500" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="462" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="501" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="463" />
         <source>Camera {number}</source>
         <translation>カメラ {number}</translation>
     </message>
 </context><context>
     <name>CameraPanel</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="837" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="838" />
         <source>Drag to resize camera image</source>
         <translation>ドラッグしてカメラ画像の表示サイズを変更</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1395" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1299" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="928" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1396" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1300" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="929" />
         <source>Projected points</source>
         <translation>投影点</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1301" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="934" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1302" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="935" />
         <source>Load calibration to overlay points.</source>
         <translation>点群を重ねて表示するには、キャリブレーションを読み込んでください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="939" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="940" />
         <source>Projected 3D boxes</source>
         <translation>3Dボックスの投影</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="949" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="950" />
         <source>Projection settings</source>
         <translation>投影設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="960" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="961" />
         <source>Fit image</source>
         <translation>画像を表示範囲に収める</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1011" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1012" />
         <source>Depth</source>
         <translation>奥行き</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1012" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1013" />
         <source>Point cloud colors</source>
         <translation>点群の色</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1024" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1025" />
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1045" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1046" />
         <source>Point size</source>
         <translation>点のサイズ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1050" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1051" />
         <source>Reset point size (1 px)</source>
         <translation>点のサイズをリセット (1 px)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1054" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1055" />
         <source>Opacity</source>
         <translation>不透明度</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1059" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1060" />
         <source>Reset opacity (65%)</source>
         <translation>不透明度をリセット (65%)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1345" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1171" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1111" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1346" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1172" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1112" />
         <source>Near → Far</source>
         <translation>近 → 遠</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1191" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1192" />
         <source>Near {near:.3g} → Far {far:.3g}</source>
         <translation>近 {near:.3g} → 遠 {far:.3g}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1196" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1197" />
         <source>Camera depth in point-cloud units. Colors use the 2nd–98th percentile of this frame; values outside the range are clipped.</source>
         <translation>点群と同じ単位でのカメラからの奥行きです。色の範囲にはこのフレームの2～98パーセンタイルを使用し、範囲外の値は上下限に合わせます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1326" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1327" />
         <source>Open a point cloud to view its camera image.</source>
         <translation>対応するカメラ画像を表示するには、点群を開いてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1363" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1364" />
         <source>No matching camera image for this frame.</source>
         <translation>このフレームに対応するカメラ画像がありません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1382" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1383" />
         <source>Image size %1 x %2 does not match calibration %3 x %4. Projection disabled.</source>
         <translation>画像サイズ %1 x %2 がキャリブレーションのサイズ %3 x %4 と一致しないため、投影を無効にしました。</translation>
     </message>
 </context><context>
     <name>CameraView</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="708" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="709" />
         <source>Previous camera</source>
         <translation>前のカメラ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="709" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="710" />
         <source>Next camera</source>
         <translation>次のカメラ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="739" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="740" />
         <source>Wheel: zoom · Arrows: switch camera</source>
         <translation>ホイール：ズーム · 矢印：カメラ切り替え</translation>
     </message>
@@ -1250,266 +1250,266 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>ChatbotDialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="151" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="152" />
         <source>Clear Chat</source>
         <translation>チャットをクリア</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="153" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="154" />
         <source>Open Image Folder</source>
         <translation>画像フォルダを開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="156" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="157" />
         <source>Open Image File</source>
         <translation>画像ファイルを開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="159" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="160" />
         <source>Previous Image</source>
         <translation>前の画像</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="161" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="162" />
         <source>Next Image</source>
         <translation>次の画像</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="163" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="164" />
         <source>Run All Images</source>
         <translation>全画像を実行</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="166" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="167" />
         <source>Import/Export Dataset</source>
         <translation>データセットのインポート/エクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="303" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="304" />
         <source>Type a message and press Enter to send.</source>
         <translation>メッセージを入力し、Enterで送信します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="532" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="533" />
         <source>API Address</source>
         <translation>APIアドレス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="584" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="585" />
         <source>API Key</source>
         <translation>APIキー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="623" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="624" />
         <source>Enter API key</source>
         <translation>APIキーを入力</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="700" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="651" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="701" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="652" />
         <source>Model Name</source>
         <translation>モデル名</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="721" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="722" />
         <source>System instruction</source>
         <translation>システム指示</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="739" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="740" />
         <source>Temperature</source>
         <translation>温度</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="778" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="779" />
         <source>Precise</source>
         <translation>正確</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="784" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="785" />
         <source>Neutral</source>
         <translation>中性</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="790" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="791" />
         <source>Creative</source>
         <translation>クリエイティブ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="804" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="805" />
         <source>Max output tokens</source>
         <translation>最大出力トークン数</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="832" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="833" />
         <source>Backend</source>
         <translation>バックエンド</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="833" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="834" />
         <source>Generation</source>
         <translation>生成</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1139" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1140" />
         <source>Image not available</source>
         <translation>画像が利用できません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1562" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1563" />
         <source>Inferencing...</source>
         <translation>推論中...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1563" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1564" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1569" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1570" />
         <source>Progress</source>
         <translation>進行状況</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1705" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1706" />
         <source>Processing image %d/%d...</source>
         <translation>画像を処理中 %d/%d...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1790" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1791" />
         <source>Processed %d images successfully.
 %d images failed.</source>
         <translation>%d 枚の画像を処理しました。%d 枚の画像処理に失敗しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1805" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1795" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1806" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1796" />
         <source>Batch Processing Complete</source>
         <translation>一括処理完了</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1800" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1801" />
         <source>All %d images processed successfully.</source>
         <translation>全 %d 枚の画像を正常に処理しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1815" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1816" />
         <source>Dataset Operations</source>
         <translation>データセット操作</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1826" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1827" />
         <source>Import Dataset</source>
         <translation>データセットをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1829" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1830" />
         <source>Export Dataset</source>
         <translation>データセットをエクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1974" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1938" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1881" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1842" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1975" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1939" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1882" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1843" />
         <source>Export Error</source>
         <translation>エクスポートエラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1987" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1843" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1988" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1844" />
         <source>No file is currently open.</source>
         <translation>現在開いているファイルがありません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1850" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1851" />
         <source>Select Export Directory</source>
         <translation>エクスポート先ディレクトリを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1882" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1883" />
         <source>No labeling files found in the current directory.</source>
         <translation>現在のディレクトリにアノテーションファイルが見つかりませんでした。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1931" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1932" />
         <source>Error processing %s: %s</source>
         <translation>%s の処理中にエラーが発生しました: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1939" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1940" />
         <source>No valid chat data found to export.</source>
         <translation>エクスポート可能な有効なチャットデータが見つかりませんでした。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1963" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1964" />
         <source>Export Successful</source>
         <translation>エクスポート成功</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1964" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1965" />
         <source>Dataset exported successfully to:
 %s</source>
         <translation>データセットをエクスポートしました:
 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1975" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1970" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1976" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1971" />
         <source>An error occurred during export:
 %s</source>
         <translation>エクスポート中にエラーが発生しました:
 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2133" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2009" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1986" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2134" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2010" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1987" />
         <source>Import Error</source>
         <translation>インポートエラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1994" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="1995" />
         <source>Select Dataset File</source>
         <translation>データセットファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2010" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2011" />
         <source>Invalid dataset format. Expected a list of records.</source>
         <translation>データセット形式が無効です。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2106" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2107" />
         <source>Successfully imported {0} items to:
 {1}</source>
         <translation>{0} 個の項目を正常にインポートしました：
 {1}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2111" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2112" />
         <source>Import Successful</source>
         <translation>インポート成功</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2121" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2122" />
         <source>Import Notice</source>
         <translation>インポート通知</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2122" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2123" />
         <source>No valid items were found to import. Make sure images are available.</source>
         <translation>インポート可能な有効なプロジェクトが見つかりませんでした。画像が利用可能であることを確認してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2134" />
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2129" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2135" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2130" />
         <source>An error occurred during import:
 %s</source>
         <translation>インポート中にエラーが発生しました:
 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2597" />
+        <location filename="..\..\views\labeling\widgets\chatbot_dialog.py" line="2598" />
         <source>Are you sure you want to clear the entire conversation?</source>
         <translation>会話全体をクリアしてもよいですか？</translation>
     </message>
@@ -2036,141 +2036,141 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>CreateTaskDialog</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="466" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="82" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="467" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="83" />
         <source>Create task</source>
         <translation>タスクを作成</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="100" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="101" />
         <source>Task and classes</source>
         <translation>タスクとクラス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="101" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="102" />
         <source>Point clouds</source>
         <translation>点群</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="102" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="103" />
         <source>Camera images</source>
         <translation>カメラ画像</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="116" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="117" />
         <source>This step is optional. You can create the task now.</source>
         <translation>この手順は省略できます。このままタスクを作成できます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="371" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="150" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="372" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="151" />
         <source>Save labels</source>
         <translation>ラベルを保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="159" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="160" />
         <source>Back</source>
         <translation>戻る</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="466" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="162" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="467" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="163" />
         <source>Next</source>
         <translation>次へ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="197" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="198" />
         <source>Task:</source>
         <translation>タスク：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="212" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="213" />
         <source>Classes:</source>
         <translation>クラス：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="213" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="214" />
         <source>New class</source>
         <translation>新規クラス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="415" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="395" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="217" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="416" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="396" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="218" />
         <source>Load classes</source>
         <translation>クラスを読み込む</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="256" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="248" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="257" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="249" />
         <source>Point cloud directory</source>
         <translation>点群フォルダー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="252" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="253" />
         <source>Optional — defaults to the point cloud directory</source>
         <translation>省略可 — 既定では点群フォルダーに保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="257" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="258" />
         <source>Save directory</source>
         <translation>保存先フォルダー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="265" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="266" />
         <source>Browse…</source>
         <translation>参照…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="295" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="296" />
         <source>Class ID</source>
         <translation>クラスID</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="297" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="298" />
         <source>Class name</source>
         <translation>クラス名</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="336" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="325" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="302" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="337" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="326" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="303" />
         <source>Choose color</source>
         <translation>色を選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="308" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="309" />
         <source>Delete class</source>
         <translation>クラスを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="357" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="358" />
         <source>Add at least one class.</source>
         <translation>クラスを少なくとも1つ追加してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="397" />
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="373" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="398" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="374" />
         <source>Class definitions (*.json)</source>
         <translation>クラス定義 (*.json)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="405" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="406" />
         <source>This file does not contain classes for the selected task.</source>
         <translation>このファイルには選択したタスクのクラスが含まれていません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="416" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="417" />
         <source>Replace all {task} classes in this setup with this file?</source>
         <translation>この設定の {task} クラスをすべてこのファイルの内容で置き換えますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="486" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="487" />
         <source>Choose a point cloud directory.</source>
         <translation>点群フォルダーを選択してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="503" />
+        <location filename="..\..\views\labeling\pointcloud\task_dialog.py" line="504" />
         <source>Choose a writable save directory.</source>
         <translation>書き込み可能な保存先フォルダーを選択してください。</translation>
     </message>
@@ -2264,368 +2264,368 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>DatasetCenterWindow</name>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="122" />
+        <location filename="..\..\views\dataset_center.py" line="123" />
         <source>Dataset Center</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="137" />
+        <location filename="..\..\views\dataset_center.py" line="138" />
         <source>Add Folder…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="139" />
+        <location filename="..\..\views\dataset_center.py" line="140" />
         <source>Refresh</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="142" />
+        <location filename="..\..\views\dataset_center.py" line="143" />
         <source>Open Dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="145" />
+        <location filename="..\..\views\dataset_center.py" line="146" />
         <source>Rename…</source>
         <translation>名前を変更…</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="148" />
+        <location filename="..\..\views\dataset_center.py" line="149" />
         <source>Relocate…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="151" />
+        <location filename="..\..\views\dataset_center.py" line="152" />
         <source>Merge…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="154" />
+        <location filename="..\..\views\dataset_center.py" line="155" />
         <source>Delete Dataset…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="158" />
+        <location filename="..\..\views\dataset_center.py" line="159" />
         <source>Remove Record</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="175" />
+        <location filename="..\..\views\dataset_center.py" line="176" />
         <source>Search datasets…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="186" />
+        <location filename="..\..\views\dataset_center.py" line="187" />
         <source>State</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="187" />
+        <location filename="..\..\views\dataset_center.py" line="188" />
         <source>Name</source>
         <translation>名前</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="507" />
-        <location filename="..\..\views\dataset_center.py" line="244" />
-        <location filename="..\..\views\dataset_center.py" line="236" />
-        <location filename="..\..\views\dataset_center.py" line="188" />
+        <location filename="..\..\views\dataset_center.py" line="508" />
+        <location filename="..\..\views\dataset_center.py" line="245" />
+        <location filename="..\..\views\dataset_center.py" line="237" />
+        <location filename="..\..\views\dataset_center.py" line="189" />
         <source>Images</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="514" />
-        <location filename="..\..\views\dataset_center.py" line="260" />
-        <location filename="..\..\views\dataset_center.py" line="189" />
+        <location filename="..\..\views\dataset_center.py" line="515" />
+        <location filename="..\..\views\dataset_center.py" line="261" />
+        <location filename="..\..\views\dataset_center.py" line="190" />
         <source>Classes</source>
         <translation>クラス</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="261" />
-        <location filename="..\..\views\dataset_center.py" line="190" />
+        <location filename="..\..\views\dataset_center.py" line="262" />
+        <location filename="..\..\views\dataset_center.py" line="191" />
         <source>Tags</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="191" />
+        <location filename="..\..\views\dataset_center.py" line="192" />
         <source>Last opened</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="192" />
+        <location filename="..\..\views\dataset_center.py" line="193" />
         <source>Path</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="214" />
+        <location filename="..\..\views\dataset_center.py" line="215" />
         <source>Overview</source>
         <translation>統計概要</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="473" />
-        <location filename="..\..\views\dataset_center.py" line="217" />
+        <location filename="..\..\views\dataset_center.py" line="474" />
+        <location filename="..\..\views\dataset_center.py" line="218" />
         <source>Select a dataset to see its overview.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="228" />
+        <location filename="..\..\views\dataset_center.py" line="229" />
         <source>Metric</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="228" />
+        <location filename="..\..\views\dataset_center.py" line="229" />
         <source>Value</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="228" />
+        <location filename="..\..\views\dataset_center.py" line="229" />
         <source>Share</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="235" />
+        <location filename="..\..\views\dataset_center.py" line="236" />
         <source>Category</source>
         <translation>カテゴリ</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="513" />
-        <location filename="..\..\views\dataset_center.py" line="237" />
+        <location filename="..\..\views\dataset_center.py" line="514" />
+        <location filename="..\..\views\dataset_center.py" line="238" />
         <source>Objects</source>
         <translation>オブジェクト</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="244" />
-        <location filename="..\..\views\dataset_center.py" line="238" />
+        <location filename="..\..\views\dataset_center.py" line="245" />
+        <location filename="..\..\views\dataset_center.py" line="239" />
         <source>Image share</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="239" />
+        <location filename="..\..\views\dataset_center.py" line="240" />
         <source>Object share</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="244" />
+        <location filename="..\..\views\dataset_center.py" line="245" />
         <source>Tag</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="259" />
+        <location filename="..\..\views\dataset_center.py" line="260" />
         <source>Summary</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="266" />
+        <location filename="..\..\views\dataset_center.py" line="267" />
         <source>Dataset note</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="270" />
+        <location filename="..\..\views\dataset_center.py" line="271" />
         <source>Notes about this dataset (requires login)</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="276" />
+        <location filename="..\..\views\dataset_center.py" line="277" />
         <source>Save Note</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="383" />
+        <location filename="..\..\views\dataset_center.py" line="384" />
         <source>No datasets yet. Use Add Folder… to register one.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="471" />
+        <location filename="..\..\views\dataset_center.py" line="472" />
         <source>%d datasets selected.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="484" />
+        <location filename="..\..\views\dataset_center.py" line="485" />
         <source>This dataset is %s: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="496" />
+        <location filename="..\..\views\dataset_center.py" line="497" />
         <source>Name: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="498" />
+        <location filename="..\..\views\dataset_center.py" line="499" />
         <source>Path: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="508" />
+        <location filename="..\..\views\dataset_center.py" line="509" />
         <source>Recycle bin</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="509" />
+        <location filename="..\..\views\dataset_center.py" line="510" />
         <source>Train</source>
         <translation>訓練</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="510" />
+        <location filename="..\..\views\dataset_center.py" line="511" />
         <source>Val</source>
         <translation>Val</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="511" />
+        <location filename="..\..\views\dataset_center.py" line="512" />
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="512" />
+        <location filename="..\..\views\dataset_center.py" line="513" />
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="515" />
+        <location filename="..\..\views\dataset_center.py" line="516" />
         <source>Tag kinds</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="559" />
+        <location filename="..\..\views\dataset_center.py" line="560" />
         <source>Login required</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="560" />
+        <location filename="..\..\views\dataset_center.py" line="561" />
         <source>Please log in before changing a dataset.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="581" />
+        <location filename="..\..\views\dataset_center.py" line="582" />
         <source>Add Dataset Folder</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="592" />
+        <location filename="..\..\views\dataset_center.py" line="593" />
         <source>Cannot add dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="593" />
+        <location filename="..\..\views\dataset_center.py" line="594" />
         <source>The folder must contain an existing xanylabeling.db dataset database.
 
 %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="610" />
+        <location filename="..\..\views\dataset_center.py" line="611" />
         <source>Dataset unavailable</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="611" />
+        <location filename="..\..\views\dataset_center.py" line="612" />
         <source>This dataset is missing or deleted.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="633" />
+        <location filename="..\..\views\dataset_center.py" line="634" />
         <source>Rename Dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="634" />
+        <location filename="..\..\views\dataset_center.py" line="635" />
         <source>New name:</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="643" />
+        <location filename="..\..\views\dataset_center.py" line="644" />
         <source>Rename failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="656" />
+        <location filename="..\..\views\dataset_center.py" line="657" />
         <source>Select the folder that contains xanylabeling.db</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="668" />
+        <location filename="..\..\views\dataset_center.py" line="669" />
         <source>Relocate failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="697" />
-        <location filename="..\..\views\dataset_center.py" line="687" />
+        <location filename="..\..\views\dataset_center.py" line="698" />
+        <location filename="..\..\views\dataset_center.py" line="688" />
         <source>Cannot save the note</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="729" />
+        <location filename="..\..\views\dataset_center.py" line="730" />
         <source>Dataset is open</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="730" />
+        <location filename="..\..\views\dataset_center.py" line="731" />
         <source>This dataset is open in the labeling window. Switch to another dataset before deleting it.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="739" />
+        <location filename="..\..\views\dataset_center.py" line="740" />
         <source>Delete dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="742" />
+        <location filename="..\..\views\dataset_center.py" line="743" />
         <source>Delete “%s”?</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="745" />
+        <location filename="..\..\views\dataset_center.py" line="746" />
         <source>The database is backed up first. “Database and images” also deletes the image files and cannot be undone.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="751" />
+        <location filename="..\..\views\dataset_center.py" line="752" />
         <source>Database only</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="754" />
+        <location filename="..\..\views\dataset_center.py" line="755" />
         <source>Database and images</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="772" />
+        <location filename="..\..\views\dataset_center.py" line="773" />
         <source>Backup failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="773" />
+        <location filename="..\..\views\dataset_center.py" line="774" />
         <source>The dataset was not deleted.
 
 %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="781" />
+        <location filename="..\..\views\dataset_center.py" line="782" />
         <source>Delete failed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="782" />
+        <location filename="..\..\views\dataset_center.py" line="783" />
         <source>Backup: %s
 
 %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="833" />
+        <location filename="..\..\views\dataset_center.py" line="834" />
         <source>Remove record</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="834" />
+        <location filename="..\..\views\dataset_center.py" line="835" />
         <source>Remove %d record(s) from the registry? The dataset files are not touched.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="863" />
+        <location filename="..\..\views\dataset_center.py" line="864" />
         <source>Merge datasets</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="864" />
+        <location filename="..\..\views\dataset_center.py" line="865" />
         <source>Select at least one available dataset to merge.</source>
         <translation type="unfinished" />
     </message>
@@ -2737,32 +2737,32 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>DeleteLabelDialog</name>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="346" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="347" />
         <source>Delete Labels</source>
         <translation>ラベルを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="356" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="357" />
         <source>Select labels to delete:</source>
         <translation>削除するラベルを選択：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="371" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="372" />
         <source>Delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="378" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="379" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="393" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="394" />
         <source>This will remove %s and all related data. Continue?</source>
         <translation>%s とそのすべての関連データを削除します。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="398" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="399" />
         <source>Confirm Delete</source>
         <translation>削除を確認</translation>
     </message>
@@ -3008,89 +3008,176 @@ Example: person.car.bicycle</source>
 </context><context>
     <name>DropZone</name>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\drop_zone.py" line="48" />
+        <location filename="..\..\views\labeling\video_classifier\drop_zone.py" line="49" />
         <source>Drop a video here or click to load</source>
         <translation>動画をここにドロップするか、クリックして読み込み</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\drop_zone.py" line="55" />
+        <location filename="..\..\views\labeling\video_classifier\drop_zone.py" line="56" />
         <source>Supported: </source>
         <translation>対応: </translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\drop_zone.py" line="119" />
+        <location filename="..\..\views\labeling\video_classifier\drop_zone.py" line="120" />
         <source>Open video</source>
         <translation>動画を開く</translation>
     </message>
 </context><context>
-    <name>EditLabelDialog</name>
+    <name>DuplicateReviewDialog</name>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="413" />
-        <source>Edit Labels</source>
-        <translation>ラベルを編集</translation>
+        <location filename="..\..\views\duplicate_review.py" line="21" />
+        <source>Exact duplicate images</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="423" />
-        <source>Edit labels:</source>
-        <translation>ラベルを編集：</translation>
+        <location filename="..\..\views\duplicate_review.py" line="26" />
+        <source>These images have identical file bytes (SHA-256). Choose what to do with each group; the first image is always kept.</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="430" />
-        <source>Current</source>
-        <translation>現在</translation>
+        <location filename="..\..\views\duplicate_review.py" line="39" />
+        <source>Group</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="430" />
-        <source>New</source>
-        <translation>新規</translation>
+        <location filename="..\..\views\duplicate_review.py" line="40" />
+        <source>Verdict</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="451" />
-        <source>Save</source>
-        <translation>保存</translation>
+        <location filename="..\..\views\duplicate_review.py" line="41" />
+        <source>Sources</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="456" />
+        <location filename="..\..\views\duplicate_review.py" line="42" />
+        <source>Files</source>
+        <translation>Files</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="43" />
+        <source>Annotations</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="44" />
+        <source>Action</source>
+        <translation>操作</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="56" />
+        <source>Keep all</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="61" />
+        <source>Apply</source>
+        <translation>適用</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="64" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="476" />
+        <location filename="..\..\views\duplicate_review.py" line="79" />
+        <source>Same annotation</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="81" />
+        <source>Different annotations</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="97" />
+        <source>%d objects</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="101" />
+        <source>Keep both</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="102" />
+        <source>Keep one</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\duplicate_review.py" line="103" />
+        <source>Merge annotations</source>
+        <translation type="unfinished" />
+    </message>
+</context><context>
+    <name>EditLabelDialog</name>
+    <message>
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="414" />
+        <source>Edit Labels</source>
+        <translation>ラベルを編集</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="424" />
+        <source>Edit labels:</source>
+        <translation>ラベルを編集：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="431" />
+        <source>Current</source>
+        <translation>現在</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="431" />
+        <source>New</source>
+        <translation>新規</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="452" />
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="457" />
+        <source>Cancel</source>
+        <translation>キャンセル</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="477" />
         <source>Invalid Input</source>
         <translation>無効な入力</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="477" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="478" />
         <source>Label name cannot be empty!</source>
         <translation>ラベル名を空にすることはできません！</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="484" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="485" />
         <source>Duplicate Labels</source>
         <translation>重複ラベル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="485" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="486" />
         <source>Label %s is used multiple times!</source>
         <translation>ラベル %s が複数回使用されています！</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="497" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="498" />
         <source>No Changes</source>
         <translation>変更なし</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="498" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="499" />
         <source>No labels were modified.</source>
         <translation>ラベルは変更されませんでした。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="504" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="505" />
         <source>Confirm Changes</source>
         <translation>変更を確認</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="505" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="506" />
         <source>Save changes to %d labels?</source>
         <translation>%d 個のラベルへの変更を保存しますか？</translation>
     </message>
@@ -3148,72 +3235,72 @@ Original images backed up to:
 </context><context>
     <name>ExportDialog</name>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="30" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="31" />
         <source>Export Dataset</source>
         <translation>データセットをエクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="44" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="45" />
         <source>Output</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="54" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="55" />
         <source>Browse…</source>
         <translation>参照…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="65" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="66" />
         <source>Formats</source>
         <translation>フォーマット</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="66" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="67" />
         <source>Video clips  (clip mp4)</source>
         <translation>動画クリップ（clip mp4）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="69" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="70" />
         <source>Raw frame sequences  (img_00001.jpg)</source>
         <translation>生フレーム列（img_00001.jpg）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="75" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="76" />
         <source>RawFrames FPS (0 = use source):</source>
         <translation>生フレーム FPS（0 = 元動画を使用）:</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="83" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="84" />
         <source>Options</source>
         <translation>オプション</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="85" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="86" />
         <source>Re-encode clips (slower, frame-accurate cuts, libx264)</source>
         <translation>クリップを再エンコード（低速、フレーム精度の切り出し、libx264）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="88" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="89" />
         <source>When disabled, clips are copied quickly around keyframes. Enable this for more accurate start/end cuts.</source>
         <translation>無効にすると、キーフレーム付近で高速にコピーします。開始/終了位置をより正確にするには有効にしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="93" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="94" />
         <source>Pack output as .zip</source>
         <translation>出力を .zip として圧縮</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="103" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="104" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="106" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="107" />
         <source>Export</source>
         <translation>エクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="157" />
+        <location filename="..\..\views\labeling\video_classifier\export_dialog.py" line="158" />
         <source>Select output directory</source>
         <translation>出力ディレクトリを選択</translation>
     </message>
@@ -3336,616 +3423,621 @@ Original images backed up to:
 </context><context>
     <name>ExportPathDialog</name>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="39" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="40" />
         <source>Export Images</source>
         <translation>画像をエクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="50" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="51" />
         <source>Export Directory:</source>
         <translation>エクスポート先ディレクトリ：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="70" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="71" />
         <source>Browse</source>
         <translation>参照</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="83" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="84" />
         <source>Export</source>
         <translation>エクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="89" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="90" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="125" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="126" />
         <source>Select Export Directory</source>
         <translation>エクスポート先ディレクトリを選択</translation>
     </message>
 </context><context>
     <name>FileListController</name>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="126" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="127" />
         <source>Files</source>
         <translation>Files</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="659" />
-        <location filename="..\..\views\labeling\file_list\controller.py" line="127" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="660" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="128" />
         <source>Objects</source>
         <translation>オブジェクト</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="660" />
-        <location filename="..\..\views\labeling\file_list\controller.py" line="128" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="661" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="129" />
         <source>Import Time</source>
         <translation>Import Time</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="661" />
-        <location filename="..\..\views\labeling\file_list\controller.py" line="129" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="662" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="130" />
         <source>Inference</source>
         <translation>Inference</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="712" />
-        <location filename="..\..\views\labeling\file_list\controller.py" line="662" />
-        <location filename="..\..\views\labeling\file_list\controller.py" line="130" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="713" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="663" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="131" />
         <source>Split</source>
         <translation>Split</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="226" />
-        <location filename="..\..\views\labeling\file_list\controller.py" line="222" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="227" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="223" />
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="223" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="224" />
         <source>Train</source>
         <translation>訓練</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="224" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="225" />
         <source>Val</source>
         <translation>Val</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="225" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="226" />
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="253" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="254" />
         <source>Editor: %s</source>
         <translation>編集者：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="679" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="680" />
         <source>Import Files</source>
         <translation>ファイルをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="683" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="684" />
         <source>Import Folder</source>
         <translation>フォルダーをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="701" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="702" />
         <source>Copy File Names</source>
         <translation>ファイル名をコピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="703" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="704" />
         <source>Copy File Name</source>
         <translation>ファイル名をコピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="707" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="708" />
         <source>Copy File Paths</source>
         <translation>ファイルパスをコピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="709" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="710" />
         <source>Copy File Path</source>
         <translation>ファイルパスをコピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="731" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="732" />
         <source>Set Tags…</source>
         <translation>タグを設定…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="735" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="736" />
         <source>Move to Folder…</source>
         <translation>フォルダへ移動…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="739" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="740" />
         <source>Hide Thumbnails</source>
         <translation>Hide Thumbnails</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="741" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="742" />
         <source>Show Thumbnails</source>
         <translation>Show Thumbnails</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="744" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="745" />
         <source>Remove %d Files from List</source>
         <translation>%d 個のファイルをリストから削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="746" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="747" />
         <source>Remove from List</source>
         <translation>Remove from List</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="838" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="839" />
         <source>Failed to update split for %s</source>
         <translation>Failed to update split for %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="844" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="845" />
         <source>Split of %s set to %s</source>
         <translation>Split of %s set to %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="852" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="853" />
         <source>Split of %d files set to %s</source>
         <translation>%d 個のファイルの分割を %s に設定しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="897" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="898" />
         <source>Batch Set Image Tags</source>
         <translation>画像タグを一括設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="898" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="899" />
         <source>Delete all image tags from %d files?</source>
         <translation>%d 枚の画像からすべての画像タグを削除しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="929" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="930" />
         <source>Failed to update tags for %d files</source>
         <translation>%d 枚の画像のタグを更新できませんでした</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="934" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="935" />
         <source>Tags updated for %d files</source>
         <translation>%d 枚の画像のタグを更新しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="939" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="940" />
         <source>Tags unchanged for %d files</source>
         <translation>%d 枚の画像のタグは変更されていません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="977" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="978" />
         <source>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</source>
         <translation>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="983" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="984" />
         <source>Remove %d files from the file list?
 The image files and their annotation files will NOT be deleted.</source>
         <translation>ファイルリストから %d 個のファイルを削除しますか？
 画像ファイルとアノテーションファイルは削除されません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="990" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="991" />
         <source>Remove File</source>
         <translation>Remove File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1057" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1058" />
         <source>Move to Folder</source>
         <translation>フォルダへ移動</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1085" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1086" />
         <source>Move out of Dataset</source>
         <translation>データセットから移動</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1086" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1087" />
         <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
         <translation>%d 個のファイルをデータセットから移動し、現在の一覧から削除します。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1122" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1123" />
         <source>Failed to move: %s</source>
         <translation>移動に失敗しました：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1125" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1126" />
         <source>Moved %d files</source>
         <translation>%d 個のファイルを移動しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1128" />
         <source>(%d moved out of the dataset)</source>
         <translation>（%d 個をデータセットから移動）</translation>
     </message>
 </context><context>
     <name>FileSession</name>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="123" />
+        <location filename="..\..\views\labeling\file_session.py" line="129" />
+        <source>Dataset creation cancelled.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="140" />
         <source>Creating dataset database…</source>
         <translation>データセットデータベースを作成中…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="129" />
+        <location filename="..\..\views\labeling\file_session.py" line="148" />
         <source>Dataset database</source>
         <translation>データセットデータベース</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="130" />
+        <location filename="..\..\views\labeling\file_session.py" line="149" />
         <source>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; にデータセットデータベースを作成できませんでした:&lt;br/&gt;%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="139" />
-        <source>Dataset database created: %s</source>
-        <translation>データセットデータベースを作成しました: %s</translation>
+        <location filename="..\..\views\labeling\file_session.py" line="158" />
+        <source>Dataset database created: %s (duplicates skipped: %d, merged: %d)</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="143" />
+        <location filename="..\..\views\labeling\file_session.py" line="170" />
         <source>Dataset database created with %d file errors; see logs.</source>
         <translation>データセットデータベースを作成しましたが、%d 件のファイルエラーがあります。ログを確認してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="167" />
+        <location filename="..\..\views\labeling\file_session.py" line="194" />
         <source>Error opening dataset</source>
         <translation>データセットを開けませんでした</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="543" />
-        <location filename="..\..\views\labeling\file_session.py" line="168" />
+        <location filename="..\..\views\labeling\file_session.py" line="570" />
+        <location filename="..\..\views\labeling\file_session.py" line="195" />
         <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="210" />
+        <location filename="..\..\views\labeling\file_session.py" line="237" />
         <source>Import Project (X-AnyLabeling)</source>
         <translation>プロジェクトをインポート（X-AnyLabeling）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="273" />
-        <location filename="..\..\views\labeling\file_session.py" line="219" />
+        <location filename="..\..\views\labeling\file_session.py" line="300" />
+        <location filename="..\..\views\labeling\file_session.py" line="246" />
         <source>Import Project</source>
         <translation>プロジェクトをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="221" />
+        <location filename="..\..\views\labeling\file_session.py" line="248" />
         <source>A dataset database already exists in this directory.</source>
         <translation>このディレクトリには既にデータセットデータベースがあります。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="226" />
+        <location filename="..\..\views\labeling\file_session.py" line="253" />
         <source>Skip existing images or replace their annotations?</source>
         <translation>既存の画像をスキップしますか、それとも注釈を置き換えますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="231" />
+        <location filename="..\..\views\labeling\file_session.py" line="258" />
         <source>Skip Existing</source>
         <translation>既存をスキップ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="235" />
+        <location filename="..\..\views\labeling\file_session.py" line="262" />
         <source>Replace Existing</source>
         <translation>既存を置き換え</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="239" />
+        <location filename="..\..\views\labeling\file_session.py" line="266" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="254" />
+        <location filename="..\..\views\labeling\file_session.py" line="281" />
         <source>Import failed</source>
         <translation>インポートに失敗しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="325" />
-        <location filename="..\..\views\labeling\file_session.py" line="254" />
+        <location filename="..\..\views\labeling\file_session.py" line="352" />
+        <location filename="..\..\views\labeling\file_session.py" line="281" />
         <source>&lt;b&gt;%s&lt;/b&gt;</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="258" />
+        <location filename="..\..\views\labeling\file_session.py" line="285" />
         <source>Images: %d</source>
         <translation>画像: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="259" />
+        <location filename="..\..\views\labeling\file_session.py" line="286" />
         <source>Labeled: %d</source>
         <translation>注釈あり: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="260" />
+        <location filename="..\..\views\labeling\file_session.py" line="287" />
         <source>Objects: %d</source>
         <translation>オブジェクト: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="261" />
+        <location filename="..\..\views\labeling\file_session.py" line="288" />
         <source>Skipped: %d</source>
         <translation>スキップ: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="262" />
+        <location filename="..\..\views\labeling\file_session.py" line="289" />
         <source>Errors: %d</source>
         <translation>エラー: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="266" />
+        <location filename="..\..\views\labeling\file_session.py" line="293" />
         <source>Backup: %s</source>
         <translation>バックアップ: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="281" />
+        <location filename="..\..\views\labeling\file_session.py" line="308" />
         <source>Recycle bin is available in dataset mode only.</source>
         <translation>ごみ箱はデータセットモードでのみ利用できます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="295" />
+        <location filename="..\..\views\labeling\file_session.py" line="322" />
         <source>No dataset image is open.</source>
         <translation>開いているデータセット画像がありません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="324" />
-        <location filename="..\..\views\labeling\file_session.py" line="312" />
-        <location filename="..\..\views\labeling\file_session.py" line="306" />
+        <location filename="..\..\views\labeling\file_session.py" line="351" />
+        <location filename="..\..\views\labeling\file_session.py" line="339" />
+        <location filename="..\..\views\labeling\file_session.py" line="333" />
         <source>Error deleting image</source>
         <translation>画像の削除に失敗しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="307" />
+        <location filename="..\..\views\labeling\file_session.py" line="334" />
         <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; は存在しません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="313" />
+        <location filename="..\..\views\labeling\file_session.py" line="340" />
         <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; は既に存在します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="332" />
+        <location filename="..\..\views\labeling\file_session.py" line="359" />
         <source>Image moved to the recycle bin.</source>
         <translation>画像をごみ箱に移動しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="495" />
+        <location filename="..\..\views\labeling\file_session.py" line="522" />
         <source>Dataset database: %s</source>
         <translation>データセットデータベース: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="726" />
-        <location filename="..\..\views\labeling\file_session.py" line="648" />
-        <location filename="..\..\views\labeling\file_session.py" line="616" />
-        <location filename="..\..\views\labeling\file_session.py" line="542" />
-        <location filename="..\..\views\labeling\file_session.py" line="533" />
-        <location filename="..\..\views\labeling\file_session.py" line="525" />
-        <location filename="..\..\views\labeling\file_session.py" line="518" />
+        <location filename="..\..\views\labeling\file_session.py" line="753" />
+        <location filename="..\..\views\labeling\file_session.py" line="675" />
+        <location filename="..\..\views\labeling\file_session.py" line="643" />
+        <location filename="..\..\views\labeling\file_session.py" line="569" />
+        <location filename="..\..\views\labeling\file_session.py" line="560" />
+        <location filename="..\..\views\labeling\file_session.py" line="552" />
+        <location filename="..\..\views\labeling\file_session.py" line="545" />
         <source>Error opening file</source>
         <translation>ファイルを開く際にエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="519" />
+        <location filename="..\..\views\labeling\file_session.py" line="546" />
         <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; はデータセットのルート外です。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="526" />
+        <location filename="..\..\views\labeling\file_session.py" line="553" />
         <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>画像はデータセットに登録されていません: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="534" />
+        <location filename="..\..\views\labeling\file_session.py" line="561" />
         <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>画像ファイルを開けませんでした: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="617" />
+        <location filename="..\..\views\labeling\file_session.py" line="644" />
         <source>No such file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>このファイルが存在しません：&lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="649" />
+        <location filename="..\..\views\labeling\file_session.py" line="676" />
         <source>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</source>
         <translation>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;%s&lt;/i&gt; が有効なラベルファイルであることを確認してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="732" />
-        <location filename="..\..\views\labeling\file_session.py" line="655" />
+        <location filename="..\..\views\labeling\file_session.py" line="759" />
+        <location filename="..\..\views\labeling\file_session.py" line="682" />
         <source>Error reading %s</source>
         <translation>%s の読み取りエラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="681" />
+        <location filename="..\..\views\labeling\file_session.py" line="708" />
         <source>File Not Found</source>
         <translation>ファイルが見つかりません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="684" />
+        <location filename="..\..\views\labeling\file_session.py" line="711" />
         <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; が見つかりません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="688" />
+        <location filename="..\..\views\labeling\file_session.py" line="715" />
         <source>Remove it from the file list, or skip it for now?</source>
         <translation>ファイル一覧から削除するか、今回はスキップしますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="693" />
+        <location filename="..\..\views\labeling\file_session.py" line="720" />
         <source>Remove from List</source>
         <translation>Remove from List</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="697" />
+        <location filename="..\..\views\labeling\file_session.py" line="724" />
         <source>Skip</source>
         <translation>スキップ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="711" />
+        <location filename="..\..\views\labeling\file_session.py" line="738" />
         <source>Image Description</source>
         <translation>画像の説明</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="727" />
+        <location filename="..\..\views\labeling\file_session.py" line="754" />
         <source>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;i&gt;{0}&lt;/i&gt; が有効な画像ファイルであることを確認してください。&lt;br/&gt;サポートされている画像形式：{1}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="965" />
+        <location filename="..\..\views\labeling\file_session.py" line="992" />
         <source>Image &amp; Label files (%s)</source>
         <translation>画像とラベルファイル（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="970" />
+        <location filename="..\..\views\labeling\file_session.py" line="997" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - 画像またはラベルファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="981" />
+        <location filename="..\..\views\labeling\file_session.py" line="1008" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>データセットモードでは出力ディレクトリを変更できません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="994" />
+        <location filename="..\..\views\labeling\file_session.py" line="1021" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - ディレクトリ内でアノテーションを保存/読み込み</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1007" />
+        <location filename="..\..\views\labeling\file_session.py" line="1034" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s . アノテーションは %s に保存/読み込みされます</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1037" />
+        <location filename="..\..\views\labeling\file_session.py" line="1064" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>データセットモードでは「名前を付けて保存」はまだ利用できません。注釈はデータセットデータベースに保存されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1048" />
+        <location filename="..\..\views\labeling\file_session.py" line="1075" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>データセットモードでは「名前を付けて保存」はまだ利用できません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1053" />
+        <location filename="..\..\views\labeling\file_session.py" line="1080" />
         <source>Label files (*%s)</source>
         <translation>ラベルファイル（*%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1065" />
+        <location filename="..\..\views\labeling\file_session.py" line="1092" />
         <source>Choose File</source>
         <translation>ファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1097" />
+        <location filename="..\..\views\labeling\file_session.py" line="1124" />
         <source>Dataset closed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1216" />
-        <location filename="..\..\views\labeling\file_session.py" line="1202" />
-        <location filename="..\..\views\labeling\file_session.py" line="1185" />
-        <location filename="..\..\views\labeling\file_session.py" line="1159" />
-        <location filename="..\..\views\labeling\file_session.py" line="1145" />
-        <location filename="..\..\views\labeling\file_session.py" line="1131" />
+        <location filename="..\..\views\labeling\file_session.py" line="1243" />
+        <location filename="..\..\views\labeling\file_session.py" line="1229" />
+        <location filename="..\..\views\labeling\file_session.py" line="1212" />
+        <location filename="..\..\views\labeling\file_session.py" line="1186" />
+        <location filename="..\..\views\labeling\file_session.py" line="1172" />
+        <location filename="..\..\views\labeling\file_session.py" line="1158" />
         <source>Attention</source>
         <translation>注意</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1186" />
-        <location filename="..\..\views\labeling\file_session.py" line="1132" />
+        <location filename="..\..\views\labeling\file_session.py" line="1213" />
+        <location filename="..\..\views\labeling\file_session.py" line="1159" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>この画像と注釈をごみ箱に移動しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1146" />
+        <location filename="..\..\views\labeling\file_session.py" line="1173" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>ラベルファイルを削除する前に「前のアノテーションを保持」を無効にしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1153" />
+        <location filename="..\..\views\labeling\file_session.py" line="1180" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>このラベルファイルを永久に削除しようとしています。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <location filename="..\..\views\labeling\file_session.py" line="1230" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>画像ファイルを削除する前に「前のアノテーションを保持」を無効にしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1210" />
+        <location filename="..\..\views\labeling\file_session.py" line="1237" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>この画像ファイルを永久に削除しようとしています。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1288" />
+        <location filename="..\..\views\labeling\file_session.py" line="1315" />
         <source>Save annotations?</source>
         <translation>アノテーションを保存しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1324" />
+        <location filename="..\..\views\labeling\file_session.py" line="1351" />
         <source>%s - Import Files</source>
         <translation>%s - ファイルをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1326" />
+        <location filename="..\..\views\labeling\file_session.py" line="1353" />
         <source>Image files (%s)</source>
         <translation>画像ファイル（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1347" />
+        <location filename="..\..\views\labeling\file_session.py" line="1374" />
         <source>%s - Open Directory</source>
         <translation>%s - ディレクトリを開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1391" />
+        <location filename="..\..\views\labeling\file_session.py" line="1418" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>データセットモードではファイルの追加はまだ利用できません。データセットのインポート/同期入口を使用してください。</translation>
     </message>
 </context><context>
     <name>FrameExtractionDialog</name>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="51" />
+        <location filename="..\..\views\labeling\utils\video.py" line="52" />
         <source>Frame Extraction Settings</source>
         <translation>フレーム抽出設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="59" />
+        <location filename="..\..\views\labeling\utils\video.py" line="60" />
         <source>Frame interval (fps: %.2f):</source>
         <translation>フレーム抽出間隔（fps: %.2f）：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="76" />
+        <location filename="..\..\views\labeling\utils\video.py" line="77" />
         <source>Filename prefix:</source>
         <translation>ファイル名プレフィックス：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="95" />
+        <location filename="..\..\views\labeling\utils\video.py" line="96" />
         <source>Number sequence length:</source>
         <translation>連番の長さ：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="120" />
+        <location filename="..\..\views\labeling\utils\video.py" line="121" />
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="122" />
+        <location filename="..\..\views\labeling\utils\video.py" line="123" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="141" />
+        <location filename="..\..\views\labeling\utils\video.py" line="142" />
         <source>Example output: {example}</source>
         <translation>出力例：{example}</translation>
     </message>
@@ -4254,77 +4346,77 @@ The image files and their annotation files will NOT be deleted.</source>
 </context><context>
     <name>LabelNameDialog</name>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="96" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="97" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="100" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="101" />
         <source>OK</source>
         <translation>OK</translation>
     </message>
 </context><context>
     <name>LabelPanel</name>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="447" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="448" />
         <source>Labels</source>
         <translation>ラベル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="673" />
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="665" />
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="458" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="674" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="666" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="459" />
         <source>Add label</source>
         <translation>ラベルを追加</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="466" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="467" />
         <source>Manage labels</source>
         <translation>ラベルを管理</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="674" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="675" />
         <source>Label already exists.</source>
         <translation>ラベルは既に存在します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="697" />
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="684" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="698" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="685" />
         <source>Rename label</source>
         <translation>ラベル名を変更</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="698" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="699" />
         <source>Another label already uses that name.</source>
         <translation>別のラベルがその名前を使用しています。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="709" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="710" />
         <source>Rename…</source>
         <translation>名前を変更…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="710" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="711" />
         <source>Change color…</source>
         <translation>色を変更…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="712" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="713" />
         <source>Delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="718" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="719" />
         <source>Pick color</source>
         <translation>色を選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="725" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="726" />
         <source>Delete label</source>
         <translation>ラベルを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="727" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="728" />
         <source>Deleting label '{name}' will also remove all associated segments.
 
 Continue?</source>
@@ -4335,91 +4427,91 @@ Continue?</source>
 </context><context>
     <name>LabelSettingsDialog</name>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="417" />
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="398" />
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="123" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="418" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="399" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="124" />
         <source>Label Settings</source>
         <translation>ラベル設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="137" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="138" />
         <source>#</source>
         <translation>#</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="138" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="139" />
         <source>Category</source>
         <translation>カテゴリ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="139" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="140" />
         <source>Delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="140" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="141" />
         <source>Name</source>
         <translation>名前</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="141" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="142" />
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="182" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="183" />
         <source>Upload</source>
         <translation>アップロード</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="186" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="187" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="190" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="191" />
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="212" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="213" />
         <source>(new label)</source>
         <translation>（新しいラベル）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="285" />
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="266" />
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="254" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="286" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="267" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="255" />
         <source>Upload labels</source>
         <translation>ラベルをアップロード</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="256" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="257" />
         <source>Text files (*.txt);;All files (*)</source>
         <translation>テキストファイル (*.txt);;すべてのファイル (*)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="267" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="268" />
         <source>Failed to read labels file: {error}</source>
         <translation>ラベルファイルの読み込みに失敗しました: {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="286" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="287" />
         <source>No new labels found.</source>
         <translation>新しいラベルが見つかりません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="341" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="342" />
         <source>Pick color</source>
         <translation>色を選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="365" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="366" />
         <source>Delete labels</source>
         <translation>ラベルを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="366" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="367" />
         <source>Deleting these labels will also remove all associated segments: {names}
 
 Continue?</source>
@@ -4428,24 +4520,24 @@ Continue?</source>
 続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="399" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="400" />
         <source>Label name cannot be empty.</source>
         <translation>ラベル名は空にできません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="418" />
+        <location filename="..\..\views\labeling\video_classifier\label_panel.py" line="419" />
         <source>Label names must be unique.</source>
         <translation>ラベル名は一意である必要があります。</translation>
     </message>
 </context><context>
     <name>LabelingWidget</name>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="247" />
+        <location filename="..\..\views\labeling\label_widget.py" line="248" />
         <source>Search files...</source>
         <translation>ファイルを検索...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="249" />
+        <location filename="..\..\views\labeling\label_widget.py" line="250" />
         <source>Supported search syntax:
 - Text: plain text matches the file name
 - Index: #N (e.g., #1, #10)
@@ -4462,233 +4554,233 @@ Continue?</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="272" />
+        <location filename="..\..\views\labeling\label_widget.py" line="273" />
         <source>Settings</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="576" />
+        <location filename="..\..\views\labeling\label_widget.py" line="577" />
         <source>Tag added: %s</source>
         <translation>タグを追加しました: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="578" />
+        <location filename="..\..\views\labeling\label_widget.py" line="579" />
         <source>Failed to save the new tag</source>
         <translation>新しいタグを保存できませんでした</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="882" />
+        <location filename="..\..\views\labeling\label_widget.py" line="883" />
         <source>Open Last Dir: %s</source>
         <translation>前回のフォルダを開く: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1005" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1006" />
         <source>Copy Successful</source>
         <translation>コピーしました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1251" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1252" />
         <source>L: %.2f px | Total: %.2f px</source>
         <translation>L: %.2f px | 合計: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1255" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1256" />
         <source>L: %.2f px</source>
         <translation>L: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1259" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1260" />
         <source>R: %.2f px | C: %.2f px</source>
         <translation>R: %.2f px | 円周: %.2f px</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1271" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1272" />
         <source>H: %d, W: %d</source>
         <translation>H: %d, W: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1415" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1416" />
         <source>Login to edit annotations</source>
         <translation>ログインするとアノテーションを編集できます</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1706" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1707" />
         <source>Please open an image first</source>
         <translation>最初に画像を開いてください</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1711" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1712" />
         <source>Select Compare Image Directory</source>
         <translation>比較画像ディレクトリを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1720" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1721" />
         <source>Invalid compare directory</source>
         <translation>無効な比較ディレクトリ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1731" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1732" />
         <source>Close Compare View</source>
         <translation>比較ビューを閉じる</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\label_widget.py" line="1732" />
+        <location filename="..\..\views\labeling\label_widget.py" line="1733" />
         <source>Are you sure you want to close the compare view?</source>
         <translation>比較ビューを閉じてもよろしいですか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="133" />
+        <location filename="..\..\views\labeling\utils\export.py" line="134" />
         <source>Failed on image: %s</source>
         <translation>画像のエクスポートに失敗しました：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="136" />
+        <location filename="..\..\views\labeling\utils\export.py" line="137" />
         <source>Export failed.</source>
         <translation>エクスポートに失敗しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="139" />
+        <location filename="..\..\views\labeling\utils\export.py" line="140" />
         <source>Reason: Pose instance grouping is incomplete or mismatched.
 Please ensure that each instance has one bounding box and that its bounding box and keypoints use the same numeric group ID.</source>
         <translation>原因：姿勢インスタンスのグループ情報が不完全か、一致していません。
 各インスタンスにバウンディングボックスを1つ設定し、そのボックスとキーポイントに同じ数値のグループ ID を使用してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="146" />
+        <location filename="..\..\views\labeling\utils\export.py" line="147" />
         <source>Reason: The bounding box label is not defined in the pose configuration.
 Please ensure that the bounding box label is listed under classes in the pose YAML file.</source>
         <translation>原因：バウンディングボックスのラベルが姿勢設定で定義されていません。
 バウンディングボックスのラベルが姿勢 YAML ファイルの classes に含まれていることを確認してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="153" />
+        <location filename="..\..\views\labeling\utils\export.py" line="154" />
         <source>Reason: %s</source>
         <translation>原因：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="160" />
+        <location filename="..\..\views\labeling\utils\export.py" line="161" />
         <source>Export Failed</source>
         <translation>エクスポート失敗</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="336" />
+        <location filename="..\..\views\labeling\utils\export.py" line="337" />
         <source>Export Options</source>
         <translation>エクスポートオプション</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="341" />
+        <location filename="..\..\views\labeling\utils\export.py" line="342" />
         <source>Save with images?</source>
         <translation>画像も保存しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="346" />
+        <location filename="..\..\views\labeling\utils\export.py" line="347" />
         <source>Skip empty labels?</source>
         <translation>空のラベルをスキップしますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="351" />
+        <location filename="..\..\views\labeling\utils\export.py" line="352" />
         <source>Skip unchecked?</source>
         <translation>未確認をスキップ？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="354" />
+        <location filename="..\..\views\labeling\utils\export.py" line="355" />
         <source>Skip passed?</source>
         <translation>合格をスキップ？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="357" />
+        <location filename="..\..\views\labeling\utils\export.py" line="358" />
         <source>Skip failed?</source>
         <translation>不合格をスキップ？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="389" />
+        <location filename="..\..\views\labeling\utils\export.py" line="390" />
         <source>Classes Files (*.yaml);;All Files (*)</source>
         <translation>クラスファイル (*.yaml);;すべてのファイル (*)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="394" />
+        <location filename="..\..\views\labeling\utils\export.py" line="395" />
         <source>Select a specific yolo-pose config file</source>
         <translation>YOLO-Pose 設定ファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="408" />
+        <location filename="..\..\views\labeling\utils\export.py" line="409" />
         <source>Invalid pose config file:
 %s</source>
         <translation>無効な姿勢設定ファイル：
 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="423" />
+        <location filename="..\..\views\labeling\utils\export.py" line="424" />
         <source>Classes Files (*.txt);;All Files (*)</source>
         <translation>クラスファイル (*.txt);;すべてのファイル (*)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="428" />
+        <location filename="..\..\views\labeling\utils\export.py" line="429" />
         <source>Select a specific classes file</source>
         <translation>クラスファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="444" />
+        <location filename="..\..\views\labeling\utils\export.py" line="445" />
         <source>Export options</source>
         <translation>エクスポートオプション</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="455" />
+        <location filename="..\..\views\labeling\utils\export.py" line="456" />
         <source>Export path</source>
         <translation>エクスポート先</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="473" />
-        <location filename="..\..\views\labeling\utils\export.py" line="467" />
+        <location filename="..\..\views\labeling\utils\export.py" line="474" />
+        <location filename="..\..\views\labeling\utils\export.py" line="468" />
         <source>Select Export Directory</source>
         <translation>エクスポート先ディレクトリを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="482" />
+        <location filename="..\..\views\labeling\utils\export.py" line="483" />
         <source>Browse</source>
         <translation>参照</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="493" />
+        <location filename="..\..\views\labeling\utils\export.py" line="494" />
         <source>Images and labels are written to train/val/test/none subdirectories; data.yaml is generated.</source>
         <translation>画像とラベルは train/val/test/none サブディレクトリに書き込まれ、data.yaml が生成されます。</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="124" />
-        <location filename="..\..\views\labeling\utils\export.py" line="678" />
-        <location filename="..\..\views\labeling\utils\export.py" line="652" />
-        <location filename="..\..\views\labeling\utils\export.py" line="509" />
+        <location filename="..\..\views\labeling\utils\export.py" line="679" />
+        <location filename="..\..\views\labeling\utils\export.py" line="653" />
+        <location filename="..\..\views\labeling\utils\export.py" line="510" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\widgets\relation_dialog.py" line="245" />
-        <location filename="..\..\views\labeling\utils\export.py" line="515" />
+        <location filename="..\..\views\labeling\utils\export.py" line="516" />
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="595" />
+        <location filename="..\..\views\labeling\utils\export.py" line="596" />
         <source>Out-of-bounds OBBs</source>
         <translation>境界外の回転バウンディングボックス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="600" />
+        <location filename="..\..\views\labeling\utils\export.py" line="601" />
         <source>Detected %d oriented bounding boxes with points outside the image boundaries. Keep them?</source>
         <translation>画像境界外の点を含む回転バウンディングボックスを %d 個検出しました。保持しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="624" />
+        <location filename="..\..\views\labeling\utils\export.py" line="625" />
         <source>Output Directory Exists!</source>
         <translation>出力ディレクトリは既に存在します！</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="629" />
+        <location filename="..\..\views\labeling\utils\export.py" line="630" />
         <source>Directory already exists. Choose an action:</source>
         <translation>ディレクトリは既に存在します。操作を選択してください：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="635" />
+        <location filename="..\..\views\labeling\utils\export.py" line="636" />
         <source>• Yes    - Merge with existing files
 • No     - Delete existing directory
 • Cancel - Abort export</source>
@@ -4697,27 +4789,27 @@ Please ensure that the bounding box label is listed under classes in the pose YA
 • キャンセル - エクスポートを中止</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="644" />
+        <location filename="..\..\views\labeling\utils\export.py" line="645" />
         <source>Yes</source>
         <translation>はい</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="648" />
+        <location filename="..\..\views\labeling\utils\export.py" line="649" />
         <source>No</source>
         <translation>いいえ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="677" />
+        <location filename="..\..\views\labeling\utils\export.py" line="678" />
         <source>Exporting...</source>
         <translation>エクスポート中...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="685" />
+        <location filename="..\..\views\labeling\utils\export.py" line="686" />
         <source>Progress</source>
         <translation>進行状況</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="730" />
+        <location filename="..\..\views\labeling\utils\export.py" line="731" />
         <source>Exporting annotations successfully!
 Results have been saved to:
 %s</source>
@@ -6297,496 +6389,501 @@ Results have been saved to:
         <translation>画像の説明</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="126" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="127" />
         <source>Files</source>
         <translation>Files</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="127" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="128" />
         <source>Objects</source>
         <translation>オブジェクト</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="128" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="129" />
         <source>Import Time</source>
         <translation>Import Time</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="129" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="130" />
         <source>Inference</source>
         <translation>Inference</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="130" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="131" />
         <source>Split</source>
         <translation>Split</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="222" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="223" />
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="224" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="225" />
         <source>Val</source>
         <translation>Val</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="225" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="226" />
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="253" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="254" />
         <source>Editor: %s</source>
         <translation>編集者：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="679" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="680" />
         <source>Import Files</source>
         <translation>ファイルをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="683" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="684" />
         <source>Import Folder</source>
         <translation>フォルダーをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="701" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="702" />
         <source>Copy File Names</source>
         <translation>ファイル名をコピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="703" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="704" />
         <source>Copy File Name</source>
         <translation>ファイル名をコピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="707" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="708" />
         <source>Copy File Paths</source>
         <translation>ファイルパスをコピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="709" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="710" />
         <source>Copy File Path</source>
         <translation>ファイルパスをコピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="731" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="732" />
         <source>Set Tags…</source>
         <translation>タグを設定…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="735" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="736" />
         <source>Move to Folder…</source>
         <translation>フォルダへ移動…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="739" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="740" />
         <source>Hide Thumbnails</source>
         <translation>Hide Thumbnails</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="741" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="742" />
         <source>Show Thumbnails</source>
         <translation>Show Thumbnails</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="744" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="745" />
         <source>Remove %d Files from List</source>
         <translation>%d 個のファイルをリストから削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="746" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="747" />
         <source>Remove from List</source>
         <translation>Remove from List</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="838" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="839" />
         <source>Failed to update split for %s</source>
         <translation>Failed to update split for %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="844" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="845" />
         <source>Split of %s set to %s</source>
         <translation>Split of %s set to %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="852" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="853" />
         <source>Split of %d files set to %s</source>
         <translation>%d 個のファイルの分割を %s に設定しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="897" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="898" />
         <source>Batch Set Image Tags</source>
         <translation>画像タグを一括設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="898" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="899" />
         <source>Delete all image tags from %d files?</source>
         <translation>%d 枚の画像からすべての画像タグを削除しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="929" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="930" />
         <source>Failed to update tags for %d files</source>
         <translation>%d 枚の画像のタグを更新できませんでした</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="934" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="935" />
         <source>Tags updated for %d files</source>
         <translation>%d 枚の画像のタグを更新しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="939" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="940" />
         <source>Tags unchanged for %d files</source>
         <translation>%d 枚の画像のタグは変更されていません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="977" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="978" />
         <source>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</source>
         <translation>Remove "%s" from the file list?
 The image file and its annotation file will NOT be deleted.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="983" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="984" />
         <source>Remove %d files from the file list?
 The image files and their annotation files will NOT be deleted.</source>
         <translation>ファイルリストから %d 個のファイルを削除しますか？
 画像ファイルとアノテーションファイルは削除されません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="990" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="991" />
         <source>Remove File</source>
         <translation>Remove File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1057" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1058" />
         <source>Move to Folder</source>
         <translation>フォルダへ移動</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1085" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1086" />
         <source>Move out of Dataset</source>
         <translation>データセットから移動</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1086" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1087" />
         <source>%d file(s) will leave the dataset and be removed from the current list. Continue?</source>
         <translation>%d 個のファイルをデータセットから移動し、現在の一覧から削除します。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1122" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1123" />
         <source>Failed to move: %s</source>
         <translation>移動に失敗しました：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1125" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1126" />
         <source>Moved %d files</source>
         <translation>%d 個のファイルを移動しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_list\controller.py" line="1127" />
+        <location filename="..\..\views\labeling\file_list\controller.py" line="1128" />
         <source>(%d moved out of the dataset)</source>
         <translation>（%d 個をデータセットから移動）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="123" />
+        <location filename="..\..\views\labeling\file_session.py" line="129" />
+        <source>Dataset creation cancelled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\file_session.py" line="140" />
         <source>Creating dataset database…</source>
         <translation>データセットデータベースを作成中…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="129" />
+        <location filename="..\..\views\labeling\file_session.py" line="148" />
         <source>Dataset database</source>
         <translation>データセットデータベース</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="130" />
+        <location filename="..\..\views\labeling\file_session.py" line="149" />
         <source>Could not create a dataset database in &lt;b&gt;%s&lt;/b&gt;:&lt;br/&gt;%s</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; にデータセットデータベースを作成できませんでした:&lt;br/&gt;%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="139" />
-        <source>Dataset database created: %s</source>
-        <translation>データセットデータベースを作成しました: %s</translation>
+        <location filename="..\..\views\labeling\file_session.py" line="158" />
+        <source>Dataset database created: %s (duplicates skipped: %d, merged: %d)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="143" />
+        <location filename="..\..\views\labeling\file_session.py" line="170" />
         <source>Dataset database created with %d file errors; see logs.</source>
         <translation>データセットデータベースを作成しましたが、%d 件のファイルエラーがあります。ログを確認してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="167" />
+        <location filename="..\..\views\labeling\file_session.py" line="194" />
         <source>Error opening dataset</source>
         <translation>データセットを開けませんでした</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="168" />
+        <location filename="..\..\views\labeling\file_session.py" line="195" />
         <source>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</source>
         <translation>&lt;b&gt;%s&lt;/b&gt;&lt;br/&gt;%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="210" />
+        <location filename="..\..\views\labeling\file_session.py" line="237" />
         <source>Import Project (X-AnyLabeling)</source>
         <translation>プロジェクトをインポート（X-AnyLabeling）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="219" />
+        <location filename="..\..\views\labeling\file_session.py" line="246" />
         <source>Import Project</source>
         <translation>プロジェクトをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="221" />
+        <location filename="..\..\views\labeling\file_session.py" line="248" />
         <source>A dataset database already exists in this directory.</source>
         <translation>このディレクトリには既にデータセットデータベースがあります。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="226" />
+        <location filename="..\..\views\labeling\file_session.py" line="253" />
         <source>Skip existing images or replace their annotations?</source>
         <translation>既存の画像をスキップしますか、それとも注釈を置き換えますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="231" />
+        <location filename="..\..\views\labeling\file_session.py" line="258" />
         <source>Skip Existing</source>
         <translation>既存をスキップ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="235" />
+        <location filename="..\..\views\labeling\file_session.py" line="262" />
         <source>Replace Existing</source>
         <translation>既存を置き換え</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="254" />
+        <location filename="..\..\views\labeling\file_session.py" line="281" />
         <source>Import failed</source>
         <translation>インポートに失敗しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="258" />
+        <location filename="..\..\views\labeling\file_session.py" line="285" />
         <source>Images: %d</source>
         <translation>画像: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="259" />
+        <location filename="..\..\views\labeling\file_session.py" line="286" />
         <source>Labeled: %d</source>
         <translation>注釈あり: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="260" />
+        <location filename="..\..\views\labeling\file_session.py" line="287" />
         <source>Objects: %d</source>
         <translation>オブジェクト: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="261" />
+        <location filename="..\..\views\labeling\file_session.py" line="288" />
         <source>Skipped: %d</source>
         <translation>スキップ: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="262" />
+        <location filename="..\..\views\labeling\file_session.py" line="289" />
         <source>Errors: %d</source>
         <translation>エラー: %d</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="266" />
+        <location filename="..\..\views\labeling\file_session.py" line="293" />
         <source>Backup: %s</source>
         <translation>バックアップ: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="281" />
+        <location filename="..\..\views\labeling\file_session.py" line="308" />
         <source>Recycle bin is available in dataset mode only.</source>
         <translation>ごみ箱はデータセットモードでのみ利用できます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="295" />
+        <location filename="..\..\views\labeling\file_session.py" line="322" />
         <source>No dataset image is open.</source>
         <translation>開いているデータセット画像がありません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="306" />
+        <location filename="..\..\views\labeling\file_session.py" line="333" />
         <source>Error deleting image</source>
         <translation>画像の削除に失敗しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="307" />
+        <location filename="..\..\views\labeling\file_session.py" line="334" />
         <source>&lt;b&gt;%s&lt;/b&gt; does not exist.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; は存在しません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="313" />
+        <location filename="..\..\views\labeling\file_session.py" line="340" />
         <source>&lt;b&gt;%s&lt;/b&gt; already exists.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; は既に存在します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="332" />
+        <location filename="..\..\views\labeling\file_session.py" line="359" />
         <source>Image moved to the recycle bin.</source>
         <translation>画像をごみ箱に移動しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="495" />
+        <location filename="..\..\views\labeling\file_session.py" line="522" />
         <source>Dataset database: %s</source>
         <translation>データセットデータベース: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="518" />
+        <location filename="..\..\views\labeling\file_session.py" line="545" />
         <source>Error opening file</source>
         <translation>ファイルを開く際にエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="519" />
+        <location filename="..\..\views\labeling\file_session.py" line="546" />
         <source>&lt;b&gt;%s&lt;/b&gt; is outside the dataset root.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; はデータセットのルート外です。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="526" />
+        <location filename="..\..\views\labeling\file_session.py" line="553" />
         <source>Image is not registered in the dataset: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>画像はデータセットに登録されていません: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="534" />
+        <location filename="..\..\views\labeling\file_session.py" line="561" />
         <source>Failed opening image file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>画像ファイルを開けませんでした: &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="617" />
+        <location filename="..\..\views\labeling\file_session.py" line="644" />
         <source>No such file: &lt;b&gt;%s&lt;/b&gt;</source>
         <translation>このファイルが存在しません：&lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="649" />
+        <location filename="..\..\views\labeling\file_session.py" line="676" />
         <source>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Make sure &lt;i&gt;%s&lt;/i&gt; is a valid label file.</source>
         <translation>&lt;p&gt;&lt;b&gt;%s&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;%s&lt;/i&gt; が有効なラベルファイルであることを確認してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="655" />
+        <location filename="..\..\views\labeling\file_session.py" line="682" />
         <source>Error reading %s</source>
         <translation>%s の読み取りエラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="681" />
+        <location filename="..\..\views\labeling\file_session.py" line="708" />
         <source>File Not Found</source>
         <translation>ファイルが見つかりません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="684" />
+        <location filename="..\..\views\labeling\file_session.py" line="711" />
         <source>&lt;b&gt;%s&lt;/b&gt; is missing.</source>
         <translation>&lt;b&gt;%s&lt;/b&gt; が見つかりません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="688" />
+        <location filename="..\..\views\labeling\file_session.py" line="715" />
         <source>Remove it from the file list, or skip it for now?</source>
         <translation>ファイル一覧から削除するか、今回はスキップしますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="697" />
+        <location filename="..\..\views\labeling\file_session.py" line="724" />
         <source>Skip</source>
         <translation>スキップ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="727" />
+        <location filename="..\..\views\labeling\file_session.py" line="754" />
         <source>&lt;p&gt;Make sure &lt;i&gt;{0}&lt;/i&gt; is a valid image file.&lt;br/&gt;Supported image formats: {1}&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;i&gt;{0}&lt;/i&gt; が有効な画像ファイルであることを確認してください。&lt;br/&gt;サポートされている画像形式：{1}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="965" />
+        <location filename="..\..\views\labeling\file_session.py" line="992" />
         <source>Image &amp; Label files (%s)</source>
         <translation>画像とラベルファイル（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="970" />
+        <location filename="..\..\views\labeling\file_session.py" line="997" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - 画像またはラベルファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="981" />
+        <location filename="..\..\views\labeling\file_session.py" line="1008" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>データセットモードでは出力ディレクトリを変更できません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="994" />
+        <location filename="..\..\views\labeling\file_session.py" line="1021" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - ディレクトリ内でアノテーションを保存/読み込み</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1007" />
+        <location filename="..\..\views\labeling\file_session.py" line="1034" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s . アノテーションは %s に保存/読み込みされます</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1037" />
+        <location filename="..\..\views\labeling\file_session.py" line="1064" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>データセットモードでは「名前を付けて保存」はまだ利用できません。注釈はデータセットデータベースに保存されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1048" />
+        <location filename="..\..\views\labeling\file_session.py" line="1075" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>データセットモードでは「名前を付けて保存」はまだ利用できません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1053" />
+        <location filename="..\..\views\labeling\file_session.py" line="1080" />
         <source>Label files (*%s)</source>
         <translation>ラベルファイル（*%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1065" />
+        <location filename="..\..\views\labeling\file_session.py" line="1092" />
         <source>Choose File</source>
         <translation>ファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1097" />
+        <location filename="..\..\views\labeling\file_session.py" line="1124" />
         <source>Dataset closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1131" />
+        <location filename="..\..\views\labeling\file_session.py" line="1158" />
         <source>Attention</source>
         <translation>注意</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1132" />
+        <location filename="..\..\views\labeling\file_session.py" line="1159" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>この画像と注釈をごみ箱に移動しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1146" />
+        <location filename="..\..\views\labeling\file_session.py" line="1173" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>ラベルファイルを削除する前に「前のアノテーションを保持」を無効にしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1153" />
+        <location filename="..\..\views\labeling\file_session.py" line="1180" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>このラベルファイルを永久に削除しようとしています。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1203" />
+        <location filename="..\..\views\labeling\file_session.py" line="1230" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>画像ファイルを削除する前に「前のアノテーションを保持」を無効にしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1210" />
+        <location filename="..\..\views\labeling\file_session.py" line="1237" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>この画像ファイルを永久に削除しようとしています。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1288" />
+        <location filename="..\..\views\labeling\file_session.py" line="1315" />
         <source>Save annotations?</source>
         <translation>アノテーションを保存しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1324" />
+        <location filename="..\..\views\labeling\file_session.py" line="1351" />
         <source>%s - Import Files</source>
         <translation>%s - ファイルをインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1326" />
+        <location filename="..\..\views\labeling\file_session.py" line="1353" />
         <source>Image files (%s)</source>
         <translation>画像ファイル（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1347" />
+        <location filename="..\..\views\labeling\file_session.py" line="1374" />
         <source>%s - Open Directory</source>
         <translation>%s - ディレクトリを開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1391" />
+        <location filename="..\..\views\labeling\file_session.py" line="1418" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>データセットモードではファイルの追加はまだ利用できません。データセットのインポート/同期入口を使用してください。</translation>
     </message>
@@ -7096,129 +7193,129 @@ Original images backed up to:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\crop.py" line="240" />
+        <location filename="..\..\views\labeling\utils\crop.py" line="241" />
         <source>Please load an image folder before proceeding!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\crop.py" line="249" />
+        <location filename="..\..\views\labeling\utils\crop.py" line="250" />
         <source>Cropped Image Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\crop.py" line="257" />
+        <location filename="..\..\views\labeling\utils\crop.py" line="258" />
         <source>Save Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\crop.py" line="267" />
+        <location filename="..\..\views\labeling\utils\crop.py" line="268" />
         <source>Select Save Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\crop.py" line="292" />
+        <location filename="..\..\views\labeling\utils\crop.py" line="293" />
         <source>Minimum width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\crop.py" line="300" />
+        <location filename="..\..\views\labeling\utils\crop.py" line="301" />
         <source>Minimum height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\crop.py" line="339" />
+        <location filename="..\..\views\labeling\utils\crop.py" line="340" />
         <source>• Overwrite - Overwrite existing directory
 • Cancel - Abort export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\crop.py" line="345" />
+        <location filename="..\..\views\labeling\utils\crop.py" line="346" />
         <source>Overwrite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\crop.py" line="462" />
+        <location filename="..\..\views\labeling\utils\crop.py" line="463" />
         <source>Error occurred while exporting cropped images!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="949" />
+        <location filename="..\..\views\labeling\utils\export.py" line="950" />
         <source>Select a specific coco-pose config file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1354" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1355" />
         <source>Select a specific color_map file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1410" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1411" />
         <source>Include images without labels?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1416" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1417" />
         <source>Only export checked images?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1888" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1889" />
         <source>Export VLM-R1 OVD Annotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1898" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1899" />
         <source>Export to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1914" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1915" />
         <source>Select Export File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1944" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1945" />
         <source>Prefix:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1955" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1956" />
         <source>Optional prefix for image filenames (e.g., 'path/to/images/')</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1970" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1971" />
         <source>{}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="1980" />
+        <location filename="..\..\views\labeling\utils\export.py" line="1981" />
         <source>Use specific classes? (Optional)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="2015" />
+        <location filename="..\..\views\labeling\utils\export.py" line="2016" />
         <source>Hint: If you don't upload a specific classes file, all unique labels found in one of the annotations will be used for the export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="2055" />
+        <location filename="..\..\views\labeling\utils\export.py" line="2056" />
         <source>File Exists!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="2056" />
+        <location filename="..\..\views\labeling\utils\export.py" line="2057" />
         <source>File already exists. Choose an action:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="2058" />
+        <location filename="..\..\views\labeling\utils\export.py" line="2059" />
         <source>• Overwrite - Replace existing file
 • Cancel - Abort export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\export.py" line="2088" />
+        <location filename="..\..\views\labeling\utils\export.py" line="2089" />
         <source>Error initializing export: %s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7253,383 +7350,383 @@ Original images backed up to:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="83" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="84" />
         <source>This annotation format cannot be imported into a dataset yet.
 Dataset import currently supports YOLO detection, segmentation, OBB and pose uploads only.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="209" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="210" />
         <source>Select a custom vlm_r1_ovd annotation file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="253" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="254" />
         <source>Uploading annotations successfully!
 Results have been saved to:
 %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="292" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="293" />
         <source>Select a custom annotation file (Label.txt)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="304" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="305" />
         <source>Select a custom annotation file (ppocr_kie.json)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="332" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="333" />
         <source>Uploading annotations successfully!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="367" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="368" />
         <source>Select a specific OD file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="439" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="440" />
         <source>Error reading classes file: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="453" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="454" />
         <source>Please select a folder containing annotation files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="464" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="465" />
         <source>Please select at least one category!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="565" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="566" />
         <source>Select a specific gt file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="572" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="573" />
         <source>Please select a specific gt file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="835" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="836" />
         <source>Select a custom coco annotation file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1000" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1001" />
         <source>No class names found in: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1027" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1028" />
         <source>Classes: %d from the dataset categories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1028" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1029" />
         <source>Classes: %d from %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1139" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1140" />
         <source>Label folder does not exist: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1244" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1245" />
         <source>Uploaded: %d images, %d objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1245" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1246" />
         <source>Skipped (no matching .txt): %d images.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1249" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1250" />
         <source>Skipped (not in the dataset): %d images.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1252" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1253" />
         <source>Failed: %d images.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1255" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1256" />
         <source>First errors:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1270" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1271" />
         <source>Select a specific label classes file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1283" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1284" />
         <source>No labels found in the file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1308" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1309" />
         <source>Successfully loaded %d labels!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1470" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1471" />
         <source>Select a specific shape attributes file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1498" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1499" />
         <source>Uploading shape attributes file successfully!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1522" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1523" />
         <source>Select a specific flags file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\upload.py" line="1546" />
+        <location filename="..\..\views\labeling\utils\upload.py" line="1547" />
         <source>Uploading flags file successfully!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="243" />
+        <location filename="..\..\views\labeling\utils\video.py" line="244" />
         <source>Extracting frames using ffmpeg...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="317" />
+        <location filename="..\..\views\labeling\utils\video.py" line="318" />
         <source>Verifying extracted frames...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="333" />
+        <location filename="..\..\views\labeling\utils\video.py" line="334" />
         <source>ffmpeg failed. Check logs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="373" />
+        <location filename="..\..\views\labeling\utils\video.py" line="374" />
         <source>Completed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="388" />
+        <location filename="..\..\views\labeling\utils\video.py" line="389" />
         <source>ffmpeg not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="401" />
+        <location filename="..\..\views\labeling\utils\video.py" line="402" />
         <source>Error running ffmpeg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="420" />
+        <location filename="..\..\views\labeling\utils\video.py" line="421" />
         <source>Extracting frames (OpenCV)... Please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="549" />
+        <location filename="..\..\views\labeling\utils\video.py" line="550" />
         <source>Open Video file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\video.py" line="568" />
+        <location filename="..\..\views\labeling\utils\video.py" line="569" />
         <source>Directory Already Exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="96" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="97" />
         <source>Visualization Image Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="98" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="99" />
         <source>Visualization Video Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="114" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="115" />
         <source>Export Range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="117" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="118" />
         <source>Current Frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="118" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="119" />
         <source>All Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="136" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="137" />
         <source>Select Save File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="143" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="144" />
         <source>MP4 Video (*.mp4);;All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="160" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="161" />
         <source>FPS:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="169" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="170" />
         <source>Shape Types</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="181" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="182" />
         <source>Visualization Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="186" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="187" />
         <source>Save Labels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="188" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="189" />
         <source>Save Scores</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="190" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="191" />
         <source>Save Group IDs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="192" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="193" />
         <source>Save Texts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="194" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="195" />
         <source>Save Semi-transparent Masks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="196" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="197" />
         <source>Skip Empty Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="226" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="227" />
         <source>Shape Types Required</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="228" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="229" />
         <source>No shape types selected. Please select at least one shape type before exporting.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="282" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="283" />
         <source>Batch zip export does not support nested or mixed directories yet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="296" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="297" />
         <source>PNG Image (*.png);;All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="302" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="303" />
         <source>Save Visualization Images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="304" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="305" />
         <source>Zip Archive (*.zip);;All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="332" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="333" />
         <source>No files to export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="354" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="355" />
         <source>Current environment cannot write mp4 files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="382" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="383" />
         <source>Error occurred while exporting visualization video!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="397" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="398" />
         <source>Visualization video saved to:
 %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="414" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="415" />
         <source>Error occurred while exporting visualization image!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="422" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="423" />
         <source>Visualization image saved to:
 %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="464" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="465" />
         <source>Error occurred while exporting visualization images!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="480" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="481" />
         <source>Visualization images saved to:
 %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="567" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="568" />
         <source>Preparing...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="585" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="586" />
         <source>Error occurred while preparing visualization video!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="597" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="598" />
         <source>Checking frame sizes...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="613" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="614" />
         <source>Video export requires all frames to have the same size.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="626" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="627" />
         <source>Error occurred while checking frame sizes!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="799" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="800" />
         <source>Output File Exists!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\utils\visualization.py" line="802" />
+        <location filename="..\..\views\labeling\utils\visualization.py" line="803" />
         <source>• Overwrite - Overwrite existing file
 • Cancel - Abort export</source>
         <translation type="unfinished"></translation>
@@ -7737,169 +7834,169 @@ Reset the label as {}.</source>
 </context><context>
     <name>MergeDialog</name>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="383" />
-        <location filename="..\..\views\dataset_center_merge.py" line="81" />
+        <location filename="..\..\views\dataset_center_merge.py" line="399" />
+        <location filename="..\..\views\dataset_center_merge.py" line="85" />
         <source>Merge Datasets</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="100" />
+        <location filename="..\..\views\dataset_center_merge.py" line="104" />
         <source>Sources (%d): %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="104" />
+        <location filename="..\..\views\dataset_center_merge.py" line="108" />
         <source>Target dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="107" />
+        <location filename="..\..\views\dataset_center_merge.py" line="111" />
         <source>Merge into an existing dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="112" />
+        <location filename="..\..\views\dataset_center_merge.py" line="116" />
         <source>Create a new dataset and merge into it</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="116" />
+        <location filename="..\..\views\dataset_center_merge.py" line="120" />
         <source>New dataset name</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="258" />
-        <location filename="..\..\views\dataset_center_merge.py" line="120" />
+        <location filename="..\..\views\dataset_center_merge.py" line="262" />
+        <location filename="..\..\views\dataset_center_merge.py" line="124" />
         <source>Parent folder for the new dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="123" />
+        <location filename="..\..\views\dataset_center_merge.py" line="127" />
         <source>Choose Folder…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="135" />
+        <location filename="..\..\views\dataset_center_merge.py" line="139" />
         <source>Options</source>
         <translation>オプション</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="138" />
+        <location filename="..\..\views\dataset_center_merge.py" line="142" />
         <source>Keep the source split (train/val/test/none)</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="142" />
+        <location filename="..\..\views\dataset_center_merge.py" line="146" />
         <source>Skip source classes without objects</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="145" />
+        <location filename="..\..\views\dataset_center_merge.py" line="149" />
         <source>Report suspected duplicates (same name, size and time)</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="155" />
+        <location filename="..\..\views\dataset_center_merge.py" line="159" />
         <source>Class mapping (optional)</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="162" />
+        <location filename="..\..\views\dataset_center_merge.py" line="166" />
         <source>Source dataset</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="163" />
+        <location filename="..\..\views\dataset_center_merge.py" line="167" />
         <source>Source class</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="164" />
+        <location filename="..\..\views\dataset_center_merge.py" line="168" />
         <source>Target class</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="174" />
+        <location filename="..\..\views\dataset_center_merge.py" line="178" />
         <source>Choose a target and run Preview.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="178" />
+        <location filename="..\..\views\dataset_center_merge.py" line="182" />
         <source>Preview</source>
         <translation>プレビュー</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="181" />
+        <location filename="..\..\views\dataset_center_merge.py" line="185" />
         <source>Start Merge</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="185" />
+        <location filename="..\..\views\dataset_center_merge.py" line="189" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="271" />
+        <location filename="..\..\views\dataset_center_merge.py" line="275" />
         <source>Run Preview to check the merge.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="310" />
+        <location filename="..\..\views\dataset_center_merge.py" line="314" />
         <source>Target required</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="311" />
+        <location filename="..\..\views\dataset_center_merge.py" line="315" />
         <source>Choose a name and a parent folder for the new dataset.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="318" />
+        <location filename="..\..\views\dataset_center_merge.py" line="322" />
         <source>Cannot create the target</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="339" />
+        <location filename="..\..\views\dataset_center_merge.py" line="343" />
         <source>Creating a new dataset starts the merge directly.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="351" />
+        <location filename="..\..\views\dataset_center_merge.py" line="355" />
         <source>Preview failed: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="356" />
+        <location filename="..\..\views\dataset_center_merge.py" line="361" />
         <source>Images: %(images)d · Objects: %(objects)d · Suspected duplicates: %(duplicates)d · Missing files: %(missing)d · Class decisions: %(categories)d</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="381" />
+        <location filename="..\..\views\dataset_center_merge.py" line="397" />
         <source>Merging datasets…</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="411" />
-        <source>Merged %(images)d images and %(objects)d objects; skipped %(skipped)d.</source>
+        <location filename="..\..\views\dataset_center_merge.py" line="427" />
+        <source>Merged %(images)d images and %(objects)d objects; skipped %(skipped)d; duplicate groups kept both/skipped/merged: %(duplicates)d/%(skipped_duplicates)d/%(merged)d.</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="420" />
+        <location filename="..\..\views\dataset_center_merge.py" line="440" />
         <source>Problems:</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="424" />
+        <location filename="..\..\views\dataset_center_merge.py" line="444" />
         <source>Backup: %s</source>
         <translation>バックアップ: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="426" />
+        <location filename="..\..\views\dataset_center_merge.py" line="446" />
         <source>Merge finished</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center_merge.py" line="435" />
+        <location filename="..\..\views\dataset_center_merge.py" line="455" />
         <source>Merge failed</source>
         <translation type="unfinished" />
     </message>
@@ -8457,115 +8554,115 @@ Failed: %d</source>
 </context><context>
     <name>NewLabelDialog</name>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="139" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="140" />
         <source>Add Labels</source>
         <translation>ラベルを追加</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="150" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="151" />
         <source>Existing Labels:</source>
         <translation>既存のラベル：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="171" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="172" />
         <source>Enter new labels (one per line):</source>
         <translation>新しいラベルを入力（1行に1つ）：</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="195" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="196" />
         <source>Upload</source>
         <translation>アップロード</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="203" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="204" />
         <source>Add</source>
         <translation>追加</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="208" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="209" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="221" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="222" />
         <source>Select Labels File</source>
         <translation>ラベルファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="243" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="244" />
         <source>Success</source>
         <translation>成功</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="244" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="245" />
         <source>Loaded %d labels from file.</source>
         <translation>ファイルから %d 個のラベルを読み込みました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="255" />
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="249" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="256" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="250" />
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="250" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="251" />
         <source>No valid labels found in the file.</source>
         <translation>ファイルに有効なラベルが見つかりません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="256" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="257" />
         <source>The selected file is empty.</source>
         <translation>選択したファイルは空です。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="262" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="263" />
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="263" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="264" />
         <source>Failed to read file: %s</source>
         <translation>ファイルの読み取りに失敗しました：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="284" />
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="271" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="285" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="272" />
         <source>Invalid Input</source>
         <translation>無効な入力</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="272" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="273" />
         <source>Please enter at least one label!</source>
         <translation>少なくとも1つのラベルを入力してください！</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="285" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="286" />
         <source>Please enter valid label names!</source>
         <translation>有効なラベル名を入力してください！</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="308" />
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="295" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="309" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="296" />
         <source>Duplicate Labels</source>
         <translation>重複ラベル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="296" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="297" />
         <source>These labels already exist: {}</source>
         <translation>これらのラベルは既に存在します：{}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="309" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="310" />
         <source>Duplicate labels found in input: {}</source>
         <translation>入力に重複するラベルが見つかりました：{}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="318" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="319" />
         <source>Confirm Add Labels</source>
         <translation>ラベルの追加を確認</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="319" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="320" />
         <source>This will:
 1. Skip files that don't exist
 2. Reset files with mismatched labels to current template
@@ -8734,43 +8831,43 @@ This warning will only be shown once. Do you want to continue?</source>
 </context><context>
     <name>OverviewDialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="102" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="103" />
         <source>Overview</source>
         <translation>統計概要</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="156" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="157" />
         <source>Export</source>
         <translation>エクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="511" />
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="160" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="512" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="161" />
         <source>Shape</source>
         <translation>図形</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="213" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="214" />
         <source>Loading...</source>
         <translation>読み込み中...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="214" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="215" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="220" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="221" />
         <source>Progress</source>
         <translation>進行状況</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="426" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="427" />
         <source>Select Directory</source>
         <translation>ディレクトリを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="479" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="480" />
         <source>Exporting annotations successfully!
 Results have been saved to:
 %s</source>
@@ -8779,7 +8876,7 @@ Results have been saved to:
 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="513" />
+        <location filename="..\..\views\labeling\widgets\overview_dialog.py" line="514" />
         <source>Label</source>
         <translation>ラベル</translation>
     </message>
@@ -8876,232 +8973,232 @@ Results have been saved to:
 </context><context>
     <name>PPOCRDialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="316" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="317" />
         <source>+ New Parsing</source>
         <translation>+ 新規解析</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="332" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="333" />
         <source>Recents</source>
         <translation>最近使った項目</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="339" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="340" />
         <source>Favorites</source>
         <translation>お気に入り</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="374" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="375" />
         <source>Search by Name</source>
         <translation>名前で検索</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="453" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="454" />
         <source>Source File</source>
         <translation>ソースファイル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="953" />
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="474" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="954" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="475" />
         <source>No file selected</source>
         <translation>ファイルが選択されていません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="536" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="537" />
         <source>Previous Page</source>
         <translation>前のページ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="560" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="561" />
         <source>Next Page</source>
         <translation>次のページ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="568" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="569" />
         <source>Zoom Out</source>
         <translation>ズームアウト</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="576" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="577" />
         <source>Zoom In</source>
         <translation>ズームイン</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="584" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="585" />
         <source>Reset Zoom</source>
         <translation>ズームをリセット</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="631" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="632" />
         <source>Parsing model</source>
         <translation>解析モデル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="661" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="662" />
         <source>Document parsing</source>
         <translation>ドキュメント解析</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="673" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="674" />
         <source>JSON</source>
         <translation>JSON</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="698" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="699" />
         <source>Settings</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="709" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="710" />
         <source>Reparse</source>
         <translation>再解析</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="720" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="721" />
         <source>Copy</source>
         <translation>コピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="731" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="732" />
         <source>Download</source>
         <translation>ダウンロード</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="958" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="959" />
         <source>Use New Parsing to import images or PDFs.</source>
         <translation>「新規解析」を使って画像または PDF をインポートします。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1065" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1066" />
         <source>New Parsing</source>
         <translation>新規解析</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1067" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1068" />
         <source>PaddleOCR Inputs (*.pdf *.png *.jpg *.jpeg *.bmp *.gif *.tif *.tiff *.webp *.cif)</source>
         <translation>PaddleOCR入力ファイル (*.pdf *.png *.jpg *.jpeg *.bmp *.gif *.tif *.tiff *.webp *.cif)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1080" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1081" />
         <source>Confirm Parsing</source>
         <translation>解析の確認</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1081" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1082" />
         <source>Start parsing selected files?</source>
         <translation>選択したファイルの解析を開始しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1085" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1086" />
         <source>...and {0} more</source>
         <translation>...ほか {0} 件</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1091" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1092" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1095" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1096" />
         <source>Start Parsing</source>
         <translation>解析を開始</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1108" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1109" />
         <source>Import Failed</source>
         <translation>インポートに失敗しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1245" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1246" />
         <source>Parsing failed.</source>
         <translation>解析に失敗しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1286" />
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1263" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1287" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1264" />
         <source>Cancelling parsing task. Waiting for current step to finish.</source>
         <translation>解析タスクをキャンセルしています。現在のステップが完了するまでお待ちください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1272" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1273" />
         <source>File {0}/{1}: {2}  Page {3}/{4}</source>
         <translation>ファイル {0}/{1}: {2}  ページ {3}/{4}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1282" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1283" />
         <source>Parsing is running for this file.</source>
         <translation>このファイルは解析中です。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1291" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1292" />
         <source>Waiting in the parsing queue.</source>
         <translation>解析キューで待機しています。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1294" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1295" />
         <source>Waiting to parse this file.</source>
         <translation>このファイルの解析待ちです。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1365" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1366" />
         <source>Parsing</source>
         <translation>解析中</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1650" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1651" />
         <source>Download Document Parsing</source>
         <translation>ドキュメント解析結果をダウンロード</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1652" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1653" />
         <source>ZIP Files (*.zip)</source>
         <translation>ZIPファイル (*.zip)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2109" />
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1724" />
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1698" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2110" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1725" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1699" />
         <source>Save Failed</source>
         <translation>保存に失敗しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1726" />
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1700" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1727" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1701" />
         <source>Download Successful</source>
         <translation>ダウンロードが完了しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1712" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1713" />
         <source>Download JSON</source>
         <translation>JSONをダウンロード</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1714" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1715" />
         <source>JSON Files (*.json)</source>
         <translation>JSONファイル (*.json)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1795" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="1796" />
         <source>Page {0}</source>
         <translation>ページ {0}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2096" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2097" />
         <source>Block content exceeds the available editor height</source>
         <translation>ブロック内容がエディターの利用可能な高さを超えています</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2144" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2145" />
         <source>Delete File</source>
         <translation>ファイルを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2145" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2146" />
         <source>Are you sure you want to delete this file? This action cannot be undone and will remove all associated data.</source>
         <translation>このファイルを削除してもよろしいですか？この操作は元に戻せず、関連するすべてのデータも削除されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2444" />
+        <location filename="..\..\views\labeling\widgets\ppocr_dialog.py" line="2445" />
         <source>Copy Successful</source>
         <translation>コピーしました</translation>
     </message>
@@ -9433,979 +9530,979 @@ Results have been saved to:
 </context><context>
     <name>PointCloudDialog</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1251" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1252" />
         <source>Hide camera images</source>
         <translation>カメラ画像を非表示</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="424" />
-        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1253" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="425" />
+        <location filename="..\..\views\labeling\pointcloud\camera.py" line="1254" />
         <source>Show camera images</source>
         <translation>カメラ画像を表示</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="335" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="336" />
         <source>Delete instance</source>
         <translation>インスタンスを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="337" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="338" />
         <source>Remove definition</source>
         <translation>定義を削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="665" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="408" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="666" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="409" />
         <source>Show camera controls</source>
         <translation>カメラ操作ボタンを表示</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1472" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="447" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1473" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="448" />
         <source>Detection</source>
         <translation>物体検出</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="508" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="509" />
         <source>Point cloud files</source>
         <translation>点群ファイル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="516" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="517" />
         <source>Create task</source>
         <translation>タスクを作成</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="519" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="520" />
         <source>Save as</source>
         <translation>名前を付けて保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="522" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="523" />
         <source>Save point labels and associated 3D cuboids to another location.</source>
         <translation>点のラベルと関連する3Dボックスを別の場所に保存します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="527" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="528" />
         <source>Upload</source>
         <translation>アップロード</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="533" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="534" />
         <source>Import 3D objects into the current sequence.</source>
         <translation>現在のシーケンスに3Dオブジェクトをインポートします。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="536" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="537" />
         <source>Export</source>
         <translation>エクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="542" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="543" />
         <source>Export 3D objects from all frames.</source>
         <translation>すべてのフレームの3Dオブジェクトをエクスポートします。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="551" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="552" />
         <source>Keyboard shortcuts</source>
         <translation>キーボードショートカット</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="565" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="566" />
         <source>Help</source>
         <translation>ヘルプ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="603" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="591" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="604" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="592" />
         <source>Frames</source>
         <translation>フレーム</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="625" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="626" />
         <source>Toggle Frames panel</source>
         <translation>フレームパネルの表示を切り替え</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="627" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="628" />
         <source>Toggle task panel</source>
         <translation>タスクパネルの表示を切り替え</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="663" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="664" />
         <source>Hide camera controls</source>
         <translation>カメラ操作ボタンを非表示</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="675" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="676" />
         <source>Point cloud view</source>
         <translation>点群ビュー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="683" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="684" />
         <source>Browse: left drag to rotate; right drag to pan</source>
         <translation>表示操作：左ドラッグで回転、右ドラッグでパン</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="689" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="690" />
         <source>Brush (Ctrl+wheel adjusts size)</source>
         <translation>ブラシ（Ctrl+ホイールでサイズ調整）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="695" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="696" />
         <source>Polygon (Ctrl+left drag pans; wheel zooms)</source>
         <translation>ポリゴン（Ctrl+左ドラッグで移動、ホイールでズーム）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3150" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="711" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3151" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="712" />
         <source>Finish polygon selection</source>
         <translation>ポリゴン選択を確定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="718" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="719" />
         <source>Cancel unfinished selection</source>
         <translation>未確定の選択をキャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="725" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="726" />
         <source>Undo</source>
         <translation>元に戻す</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="733" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="734" />
         <source>Redo</source>
         <translation>やり直す</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="741" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="742" />
         <source>Fit all points</source>
         <translation>すべての点を表示範囲に収める</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="752" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="753" />
         <source>Top view</source>
         <translation>上面図</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="753" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="754" />
         <source>Front view</source>
         <translation>正面図</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="754" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="755" />
         <source>Side view</source>
         <translation>側面図</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="767" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="768" />
         <source>Reset view</source>
         <translation>ビューをリセット</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="782" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="783" />
         <source>Assign semantic</source>
         <translation>セマンティックラベルを割り当て</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="786" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="787" />
         <source>Create instance</source>
         <translation>インスタンスを作成</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="787" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="788" />
         <source>Add to current instance</source>
         <translation>現在のインスタンスに追加</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="789" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="790" />
         <source>Remove from current instance</source>
         <translation>現在のインスタンスから除外</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="793" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="794" />
         <source>Split current instance</source>
         <translation>現在のインスタンスを分割</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="805" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="806" />
         <source>Through selection: select all depths; off selects the surface</source>
         <translation>貫通選択: 全深度を選択。オフでは表面を選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="822" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="823" />
         <source>Semantic</source>
         <translation>セマンティック</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="823" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="824" />
         <source>Intensity</source>
         <translation>反射強度</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="824" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="825" />
         <source>Original</source>
         <translation>元の色</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="825" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="826" />
         <source>Instance</source>
         <translation>インスタンス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="828" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="829" />
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="836" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="837" />
         <source>Rendering mode</source>
         <translation>描画モード</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="860" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="861" />
         <source>Point size (px)</source>
         <translation>点のサイズ（px）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1474" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="963" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1475" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="964" />
         <source>Segmentation</source>
         <translation>セグメンテーション</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2755" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="977" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2756" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="978" />
         <source>Classes</source>
         <translation>クラス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2769" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="980" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2770" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="981" />
         <source>Lock all classes</source>
         <translation>すべてのクラスをロック</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="990" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="991" />
         <source>Toggle all classes</source>
         <translation>全クラスの表示を切り替え</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="994" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="995" />
         <source>Classes: ID / name / full-frame points</source>
         <translation>クラス: ID / 名前 / フレーム全体の点数</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2774" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1017" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2775" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1018" />
         <source>Instances</source>
         <translation>インスタンス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1020" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1021" />
         <source>Locate instance</source>
         <translation>インスタンスの位置を表示</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1026" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1027" />
         <source>Merge into current instance</source>
         <translation>現在のインスタンスに統合</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1037" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1038" />
         <source>Toggle all instances</source>
         <translation>全インスタンスの表示を切り替え</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1041" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1042" />
         <source>Instances: class / ID / full-frame points</source>
         <translation>インスタンス: クラス / ID / フレーム全体の点数</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2798" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1153" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1137" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2799" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1154" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1138" />
         <source>Point Cloud</source>
         <translation>点群</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1171" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1172" />
         <source>Waiting for loading to end safely. Please retry after loading stops.</source>
         <translation>読み込みの安全な終了を待っています。停止後に再試行してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1182" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1183" />
         <source>Unsaved point cloud work</source>
         <translation>未保存の点群作業</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1183" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1184" />
         <source>Labels or class definitions have unsaved changes. Save before leaving?</source>
         <translation>ラベルまたはクラス定義に未保存の変更があります。終了前に保存しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1223" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1224" />
         <source>Open point cloud</source>
         <translation>点群を開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1225" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1226" />
         <source>Point clouds (*.bin *.ply *.pcd)</source>
         <translation>点群 (*.bin *.ply *.pcd)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1236" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1237" />
         <source>Open point cloud directory</source>
         <translation>点群フォルダーを開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1283" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1284" />
         <source>Choose label source</source>
         <translation>ラベルの読み込み元を選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1284" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1285" />
         <source>Multiple matching label files exist. Choose the source for this frame:</source>
         <translation>一致するラベルファイルが複数あります。このフレームの読み込み元を選択してください:</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1366" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1367" />
         <source>Loading and validating point cloud…</source>
         <translation>点群を読み込み、検証しています…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1367" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1368" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1479" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1480" />
         <source>Create a new task to change the task type.</source>
         <translation>タスクの種類を変更するには、新しいタスクを作成してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1491" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1492" />
         <source>Loaded {name}: {count} points.</source>
         <translation>{name} を読み込みました: {count} 点。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1501" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1502" />
         <source>Loading cancelled. Previous work has been retained.</source>
         <translation>読み込みをキャンセルしました。前の作業は保持されています。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1585" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1586" />
         <source>Exported {frames} frames and {objects} objects to {path}</source>
         <translation>{frames} フレーム、{objects} 個のオブジェクトを {path} にエクスポートしました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1658" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1659" />
         <source>Imported {objects} objects into {frames} frames.</source>
         <translation>{frames} フレームに {objects} 個のオブジェクトをインポートしました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1731" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1732" />
         <source>Reviewed</source>
         <translation>確認済み</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1731" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1732" />
         <source>Not reviewed</source>
         <translation>未確認</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1751" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1752" />
         <source>Mark as not reviewed</source>
         <translation>未確認にする</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1753" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1754" />
         <source>Mark as reviewed</source>
         <translation>確認済みにする</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1774" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1775" />
         <source>Open this frame before marking it as reviewed.</source>
         <translation>確認済みにする前にこのフレームを開いてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1821" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1822" />
         <source>Choose labels for current frame</source>
         <translation>現在のフレームのラベルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2019" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1823" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2020" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1824" />
         <source>Point labels (*.label)</source>
         <translation>点ラベル (*.label)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1829" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1830" />
         <source>Bind {label} to {cloud}? Their file names differ.</source>
         <translation>{label} を {cloud} に関連付けますか？ファイル名が異なります。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1845" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1846" />
         <source>Choose label directory</source>
         <translation>ラベルフォルダーを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1851" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1852" />
         <source>Use this label directory for the entire sequence? This replaces {count} explicit frame associations.</source>
         <translation>このラベルフォルダーをシーケンス全体に使用しますか？個別に指定した {count} 件のフレーム関連付けを置き換えます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1867" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1868" />
         <source>Change output directory</source>
         <translation>出力フォルダーを変更</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1914" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1915" />
         <source>Replace the existing label file at {path}?</source>
         <translation>{path} の既存ラベルファイルを置き換えますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1931" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1932" />
         <source>Could not save labels to {path}: {error}</source>
         <translation>{path} にラベルを保存できません: {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1944" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1945" />
         <source>Saved {count} labels to {path}.</source>
         <translation>{count} 個のラベルを {path} に保存しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1956" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1957" />
         <source>Replace the existing cuboid file at {path}?</source>
         <translation>{path} にある既存の3Dボックスファイルを置き換えますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1974" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1975" />
         <source>Could not save cuboids to {path}: {error}</source>
         <translation>3Dボックスを {path} に保存できませんでした：{error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1983" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="1984" />
         <source>Saved {count} cuboids to {path}.</source>
         <translation>{count} 個の3Dボックスを {path} に保存しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2003" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2004" />
         <source>Label save completed; class definitions remain unsaved.</source>
         <translation>ラベルの保存が完了しました。クラス定義は未保存です。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2017" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2018" />
         <source>Save complete frame labels</source>
         <translation>フレーム全体のラベルを保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2026" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2027" />
         <source>Save labels for {cloud} as {label}? Keep this association when reopening.</source>
         <translation>{cloud} のラベルを {label} として保存しますか？再度開く際もこの関連付けを保持します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2035" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2036" />
         <source>Labels: {labels}. Class definitions: {config}.</source>
         <translation>ラベル: {labels}。クラス定義: {config}。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2037" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2038" />
         <source>Unlabeled only</source>
         <translation>未ラベルのみ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2061" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2062" />
         <source>Save class definitions</source>
         <translation>クラス定義を保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2114" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2063" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2115" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2064" />
         <source>Class definitions (*.json)</source>
         <translation>クラス定義 (*.json)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2074" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2075" />
         <source>Class definitions must use a separate JSON file.</source>
         <translation>クラス定義には別のJSONファイルを使用してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2083" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2084" />
         <source>Could not save class definitions to {path}: {error}</source>
         <translation>{path} にクラス定義を保存できません: {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2102" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2103" />
         <source>Class definitions saved to {path}.</source>
         <translation>クラス定義を {path} に保存しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2112" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2113" />
         <source>Load class definitions</source>
         <translation>クラス定義を読み込む</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2122" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2123" />
         <source>This file does not contain classes for the current task.</source>
         <translation>このファイルには現在のタスクのクラスが含まれていません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2132" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2133" />
         <source>Replace the current task's unsaved class definitions with this file? Annotation IDs and the other task's classes are unchanged.</source>
         <translation>現在のタスクの未保存のクラス定義を、このファイルの内容で置き換えますか？アノテーションIDと他のタスクのクラスは変更されません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2265" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2266" />
         <source>Unlock the class and its instances before deleting it.</source>
         <translation>クラスを削除する前に、クラスとそのインスタンスのロックを解除してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2272" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2273" />
         <source>ID 0 is reserved for unlabeled points and cannot be removed.</source>
         <translation>ID 0 は未ラベルの点用に予約されているため削除できません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2283" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2284" />
         <source>Delete this class and clear semantic and instance labels from {count} points in the current frame? Other frames are unchanged. Point label changes can be undone.</source>
         <translation>このクラスを削除し、現在のフレームの {count} 点からセマンティックラベルとインスタンスラベルを消去しますか？他のフレームは変更されません。点ラベルの変更は元に戻せます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2310" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2311" />
         <source>Create or select a class in Classes before painting.</source>
         <translation>塗る前に「クラス」でクラスを作成または選択してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2367" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2368" />
         <source>Through selection includes visible points at all depths. Hidden points remain excluded.</source>
         <translation>貫通選択には全深度の表示中の点が含まれます。非表示の点は除外されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2401" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2402" />
         <source>No editable points selected.</source>
         <translation>編集可能な点が選択されていません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2413" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2414" />
         <source>Select a class before painting.</source>
         <translation>塗る前にクラスを選択してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2427" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2428" />
         <source>Select a nonzero class or a valid target instance first.</source>
         <translation>まずIDが0以外のクラスまたは有効な対象インスタンスを選択してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2438" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2439" />
         <source>Transfer {count} points from their existing instances? Other semantic classes are excluded.</source>
         <translation>既存のインスタンスから {count} 点を移動しますか？他のセマンティッククラスは除外されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2451" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2452" />
         <source>Select an instance first.</source>
         <translation>先にインスタンスを選択してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2461" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2462" />
         <source>Modified {count} points.</source>
         <translation>{count} 点を変更しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2463" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2464" />
         <source>Excluded {count} points belonging to other semantic classes.</source>
         <translation>他のセマンティッククラスに属する {count} 点を除外しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2485" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2486" />
         <source>Unlock the class or instance before deleting it.</source>
         <translation>削除する前に、クラスまたはインスタンスのロックを解除してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2491" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2492" />
         <source>Delete instance {key} from all {count} points, including {hidden} hidden points? Semantic labels are retained.</source>
         <translation>非表示の {hidden} 点を含む全 {count} 点からインスタンス {key} を削除しますか？セマンティックラベルは保持されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2510" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2511" />
         <source>Select at least two instances. The current row is the retained target.</source>
         <translation>2つ以上のインスタンスを選択してください。現在の行が統合先として保持されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2517" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2518" />
         <source>Instances from different semantic classes cannot be merged.</source>
         <translation>異なるセマンティッククラスのインスタンスは統合できません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2524" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2525" />
         <source>Unlock the selected instances before merging.</source>
         <translation>結合する前に、選択したインスタンスのロックを解除してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2532" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2533" />
         <source>Merge {count} points, including {hidden} hidden points, into instance {target}? The target ID is retained.</source>
         <translation>非表示の {hidden} 点を含む {count} 点をインスタンス {target} に統合しますか？統合先のIDは保持されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2553" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2554" />
         <source>Adjust display filters to reveal the entire current instance?</source>
         <translation>現在のインスタンス全体が表示されるように表示フィルターを調整しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2610" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2611" />
         <source>Unlock the class before unlocking its instances.</source>
         <translation>インスタンスのロックを解除する前に、クラスのロックを解除してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2767" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2768" />
         <source>Unlock all classes</source>
         <translation>すべてのクラスのロックを解除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2882" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2883" />
         <source>Intensity: {low:.3g} → {high:.3g} (display normalization only)</source>
         <translation>反射強度: {low:.3g} → {high:.3g}（表示のみ正規化）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2904" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2905" />
         <source>Original: source RGB colors or white when RGB is absent; labels are unchanged.</source>
         <translation>元の色：元データのRGB色を表示します。RGBがない場合は白で表示します。ラベルは変更されません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2928" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="2929" />
         <source>Colors identify class IDs or (class, instance) pairs. Dimmed points have no instance.</source>
         <translation>色はクラスIDまたは（クラス、インスタンス）の組を表します。暗い点はインスタンス未割り当てです。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3042" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3043" />
         <source>Modified</source>
         <translation>変更あり</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3045" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3046" />
         <source>Saved</source>
         <translation>保存済み</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3047" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3048" />
         <source>No result file</source>
         <translation>結果ファイルなし</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3051" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3052" />
         <source>{total} points · {visible} visible · {unlabeled} unlabeled · {state}</source>
         <translation>{total} 点 · {visible} 点表示 · {unlabeled} 点未ラベル · {state}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3063" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3064" />
         <source> · {count} cuboids</source>
         <translation> · {count} 個の3Dボックス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3067" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3068" />
         <source>No points match the display filters. Check the class and instance eye icons.</source>
         <translation>表示フィルターに一致する点がありません。クラスとインスタンスの目のアイコンを確認してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3081" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3082" />
         <source>3D Detection</source>
         <translation>3D物体検出</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3083" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3084" />
         <source>Draw cuboid</source>
         <translation>3Dボックスを描画</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3084" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3085" />
         <source>Focus cuboid</source>
         <translation>3Dボックスにフォーカス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3085" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3086" />
         <source>Delete cuboid</source>
         <translation>3Dボックスを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3086" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3087" />
         <source>Duplicate cuboid</source>
         <translation>3Dボックスを複製</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3087" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3088" />
         <source>Copy / Paste cuboid</source>
         <translation>3Dボックスをコピー／貼り付け</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3088" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3089" />
         <source>Pan 3D view</source>
         <translation>3Dビューをパン</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3138" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3088" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3139" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3089" />
         <source>Right drag</source>
         <translation>右ドラッグ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3089" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3090" />
         <source>Rotate 3D view</source>
         <translation>3Dビューを回転</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3144" />
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3089" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3145" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3090" />
         <source>Left drag</source>
         <translation>左ドラッグ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3091" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3092" />
         <source>Edit cuboid in side views</source>
         <translation>三面図で3Dボックスを編集</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3092" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3093" />
         <source>Left or right drag on the box or handles</source>
         <translation>ボックスまたはハンドルを左または右ドラッグ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3094" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3095" />
         <source>Move cuboid</source>
         <translation>3Dボックスを移動</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3094" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3095" />
         <source>Arrow keys</source>
         <translation>矢印キー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3098" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3099" />
         <source>3D camera</source>
         <translation>3Dカメラ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3105" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3106" />
         <source>Tools</source>
         <translation>ツール</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3107" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3108" />
         <source>Browse</source>
         <translation>閲覧</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3108" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3109" />
         <source>Brush</source>
         <translation>ブラシ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3110" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3111" />
         <source>Polygon</source>
         <translation>ポリゴン</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3116" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3117" />
         <source>Editing</source>
         <translation>編集</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3125" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3126" />
         <source>Navigation</source>
         <translation>ナビゲーション</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3127" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3128" />
         <source>Previous frame</source>
         <translation>前のフレーム</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3128" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3129" />
         <source>Next frame</source>
         <translation>次のフレーム</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3133" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3134" />
         <source>Mouse controls</source>
         <translation>マウス操作</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3136" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3137" />
         <source>Pan (Browse)</source>
         <translation>移動（閲覧）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3139" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3140" />
         <source>Middle drag</source>
         <translation>中央ドラッグ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3143" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3144" />
         <source>Rotate</source>
         <translation>回転</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3146" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3147" />
         <source>Zoom</source>
         <translation>ズーム</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3146" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3147" />
         <source>Wheel</source>
         <translation>ホイール</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3147" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3148" />
         <source>Adjust brush size</source>
         <translation>ブラシサイズを調整</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3147" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3148" />
         <source>Ctrl+Wheel</source>
         <translation>Ctrl+ホイール</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3148" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3149" />
         <source>Pan (Polygon)</source>
         <translation>移動（ポリゴン）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3148" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3149" />
         <source>Ctrl+Left drag</source>
         <translation>Ctrl+左ドラッグ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3151" />
+        <location filename="..\..\views\labeling\widgets\pointcloud_dialog.py" line="3152" />
         <source>Double-click</source>
         <translation>ダブルクリック</translation>
     </message>
 </context><context>
     <name>PointCloudExportDialog</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="194" />
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="107" />
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="34" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="195" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="108" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="35" />
         <source>Export 3D objects</source>
         <translation>3Dオブジェクトをエクスポート</translation>
     </message>
     <message>
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="49" />
         <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="48" />
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="47" />
         <source>Export ZIP path</source>
         <translation>エクスポート先のZIPパス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="49" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="50" />
         <source>Browse…</source>
         <translation>参照…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="64" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="65" />
         <source>Export 3D cuboids from all frames. Point segmentation is not included.</source>
         <translation>すべてのフレームの3Dボックスをエクスポートします。点ごとのセグメンテーションは含まれません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="73" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="74" />
         <source>Save images</source>
         <translation>画像を保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="75" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="76" />
         <source>Include point clouds and associated camera images.</source>
         <translation>点群と関連するカメラ画像を含めます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="78" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="79" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="81" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="82" />
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="109" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="110" />
         <source>ZIP archives (*.zip)</source>
         <translation>ZIPアーカイブ (*.zip)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="128" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="129" />
         <source>Choose a ZIP file in an existing directory.</source>
         <translation>既存のフォルダー内にZIPファイルの保存先を指定してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="136" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="137" />
         <source>Replace the existing file?
 {path}</source>
         <translation>既存のファイルを置き換えますか？
 {path}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="183" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="184" />
         <source>Exporting 3D objects ({completed}/{total})…</source>
         <translation>3Dオブジェクトをエクスポートしています ({completed}/{total})…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="209" />
+        <location filename="..\..\views\labeling\pointcloud\export_dialog.py" line="210" />
         <source>Cancelling export…</source>
         <translation>エクスポートをキャンセルしています…</translation>
     </message>
 </context><context>
     <name>PointCloudImportDialog</name>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="130" />
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="66" />
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="42" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="131" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="67" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="43" />
         <source>Import 3D objects</source>
         <translation>3Dオブジェクトをインポート</translation>
     </message>
     <message>
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="46" />
         <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="45" />
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="44" />
         <source>Annotation ZIP path</source>
         <translation>アノテーションZIPのパス</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="47" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="48" />
         <source>Replace matched frames</source>
         <translation>一致したフレームを置き換え</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="51" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="52" />
         <source>Import cuboids into the current point cloud sequence.</source>
         <translation>現在の点群シーケンスに3Dボックスをインポートします。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="71" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="72" />
         <source>ZIP archives (*.zip)</source>
         <translation>ZIPアーカイブ (*.zip)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="84" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="85" />
         <source>Choose an existing annotation ZIP file.</source>
         <translation>既存のアノテーションZIPファイルを選択してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="110" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="111" />
         <source>Validating import…</source>
         <translation>インポートデータを検証しています…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="112" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="113" />
         <source>Importing 3D objects…</source>
         <translation>3Dオブジェクトをインポートしています…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="119" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="120" />
         <source>Importing 3D objects ({completed}/{total})…</source>
         <translation>3Dオブジェクトをインポートしています ({completed}/{total})…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="149" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="150" />
         <source>The import contains classes outside this task. Create a new task with these classes before importing.</source>
         <translation>インポートするデータに、このタスクで定義されていないクラスが含まれています。これらのクラスを含む新しいタスクを作成してからインポートしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="154" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="155" />
         <source>Import {objects} objects into {frames} frames?
 This replaces {previous} existing objects, including locked objects, and adds {classes} classes.
 Point segmentation and unmatched frames are preserved.</source>
@@ -10414,7 +10511,7 @@ Point segmentation and unmatched frames are preserved.</source>
 点ごとのセグメンテーションと一致しないフレームは保持されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="181" />
+        <location filename="..\..\views\labeling\pointcloud\import_dialog.py" line="182" />
         <source>Cancelling import…</source>
         <translation>インポートをキャンセルしています…</translation>
     </message>
@@ -10691,17 +10788,17 @@ The main application remains available.</source>
 </context><context>
     <name>SegmentEditDialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="640" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="641" />
         <source>Description</source>
         <translation>説明</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="653" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="654" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="657" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="658" />
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -10745,240 +10842,240 @@ The main application remains available.</source>
 </context><context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="397" />
-        <location filename="..\..\views\labeling\settings\dialog.py" line="109" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="398" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="110" />
         <source>Settings</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="126" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="127" />
         <source>Ready to edit settings</source>
         <translation>設定の編集準備ができています</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="568" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="569" />
         <source>Reset</source>
         <translation>リセット</translation>
     </message>
     <message>
         <location filename="..\..\views\labeling\settings\schema.py" line="311" />
-        <location filename="..\..\views\labeling\settings\dialog.py" line="584" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="585" />
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="720" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="721" />
         <source>Ready to edit shortcuts</source>
         <translation>ショートカットの編集準備ができています</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="721" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="722" />
         <source>Ready to edit {page} settings</source>
         <translation>{page} の設定を編集する準備中</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="727" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="728" />
         <source>Shortcut changes are pending. Click Save to persist.</source>
         <translation>ショートカットキーの変更が保存待ちです。「保存」をクリックして永続化してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="730" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="731" />
         <source>{page} changes are pending. Click Save to persist.</source>
         <translation>{page} の変更が保存待ちです。「保存」をクリックして永続化してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="746" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="747" />
         <source>Pending changes exist in other pages. Click Save to persist.</source>
         <translation>他のページに保存待ちの変更があります。「保存」をクリックして永続化してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="826" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="827" />
         <source>Toolbar changes are applied immediately</source>
         <translation>ツールバーの変更はすぐに反映されます</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="866" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="867" />
         <source>Show Tool Labels</source>
         <translation>ツールラベルを表示</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="871" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="872" />
         <source>Show a short label under every tool; turn it off to show more tools without scrolling.</source>
         <translation>各ツールの下に短いラベルを表示します。オフにすると、スクロールせずにより多くのツールを表示できます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="882" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="883" />
         <source>Select All</source>
         <translation>すべて選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1176" />
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1150" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1177" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1151" />
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1179" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1180" />
         <source>Direct Zoom</source>
         <translation>Direct Zoom</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1180" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1181" />
         <source>Traditional Navigation</source>
         <translation>Traditional Navigation</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1284" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1285" />
         <source>System Default</source>
         <translation>システム既定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1353" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1354" />
         <source>Default location</source>
         <translation>既定の場所</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1364" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1365" />
         <source>Browse</source>
         <translation>参照</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1414" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1415" />
         <source>Select Model Directory</source>
         <translation>モデルの保存先を選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1555" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1556" />
         <source>Usually used to enable batch labeling mode.</source>
         <translation>通常、一括ラベリングモードを有効にするために使用します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1558" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1559" />
         <source>Open the auto-labeling panel.</source>
         <translation>自動ラベリングパネルを開きます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1559" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1560" />
         <source>Add a positive prompt point.</source>
         <translation>正のプロンプトポイントを追加します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1562" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1563" />
         <source>Clear all prompt points added to the current image.</source>
         <translation>現在の画像に追加されたすべてのプロンプトポイントをクリアします。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1565" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1566" />
         <source>Finish the current object annotation.</source>
         <translation>現在のオブジェクトのアノテーションを完了します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1568" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1569" />
         <source>Add a negative prompt point.</source>
         <translation>負のプロンプトポイントを追加します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1571" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1572" />
         <source>Run auto-labeling on the current image.</source>
         <translation>現在の画像で自動ラベリングを実行します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1574" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1575" />
         <source>Close the current file.</source>
         <translation>現在のファイルを閉じます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1575" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1576" />
         <source>Delete the current label file.</source>
         <translation>現在のラベルファイルを削除します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1576" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1577" />
         <source>Delete the current image file.</source>
         <translation>現在の画像ファイルを削除します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1579" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1580" />
         <source>Open an image or label file.</source>
         <translation>画像またはラベルファイルを開きます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1580" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1581" />
         <source>Open an image directory.</source>
         <translation>画像ディレクトリを開きます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1581" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1582" />
         <source>Open a video file.</source>
         <translation>ビデオファイルを開きます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1582" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1583" />
         <source>Quit the application.</source>
         <translation>アプリケーションを終了します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1583" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1584" />
         <source>Save labels to file.</source>
         <translation>ラベルをファイルに保存します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1584" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1585" />
         <source>Save labels to another file.</source>
         <translation>ラベルを別のファイルに保存します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1585" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1586" />
         <source>Change the output directory.</source>
         <translation>出力ディレクトリを変更します。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1586" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1587" />
         <source>Open the next image.</source>
         <translation>次の画像を開きます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1587" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1588" />
         <source>Open the next unchecked image.</source>
         <translation>次の未確認画像を開きます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1590" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1591" />
         <source>Open the previous image.</source>
         <translation>前の画像を開きます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1591" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1592" />
         <source>Open the previous unchecked image.</source>
         <translation>前の未確認画像を開きます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="1814" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="1815" />
         <source>No shortcuts in the current category.</source>
         <translation>現在のカテゴリにショートカットはありません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2034" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2035" />
         <source>No settings changes to save</source>
         <translation>保存する設定の変更はありません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2063" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2064" />
         <source>Current page has no resettable fields</source>
         <translation>現在のページにリセット可能なフィールドはありません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2070" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2071" />
         <source>No settings found in {page}</source>
         <translation>{page} に設定項目が見つかりませんでした</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2077" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2078" />
         <source>Reset Settings</source>
         <translation>設定をリセット</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2078" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2079" />
         <source>Reset all settings in '{page}' to defaults?
 
 Changes will not be saved until you click Save.</source>
@@ -10987,32 +11084,32 @@ Changes will not be saved until you click Save.</source>
 「保存」をクリックするまで変更は保存されません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2100" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2101" />
         <source>{page} defaults restored. Click Save to persist.</source>
         <translation>{page} のデフォルト値を復元しました。「保存」をクリックして永続化してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2112" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2113" />
         <source>{page} values are already defaults</source>
         <translation>{page} の値はすでにデフォルト値です</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2121" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2122" />
         <source>No shortcut category selected</source>
         <translation>ショートカットキーのカテゴリが選択されていません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2126" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2127" />
         <source>No shortcuts found in category: {group}</source>
         <translation>カテゴリにショートカットキーが見つかりません：{group}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2133" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2134" />
         <source>Reset Shortcuts</source>
         <translation>ショートカットキーをリセット</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2134" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2135" />
         <source>Reset all shortcuts in '{group}' to defaults?
 
 Changes will not be saved until you click Save.</source>
@@ -11021,32 +11118,32 @@ Changes will not be saved until you click Save.</source>
 「保存」をクリックするまで変更は保存されません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2147" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2148" />
         <source>Shortcut values in '{group}' are already defaults</source>
         <translation>'{group}' のショートカットキーの値はすでにデフォルト値です</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2185" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2186" />
         <source>Shortcut defaults restored for '{group}'. Click Save to persist.</source>
         <translation>'{group}' のショートカットキーのデフォルト値を復元しました。「保存」をクリックして永続化してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2195" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2196" />
         <source>Settings saved</source>
         <translation>設定が保存されました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2200" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2201" />
         <source>Save failed: {message}</source>
         <translation>保存に失敗しました：{message}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2209" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2210" />
         <source>Restart Required</source>
         <translation>再起動が必要です</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\settings\dialog.py" line="2211" />
+        <location filename="..\..\views\labeling\settings\dialog.py" line="2212" />
         <source>Qt image allocation limit changes will take effect after restarting the application.</source>
         <translation>Qt の画像割り当て上限の変更は、アプリケーションの再起動後に有効になります。</translation>
     </message>
@@ -12455,12 +12552,12 @@ You can download the models again in the new directory.</source>
 </context><context>
     <name>StatisticsViewDialog</name>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="538" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="539" />
         <source>Dataset Statistics</source>
         <translation>データセット統計</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\classifier\dialogs.py" line="659" />
+        <location filename="..\..\views\labeling\classifier\dialogs.py" line="660" />
         <source>No labeled data available</source>
         <translation>利用可能なラベルデータがありません</translation>
     </message>
@@ -12595,226 +12692,226 @@ You can download the models again in the new directory.</source>
 </context><context>
     <name>UltralyticsDialog</name>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="241" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="242" />
         <source>Data</source>
         <translation>データ</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="242" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="243" />
         <source>Config</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="243" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="244" />
         <source>Train</source>
         <translation>訓練</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="340" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="341" />
         <source>Background Task Running</source>
         <translation>バックグラウンドタスクを実行中</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="341" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="342" />
         <source>A training or export task is still running. Stop it and exit?</source>
         <translation>トレーニングまたはエクスポートタスクが実行中です。停止して終了しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="436" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="437" />
         <source>Task Type:</source>
         <translation>タスクタイプ：</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="475" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="476" />
         <source>Valid Images:</source>
         <translation>有効な画像：</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="476" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="477" />
         <source>Required:</source>
         <translation>必要数：</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="567" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="568" />
         <source>Dataset Summary:</source>
         <translation>データセット概要：</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="570" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="571" />
         <source>No images loaded. Select a task and click Next to train with an existing dataset.</source>
         <translation>画像が読み込まれていません。タスクを選択して「次へ」をクリックし、既存のデータセットでトレーニングしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1676" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1596" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1585" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="591" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1677" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1597" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1586" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="592" />
         <source>Validation Error</source>
         <translation>検証エラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="606" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="607" />
         <source>Load Images</source>
         <translation>画像を読み込む</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1736" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="611" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1737" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="612" />
         <source>Next</source>
         <translation>次へ</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="637" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="638" />
         <source>Select Model File</source>
         <translation>モデルファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="647" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="648" />
         <source>Select Classification Dataset Directory</source>
         <translation>分類データセットディレクトリを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="654" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="655" />
         <source>Select Data File</source>
         <translation>データファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="666" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="667" />
         <source>Invalid Data File</source>
         <translation>無効なデータファイル</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="674" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="675" />
         <source>Select Pose Config File</source>
         <translation>ポーズ設定ファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="685" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="686" />
         <source>Select Python Executable</source>
         <translation>Python 実行ファイルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="687" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="688" />
         <source>All Files (*)</source>
         <translation>すべてのファイル (*)</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="792" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="793" />
         <source>Unavailable</source>
         <translation>利用不可</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="794" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="795" />
         <source>Detecting...</source>
         <translation>検出中...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="835" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="836" />
         <source>Basic Settings</source>
         <translation>基本設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="945" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="946" />
         <source>Train Settings</source>
         <translation>訓練設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="949" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="950" />
         <source>Basic</source>
         <translation>基本</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="985" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="986" />
         <source>Class indices (e.g., 0,1,2) or leave empty for all</source>
         <translation>クラスインデックス（例：0,1,2）またはすべての場合は空白</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1008" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1009" />
         <source>Advanced Settings</source>
         <translation>詳細設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1723" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1422" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1724" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1423" />
         <source>Import Config</source>
         <translation>設定をインポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1547" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1432" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1548" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1433" />
         <source>Success</source>
         <translation>成功</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1433" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1434" />
         <source>Config imported successfully</source>
         <translation>設定が正常にインポートされました</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2477" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1694" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1684" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1550" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1437" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2478" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1695" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1685" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1551" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1438" />
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1437" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1438" />
         <source>Failed to import config</source>
         <translation>設定のインポートに失敗しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1545" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1546" />
         <source>Configuration saved successfully to %s</source>
         <translation>設定が %s に正常に保存されました</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1562" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1563" />
         <source>Training in Progress</source>
         <translation>訓練進行中</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1563" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1564" />
         <source>Training is currently in progress. Please stop the training first if you need to reconfigure.</source>
         <translation>訓練が進行中です。再設定する場合は最初に訓練を停止してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2324" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1572" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2325" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1573" />
         <source>Training environment detection is still in progress</source>
         <translation>トレーニング環境を検出中です</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2327" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1575" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2328" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1576" />
         <source>Environment Error</source>
         <translation>環境エラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1590" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1591" />
         <source>When no images are loaded, the data file must reference existing train and val directories.</source>
         <translation>画像が読み込まれていない場合、データファイルは既存の train および val ディレクトリを参照する必要があります。</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1603" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1604" />
         <source>Training data directory is not writable: {path}
 {error}</source>
         <translation>トレーニングデータディレクトリに書き込めません: {path}
 {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1607" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1608" />
         <source>Training Directory Error</source>
         <translation>トレーニングディレクトリエラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1623" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1624" />
         <source>Existing Model Detected</source>
         <translation>既存のモデルが検出されました</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1624" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1625" />
         <source>A trained model already exists at this location.
 
 Do you want to:
@@ -12827,250 +12924,250 @@ No - Continue to retrain (will overwrite)</source>
 いいえ - 再トレーニングを続行（元のモデルを上書きします）</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1654" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1655" />
         <source>Directory Exists</source>
         <translation>ディレクトリが既に存在します</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1655" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1656" />
         <source>Project directory already exists! Do you want to overwrite it?
 If not, please manually modify the `Name` field value.</source>
         <translation>プロジェクトディレクトリが既に存在します！上書きしますか？
 上書きしたくない場合は、「Name」フィールドの値を手動で変更してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1685" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1686" />
         <source>Please select a task type first</source>
         <translation>最初にタスクタイプを選択してください</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1695" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1696" />
         <source>Please select a valid pose configuration file for pose detection tasks</source>
         <translation>ポーズ検出タスクに有効なポーズ設定ファイルを選択してください</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1704" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1705" />
         <source>Reset Training</source>
         <translation>訓練をリセット</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1705" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1706" />
         <source>Training traces detected. Do you want to reset the training tab?</source>
         <translation>訓練の記録が検出されました。訓練タブをリセットしますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1727" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1728" />
         <source>Save Config</source>
         <translation>設定を保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2377" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1732" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2378" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1733" />
         <source>Previous</source>
         <translation>前へ</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2595" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1901" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1888" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1883" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1877" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2596" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1902" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1889" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1884" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1878" />
         <source>No image</source>
         <translation>画像なし</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1968" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1969" />
         <source>Training is about to start...</source>
         <translation>訓練が開始されます...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1981" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1982" />
         <source>Training completed successfully!</source>
         <translation>訓練が正常に完了しました！</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2003" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2004" />
         <source>Training stopped by user</source>
         <translation>訓練がユーザーによって停止されました</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2019" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2020" />
         <source>Training Status</source>
         <translation>訓練状態</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2022" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2023" />
         <source>Ready to train</source>
         <translation>訓練の準備ができています</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2027" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2028" />
         <source>Progress:</source>
         <translation>進行状況：</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2041" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2042" />
         <source>Clear Logs</source>
         <translation>ログをクリア</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2042" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2043" />
         <source>Are you sure you want to clear all training logs?</source>
         <translation>すべての訓練ログをクリアしてもよろしいですか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2062" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2063" />
         <source>Training Logs</source>
         <translation>訓練ログ</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2084" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2085" />
         <source>Copy</source>
         <translation>コピー</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2092" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2093" />
         <source>Clear</source>
         <translation>クリア</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2105" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2106" />
         <source>Training Images</source>
         <translation>訓練画像</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2216" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2210" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2217" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2211" />
         <source>Info</source>
         <translation>情報</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2217" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2218" />
         <source>No training directory available</source>
         <translation>利用可能な訓練ディレクトリがありません</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2570" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2223" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2571" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2224" />
         <source>Confirm Stop</source>
         <translation>停止を確認</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2224" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2225" />
         <source>Are you sure you want to stop the training?</source>
         <translation>訓練を停止してもよろしいですか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2232" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2233" />
         <source>Stopping training...</source>
         <translation>訓練を停止中...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2234" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2235" />
         <source>Cancel to stop training</source>
         <translation>キャンセルして訓練を停止</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2340" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2341" />
         <source>Using workspace snapshot: {count} images</source>
         <translation>ワークスペースのスナップショットを使用中: {count} 枚の画像</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2345" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2346" />
         <source>Changes made during training will be used in the next run.</source>
         <translation>トレーニング中の変更は次回の実行で使用されます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2349" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2350" />
         <source>Preparing training...</source>
         <translation>訓練を準備中...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2362" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2356" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2363" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2357" />
         <source>Training Error</source>
         <translation>訓練エラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2367" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2368" />
         <source>Open Directory</source>
         <translation>ディレクトリを開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2372" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2373" />
         <source>Stop Training</source>
         <translation>訓練を停止</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2384" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2385" />
         <source>Start Training</source>
         <translation>訓練を開始</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2564" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2391" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2565" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2392" />
         <source>Export</source>
         <translation>エクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2422" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2423" />
         <source>Export started...</source>
         <translation>エクスポートを開始しました...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2427" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2428" />
         <source>Stop Export</source>
         <translation>エクスポートを停止</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2446" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2447" />
         <source>Export Successful</source>
         <translation>エクスポート成功</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2511" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2457" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2512" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2458" />
         <source>Export Error</source>
         <translation>エクスポートエラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2463" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2464" />
         <source>Export stopped by user</source>
         <translation>ユーザーがエクスポートを停止しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2478" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2479" />
         <source>No training project available for export</source>
         <translation>エクスポートに利用可能な訓練プロジェクトがありません</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2488" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2489" />
         <source>Model Not Found</source>
         <translation>モデルが見つかりません</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2489" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2490" />
         <source>Model weights not found at: %s</source>
         <translation>モデルの重みが見つかりません: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2545" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2528" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2546" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2529" />
         <source>Apply Error</source>
         <translation>適用エラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2546" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2547" />
         <source>Failed to load the exported model</source>
         <translation>エクスポートしたモデルを読み込めませんでした</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2571" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2572" />
         <source>Are you sure you want to stop the export?</source>
         <translation>エクスポートを停止してもよろしいですか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2578" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2579" />
         <source>No export is in progress</source>
         <translation>進行中のエクスポートはありません</translation>
     </message>
@@ -13296,418 +13393,418 @@ If not, please manually modify the `Name` field value.</source>
 </context><context>
     <name>VQADialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="499" />
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="130" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="500" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="131" />
         <source>No image loaded</source>
         <translation>画像が読み込まれていません</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="198" />
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="142" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="199" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="143" />
         <source>Refresh Data</source>
         <translation>データを更新</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="211" />
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="154" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="212" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="155" />
         <source>Toggle Sidebar</source>
         <translation>サイドバーの表示/非表示</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1516" />
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="215" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1517" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="216" />
         <source>Export Labels</source>
         <translation>ラベルをエクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="221" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="222" />
         <source>Clear All</source>
         <translation>すべてクリア</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="227" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="228" />
         <source>Add Compo</source>
         <translation>コンポーネントを追加</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="233" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="234" />
         <source>Del Compo</source>
         <translation>コンポーネントを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="735" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="736" />
         <source>Removing options %s will reset related annotation data to default values.
 Do you want to continue?</source>
         <translation>オプション %s を削除すると、関連するアノテーションデータがデフォルト値にリセットされます。
 続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="742" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="743" />
         <source>Confirm Option Delete</source>
         <translation>オプションの削除を確認</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1940" />
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="955" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1941" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="956" />
         <source>Info</source>
         <translation>情報</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="956" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="957" />
         <source>No custom components to delete!</source>
         <translation>削除するカスタムコンポーネントがありません！</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="971" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="972" />
         <source>Deleting component '%s' will remove all related annotation data from the current task.
 Do you want to continue?</source>
         <translation>コンポーネント '%s' を削除すると、現在のタスクからすべての関連アノテーションデータが削除されます。
 続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="977" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="978" />
         <source>Deleting %d components (%s) will remove all related annotation data from the current task.
 Do you want to continue?</source>
         <translation>%d 個のコンポーネント（%s）を削除すると、現在のタスクからすべての関連アノテーションデータが削除されます。
 続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="988" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="989" />
         <source>Confirm Delete</source>
         <translation>削除を確認</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1093" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1094" />
         <source>AI Generated Result</source>
         <translation>AI生成結果</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1111" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1112" />
         <source>Apply</source>
         <translation>適用</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1115" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1116" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1140" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1141" />
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1141" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1142" />
         <source>Failed to generate content:
 </source>
         <translation>コンテンツの生成に失敗しました：
 </translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1178" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1179" />
         <source>AI Assistant</source>
         <translation>AIアシスタント</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1186" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1187" />
         <source>Edit Content</source>
         <translation>コンテンツを編集</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1509" />
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1497" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1510" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1498" />
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1497" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1498" />
         <source>No images loaded!</source>
         <translation>画像が読み込まれていません！</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1510" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1511" />
         <source>No fields selected for export!</source>
         <translation>エクスポートするフィールドが選択されていません！</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1517" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1518" />
         <source>vqa_labels.jsonl</source>
         <translation>vqa_labels.jsonl</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1582" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1583" />
         <source>Labels exported to %s.</source>
         <translation>ラベルが %s にエクスポートされました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1584" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1585" />
         <source>Success</source>
         <translation>成功</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1592" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1593" />
         <source>Confirm Clear</source>
         <translation>クリアを確認</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1593" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1594" />
         <source>Are you sure you want to clear all current annotations?</source>
         <translation>現在のすべてのアノテーションをクリアしてもよろしいですか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1941" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1942" />
         <source>No images loaded in main window!</source>
         <translation>メインウィンドウに画像が読み込まれていません！</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1975" />
+        <location filename="..\..\views\labeling\widgets\vqa_dialog.py" line="1976" />
         <source>VQA data refreshed successfully!</source>
         <translation>VQAデータが正常に更新されました！</translation>
     </message>
 </context><context>
     <name>VideoClassifierDialog</name>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1709" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="873" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1710" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="874" />
         <source>(no video loaded)</source>
         <translation>（動画未読み込み）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="880" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="881" />
         <source>Save frame</source>
         <translation>フレームを保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="942" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="943" />
         <source>Back 1s</source>
         <translation>1秒戻る</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="949" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="950" />
         <source>Previous frame</source>
         <translation>前のフレーム</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1235" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="956" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1236" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="957" />
         <source>Play/Pause</source>
         <translation>再生/一時停止</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="963" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="964" />
         <source>Next frame</source>
         <translation>次のフレーム</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="970" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="971" />
         <source>Forward 1s</source>
         <translation>1秒進む</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="987" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="988" />
         <source>Preview zoom</source>
         <translation>プレビューズーム</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1685" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1510" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="991" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1686" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1511" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="992" />
         <source>Open video</source>
         <translation>動画を開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="996" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="997" />
         <source>Auto segment video with AI</source>
         <translation>AIで動画を自動分割</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3076" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1002" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3077" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1003" />
         <source>Export dataset</source>
         <translation>データセットをエクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1024" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1025" />
         <source>Zoom out</source>
         <translation>縮小</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1044" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1045" />
         <source>Zoom in</source>
         <translation>拡大</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1090" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1091" />
         <source>Description</source>
         <translation>説明</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1097" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1098" />
         <source>Generate description with AI</source>
         <translation>AIで説明を生成</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1107" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1108" />
         <source>Select a segment to edit its description.</source>
         <translation>説明を編集するセグメントを選択してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1243" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1134" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1244" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1135" />
         <source>Undo</source>
         <translation>元に戻す</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1244" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1141" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1245" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1142" />
         <source>Redo</source>
         <translation>やり直し</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1148" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1149" />
         <source>Split at playhead</source>
         <translation>再生ヘッド位置で分割</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3077" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2871" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2833" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1155" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3078" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2872" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2834" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1156" />
         <source>Export segment</source>
         <translation>セグメントをエクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1179" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1180" />
         <source>Zoom timeline out</source>
         <translation>タイムラインを縮小</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1196" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1197" />
         <source>Zoom timeline in</source>
         <translation>タイムラインを拡大</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1231" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1232" />
         <source>Show shortcuts</source>
         <translation>ショートカットを表示</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1236" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1237" />
         <source>Previous/Next frame</source>
         <translation>前/次のフレーム</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1237" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1238" />
         <source>Back/Forward 1 second</source>
         <translation>1秒戻る/進む</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1238" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1239" />
         <source>Previous/Next segment</source>
         <translation>前/次のセグメント</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1239" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1240" />
         <source>Mark in/out</source>
         <translation>イン/アウトをマーク</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1240" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1241" />
         <source>Create segment from marks</source>
         <translation>マークからセグメントを作成</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1241" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1242" />
         <source>Delete selected segment</source>
         <translation>選択したセグメントを削除</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1242" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1243" />
         <source>Save annotations</source>
         <translation>アノテーションを保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1245" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1246" />
         <source>Select label by number</source>
         <translation>番号でラベルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1259" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1260" />
         <source>Shortcuts</source>
         <translation>ショートカット</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1263" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1264" />
         <source>Key</source>
         <translation>キー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1265" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1266" />
         <source>Action</source>
         <translation>機能</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1295" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1296" />
         <source>Open tutorial</source>
         <translation>チュートリアルを開く</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1422" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1423" />
         <source>Double-click to edit label and description; hold left button to drag</source>
         <translation>ダブルクリックでラベルと説明を編集、左ボタン長押しでドラッグ</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1426" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1427" />
         <source>Right-drag the timeline ruler, then release to create a segment</source>
         <translation>タイムライン目盛りを右ドラッグし、離すとセグメントを作成</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1495" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1496" />
         <source>Unsupported file</source>
         <translation>未対応のファイル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1496" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1497" />
         <source>This file type is not supported.</source>
         <translation>このファイル形式はサポートされていません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1504" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1505" />
         <source>Loading video...</source>
         <translation>動画を読み込み中...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2970" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2866" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2372" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1505" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2971" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2867" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2373" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1506" />
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1634" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1635" />
         <source>Sidecar backup: {p}</source>
         <translation>サイドカーのバックアップ：{p}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1643" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1644" />
         <source>Incompatible sidecar</source>
         <translation>互換性のないサイドカー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1645" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1646" />
         <source>Invalid sidecar</source>
         <translation>無効なサイドカー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1649" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1650" />
         <source>The sidecar file cannot be loaded and will not be overwritten:
 {path}</source>
         <translation>サイドカーファイルを読み込めないため、上書きされません：
 {path}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1655" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1656" />
         <source>Details: {error}
 
 Back up the original file and create a new sidecar?</source>
@@ -13716,29 +13813,29 @@ Back up the original file and create a new sidecar?</source>
 元のファイルをバックアップして、新しいサイドカーを作成しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1661" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1662" />
         <source>Back up and rebuild</source>
         <translation>バックアップして再構築</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1675" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1676" />
         <source>Sidecar backup failed</source>
         <translation>サイドカーのバックアップに失敗しました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1676" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1677" />
         <source>Failed to back up {path}:
 {error}</source>
         <translation>{path} のバックアップに失敗しました：
 {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1748" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1749" />
         <source>Playback error</source>
         <translation>再生エラー</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1749" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1750" />
         <source>Failed to play this video. The system may lack a suitable Qt multimedia codec.
 
 Details: {msg}</source>
@@ -13747,151 +13844,151 @@ Details: {msg}</source>
 詳細: {msg}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1761" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1762" />
         <source>FPS: {f:.2f} | Size: {w}x{h}</source>
         <translation>FPS: {f:.2f} | サイズ: {w}x{h}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1898" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1891" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1878" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1899" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1892" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1879" />
         <source>Save current frame</source>
         <translation>現在のフレームを保存</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1879" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1880" />
         <source>No decoded frame is available yet.</source>
         <translation>まだ利用可能なデコード済みフレームがありません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1893" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1894" />
         <source>PNG Image (*.png);;JPEG Image (*.jpg *.jpeg)</source>
         <translation>PNG画像 (*.png);;JPEG画像 (*.jpg *.jpeg)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1899" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1900" />
         <source>Failed to save the current frame.</source>
         <translation>現在のフレームの保存に失敗しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1918" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1919" />
         <source>Save failed</source>
         <translation>保存失敗</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1922" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="1923" />
         <source>Saved: {p}</source>
         <translation>保存しました: {p}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2731" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2045" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2039" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2732" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2046" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2040" />
         <source>Add segment</source>
         <translation>セグメントを追加</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2040" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2041" />
         <source>Create a label first.</source>
         <translation>先にラベルを作成してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2046" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2047" />
         <source>Select a label first.</source>
         <translation>先にラベルを選択してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2076" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2077" />
         <source>Pick a label</source>
         <translation>ラベルを選択</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2153" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2148" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2154" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2149" />
         <source>Edit segment</source>
         <translation>セグメントを編集</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2149" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2150" />
         <source>Define some labels first.</source>
         <translation>先にラベルを定義してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2463" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2448" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2258" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2244" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2233" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2222" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2206" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2464" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2449" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2259" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2245" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2234" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2223" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2207" />
         <source>AI Segmentation</source>
         <translation>AI分割</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2207" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2208" />
         <source>Please open a video first.</source>
         <translation>先に動画を開いてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2327" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2234" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2328" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2235" />
         <source>Prompt cannot be empty.</source>
         <translation>プロンプトは空にできません。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2245" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2246" />
         <source>Existing segments will be overwritten by AI-generated segments. Continue?</source>
         <translation>既存のセグメントはAI生成セグメントで上書きされます。続行しますか？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2259" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2260" />
         <source>The selected segment will be replaced by AI-generated segments. Continue?</source>
         <translation>選択したセグメントはAI生成セグメントで置き換えられます。続行しますか？</translation>
     </message>
     <message>
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2299" />
         <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2298" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2297" />
         <source>Generating segments...</source>
         <translation>セグメントを生成中...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2530" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2377" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2326" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2305" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2531" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2378" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2327" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2306" />
         <source>AI Description</source>
         <translation>AI説明</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2306" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2307" />
         <source>Please select a segment first.</source>
         <translation>先にセグメントを選択してください。</translation>
     </message>
     <message>
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2349" />
         <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2348" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2347" />
         <source>Generating description...</source>
         <translation>説明を生成中...</translation>
     </message>
     <message>
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2359" />
         <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2358" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2357" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2355" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2356" />
         <source>Not configured</source>
         <translation>未設定</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2420" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2421" />
         <source>AI generation cancelled.</source>
         <translation>AI生成をキャンセルしました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2449" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2450" />
         <source>Failed to generate segments.</source>
         <translation>セグメントの生成に失敗しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2464" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2465" />
         <source>No valid segments found in the AI response.
 
 Response preview:
@@ -13902,152 +13999,152 @@ Response preview:
 {preview}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2503" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2504" />
         <source>Generated {n} segments.</source>
         <translation>{n}件のセグメントを生成しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2531" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2532" />
         <source>Failed to generate description.</source>
         <translation>説明の生成に失敗しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2550" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2551" />
         <source>Description generated.</source>
         <translation>説明を生成しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2609" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2610" />
         <source>Segment {n}</source>
         <translation>セグメント{n}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2732" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2733" />
         <source>The marked range is too short.</source>
         <translation>マークした範囲が短すぎます。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2941" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2834" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2942" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2835" />
         <source>ffmpeg was not found. Install ffmpeg or imageio-ffmpeg to export clips.</source>
         <translation>ffmpeg が見つかりません。クリップをエクスポートするには ffmpeg または imageio-ffmpeg をインストールしてください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2853" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2854" />
         <source>Export selected segment</source>
         <translation>選択したセグメントをエクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2855" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2856" />
         <source>MP4 Video (*.mp4)</source>
         <translation>MP4動画 (*.mp4)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2865" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2866" />
         <source>Exporting selected segment...</source>
         <translation>選択したセグメントをエクスポート中...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2996" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2901" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2997" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2902" />
         <source>Export complete</source>
         <translation>エクスポート完了</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2902" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2903" />
         <source>Exported segment to {path}</source>
         <translation>セグメントを {path} にエクスポートしました</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2907" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2908" />
         <source>Export cancelled.</source>
         <translation>エクスポートをキャンセルしました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2998" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2911" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2999" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2912" />
         <source>Export failed</source>
         <translation>エクスポート失敗</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2913" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2914" />
         <source>Failed to export the selected segment.</source>
         <translation>選択したセグメントのエクスポートに失敗しました。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2972" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2961" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2954" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2940" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2928" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2973" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2962" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2955" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2941" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2929" />
         <source>Export Dataset</source>
         <translation>データセットをエクスポート</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2929" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2930" />
         <source>Load a video and annotate at least one segment first.</source>
         <translation>先に動画を読み込み、少なくとも1つのセグメントを注釈してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2955" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2956" />
         <source>Output directory is required.</source>
         <translation>出力ディレクトリが必要です。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2962" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2963" />
         <source>Pick at least one output format.</source>
         <translation>少なくとも1つの出力形式を選択してください。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2970" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2971" />
         <source>Exporting…</source>
         <translation>エクスポート中…</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2986" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="2987" />
         <source>Exporting…
 {msg}</source>
         <translation>エクスポート中…
 {msg}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3012" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3013" />
         <source>FPS: {f:.2f}  Size: {w}x{h}  Duration: {d}</source>
         <translation>FPS: {f:.2f}  サイズ: {w}x{h}  長さ: {d}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3021" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3022" />
         <source>In: {t}</source>
         <translation>開始: {t}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3027" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3028" />
         <source>Out: {t}</source>
         <translation>終了: {t}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3032" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3033" />
         <source>Segments: {n}</source>
         <translation>セグメント: {n}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3036" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3037" />
         <source>Cursor: {t}</source>
         <translation>カーソル: {t}</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3039" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3040" />
         <source>[modified]</source>
         <translation>[変更済み]</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3041" />
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3042" />
         <source>Drop or open a video to begin.</source>
         <translation>動画をドロップまたは開いて開始します。</translation>
     </message>
     <message>
+        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3081" />
         <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3080" />
-        <location filename="..\..\views\labeling\widgets\video_classifier_dialog.py" line="3079" />
         <source>ffmpeg required</source>
         <translation>ffmpeg が必要です</translation>
     </message>
@@ -14163,17 +14260,17 @@ Response preview:
 </context><context>
     <name>_SecondLoginDialog</name>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="68" />
+        <location filename="..\..\views\dataset_center.py" line="69" />
         <source>Confirm your password</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="75" />
+        <location filename="..\..\views\dataset_center.py" line="76" />
         <source>Operator: %s</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\dataset_center.py" line="82" />
+        <location filename="..\..\views\dataset_center.py" line="83" />
         <source>Password</source>
         <translation>パスワード</translation>
     </message>

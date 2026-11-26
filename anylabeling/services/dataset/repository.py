@@ -644,6 +644,7 @@ class DatasetRepository:
         editor: str | None = None,
         modified_at: str | None = None,
         import_session_id: int | None = None,
+        content_sha256: str = "",
     ) -> int:
         value = _normalize_rel_path(rel_path)
         if split is not None and split not in SPLITS:
@@ -660,6 +661,7 @@ class DatasetRepository:
                 ("height", height),
                 ("size_bytes", size_bytes),
                 ("mtime_ns", mtime_ns),
+                ("content_sha256", content_sha256 or None),
                 ("split", split),
                 ("description", description),
                 ("editor", editor),
@@ -691,8 +693,8 @@ class DatasetRepository:
             "INSERT INTO image_file "
             "(dataset_id, rel_path, file_name, ext, width, height, size_bytes, "
             " mtime_ns, split, description, flags_json, extra_json, editor, "
-            " modified_at, import_session_id) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            " modified_at, import_session_id, content_sha256) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 self.dataset_id,
                 value,
@@ -709,6 +711,7 @@ class DatasetRepository:
                 editor or "",
                 modified_at or "",
                 import_session_id,
+                content_sha256 or "",
             ),
         )
         return int(cursor.lastrowid)

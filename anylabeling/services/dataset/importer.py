@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -17,6 +18,15 @@ from typing import Any, Iterator
 from PIL import Image
 
 from .codec import ImageAnnotation, parse_xlabel_data
+from .duplicates import (
+    ACTION_KEEP_ONE,
+    ACTION_MERGE_ANNOTATIONS,
+    DuplicateEntry,
+    annotation_hash,
+    entry_key,
+    group_duplicates,
+    sha256_file,
+)
 from .connection import DATABASE_FILENAME, DatasetDatabase
 from .errors import DatasetConflictError, DatasetFormatError
 from .repository import DatasetRepository
@@ -44,6 +54,8 @@ class ImportReport:
     tags: int = 0
     relations: int = 0
     skipped: int = 0
+    duplicates_skipped: int = 0
+    annotations_merged: int = 0
     errors: list[str] = field(default_factory=list)
 
     def as_stats(self) -> dict[str, Any]:
@@ -54,6 +66,8 @@ class ImportReport:
             "tags": self.tags,
             "relations": self.relations,
             "skipped": self.skipped,
+            "duplicates_skipped": self.duplicates_skipped,
+            "annotations_merged": self.annotations_merged,
             "errors": len(self.errors),
         }
 
@@ -113,6 +127,67 @@ def _backup_path(database_path: Path) -> Path:
     return candidate
 
 
+def scan_duplicates(folder: str | Path) -> list:
+    """Return exact-duplicate groups (same SHA-256) inside ``folder``."""
+
+    source = Path(folder)
+    entries = []
+    for image_path in iter_image_files(source):
+        relative = image_path.relative_to(source).as_posix()
+        json_path = image_path.with_suffix(".json")
+        shapes = []
+        tags = []
+        if json_path.is_file():
+            try:
+                annotation = parse_xlabel_data(_read_json(json_path))
+                shapes = annotation.shapes
+                tags = annotation.tags
+            except Exception:  # noqa: BLE001 - duplicate scan is best effort
+                shapes = []
+                tags = []
+        entries.append(
+            DuplicateEntry(
+                key=relative,
+                source=source.name,
+                path=relative,
+                sha256=sha256_file(image_path),
+                annotation_hash=annotation_hash(shapes, tags),
+                object_count=len(shapes),
+                tag_count=len(tags),
+            )
+        )
+    return group_duplicates(entries)
+
+
+def _merge_annotation_into(
+    repository: DatasetRepository,
+    image_id: int,
+    annotation: ImageAnnotation,
+    editor: str | None,
+    modified_at: str | None,
+) -> int:
+    """Append ``annotation`` shapes/tags to an existing image annotation."""
+
+    existing = repository.load_annotation(image_id)
+    known = {shape.get("shape_id") for shape in existing.shapes}
+    appended = 0
+    for shape in annotation.shapes:
+        item = dict(shape)
+        shape_id = item.get("shape_id")
+        if not shape_id or shape_id in known:
+            item["shape_id"] = uuid.uuid4().hex
+        known.add(item["shape_id"])
+        existing.shapes.append(item)
+        appended += 1
+    existing.tags = list(
+        dict.fromkeys(list(existing.tags) + list(annotation.tags))
+    )
+    repository.save_annotation(
+        image_id, existing, editor=editor, modified_at=modified_at
+    )
+    return appended
+
+
 def import_xlabel_folder(
     folder: str | Path,
     *,
@@ -122,6 +197,7 @@ def import_xlabel_folder(
     name: str | None = None,
     task: str = "detect",
     app_version: str = "",
+    duplicate_actions: dict[str, str] | None = None,
 ) -> ImportReport:
     """Import ``<image>.json`` pairs into ``<folder>/xanylabeling.db``.
 
@@ -153,6 +229,8 @@ def import_xlabel_folder(
             app_version=app_version,
         )
 
+    duplicate_actions = duplicate_actions or {}
+    by_sha: dict[str, int] = {}
     report = ImportReport(database_path=target, backup_path=backup_path)
     repository = DatasetRepository(database)
     session_id = repository.create_import_session(
@@ -186,6 +264,24 @@ def import_xlabel_folder(
 
             height, width = _image_size(image_path, data)
             stat = image_path.stat()
+            content_sha256 = sha256_file(image_path)
+            primary_id = by_sha.get(content_sha256)
+            if primary_id is not None:
+                action = duplicate_actions.get(relative, "")
+                if action == ACTION_KEEP_ONE:
+                    report.duplicates_skipped += 1
+                    continue
+                if action == ACTION_MERGE_ANNOTATIONS:
+                    if annotation is not None:
+                        _merge_annotation_into(
+                            repository,
+                            primary_id,
+                            annotation,
+                            annotation.editor or None,
+                            annotation.modified_at or None,
+                        )
+                    report.annotations_merged += 1
+                    continue
             report.images += 1
             if annotation is not None:
                 report.labeled_images += 1
@@ -222,7 +318,9 @@ def import_xlabel_folder(
                 editor=editor,
                 modified_at=modified_at,
                 import_session_id=session_id,
+                content_sha256=content_sha256,
             )
+            by_sha.setdefault(content_sha256, image_id)
             repository.save_annotation(
                 image_id,
                 annotation,

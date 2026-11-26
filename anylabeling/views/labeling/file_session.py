@@ -114,7 +114,23 @@ class FileSession:
         ]
         if not images:
             return None
-        from ...services.dataset.importer import import_xlabel_folder
+        from ...services.dataset.duplicates import actions_from_choices
+        from ...services.dataset.importer import (
+            import_xlabel_folder,
+            scan_duplicates,
+        )
+        from ..duplicate_review import DuplicateReviewDialog
+
+        duplicate_actions = {}
+        groups = scan_duplicates(directory)
+        if groups:
+            review = DuplicateReviewDialog(groups, self.host)
+            if not review.exec():
+                self.host.status(self.host.tr("Dataset creation cancelled."))
+                return False
+            duplicate_actions = actions_from_choices(
+                groups, review.choices()
+            )
 
         QtWidgets.QApplication.setOverrideCursor(
             QtCore.Qt.CursorShape.WaitCursor
@@ -124,7 +140,9 @@ class FileSession:
                 self.host.tr("Creating dataset database…")
             )
             QtWidgets.QApplication.processEvents()
-            report = import_xlabel_folder(directory)
+            report = import_xlabel_folder(
+                directory, duplicate_actions=duplicate_actions
+            )
         except Exception as exc:  # noqa: BLE001 - fall back to JSON mode
             self.host.error_message(
                 self.host.tr("Dataset database"),
@@ -137,7 +155,15 @@ class FileSession:
         finally:
             QtWidgets.QApplication.restoreOverrideCursor()
         self.host.status(
-            self.host.tr("Dataset database created: %s") % database_path
+            self.host.tr(
+                "Dataset database created: %s (duplicates skipped: %d, "
+                "merged: %d)"
+            )
+            % (
+                database_path,
+                report.duplicates_skipped,
+                report.annotations_merged,
+            )
         )
         if report.errors:
             self.host.status(

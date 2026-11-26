@@ -15,7 +15,9 @@ from anylabeling.services.dataset.merge import (
 from anylabeling.services.dataset.repository import DatasetRepository
 
 
-def _write_image(root, rel_path, payload=b"fake-image-bytes"):
+def _write_image(root, rel_path, payload=None):
+    if payload is None:
+        payload = ("fake-image-bytes:" + rel_path).encode("utf-8")
     path = root / rel_path
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(payload)
@@ -29,7 +31,7 @@ def _make_source(root, name, images):
     database = DatasetDatabase.create(db_path, name=name)
     repository = DatasetRepository(database)
     for spec in images:
-        _write_image(root, spec["rel_path"], spec.get("payload", b"image"))
+        _write_image(root, spec["rel_path"], spec.get("payload"))
         stat = os.stat(os.path.join(str(root), spec["rel_path"]))
         image_id = repository.add_image(
             spec["rel_path"],
@@ -200,7 +202,7 @@ def test_merge_skips_missing_source_files_and_reports_duplicates(tmp_path):
     try:
         repository = DatasetRepository(database)
         target_image = target_root / "a.jpg"
-        target_image.write_bytes(b"image")
+        target_image.write_bytes(b"fake-image-bytes:a.jpg")
         repository.add_image(
             "a.jpg",
             size_bytes=source_stat.st_size,

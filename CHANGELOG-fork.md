@@ -6,6 +6,73 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.62 — 2026-11-26
+
+### 1. 背景与需求
+
+用户确认：①新文件夹导入只查文件夹内部；②“精确重复 + 同标注/不同标注”的处理
+**留给用户决定**（不同场景需求不同）；③pHash 近似查重收益低，后续再做或不做。
+
+### 2. 主要实现
+
+- **schema v2**：`image_file.content_sha256`（文件字节 SHA-256）+ 索引
+  `(dataset_id, content_sha256)`；新增真正的迁移路径（`ALTER TABLE` + `user_version`
+  + `schema_migration`），旧库可写打开时自动升级，只读源库允许仍为 v1（缺列时内存计算，
+  不写源）。`docs/dev/db_design_assets/schema.sql` 同步。
+- **`services/dataset/duplicates.py`**（新模块）：`sha256_file`、`annotation_hash`
+  （shapes+tags 规范化，忽略 id/uuid/score/editor/时间戳/split/relations）、
+  `DuplicateEntry`/`DuplicateGroup`、`group_duplicates`、`actions_from_choices`。
+- **合并**：`MergeOptions.duplicate_actions` + `MergePlan.duplicate_groups`；
+  `plan_merge` 建立“目标库 + 源库（含源间）”SHA-256 索引并分组；执行时
+  `keep_one` 跳过拷贝/插入，`merge_annotations` 把源对象/标签并入目标图片，
+  `keep_both` 保持现有命名空间拷贝。报告新增 `skipped_duplicates`/`merged_annotations`。
+- **新文件夹导入**：`importer.scan_duplicates()` 只扫文件夹内部；导入前弹
+  `DuplicateReviewDialog`，取消则不建库；`import_xlabel_folder(duplicate_actions=...)`
+  按用户选择跳过/合并，`ImportReport` 增加计数。
+- **UI**：新增 `views/duplicate_review.py`，每组选项——
+  标注相同：两者保留/仅保留一条；标注不同：各自保留/合并到一条；第一张始终保留；
+  支持“全部保留”。合并对话框在执行前弹同一对话框；导入流程在创建 DB 前弹。
+- 导入时顺带计算 SHA-256 并落库（一次读盘，几乎不增加 I/O）。
+
+### 3. 性能与准确率（本机实测）
+
+- SHA-256 CPU ≈ **2.16 GiB/s**；1080p、1.3 MB JPEG ≈ **0.6 ms/张**，1 万张 ≈ 6 s CPU
+  （实际受磁盘读限制）；
+- 解码 + dHash ≈ **14.6 ms/张**（约 25 倍），且会把旋转/镜像增强样本判为相似，
+  因此本阶段不做 pHash。
+
+### 4. 行为与兼容性
+
+- 合并默认 `keep_both`（不改变现有行为）；只有用户在对话框里选择才跳过/合并；
+- 新增 `dataset_center_merge.py` 的重复预览；`file_session` 在首次建库前预览；
+- schema v2 会修改目标库（加列+索引）；合并前已有备份逻辑不变；
+- 合并标注时 relations 暂不迁移（设计书 §4.9 已注明）。
+
+### 5. 涉及文件
+
+- 新增 `anylabeling/services/dataset/duplicates.py`、`anylabeling/views/duplicate_review.py`、
+  `tests/test_dataset_db/test_duplicates.py`、`tests/test_widgets/test_duplicate_review.py`
+- 修改 `schema.py`、`connection.py`、`repository.py`、`importer.py`、`merge.py`、
+  `file_session.py`、`dataset_center_merge.py`、`docs/dev/db_design_assets/schema.sql`
+- 文档/版本/翻译：`app_info.py`、`CHANGELOG-fork.md`、`CODE_STRUCTURE_REPORT.md`、
+  设计书、`docs/开始.md`、四语言 `.qm`
+
+### 6. 验证
+
+- `tests/test_dataset_db`：**58 passed**（含新增 SHA/分组/保留一条/合并标注/文件夹扫描/
+  v1→v2 迁移）；
+- `tests/test_widgets + test_utils + test_settings + test_dataset_db + test_identity +
+  test_i18n`：**446 passed / 1 failed（既有计时抖动）/ 1 skipped / 117 subtests**；
+- `tests/test_i18n` 17 passed；四语言 `.qm` 各 **2771 条**，zh/en 0 未翻译；
+- **未执行**：真实桌面合并/新文件夹导入的重复预览窗口（本机无 GUI 会话）。
+
+### 7. 已知限制
+
+- 标注指纹忽略 relations，合并标注不迁移关系；
+- 源间重复的“合并到一条”只对已有目标图生效（源间同内容先到先得，后到者按保留两份处理）；
+- 只读 v1 源库不写 hash，合并时每次重新计算；
+- 推送仍受本机网络/凭据阻塞；本地 `main` 领先远端 15 个提交。
+
 ## 4.3.2+fork.61 — 2026-11-26
 
 ### 1. 背景与需求

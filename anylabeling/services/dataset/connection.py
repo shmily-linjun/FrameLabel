@@ -19,6 +19,37 @@ from .schema import APPLICATION_ID, SCHEMA_SQL, SCHEMA_VERSION
 
 DATABASE_FILENAME = "xanylabeling.db"
 SCHEMA_DESCRIPTION = "初始 schema：8 表 3 视图（讨论稿 v0.13）"
+MIGRATION_DESCRIPTIONS = {
+    2: "image_file.content_sha256：文件内容 SHA-256，用于精确去重",
+}
+MIGRATIONS = {
+    2: (
+        "ALTER TABLE image_file ADD COLUMN content_sha256 TEXT NOT NULL "
+        "DEFAULT ''",
+        "CREATE INDEX IF NOT EXISTS ix_image_file_sha ON image_file("
+        "dataset_id, content_sha256) WHERE is_deleted = 0",
+    ),
+}
+
+
+def _migrate_dataset(connection, from_version: int) -> None:
+    """Apply missing schema migrations in one transaction."""
+
+    connection.execute("BEGIN")
+    try:
+        for version in range(from_version + 1, SCHEMA_VERSION + 1):
+            for statement in MIGRATIONS[version]:
+                connection.execute(statement)
+            connection.execute(f"PRAGMA user_version = {version}")
+            connection.execute(
+                "INSERT INTO schema_migration (version, description) "
+                "VALUES (?, ?)",
+                (version, MIGRATION_DESCRIPTIONS[version]),
+            )
+        connection.execute("COMMIT")
+    except Exception:
+        connection.execute("ROLLBACK")
+        raise
 
 
 class DatasetDatabase:
@@ -127,10 +158,24 @@ class DatasetDatabase:
                 )
             if user_version == 0:
                 raise DatasetError("dataset database has no schema version")
+            if not read_only and user_version < SCHEMA_VERSION:
+                _migrate_dataset(connection, user_version)
         except Exception:
             connection.close()
             raise
-        return cls(target, connection, read_only)
+        database = cls(target, connection, read_only)
+        database.schema_version = connection.execute(
+            "PRAGMA user_version"
+        ).fetchone()[0]
+        return database
+
+    def has_column(self, table: str, column: str) -> bool:
+        """Return True when ``table`` has ``column`` (old DBs may not)."""
+
+        return any(
+            row["name"] == column
+            for row in self.query(f"PRAGMA table_info({table})")
+        )
 
     def close(self) -> None:
         if self.connection is None:

@@ -1,7 +1,7 @@
 ﻿-- ============================================================================
 -- X-AnyLabeling 数据集数据库 schema v1（讨论稿 v0.13 资产）
 -- 文件：<数据集根目录>/xanylabeling.db
--- 版本：PRAGMA user_version = 1（讨论稿阶段；正式迁移时按 §13.1 升版）
+-- 版本：PRAGMA user_version = 2（v2 增加 image_file.content_sha256）
 -- 规模：8 表 / 86 列 / 3 视图
 -- 本轮变更（见 ../数据库设计-讨论稿.md §2.6）：
 --   * D1  dataset.task（主任务提示，不限制数据用途）
@@ -21,7 +21,7 @@
 --   * 几何格式版本随 schema 版本走（PRAGMA user_version），不另设几何版本列。
 -- ============================================================================
 
-PRAGMA user_version = 1;
+PRAGMA user_version = 2;
 -- 文件类型标识（'XALB' = 0x58414C42），防止把非本程序数据库当数据集打开
 PRAGMA application_id = 1480674370;
 
@@ -97,6 +97,7 @@ CREATE TABLE image_file (
     height               INTEGER,
     size_bytes           INTEGER,
     mtime_ns             INTEGER,
+    content_sha256       TEXT    NOT NULL DEFAULT '',  -- 文件字节 SHA-256（精确去重）
     split                TEXT    NOT NULL DEFAULT 'none'
                                  CHECK (split IN ('none', 'train', 'val', 'test')),
     description          TEXT    NOT NULL DEFAULT '',
@@ -117,6 +118,7 @@ CREATE TABLE image_file (
 CREATE UNIQUE INDEX ux_image_file_rel_path
     ON image_file(dataset_id, rel_path COLLATE NOCASE) WHERE is_deleted = 0;
 CREATE INDEX ix_image_file_split   ON image_file(dataset_id, split) WHERE is_deleted = 0;
+CREATE INDEX ix_image_file_sha     ON image_file(dataset_id, content_sha256) WHERE is_deleted = 0;
 CREATE INDEX ix_image_file_session ON image_file(import_session_id);
 CREATE INDEX ix_image_file_trash   ON image_file(dataset_id, deleted_at) WHERE is_deleted = 1;
 

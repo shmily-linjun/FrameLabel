@@ -78,11 +78,11 @@ def test_package_schema_has_expected_shape():
         )
         assert len(tables) == 8
         assert len(views) == 3
-        assert columns == 86
+        assert columns == 87
         image_columns = {
             row[1] for row in connection.execute("PRAGMA table_info(image_file)")
         }
-        assert {"editor", "modified_at", "deleted_at"} <= image_columns
+        assert {"editor", "modified_at", "deleted_at", "content_sha256"} <= image_columns
         assert "checked" not in image_columns
         index_sql = connection.execute(
             "SELECT sql FROM sqlite_master "

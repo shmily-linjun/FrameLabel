@@ -22,7 +22,9 @@ from ..services.dataset.merge import (
     merge_datasets,
     plan_merge,
 )
+from ..services.dataset.duplicates import actions_from_choices
 from ..services.dataset.registry import RegistryStore
+from .duplicate_review import DuplicateReviewDialog
 from .labeling.utils.style import (
     get_cancel_btn_style,
     get_dialog_style,
@@ -79,6 +81,7 @@ class MergeDialog(QtWidgets.QDialog):
         self._worker = None
         self._report = None
         self._plan = None
+        self._duplicate_choices = None
         self.setWindowTitle(self.tr("Merge Datasets"))
         self.setModal(True)
         self.resize(860, 640)
@@ -352,6 +355,7 @@ class MergeDialog(QtWidgets.QDialog):
                 self.tr("Preview failed: %s") % error
             )
             return
+        self._duplicate_choices = None
         summary = self._plan.summary()
         self.report_label.setText(
             self.tr(
@@ -376,6 +380,17 @@ class MergeDialog(QtWidgets.QDialog):
             if not target_db:
                 return
         options = self._options()
+        if self._plan is not None and self._plan.duplicate_groups:
+            if self._duplicate_choices is None:
+                review = DuplicateReviewDialog(
+                    self._plan.duplicate_groups, self
+                )
+                if not review.exec():
+                    return
+                self._duplicate_choices = review.choices()
+            options.duplicate_actions = actions_from_choices(
+                self._plan.duplicate_groups, self._duplicate_choices
+            )
         self.merge_button.setEnabled(False)
         self.preview_button.setEnabled(False)
         self.progress = QtWidgets.QProgressDialog(
@@ -411,11 +426,15 @@ class MergeDialog(QtWidgets.QDialog):
         self.preview_button.setEnabled(True)
         message = self.tr(
             "Merged %(images)d images and %(objects)d objects; skipped "
-            "%(skipped)d."
+            "%(skipped)d; duplicate groups kept both/skipped/merged: "
+            "%(duplicates)d/%(skipped_duplicates)d/%(merged)d."
         ) % {
             "images": report.imported_images,
             "objects": report.imported_objects,
             "skipped": report.skipped_images,
+            "duplicates": len(report.plan.duplicate_groups),
+            "skipped_duplicates": report.skipped_duplicates,
+            "merged": report.merged_annotations,
         }
         if report.errors:
             message += "\n\n" + self.tr("Problems:") + "\n" + "\n".join(
