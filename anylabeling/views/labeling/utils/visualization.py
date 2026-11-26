@@ -42,6 +42,7 @@ from anylabeling.views.labeling.utils.style import (
     get_progress_dialog_style,
     get_spinbox_style,
 )
+from anylabeling.views.file_dialogs import choose_save_file
 
 # pylupdate6 only records `tr()` calls inside class bodies.  These
 # modules also translate text through `host.tr`/`self.tr` in free
@@ -136,7 +137,7 @@ def _show_visualization_dialog(self, export_type):
         path_edit.setPlaceholderText(self.tr("Select Save File"))
 
         def browse_video_path():
-            path, _ = QFileDialog.getSaveFileName(
+            path = choose_save_file(
                 self,
                 self.tr("Save Visualization Video"),
                 path_edit.text(),
@@ -289,7 +290,7 @@ def _save_visualization_image(self, options):
 
     default_path = _default_image_path(self, image_range)
     if image_range == "current":
-        save_path, _ = QFileDialog.getSaveFileName(
+        save_path = choose_save_file(
             self,
             self.tr("Save Visualization Image"),
             default_path,
@@ -297,7 +298,7 @@ def _save_visualization_image(self, options):
         )
         save_path = _ensure_extension(save_path, ".png") if save_path else ""
     else:
-        save_path, _ = QFileDialog.getSaveFileName(
+        save_path = choose_save_file(
             self,
             self.tr("Save Visualization Images"),
             default_path,

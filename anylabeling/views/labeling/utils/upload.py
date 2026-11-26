@@ -35,6 +35,7 @@ from anylabeling.views.labeling.utils.yolo_import import (
     read_classes_file,
     resolve_label_dir,
 )
+from anylabeling.views.file_dialogs import choose_open_file
 
 # pylupdate6 only records `tr()` calls inside class bodies.  These
 # modules also translate text through `host.tr`/`self.tr` in free
@@ -204,7 +205,7 @@ def upload_vlm_r1_ovd_annotation(self):
         return
 
     filter = "Attribute Files (*.jsonl);;All Files (*)"
-    input_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+    input_file = choose_open_file(
         self,
         self.tr("Select a custom vlm_r1_ovd annotation file"),
         "",
@@ -287,7 +288,7 @@ def upload_ppocr_annotation(self, mode):
 
     if mode == "rec":
         filter = "Attribute Files (*.txt);;All Files (*)"
-        input_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+        input_file = choose_open_file(
             self,
             self.tr("Select a custom annotation file (Label.txt)"),
             "",
@@ -299,7 +300,7 @@ def upload_ppocr_annotation(self, mode):
 
     elif mode == "kie":
         filter = "Attribute Files (*.json);;All Files (*)"
-        input_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+        input_file = choose_open_file(
             self,
             self.tr("Select a custom annotation file (ppocr_kie.json)"),
             "",
@@ -362,7 +363,7 @@ def upload_odvg_annotation(self):
         return
 
     filter = "OD Files (*.json *.jsonl);;All Files (*)"
-    input_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+    input_file = choose_open_file(
         self,
         self.tr("Select a specific OD file"),
         "",
@@ -422,7 +423,7 @@ def upload_mmgd_annotation(self, LABEL_OPACITY):
         return
 
     filter = "Classes Files (*.txt);;All Files (*)"
-    classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+    classes_file = choose_open_file(
         self,
         self.tr("Select a specific classes file"),
         "",
@@ -549,7 +550,7 @@ def upload_mot_annotation(self, LABEL_OPACITY):
         return
 
     filter = "Classes Files (*.txt);;All Files (*)"
-    classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+    classes_file = choose_open_file(
         self,
         self.tr("Select a specific classes file"),
         "",
@@ -560,7 +561,7 @@ def upload_mot_annotation(self, LABEL_OPACITY):
         return
 
     filter = "Gt Files (*.txt);;All Files (*)"
-    gt_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+    gt_file = choose_open_file(
         self,
         self.tr("Select a specific gt file"),
         "",
@@ -641,7 +642,7 @@ def upload_mask_annotation(self, LABEL_OPACITY):
         return
 
     filter = "Attribute Files (*.json);;All Files (*)"
-    color_map_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+    color_map_file = choose_open_file(
         self,
         self.tr("Select a specific color_map file"),
         "",
@@ -830,7 +831,7 @@ def upload_coco_annotation(self, mode):
         return
 
     filter = "Attribute Files (*.json);;All Files (*)"
-    input_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+    input_file = choose_open_file(
         self,
         self.tr("Select a custom coco annotation file"),
         "",
@@ -977,7 +978,7 @@ def _pick_classes_file(host):
     """Fallback picker used when no class source can be detected."""
 
     file_filter = "Classes Files (*.txt);;All Files (*)"
-    path, _selected = QtWidgets.QFileDialog.getOpenFileName(
+    path = choose_open_file(
         host,
         host.tr("Select a specific classes file"),
         "",
@@ -1079,7 +1080,7 @@ def upload_yolo_annotation(self, mode, LABEL_OPACITY):
 
     if mode == "pose":
         filter = "Classes Files (*.yaml);;All Files (*)"
-        self.yaml_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+        self.yaml_file = choose_open_file(
             self,
             self.tr("Select a specific yolo-pose config file"),
             "",
@@ -1265,7 +1266,7 @@ def upload_yolo_annotation(self, mode, LABEL_OPACITY):
 
 def upload_label_classes_file(self):
     filter = "Label Files (*.txt);;All Files (*)"
-    file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+    file_path = choose_open_file(
         self,
         self.tr("Select a specific label classes file"),
         "",
@@ -1465,7 +1466,7 @@ def validate_shape_attributes_config(attributes_data):
 
 def upload_shape_attrs_file(self, LABEL_OPACITY):
     filter = "Shape Attributes Files (*.json);;All Files (*)"
-    file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+    file_path = choose_open_file(
         self,
         self.tr("Select a specific shape attributes file"),
         "",
@@ -1517,7 +1518,7 @@ def upload_shape_attrs_file(self, LABEL_OPACITY):
 
 def upload_label_flags_file(self, LABEL_OPACITY):
     filter = "Label Flags Files (*.yaml);;All Files (*)"
-    file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+    file_path = choose_open_file(
         self,
         self.tr("Select a specific flags file"),
         "",
@@ -1563,7 +1564,7 @@ def upload_label_flags_file(self, LABEL_OPACITY):
 
 def upload_image_flags_file(self):
     filter = "Image Flags Files (*.txt);;All Files (*)"
-    file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+    file_path = choose_open_file(
         self,
         self.tr("Select a specific flags file"),
         "",

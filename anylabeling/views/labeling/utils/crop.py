@@ -40,6 +40,7 @@ from anylabeling.views.labeling.utils.style import (
     get_progress_dialog_style,
     get_spinbox_style,
 )
+from anylabeling.views.file_dialogs import choose_directory
 
 # pylupdate6 only records `tr()` calls inside class bodies.  These
 # modules also translate text through `host.tr`/`self.tr` in free
@@ -267,7 +268,7 @@ def save_crop(self):
     path_edit.setPlaceholderText(self.tr("Select Save Directory"))
 
     def browse_export_path():
-        path = QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self,
             self.tr("Select Save Directory"),
             path_edit.text(),

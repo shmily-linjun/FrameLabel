@@ -68,6 +68,7 @@ from anylabeling.services.auto_training.ultralytics.validators import (
     validate_data_file,
     validate_task_requirements,
 )
+from anylabeling.views.file_dialogs import choose_directory, choose_open_file
 
 
 class _TrainingLogContainer(QWidget):
@@ -632,7 +633,7 @@ class UltralyticsDialog(QDialog):
 
     # Config Tab
     def browse_model_file(self):
-        file_path, _ = QFileDialog.getOpenFileName(
+        file_path = choose_open_file(
             self,
             self.tr("Select Model File"),
             "",
@@ -643,13 +644,13 @@ class UltralyticsDialog(QDialog):
 
     def browse_data_file(self):
         if self.selected_task_type == "Classify":
-            dir_path = QFileDialog.getExistingDirectory(
+            dir_path = choose_directory(
                 self, self.tr("Select Classification Dataset Directory"), ""
             )
             if dir_path:
                 self.config_widgets["data"].setText(dir_path)
         else:
-            file_path, _ = QFileDialog.getOpenFileName(
+            file_path = choose_open_file(
                 self,
                 self.tr("Select Data File"),
                 "",
@@ -669,7 +670,7 @@ class UltralyticsDialog(QDialog):
                     self.names = []
 
     def browse_pose_config_file(self):
-        file_path, _ = QFileDialog.getOpenFileName(
+        file_path = choose_open_file(
             self,
             self.tr("Select Pose Config File"),
             "",
@@ -680,7 +681,7 @@ class UltralyticsDialog(QDialog):
 
     def browse_training_environment(self):
         current_path = self.config_widgets["env"].text().strip()
-        file_path, _ = QFileDialog.getOpenFileName(
+        file_path = choose_open_file(
             self,
             self.tr("Select Python Executable"),
             current_path,
@@ -1417,7 +1418,7 @@ class UltralyticsDialog(QDialog):
             self.configure_training_environment(basic_config["env"])
 
     def import_config(self):
-        file_path, _ = QFileDialog.getOpenFileName(
+        file_path = choose_open_file(
             self,
             self.tr("Import Config"),
             "",

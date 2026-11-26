@@ -52,6 +52,7 @@ from anylabeling.views.labeling.utils.general import open_url
 from anylabeling.views.labeling.utils.qt import new_icon
 from anylabeling.views.labeling.utils.style import get_dock_style
 from anylabeling.views.labeling.utils.theme import get_theme
+from anylabeling.views.file_dialogs import choose_directory, choose_open_file, choose_save_file
 
 
 class FrameLoader(QtCore.QThread):
@@ -1218,7 +1219,7 @@ class PointCloudDialog(QtWidgets.QMainWindow):
         return str(self.settings.value("recent_directory", ""))
 
     def open_file(self):
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        path = choose_open_file(
             self,
             self.tr("Open point cloud"),
             self._recent(),
@@ -1231,7 +1232,7 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             self._request_frame([path], 0, None, overrides)
 
     def open_directory(self):
-        directory = QtWidgets.QFileDialog.getExistingDirectory(
+        directory = choose_directory(
             self,
             self.tr("Open point cloud directory"),
             self._recent(),
@@ -1816,7 +1817,7 @@ class PointCloudDialog(QtWidgets.QMainWindow):
     def _choose_label_file(self):
         if not self.document:
             return
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        path = choose_open_file(
             self,
             self.tr("Choose labels for current frame"),
             str(self.document.frame.label_path),
@@ -1840,7 +1841,7 @@ class PointCloudDialog(QtWidgets.QMainWindow):
     def _choose_label_directory(self):
         if not self.document:
             return
-        directory = QtWidgets.QFileDialog.getExistingDirectory(
+        directory = choose_directory(
             self,
             self.tr("Choose label directory"),
             str(self.document.frame.label_path.parent),
@@ -1862,7 +1863,7 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             return
         self._autosave_timer.stop()
         self.detection.cancel()
-        directory = QtWidgets.QFileDialog.getExistingDirectory(
+        directory = choose_directory(
             self,
             self.tr("Change output directory"),
             str(self.label_directory or self.document.frame.label_path.parent),
@@ -2012,7 +2013,7 @@ class PointCloudDialog(QtWidgets.QMainWindow):
             return False
         self._autosave_timer.stop()
         self.detection.cancel()
-        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+        path = choose_save_file(
             self,
             self.tr("Save complete frame labels"),
             str(self.document.frame.label_path),
@@ -2056,7 +2057,7 @@ class PointCloudDialog(QtWidgets.QMainWindow):
         if path is None:
             path = self._default_class_path()
         if choose_path:
-            selected, _ = QtWidgets.QFileDialog.getSaveFileName(
+            selected = choose_save_file(
                 self,
                 self.tr("Save class definitions"),
                 str(path or Path(self._recent()) / "pointcloud_classes.json"),
@@ -2107,7 +2108,7 @@ class PointCloudDialog(QtWidgets.QMainWindow):
         if self.task_type is not None:
             return
         task = self._class_task()
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        path = choose_open_file(
             self,
             self.tr("Load class definitions"),
             self._recent(),

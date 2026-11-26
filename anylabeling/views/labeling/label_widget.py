@@ -73,6 +73,7 @@ from .widgets.workspace import (
     build_workspace,
     restore_session_state,
 )
+from anylabeling.views.file_dialogs import choose_directory
 
 # Backwards-compatible alias for the label manager / tests.
 _set_label_list_item_lock = set_item_locked
@@ -1706,7 +1707,7 @@ class LabelingWidget(LabelDialog):
             self.status(self.tr("Please open an image first"), 3000)
             return
 
-        compare_dir = QtWidgets.QFileDialog.getExistingDirectory(
+        compare_dir = choose_directory(
             self,
             self.tr("Select Compare Image Directory"),
             "",

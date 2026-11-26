@@ -11,6 +11,7 @@ from anylabeling.views.labeling.utils.theme import get_theme
 from .camera import CameraConfigurationDialog, CameraSource
 from .io import class_config_data, discover_frames, load_classes, save_classes
 from .model import DEFAULT_CLASSES, ClassDefinition
+from anylabeling.views.file_dialogs import choose_directory, choose_open_file, choose_save_file
 
 
 @dataclass(frozen=True)
@@ -366,7 +367,7 @@ class CreateTaskDialog(QtWidgets.QDialog):
         except ValueError as error:
             self._error(str(error))
             return
-        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+        path = choose_save_file(
             self,
             self.tr("Save labels"),
             str(Path(self.workspace._recent()) / "pointcloud_classes.json"),
@@ -390,7 +391,7 @@ class CreateTaskDialog(QtWidgets.QDialog):
         self.error_scroll.hide()
 
     def _upload_classes(self):
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        path = choose_open_file(
             self,
             self.tr("Load classes"),
             self.workspace._recent(),
@@ -432,7 +433,7 @@ class CreateTaskDialog(QtWidgets.QDialog):
         self.error_scroll.hide()
 
     def _browse(self, field, title):
-        directory = QtWidgets.QFileDialog.getExistingDirectory(
+        directory = choose_directory(
             self,
             title,
             field.text()

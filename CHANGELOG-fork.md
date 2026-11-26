@@ -6,6 +6,62 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.61 — 2026-11-26
+
+### 1. 背景与需求
+
+用户要求把全部文件/文件夹对话框一次性迁移到 `views/file_dialogs.py` 的 helper，
+并追问：为什么是 helper、helper 里到底放什么；同时指出上一轮把“测试成本低”误列在
+“成本”项下（应为收益）。
+
+### 2. 澄清与设计
+
+- **测试成本低是收益**：现有测试 patch `QFileDialog` 静态方法，helper 内部调用同一静态
+  方法，因此迁移不会破坏这些 mock；它降低的是迁移风险，属于收益而非成本。上一轮表述有误。
+- **为什么是 helper，而不是类/服务**：这层是**无状态策略层**，只有 4 个纯函数，不需要
+  实例生命周期；用模块级函数可被任何模块直接 import，也便于测试 patch；类/服务会引入
+  单例与状态问题。`file_dialogs.py` 当前只包含：`DIRECTORY_OPTIONS` 常量与
+  `choose_directory`/`choose_open_file`/`choose_open_files`/`choose_save_file` 四个函数
+  （调用 Qt 静态 API、归一化返回值、不设置 `DontUseNativeDialog`）。
+- **迁移位置**：27 个调用文件（87 处调用）统一改为 `from anylabeling.views.file_dialogs
+  import ...` + 四个 helper；helper 自身保留对 Qt 静态 API 的唯一直接调用。
+
+### 3. 主要实现
+
+- 机械迁移 27 个文件共 83 处调用（helper 内部 4 处不计），覆盖 `file_session`、
+  `utils/export.py`、`utils/upload.py`、`pointcloud/*`、`classifier/*`、
+  `video_classifier/*`、`training/ultralytics_dialog.py`、`settings/dialog.py`、
+  `dataset_center*.py` 等；删除所有 `x, _ = QFileDialog.getOpenFileName(...)` 形式的
+  解包（helper 直接返回字符串/列表）。
+- `choose_directory` 默认不附加选项（保持各调用点原行为），需要
+  `ShowDirsOnly | DontResolveSymlinks` 的调用点显式传入或使用 `DIRECTORY_OPTIONS`。
+- 新增测试仍为 `tests/test_widgets/test_file_dialogs.py`（6 passed），迁移未新增 UI 文案，
+  翻译无变化。
+
+### 4. 涉及文件
+
+- `anylabeling/views/file_dialogs.py`（默认选项调整与注释）
+- 27 个调用文件（见 §3）
+- `app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、
+  `docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+
+### 5. 验证
+
+- `tests/test_widgets + test_utils`：**301 passed / 105 subtests**；
+- `tests/test_settings + test_dataset_db + test_identity + test_i18n`：**136 passed /
+  1 skipped / 12 subtests**；
+- `tests/test_i18n` 17 passed（无新文案）；
+- `tests/test_pointcloud/test_dialog.py` **25 passed**；`test_cuboids`、`test_export_dialog`
+  等在本机离屏环境存在**既有崩溃/挂起**（在 fork.60 HEAD 上同样复现，与本次迁移无关），
+  因此未作为本批门禁；`test_task_dialog` 的单测失败同样在 HEAD 复现（环境/夹具问题）。
+- 未执行：真实桌面逐个打开 87 个对话框入口。
+
+### 6. 已知限制
+
+- 原生对话框的选项（`ShowDirsOnly`/`DontResolveSymlinks`）在部分平台被 Qt 忽略；
+- 约 87 处调用点各自的标题/过滤器仍保留在各模块，helper 只统一“怎么弹窗”，不统一文案；
+- 推送仍受本机网络/凭据阻塞；本地 `main` 领先远端 14 个提交。
+
 ## 4.3.2+fork.60 — 2026-11-26
 
 ### 1. 背景与需求

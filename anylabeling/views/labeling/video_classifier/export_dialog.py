@@ -22,6 +22,7 @@ from .style import (
     get_secondary_button_style,
     get_toolbar_button_style,
 )
+from anylabeling.views.file_dialogs import choose_directory
 
 
 class ExportDialog(QDialog):
@@ -152,7 +153,7 @@ class ExportDialog(QDialog):
         return spin
 
     def _browse_output(self):
-        path = QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self,
             self.tr("Select output directory"),
             self.out_edit.text() or self._source_folder or os.getcwd(),

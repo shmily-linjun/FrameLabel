@@ -105,6 +105,7 @@ from anylabeling.views.labeling.video_classifier.utils import (
     ms_to_timecode,
     probe_video,
 )
+from anylabeling.views.file_dialogs import choose_open_file, choose_save_file
 
 VIDEO_DESCRIPTION_PROMPT = "Describe this video."
 VIDEO_SEGMENTATION_PROMPT = """请你描述视频中的人物的一系列动作，并以 JSON 格式输出开始时间、结束时间和事件描述。
@@ -1680,7 +1681,7 @@ class VideoClassifierDialog(QDialog):
             return None
 
     def _on_open_clicked(self):
-        path, _ = QFileDialog.getOpenFileName(
+        path = choose_open_file(
             self,
             self.tr("Open video"),
             os.path.dirname(self._video_path) if self._video_path else "",
@@ -1886,7 +1887,7 @@ class VideoClassifierDialog(QDialog):
         default_path = os.path.join(
             os.path.dirname(self._video_path), f"{stem}_{frame}.png"
         )
-        path, _ = QFileDialog.getSaveFileName(
+        path = choose_save_file(
             self,
             self.tr("Save current frame"),
             default_path,
@@ -2848,7 +2849,7 @@ class VideoClassifierDialog(QDialog):
         default_path = os.path.join(
             os.path.dirname(self._video_path), default_name
         )
-        path, _ = QFileDialog.getSaveFileName(
+        path = choose_save_file(
             self,
             self.tr("Export selected segment"),
             default_path,

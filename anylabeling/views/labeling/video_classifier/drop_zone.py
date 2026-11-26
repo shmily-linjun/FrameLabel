@@ -12,6 +12,7 @@ from PyQt6.QtWidgets import (
 from .config import SUPPORTED_VIDEO_EXTS, SUPPORTED_VIDEO_FILTER
 from .icons import themed_icon, theme_icon_color
 from .style import get_drop_zone_style
+from anylabeling.views.file_dialogs import choose_open_file
 
 
 class DropZone(QFrame):
@@ -114,7 +115,7 @@ class DropZone(QFrame):
         self.update()
 
     def _open_file_dialog(self):
-        path, _ = QFileDialog.getOpenFileName(
+        path = choose_open_file(
             self,
             self.tr("Open video"),
             "",

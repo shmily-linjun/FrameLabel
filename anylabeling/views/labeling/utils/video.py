@@ -31,6 +31,7 @@ from anylabeling.views.labeling.utils.style import (
     get_cancel_btn_style,
 )
 from anylabeling.views.labeling.widgets import Popup
+from anylabeling.views.file_dialogs import choose_open_file
 
 # pylupdate6 only records `tr()` calls inside class bodies.  These
 # modules also translate text through `host.tr`/`self.tr` in free
@@ -544,7 +545,7 @@ def open_video_file(self):
         return
 
     file_filter = "Video Files (*.asf *.avi *.m4v *.mkv *.mov *.mp4 *.mpeg *.mpg *.ts *.wmv);;All Files (*)"
-    input_file, _ = QFileDialog.getOpenFileName(
+    input_file = choose_open_file(
         self,
         self.tr("Open Video file"),
         "",

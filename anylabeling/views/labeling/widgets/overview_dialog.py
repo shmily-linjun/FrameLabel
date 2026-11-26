@@ -25,6 +25,7 @@ from anylabeling.views.labeling.utils.style import (
     get_progress_dialog_style,
 )
 from anylabeling.views.labeling.widgets.popup import Popup
+from anylabeling.views.file_dialogs import choose_directory
 
 
 def _get_overview_style() -> str:
@@ -422,7 +423,7 @@ class OverviewDialog(QtWidgets.QDialog):
         """
         Export the label and shape information to a CSV file.
         """
-        directory = QFileDialog.getExistingDirectory(
+        directory = choose_directory(
             self, self.tr("Select Directory"), ""
         )
         if not directory:

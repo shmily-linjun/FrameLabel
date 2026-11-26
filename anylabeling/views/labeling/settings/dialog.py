@@ -27,6 +27,7 @@ from .schema import (
     SETTINGS_PRIMARY_ORDER,
     fields_for_primary,
 )
+from anylabeling.views.file_dialogs import choose_directory
 
 
 @dataclass
@@ -1409,7 +1410,7 @@ class SettingsDialog(QtWidgets.QDialog):
             start_directory = QtCore.QStandardPaths.writableLocation(
                 QtCore.QStandardPaths.StandardLocation.HomeLocation
             )
-        directory = QtWidgets.QFileDialog.getExistingDirectory(
+        directory = choose_directory(
             self,
             self.tr("Select Model Directory"),
             start_directory,

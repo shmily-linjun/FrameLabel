@@ -5,6 +5,7 @@ from PyQt6 import QtCore, QtWidgets
 from .export import ExportCancelled
 from .export_dialog import PointCloudExportDialog
 from .import_dataset import apply_import, prepare_import
+from anylabeling.views.file_dialogs import choose_open_file
 
 
 class ImportWorker(QtCore.QThread):
@@ -61,7 +62,7 @@ class PointCloudImportDialog(PointCloudExportDialog):
         )
 
     def _browse(self):
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        path = choose_open_file(
             self,
             self.tr("Import 3D objects"),
             self.path_input.text()

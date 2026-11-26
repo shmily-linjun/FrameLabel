@@ -4,6 +4,7 @@ from PyQt6 import QtCore, QtWidgets
 
 from .export import EXPORT_FORMATS, ExportCancelled, export_dataset
 from .icons import get_icon
+from anylabeling.views.file_dialogs import choose_save_file
 
 
 class ExportWorker(QtCore.QThread):
@@ -102,7 +103,7 @@ class PointCloudExportDialog(QtWidgets.QDialog):
         )
 
     def _browse(self):
-        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+        path = choose_save_file(
             self,
             self.tr("Export 3D objects"),
             self.path_input.text(),

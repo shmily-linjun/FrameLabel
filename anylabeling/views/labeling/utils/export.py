@@ -25,6 +25,7 @@ from anylabeling.views.labeling.widgets import Popup
 from anylabeling.views.labeling.utils.qt import new_icon_path
 from anylabeling.views.labeling.utils.style import *
 from anylabeling.views.labeling.utils.dataset_statistics import normalize_split
+from anylabeling.views.file_dialogs import choose_directory, choose_open_file, choose_save_file
 
 # pylupdate6 only records `tr()` calls inside class bodies.  These
 # modules also translate text through `host.tr`/`self.tr` in free
@@ -389,7 +390,7 @@ def export_yolo_annotation(self, mode):
         filter = QCoreApplication.translate(
             "LabelingWidget", "Classes Files (*.yaml);;All Files (*)"
         )
-        self.yaml_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+        self.yaml_file = choose_open_file(
             self,
             QCoreApplication.translate(
                 "LabelingWidget",
@@ -423,7 +424,7 @@ def export_yolo_annotation(self, mode):
             filter = QCoreApplication.translate(
                 "LabelingWidget", "Classes Files (*.txt);;All Files (*)"
             )
-            self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.classes_file = choose_open_file(
                 self,
                 QCoreApplication.translate(
                     "LabelingWidget", "Select a specific classes file"
@@ -468,7 +469,7 @@ def export_yolo_annotation(self, mode):
     )
 
     def browse_export_path():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self,
             QCoreApplication.translate(
                 "LabelingWidget", "Select Export Directory"
@@ -784,7 +785,7 @@ def export_voc_annotation(self, mode):
     path_edit.setPlaceholderText(self.tr("Select Export Directory"))
 
     def browse_export_path():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
@@ -944,7 +945,7 @@ def export_coco_annotation(self, mode):
 
     if mode == "pose":
         filter = "Classes Files (*.yaml);;All Files (*)"
-        self.yaml_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+        self.yaml_file = choose_open_file(
             self,
             self.tr("Select a specific coco-pose config file"),
             "",
@@ -969,7 +970,7 @@ def export_coco_annotation(self, mode):
             converter = LabelConverter(classes=dataset_classes)
         else:
             filter = "Classes Files (*.txt);;All Files (*)"
-            self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.classes_file = choose_open_file(
                 self,
                 self.tr("Select a specific classes file"),
                 "",
@@ -1006,7 +1007,7 @@ def export_coco_annotation(self, mode):
     path_edit.setPlaceholderText(self.tr("Select Export Directory"))
 
     def browse_export_path():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
@@ -1134,7 +1135,7 @@ def export_dota_annotation(self):
     dataset_classes = _dataset_category_names(self)
     if not dataset_classes:
         filter = "Classes Files (*.txt);;All Files (*)"
-        self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+        self.classes_file = choose_open_file(
             self,
             self.tr("Select a specific classes file"),
             "",
@@ -1166,7 +1167,7 @@ def export_dota_annotation(self):
     path_edit.setPlaceholderText(self.tr("Select Export Directory"))
 
     def browse_export_path():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
@@ -1349,7 +1350,7 @@ def export_mask_annotation(self):
         return
 
     filter = "JSON Files (*.json);;All Files (*)"
-    color_map_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+    color_map_file = choose_open_file(
         self,
         self.tr("Select a specific color_map file"),
         "",
@@ -1386,7 +1387,7 @@ def export_mask_annotation(self):
     path_edit.setPlaceholderText(self.tr("Select Export Directory"))
 
     def browse_export_path():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
@@ -1535,7 +1536,7 @@ def export_mot_annotation(self, mode):
     converter = LabelConverter(classes=dataset_classes)
     if mode in ["mot", "mots", "odvg"] and not dataset_classes:
         filter = "Classes Files (*.txt);;All Files (*)"
-        self.classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+        self.classes_file = choose_open_file(
             self,
             self.tr("Select a specific classes file"),
             "",
@@ -1570,7 +1571,7 @@ def export_mot_annotation(self, mode):
     path_edit.setPlaceholderText(self.tr("Select Export Directory"))
 
     def browse_export_path():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
@@ -1726,7 +1727,7 @@ def export_pporc_annotation(self, mode):
     path_edit.setPlaceholderText(self.tr("Select Export Directory"))
 
     def browse_export_path():
-        path = QtWidgets.QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self,
             self.tr("Select Export Directory"),
             path_edit.text(),
@@ -1914,7 +1915,7 @@ def export_vlm_r1_ovd_annotation(self):
     path_edit.setPlaceholderText(self.tr("Select Export File"))
 
     def browse_export_file():
-        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+        path = choose_save_file(
             dialog,
             self.tr("Select Export File"),
             path_edit.text(),
@@ -1991,7 +1992,7 @@ def export_vlm_r1_ovd_annotation(self):
 
     def _handle_class_file_upload():
         filter = "Classes Files (*.txt);;All Files (*)"
-        classes_file, _ = QtWidgets.QFileDialog.getOpenFileName(
+        classes_file = choose_open_file(
             self,
             self.tr("Select a specific classes file"),
             "",

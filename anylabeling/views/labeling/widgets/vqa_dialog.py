@@ -36,6 +36,7 @@ from anylabeling.views.labeling.utils.theme import get_theme
 from anylabeling.views.labeling.logger import logger
 from anylabeling.views.labeling.vqa.dialogs import ExportLabelsDialog
 from anylabeling.views.labeling.widgets.popup import Popup
+from anylabeling.views.file_dialogs import choose_save_file
 
 PANEL_BUTTON_SIZE = 28
 PANEL_ICON_SIZE = 16
@@ -1511,7 +1512,7 @@ class VQADialog(QDialog):
             )
             return
 
-        export_path = QFileDialog.getSaveFileName(
+        export_path = choose_save_file(
             self,
             self.tr("Export Labels"),
             self.tr("vqa_labels.jsonl"),

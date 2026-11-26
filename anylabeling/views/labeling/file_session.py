@@ -33,6 +33,7 @@ from .utils.file_search import (
     matches_query_label_data,
     parse_search_query,
 )
+from anylabeling.views.file_dialogs import choose_directory, choose_open_file, choose_open_files, choose_save_file
 
 # pylupdate6 only records `tr()` calls inside class bodies.  These
 # modules also translate text through `host.tr`/`self.tr` in free
@@ -55,7 +56,7 @@ def _unescape_filter_value(value):
         result.append(char)
         index += 1
     return "".join(result)
-from ..file_dialogs import choose_open_file, choose_save_file
+
 
 
 class DatabaseLabelFile:
@@ -205,7 +206,7 @@ class FileSession:
     def import_project_dialog(self):
         """Import X-AnyLabeling JSON files into a dataset DB, then open it."""
 
-        directory = QtWidgets.QFileDialog.getExistingDirectory(
+        directory = choose_directory(
             self.host,
             self.host.tr("Import Project (X-AnyLabeling)"),
             self.host.current_path(),
@@ -989,7 +990,7 @@ class FileSession:
         if default_output_dir is None:
             default_output_dir = self.host.current_path()
 
-        output_dir = QtWidgets.QFileDialog.getExistingDirectory(
+        output_dir = choose_directory(
             self.host,
             self.host.tr("%s - Save/Load Annotations in Directory") % __appname__,
             default_output_dir,
@@ -1319,7 +1320,7 @@ class FileSession:
         formats = [
             f"*{ext}" for ext in utils.get_supported_image_extensions()
         ]
-        files, _selected_filter = QtWidgets.QFileDialog.getOpenFileNames(
+        files = choose_open_files(
             self.host,
             self.host.tr("%s - Import Files") % __appname__,
             default_dir,
@@ -1342,7 +1343,7 @@ class FileSession:
             )
 
         target_dir_path = str(
-            QtWidgets.QFileDialog.getExistingDirectory(
+            choose_directory(
                 self.host,
                 self.host.tr("%s - Open Directory") % __appname__,
                 default_open_dir_path,

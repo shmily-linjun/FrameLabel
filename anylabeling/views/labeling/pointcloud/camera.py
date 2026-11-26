@@ -17,6 +17,7 @@ from anylabeling.views.labeling.utils.qt import new_icon
 
 from .cuboid import EDGES
 from .icons import center_pixmap, get_icon
+from anylabeling.views.file_dialogs import choose_directory, choose_open_file
 
 
 def load_calibration(path):
@@ -319,7 +320,7 @@ class _CameraSourceFields(QtWidgets.QWidget):
         self.directory_changed.emit()
 
     def _browse_directory(self):
-        directory = QtWidgets.QFileDialog.getExistingDirectory(
+        directory = choose_directory(
             self,
             self.directory_input.placeholderText(),
             self.directory_input.text(),
@@ -328,7 +329,7 @@ class _CameraSourceFields(QtWidgets.QWidget):
             self.directory_input.setText(directory)
 
     def _browse_calibration(self):
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        path = choose_open_file(
             self,
             self.calibration_input.placeholderText(),
             self.calibration_input.text(),

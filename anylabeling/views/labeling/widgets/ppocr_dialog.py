@@ -106,6 +106,7 @@ from anylabeling.views.labeling.ppocr.widgets import (
 from anylabeling.views.labeling.utils.qt import new_icon, new_icon_path
 from anylabeling.views.labeling.utils.theme import get_theme
 from anylabeling.views.labeling.widgets.popup import Popup
+from anylabeling.views.file_dialogs import choose_open_files, choose_save_file
 
 PPOCR_WORKSPACE_HANDLE_WIDTH = 16
 PPOCR_WORKSPACE_MIN_RATIO = 0.2
@@ -1060,7 +1061,7 @@ class PPOCRDialog(QDialog):
             self.show_empty_state()
 
     def on_new_parsing_clicked(self) -> None:
-        file_paths, _ = QFileDialog.getOpenFileNames(
+        file_paths = choose_open_files(
             self,
             self.tr("New Parsing"),
             "",
@@ -1645,7 +1646,7 @@ class PPOCRDialog(QDialog):
         default_name = (
             f"{Path(self.current_record.filename).stem}_document_parsing.zip"
         )
-        export_path = QFileDialog.getSaveFileName(
+        export_path = choose_save_file(
             self,
             self.tr("Download Document Parsing"),
             default_name,
@@ -1707,7 +1708,7 @@ class PPOCRDialog(QDialog):
             f"{self.current_record.filename}_by_"
             f"{self._current_parsing_model_token()}.json"
         )
-        export_path = QFileDialog.getSaveFileName(
+        export_path = choose_save_file(
             self,
             self.tr("Download JSON"),
             filename,

@@ -79,6 +79,7 @@ from .table import (
     FileTableItem,
     FileTableWidget,
 )
+from anylabeling.views.file_dialogs import choose_directory
 
 # pylupdate6 only records `tr()` calls inside class bodies.  These
 # modules also translate text through `host.tr`/`self.tr` in free
@@ -1052,7 +1053,7 @@ class FileListController:
         ensure_operator = getattr(host, "_ensure_operator", None)
         if ensure_operator is not None and not ensure_operator():
             return
-        destination = QtWidgets.QFileDialog.getExistingDirectory(
+        destination = choose_directory(
             host,
             host.tr("Move to Folder"),
             osp.dirname(paths[0]),

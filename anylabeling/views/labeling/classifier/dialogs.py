@@ -31,6 +31,7 @@ from anylabeling.views.labeling.classifier.utils import (
     load_flags_from_json,
 )
 from anylabeling.views.labeling.utils.theme import get_theme
+from anylabeling.views.file_dialogs import choose_directory, choose_open_file
 
 
 class ExportPathDialog(QDialog):
@@ -121,7 +122,7 @@ class ExportPathDialog(QDialog):
         """
 
     def browse_path(self):
-        path = QFileDialog.getExistingDirectory(
+        path = choose_directory(
             self, self.tr("Select Export Directory")
         )
         if path:
@@ -216,7 +217,7 @@ class NewLabelDialog(QDialog):
 
     def upload_labels_file(self):
         """Upload and parse labels from txt file"""
-        file_path, _ = QFileDialog.getOpenFileName(
+        file_path = choose_open_file(
             self,
             self.tr("Select Labels File"),
             "",

@@ -31,7 +31,7 @@ def choose_directory(
     parent,
     title: str,
     directory: str = "",
-    options=DIRECTORY_OPTIONS,
+    options=QtWidgets.QFileDialog.Option(0),
 ) -> str:
     """Pick one directory; empty string means the user cancelled."""
 

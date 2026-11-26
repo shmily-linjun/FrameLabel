@@ -29,6 +29,7 @@ from .labeling.utils.style import (
     get_ok_btn_style,
     get_settings_combo_style,
 )
+from anylabeling.views.file_dialogs import choose_directory
 
 
 class _MergeWorker(QtCore.QThread):
@@ -254,7 +255,7 @@ class MergeDialog(QtWidgets.QDialog):
             )
 
     def _choose_folder(self) -> None:
-        folder = QtWidgets.QFileDialog.getExistingDirectory(
+        folder = choose_directory(
             self, self.tr("Parent folder for the new dataset")
         )
         if folder:

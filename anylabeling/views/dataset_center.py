@@ -36,6 +36,7 @@ from .labeling.utils.style import (
     get_ok_btn_style,
 )
 from .labeling.utils.theme import get_theme
+from anylabeling.views.file_dialogs import choose_directory
 
 logger = __import__("logging").getLogger(__name__)
 
@@ -577,7 +578,7 @@ class DatasetCenterWindow(QtWidgets.QDialog):
 
     # -- actions -----------------------------------------------------------
     def _add_folder(self) -> None:
-        folder = QtWidgets.QFileDialog.getExistingDirectory(
+        folder = choose_directory(
             self, self.tr("Add Dataset Folder"), ""
         )
         if not folder:
@@ -652,7 +653,7 @@ class DatasetCenterWindow(QtWidgets.QDialog):
         entries = self._selected_entries()
         if len(entries) != 1:
             return
-        folder = QtWidgets.QFileDialog.getExistingDirectory(
+        folder = choose_directory(
             self, self.tr("Select the folder that contains xanylabeling.db")
         )
         if not folder:

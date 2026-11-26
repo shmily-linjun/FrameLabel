@@ -25,6 +25,7 @@ from ..utils.style import (
     get_export_option_style,
     get_ok_btn_style,
 )
+from anylabeling.views.file_dialogs import choose_directory
 
 
 class BaseDialog(QtWidgets.QDialog):
@@ -75,7 +76,7 @@ class BaseDialog(QtWidgets.QDialog):
             parent = self
 
         def browse():
-            chosen = QtWidgets.QFileDialog.getExistingDirectory(
+            chosen = choose_directory(
                 parent,
                 browse_title,
                 edit.text(),

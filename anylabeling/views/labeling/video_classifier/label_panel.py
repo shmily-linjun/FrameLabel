@@ -34,6 +34,7 @@ from .style import (
     get_segment_list_style,
 )
 from .utils import color_for_label, color_from_index
+from anylabeling.views.file_dialogs import choose_open_file
 
 
 def _color_pixmap(color, size=12):
@@ -249,7 +250,7 @@ class LabelSettingsDialog(QDialog):
         self.table.setCellWidget(row, 4, color_container)
 
     def _upload_labels(self):
-        path, _ = QFileDialog.getOpenFileName(
+        path = choose_open_file(
             self,
             self.tr("Upload labels"),
             "",

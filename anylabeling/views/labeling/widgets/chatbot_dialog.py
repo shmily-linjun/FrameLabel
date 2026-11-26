@@ -55,6 +55,7 @@ from anylabeling.views.labeling.utils.theme import get_theme
 from anylabeling.views.labeling.widgets.model_dropdown_widget import (
     ModelDropdown,
 )
+from anylabeling.views.file_dialogs import choose_directory, choose_open_file
 
 HELP_ICON_SIZE = 14
 HELP_ICON_RENDER_SCALE = 2
@@ -1845,7 +1846,7 @@ class ChatbotDialog(QDialog):
                 return
 
             current_dir = os.path.dirname(self.parent().filename)
-            export_dir = QFileDialog.getExistingDirectory(
+            export_dir = choose_directory(
                 self,
                 self.tr("Select Export Directory"),
                 current_dir,
@@ -1989,7 +1990,7 @@ class ChatbotDialog(QDialog):
                 return
 
             current_dir = os.path.dirname(self.parent().filename)
-            import_file, _ = QFileDialog.getOpenFileName(
+            import_file = choose_open_file(
                 self,
                 self.tr("Select Dataset File"),
                 current_dir,
