@@ -492,7 +492,7 @@ Example: person.car.bicycle</source>
         <translation>现有对象在更新期间将被新对象覆盖。点击切换到保留状态。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1358" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1359" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="387" />
         <source>Replace (On)</source>
         <translation>标签覆盖（开启）</translation>
@@ -508,7 +508,7 @@ Example: person.car.bicycle</source>
         <translation>调整掩码精细度：值越小越精细，值越大越粗糙 [默认值: 0.001]</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1012" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1013" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="432" />
         <source>AMG</source>
         <translation>AMG</translation>
@@ -544,7 +544,7 @@ Example: person.car.bicycle</source>
         <translation>模型文件删除成功。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="851" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="852" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="765" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="714" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="704" />
@@ -552,37 +552,42 @@ Example: person.car.bicycle</source>
         <translation>无模型</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1013" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="821" />
+        <source>Select model configuration</source>
+        <translation>选择模型配置</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1014" />
         <source>AMG may take a long time to process the current image. Do you want to continue?</source>
         <translation>AMG 处理当前图像可能需要较长时间。是否继续？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1058" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1059" />
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1120" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1121" />
         <source>Cancelling...</source>
         <translation>正在取消……</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1351" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1352" />
         <source>Replace (Off)</source>
         <translation>标签覆盖（关闭）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1898" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1899" />
         <source>Skip Det (On)</source>
         <translation>跳过检测（开启）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1900" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1901" />
         <source>Skip Det (Off)</source>
         <translation>跳过检测（关闭）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1919" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1920" />
         <source>Existing unsupported shape type. Only rectangle, rotation and polygon shapes are supported for detection boxes.</source>
         <translation>存在不支持的对象类型。检测框仅支持矩形、旋转框和多边形对象。</translation>
     </message>
@@ -3808,114 +3813,108 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>图像和标签文件（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="972" />
+        <location filename="..\..\views\labeling\file_session.py" line="970" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - 选择图像或标签文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="985" />
+        <location filename="..\..\views\labeling\file_session.py" line="981" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>数据集模式下不支持修改输出目录。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="998" />
+        <location filename="..\..\views\labeling\file_session.py" line="994" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - 在目录中保存/加载注释</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1011" />
+        <location filename="..\..\views\labeling\file_session.py" line="1007" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s . 注释将保存/加载在%s中</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1041" />
+        <location filename="..\..\views\labeling\file_session.py" line="1037" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>数据集模式下暂不支持“另存为”；标注保存在数据集数据库中。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1052" />
+        <location filename="..\..\views\labeling\file_session.py" line="1048" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>数据集模式下暂不支持“另存为”。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1057" />
-        <source>%s - Choose File</source>
-        <translation>%s - 选择文件</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1088" />
-        <location filename="..\..\views\labeling\file_session.py" line="1058" />
+        <location filename="..\..\views\labeling\file_session.py" line="1053" />
         <source>Label files (*%s)</source>
         <translation>标签文件（*%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1086" />
+        <location filename="..\..\views\labeling\file_session.py" line="1065" />
         <source>Choose File</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1121" />
+        <location filename="..\..\views\labeling\file_session.py" line="1097" />
         <source>Dataset closed</source>
         <translation>数据集已关闭</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1240" />
-        <location filename="..\..\views\labeling\file_session.py" line="1226" />
-        <location filename="..\..\views\labeling\file_session.py" line="1209" />
-        <location filename="..\..\views\labeling\file_session.py" line="1183" />
-        <location filename="..\..\views\labeling\file_session.py" line="1169" />
-        <location filename="..\..\views\labeling\file_session.py" line="1155" />
+        <location filename="..\..\views\labeling\file_session.py" line="1216" />
+        <location filename="..\..\views\labeling\file_session.py" line="1202" />
+        <location filename="..\..\views\labeling\file_session.py" line="1185" />
+        <location filename="..\..\views\labeling\file_session.py" line="1159" />
+        <location filename="..\..\views\labeling\file_session.py" line="1145" />
+        <location filename="..\..\views\labeling\file_session.py" line="1131" />
         <source>Attention</source>
         <translation>注意</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1210" />
-        <location filename="..\..\views\labeling\file_session.py" line="1156" />
+        <location filename="..\..\views\labeling\file_session.py" line="1186" />
+        <location filename="..\..\views\labeling\file_session.py" line="1132" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>将此图片及其标注移入回收站？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1170" />
+        <location filename="..\..\views\labeling\file_session.py" line="1146" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>请在删除标签文件前禁用"保留上一个注释"。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1177" />
+        <location filename="..\..\views\labeling\file_session.py" line="1153" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>您即将永久删除此标签文件，是否继续？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1227" />
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>请在删除图像文件前禁用"保留上一个注释"。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1234" />
+        <location filename="..\..\views\labeling\file_session.py" line="1210" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>您即将永久删除此图像文件，是否继续？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1312" />
+        <location filename="..\..\views\labeling\file_session.py" line="1288" />
         <source>Save annotations?</source>
         <translation>保存注释？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1348" />
+        <location filename="..\..\views\labeling\file_session.py" line="1324" />
         <source>%s - Import Files</source>
         <translation>%s - 单文件导入</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1350" />
+        <location filename="..\..\views\labeling\file_session.py" line="1326" />
         <source>Image files (%s)</source>
         <translation>图片文件（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1371" />
+        <location filename="..\..\views\labeling\file_session.py" line="1347" />
         <source>%s - Open Directory</source>
         <translation>%s - 打开目录</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1415" />
+        <location filename="..\..\views\labeling\file_session.py" line="1391" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>数据集模式下暂不支持添加文件；请使用数据集导入/同步入口。</translation>
     </message>
@@ -6710,107 +6709,102 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>图像和标签文件（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="972" />
+        <location filename="..\..\views\labeling\file_session.py" line="970" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - 选择图像或标签文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="985" />
+        <location filename="..\..\views\labeling\file_session.py" line="981" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>数据集模式下不支持修改输出目录。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="998" />
+        <location filename="..\..\views\labeling\file_session.py" line="994" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - 在目录中保存/加载注释</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1011" />
+        <location filename="..\..\views\labeling\file_session.py" line="1007" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s . 注释将保存/加载在%s中</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1041" />
+        <location filename="..\..\views\labeling\file_session.py" line="1037" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>数据集模式下暂不支持“另存为”；标注保存在数据集数据库中。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1052" />
+        <location filename="..\..\views\labeling\file_session.py" line="1048" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>数据集模式下暂不支持“另存为”。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1057" />
-        <source>%s - Choose File</source>
-        <translation>%s - 选择文件</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1058" />
+        <location filename="..\..\views\labeling\file_session.py" line="1053" />
         <source>Label files (*%s)</source>
         <translation>标签文件（*%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1086" />
+        <location filename="..\..\views\labeling\file_session.py" line="1065" />
         <source>Choose File</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1121" />
+        <location filename="..\..\views\labeling\file_session.py" line="1097" />
         <source>Dataset closed</source>
         <translation>数据集已关闭</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1155" />
+        <location filename="..\..\views\labeling\file_session.py" line="1131" />
         <source>Attention</source>
         <translation>注意</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1156" />
+        <location filename="..\..\views\labeling\file_session.py" line="1132" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>将此图片及其标注移入回收站？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1170" />
+        <location filename="..\..\views\labeling\file_session.py" line="1146" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>请在删除标签文件前禁用"保留上一个注释"。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1177" />
+        <location filename="..\..\views\labeling\file_session.py" line="1153" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>您即将永久删除此标签文件，是否继续？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1227" />
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>请在删除图像文件前禁用"保留上一个注释"。</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1234" />
+        <location filename="..\..\views\labeling\file_session.py" line="1210" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>您即将永久删除此图像文件，是否继续？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1312" />
+        <location filename="..\..\views\labeling\file_session.py" line="1288" />
         <source>Save annotations?</source>
         <translation>保存注释？</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1348" />
+        <location filename="..\..\views\labeling\file_session.py" line="1324" />
         <source>%s - Import Files</source>
         <translation>%s - 单文件导入</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1350" />
+        <location filename="..\..\views\labeling\file_session.py" line="1326" />
         <source>Image files (%s)</source>
         <translation>图片文件（%s）</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1371" />
+        <location filename="..\..\views\labeling\file_session.py" line="1347" />
         <source>%s - Open Directory</source>
         <translation>%s - 打开目录</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1415" />
+        <location filename="..\..\views\labeling\file_session.py" line="1391" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>数据集模式下暂不支持添加文件；请使用数据集导入/同步入口。</translation>
     </message>

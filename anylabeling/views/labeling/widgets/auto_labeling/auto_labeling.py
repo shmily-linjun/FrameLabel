@@ -8,7 +8,6 @@ from PyQt6 import uic
 from PyQt6.QtCore import Qt, pyqtSignal, pyqtSlot, QPoint, QTimer
 from PyQt6.QtWidgets import (
     QDialog,
-    QFileDialog,
     QHBoxLayout,
     QLabel,
     QMessageBox,
@@ -26,6 +25,7 @@ from anylabeling.services.auto_labeling import (
     _SKIP_PREDICTION_ON_NEW_MARKS_MODELS,
 )
 from anylabeling.views.labeling.chatbot.style import ChatbotDialogStyle
+from anylabeling.views.file_dialogs import choose_open_file
 from anylabeling.views.labeling.logger import logger
 from anylabeling.views.labeling.utils.theme import get_theme
 from anylabeling.views.labeling.utils.style import (
@@ -816,12 +816,13 @@ class AutoLabelingWidget(QWidget):
 
         if model_name == "load_custom_model":
             # Open file dialog to select "config.yaml" file for model
-            file_dialog = QFileDialog(self)
-            file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
-            file_dialog.setNameFilter("Config file (*.yaml)")
-
-            if file_dialog.exec():
-                config_file = file_dialog.selectedFiles()[0]
+            config_file = choose_open_file(
+                self,
+                self.tr("Select model configuration"),
+                "",
+                "Config file (*.yaml)",
+            )
+            if config_file:
                 self.load_custom_model_config(config_file)
 
             return

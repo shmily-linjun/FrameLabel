@@ -493,7 +493,7 @@ Example: person.car.bicycle</source>
         <translation>업데이트 중 기존 도형을 새 도형으로 덮어씁니다. 클릭하면 보존 모드로 전환됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1358" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1359" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="387" />
         <source>Replace (On)</source>
         <translation>덮어쓰기 (켜짐)</translation>
@@ -509,7 +509,7 @@ Example: person.car.bicycle</source>
         <translation>마스크 세밀도를 조정합니다. 값이 낮을수록 더 세밀하고, 높을수록 더 거칠어집니다. [기본값: 0.001]</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1012" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1013" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="432" />
         <source>AMG</source>
         <translation>AMG</translation>
@@ -545,7 +545,7 @@ Example: person.car.bicycle</source>
         <translation>모델 파일이 삭제되었습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="851" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="852" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="765" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="714" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="704" />
@@ -553,37 +553,42 @@ Example: person.car.bicycle</source>
         <translation>모델 없음</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1013" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="821" />
+        <source>Select model configuration</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1014" />
         <source>AMG may take a long time to process the current image. Do you want to continue?</source>
         <translation>AMG로 현재 이미지를 처리하는 데 시간이 오래 걸릴 수 있습니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1058" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1059" />
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1120" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1121" />
         <source>Cancelling...</source>
         <translation>취소 중...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1351" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1352" />
         <source>Replace (Off)</source>
         <translation>덮어쓰기 (꺼짐)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1898" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1899" />
         <source>Skip Det (On)</source>
         <translation>감지 건너뛰기 (켜짐)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1900" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1901" />
         <source>Skip Det (Off)</source>
         <translation>감지 건너뛰기 (꺼짐)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1919" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1920" />
         <source>Existing unsupported shape type. Only rectangle, rotation and polygon shapes are supported for detection boxes.</source>
         <translation>지원되지 않는 도형 유형이 있습니다. 감지 상자는 사각형, 회전, 다각형만 지원합니다.</translation>
     </message>
@@ -3804,114 +3809,108 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>이미지 및 레이블 파일 (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="972" />
+        <location filename="..\..\views\labeling\file_session.py" line="970" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - 이미지 또는 레이블 파일 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="985" />
+        <location filename="..\..\views\labeling\file_session.py" line="981" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>데이터셋 모드에서는 출력 디렉터리를 변경할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="998" />
+        <location filename="..\..\views\labeling\file_session.py" line="994" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - 디렉토리에 주석 저장/로드</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1011" />
+        <location filename="..\..\views\labeling\file_session.py" line="1007" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s. 주석은 %s에 저장되고 불러와집니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1041" />
+        <location filename="..\..\views\labeling\file_session.py" line="1037" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다. 주석은 데이터셋 데이터베이스에 저장됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1052" />
+        <location filename="..\..\views\labeling\file_session.py" line="1048" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1057" />
-        <source>%s - Choose File</source>
-        <translation>%s - 파일 선택</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1088" />
-        <location filename="..\..\views\labeling\file_session.py" line="1058" />
+        <location filename="..\..\views\labeling\file_session.py" line="1053" />
         <source>Label files (*%s)</source>
         <translation>레이블 파일 (*%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1086" />
+        <location filename="..\..\views\labeling\file_session.py" line="1065" />
         <source>Choose File</source>
         <translation>파일을 선택하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1121" />
+        <location filename="..\..\views\labeling\file_session.py" line="1097" />
         <source>Dataset closed</source>
         <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1240" />
-        <location filename="..\..\views\labeling\file_session.py" line="1226" />
-        <location filename="..\..\views\labeling\file_session.py" line="1209" />
-        <location filename="..\..\views\labeling\file_session.py" line="1183" />
-        <location filename="..\..\views\labeling\file_session.py" line="1169" />
-        <location filename="..\..\views\labeling\file_session.py" line="1155" />
+        <location filename="..\..\views\labeling\file_session.py" line="1216" />
+        <location filename="..\..\views\labeling\file_session.py" line="1202" />
+        <location filename="..\..\views\labeling\file_session.py" line="1185" />
+        <location filename="..\..\views\labeling\file_session.py" line="1159" />
+        <location filename="..\..\views\labeling\file_session.py" line="1145" />
+        <location filename="..\..\views\labeling\file_session.py" line="1131" />
         <source>Attention</source>
         <translation>주의</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1210" />
-        <location filename="..\..\views\labeling\file_session.py" line="1156" />
+        <location filename="..\..\views\labeling\file_session.py" line="1186" />
+        <location filename="..\..\views\labeling\file_session.py" line="1132" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>이 이미지와 주석을 휴지통으로 이동할까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1170" />
+        <location filename="..\..\views\labeling\file_session.py" line="1146" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>라벨 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1177" />
+        <location filename="..\..\views\labeling\file_session.py" line="1153" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>이 라벨 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1227" />
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>이미지 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1234" />
+        <location filename="..\..\views\labeling\file_session.py" line="1210" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>이 이미지 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1312" />
+        <location filename="..\..\views\labeling\file_session.py" line="1288" />
         <source>Save annotations?</source>
         <translation>주석을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1348" />
+        <location filename="..\..\views\labeling\file_session.py" line="1324" />
         <source>%s - Import Files</source>
         <translation>%s - 파일 가져오기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1350" />
+        <location filename="..\..\views\labeling\file_session.py" line="1326" />
         <source>Image files (%s)</source>
         <translation>이미지 파일(%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1371" />
+        <location filename="..\..\views\labeling\file_session.py" line="1347" />
         <source>%s - Open Directory</source>
         <translation>%s - 디렉토리 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1415" />
+        <location filename="..\..\views\labeling\file_session.py" line="1391" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>데이터셋 모드에서는 파일 추가를 아직 사용할 수 없습니다. 데이터셋 가져오기/동기화 항목을 사용하세요.</translation>
     </message>
@@ -6694,107 +6693,102 @@ The image files and their annotation files will NOT be deleted.</source>
         <translation>이미지 및 레이블 파일 (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="972" />
+        <location filename="..\..\views\labeling\file_session.py" line="970" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - 이미지 또는 레이블 파일 선택</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="985" />
+        <location filename="..\..\views\labeling\file_session.py" line="981" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>데이터셋 모드에서는 출력 디렉터리를 변경할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="998" />
+        <location filename="..\..\views\labeling\file_session.py" line="994" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - 디렉토리에 주석 저장/로드</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1011" />
+        <location filename="..\..\views\labeling\file_session.py" line="1007" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s. 주석은 %s에 저장되고 불러와집니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1041" />
+        <location filename="..\..\views\labeling\file_session.py" line="1037" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다. 주석은 데이터셋 데이터베이스에 저장됩니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1052" />
+        <location filename="..\..\views\labeling\file_session.py" line="1048" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>데이터셋 모드에서는 다른 이름으로 저장을 아직 사용할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1057" />
-        <source>%s - Choose File</source>
-        <translation>%s - 파일 선택</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1058" />
+        <location filename="..\..\views\labeling\file_session.py" line="1053" />
         <source>Label files (*%s)</source>
         <translation>레이블 파일 (*%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1086" />
+        <location filename="..\..\views\labeling\file_session.py" line="1065" />
         <source>Choose File</source>
         <translation>파일을 선택하세요</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1121" />
+        <location filename="..\..\views\labeling\file_session.py" line="1097" />
         <source>Dataset closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1155" />
+        <location filename="..\..\views\labeling\file_session.py" line="1131" />
         <source>Attention</source>
         <translation>주의</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1156" />
+        <location filename="..\..\views\labeling\file_session.py" line="1132" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>이 이미지와 주석을 휴지통으로 이동할까요?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1170" />
+        <location filename="..\..\views\labeling\file_session.py" line="1146" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>라벨 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1177" />
+        <location filename="..\..\views\labeling\file_session.py" line="1153" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>이 라벨 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1227" />
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>이미지 파일을 삭제하기 전에 '이전 주석 유지' 를 비활성화하십시오.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1234" />
+        <location filename="..\..\views\labeling\file_session.py" line="1210" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>이 이미지 파일을 영구적으로 삭제하려고 합니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1312" />
+        <location filename="..\..\views\labeling\file_session.py" line="1288" />
         <source>Save annotations?</source>
         <translation>주석을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1348" />
+        <location filename="..\..\views\labeling\file_session.py" line="1324" />
         <source>%s - Import Files</source>
         <translation>%s - 파일 가져오기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1350" />
+        <location filename="..\..\views\labeling\file_session.py" line="1326" />
         <source>Image files (%s)</source>
         <translation>이미지 파일(%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1371" />
+        <location filename="..\..\views\labeling\file_session.py" line="1347" />
         <source>%s - Open Directory</source>
         <translation>%s - 디렉토리 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1415" />
+        <location filename="..\..\views\labeling\file_session.py" line="1391" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>데이터셋 모드에서는 파일 추가를 아직 사용할 수 없습니다. 데이터셋 가져오기/동기화 항목을 사용하세요.</translation>
     </message>

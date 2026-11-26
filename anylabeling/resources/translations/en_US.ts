@@ -493,7 +493,7 @@ Example: person.car.bicycle</translation>
         <translation>Existing shapes will be overwritten by new shapes during updates. Click to switch to preserving.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1358" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1359" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="387" />
         <source>Replace (On)</source>
         <translation>Replace (On)</translation>
@@ -509,7 +509,7 @@ Example: person.car.bicycle</translation>
         <translation>Adjust mask fineness: lower=finer, higher=coarser [Default: 0.001]</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1012" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1013" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="432" />
         <source>AMG</source>
         <translation>AMG</translation>
@@ -545,7 +545,7 @@ Example: person.car.bicycle</translation>
         <translation>Model files deleted successfully.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="851" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="852" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="765" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="714" />
         <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="704" />
@@ -553,37 +553,42 @@ Example: person.car.bicycle</translation>
         <translation>No Model</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1013" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="821" />
+        <source>Select model configuration</source>
+        <translation>Select model configuration</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1014" />
         <source>AMG may take a long time to process the current image. Do you want to continue?</source>
         <translation>AMG may take a long time to process the current image. Do you want to continue?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1058" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1059" />
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1120" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1121" />
         <source>Cancelling...</source>
         <translation>Cancelling...</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1351" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1352" />
         <source>Replace (Off)</source>
         <translation>Replace (Off)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1898" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1899" />
         <source>Skip Det (On)</source>
         <translation>Skip Det (On)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1900" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1901" />
         <source>Skip Det (Off)</source>
         <translation>Skip Det (Off)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1919" />
+        <location filename="..\..\views\labeling\widgets\auto_labeling\auto_labeling.py" line="1920" />
         <source>Existing unsupported shape type. Only rectangle, rotation and polygon shapes are supported for detection boxes.</source>
         <translation>Existing unsupported shape type. Only rectangle, rotation and polygon shapes are supported for detection boxes.</translation>
     </message>
@@ -3810,114 +3815,108 @@ The image files and their annotation files will NOT be deleted.</translation>
         <translation>Image &amp; Label files (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="972" />
+        <location filename="..\..\views\labeling\file_session.py" line="970" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - Choose Image or Label file</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="985" />
+        <location filename="..\..\views\labeling\file_session.py" line="981" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>Changing the output directory is not available in dataset mode.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="998" />
+        <location filename="..\..\views\labeling\file_session.py" line="994" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - Save/Load Annotations in Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1011" />
+        <location filename="..\..\views\labeling\file_session.py" line="1007" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s . Annotations will be saved/loaded in %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1041" />
+        <location filename="..\..\views\labeling\file_session.py" line="1037" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1052" />
+        <location filename="..\..\views\labeling\file_session.py" line="1048" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>Save As is not available in dataset mode yet.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1057" />
-        <source>%s - Choose File</source>
-        <translation>%s - Choose File</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1088" />
-        <location filename="..\..\views\labeling\file_session.py" line="1058" />
+        <location filename="..\..\views\labeling\file_session.py" line="1053" />
         <source>Label files (*%s)</source>
         <translation>Label files (*%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1086" />
+        <location filename="..\..\views\labeling\file_session.py" line="1065" />
         <source>Choose File</source>
         <translation>Choose File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1121" />
+        <location filename="..\..\views\labeling\file_session.py" line="1097" />
         <source>Dataset closed</source>
         <translation>Dataset closed</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1240" />
-        <location filename="..\..\views\labeling\file_session.py" line="1226" />
-        <location filename="..\..\views\labeling\file_session.py" line="1209" />
-        <location filename="..\..\views\labeling\file_session.py" line="1183" />
-        <location filename="..\..\views\labeling\file_session.py" line="1169" />
-        <location filename="..\..\views\labeling\file_session.py" line="1155" />
+        <location filename="..\..\views\labeling\file_session.py" line="1216" />
+        <location filename="..\..\views\labeling\file_session.py" line="1202" />
+        <location filename="..\..\views\labeling\file_session.py" line="1185" />
+        <location filename="..\..\views\labeling\file_session.py" line="1159" />
+        <location filename="..\..\views\labeling\file_session.py" line="1145" />
+        <location filename="..\..\views\labeling\file_session.py" line="1131" />
         <source>Attention</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1210" />
-        <location filename="..\..\views\labeling\file_session.py" line="1156" />
+        <location filename="..\..\views\labeling\file_session.py" line="1186" />
+        <location filename="..\..\views\labeling\file_session.py" line="1132" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>Move this image and its annotation to the recycle bin?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1170" />
+        <location filename="..\..\views\labeling\file_session.py" line="1146" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>Please disable 'Keep Previous Annotation' before deleting the label file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1177" />
+        <location filename="..\..\views\labeling\file_session.py" line="1153" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>You are about to permanently delete this label file, proceed anyway?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1227" />
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>Please disable 'Keep Previous Annotation' before deleting the image file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1234" />
+        <location filename="..\..\views\labeling\file_session.py" line="1210" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>You are about to permanently delete this image file, proceed anyway?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1312" />
+        <location filename="..\..\views\labeling\file_session.py" line="1288" />
         <source>Save annotations?</source>
         <translation>Save annotations?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1348" />
+        <location filename="..\..\views\labeling\file_session.py" line="1324" />
         <source>%s - Import Files</source>
         <translation>%s - Import Files</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1350" />
+        <location filename="..\..\views\labeling\file_session.py" line="1326" />
         <source>Image files (%s)</source>
         <translation>Image files (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1371" />
+        <location filename="..\..\views\labeling\file_session.py" line="1347" />
         <source>%s - Open Directory</source>
         <translation>%s - Open Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1415" />
+        <location filename="..\..\views\labeling\file_session.py" line="1391" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</translation>
     </message>
@@ -6712,107 +6711,102 @@ The image files and their annotation files will NOT be deleted.</translation>
         <translation>Image &amp; Label files (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="972" />
+        <location filename="..\..\views\labeling\file_session.py" line="970" />
         <source>%s - Choose Image or Label file</source>
         <translation>%s - Choose Image or Label file</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="985" />
+        <location filename="..\..\views\labeling\file_session.py" line="981" />
         <source>Changing the output directory is not available in dataset mode.</source>
         <translation>Changing the output directory is not available in dataset mode.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="998" />
+        <location filename="..\..\views\labeling\file_session.py" line="994" />
         <source>%s - Save/Load Annotations in Directory</source>
         <translation>%s - Save/Load Annotations in Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1011" />
+        <location filename="..\..\views\labeling\file_session.py" line="1007" />
         <source>%s . Annotations will be saved/loaded in %s</source>
         <translation>%s . Annotations will be saved/loaded in %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1041" />
+        <location filename="..\..\views\labeling\file_session.py" line="1037" />
         <source>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</source>
         <translation>Save As is not available in dataset mode yet; the annotation is stored in the dataset database.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1052" />
+        <location filename="..\..\views\labeling\file_session.py" line="1048" />
         <source>Save As is not available in dataset mode yet.</source>
         <translation>Save As is not available in dataset mode yet.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1057" />
-        <source>%s - Choose File</source>
-        <translation>%s - Choose File</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1058" />
+        <location filename="..\..\views\labeling\file_session.py" line="1053" />
         <source>Label files (*%s)</source>
         <translation>Label files (*%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1086" />
+        <location filename="..\..\views\labeling\file_session.py" line="1065" />
         <source>Choose File</source>
         <translation>Choose File</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1121" />
+        <location filename="..\..\views\labeling\file_session.py" line="1097" />
         <source>Dataset closed</source>
         <translation>Dataset closed</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1155" />
+        <location filename="..\..\views\labeling\file_session.py" line="1131" />
         <source>Attention</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1156" />
+        <location filename="..\..\views\labeling\file_session.py" line="1132" />
         <source>Move this image and its annotation to the recycle bin?</source>
         <translation>Move this image and its annotation to the recycle bin?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1170" />
+        <location filename="..\..\views\labeling\file_session.py" line="1146" />
         <source>Please disable 'Keep Previous Annotation' before deleting the label file.</source>
         <translation>Please disable 'Keep Previous Annotation' before deleting the label file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1177" />
+        <location filename="..\..\views\labeling\file_session.py" line="1153" />
         <source>You are about to permanently delete this label file, proceed anyway?</source>
         <translation>You are about to permanently delete this label file, proceed anyway?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1227" />
+        <location filename="..\..\views\labeling\file_session.py" line="1203" />
         <source>Please disable 'Keep Previous Annotation' before deleting the image file.</source>
         <translation>Please disable 'Keep Previous Annotation' before deleting the image file.</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1234" />
+        <location filename="..\..\views\labeling\file_session.py" line="1210" />
         <source>You are about to permanently delete this image file, proceed anyway?</source>
         <translation>You are about to permanently delete this image file, proceed anyway?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1312" />
+        <location filename="..\..\views\labeling\file_session.py" line="1288" />
         <source>Save annotations?</source>
         <translation>Save annotations?</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1348" />
+        <location filename="..\..\views\labeling\file_session.py" line="1324" />
         <source>%s - Import Files</source>
         <translation>%s - Import Files</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1350" />
+        <location filename="..\..\views\labeling\file_session.py" line="1326" />
         <source>Image files (%s)</source>
         <translation>Image files (%s)</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1371" />
+        <location filename="..\..\views\labeling\file_session.py" line="1347" />
         <source>%s - Open Directory</source>
         <translation>%s - Open Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\labeling\file_session.py" line="1415" />
+        <location filename="..\..\views\labeling\file_session.py" line="1391" />
         <source>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</source>
         <translation>Adding files is not available in dataset mode yet; use the dataset import/sync entry.</translation>
     </message>

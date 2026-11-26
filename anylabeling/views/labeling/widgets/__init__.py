@@ -10,7 +10,6 @@ from .canvas_adjustment import (
 from .compare_view import CompareViewManager, CompareViewSlider
 from .chatbot_dialog import ChatbotDialog
 from .classifier_dialog import ClassifierDialog
-from .file_dialog_preview import FileDialogPreview
 from .filter_label_widget import GroupIDFilterComboBox, LabelFilterComboBox
 from .image_tags_widget import ImageTagsWidget
 from .tag_library import TagLibraryWidget

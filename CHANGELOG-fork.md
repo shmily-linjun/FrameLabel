@@ -6,6 +6,73 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.60 — 2026-11-26
+
+### 1. 背景与需求
+
+用户对“原生文件对话框”提出四点：①为何不用 Qt 的 `QFileDialog`、当前
+`DontUseNativeDialog` 是什么；②`QFileDialog`/`getExistingDirectory`/
+`getOpenFileName`/`getSaveFileName` 在 Linux/macOS 是否可用；③若可用，把所有文件/文件夹
+对话框统一换成 Qt 静态 API（这才是 fork.42 的本意）；④对话框是否散落、是否需要集中。
+
+### 2. 结论与实现
+
+- **语义澄清**：`DontUseNativeDialog=False`（默认）= 系统原生对话框；`True` = Qt 自绘。
+  两者都是 Qt 的 `QFileDialog` API，差别只在“谁来画”。fork.59 之前
+  `FileDialogPreview` 用 `True`（为了嵌入预览面板），其余调用点默认原生。
+- **跨平台**：四个静态 API 在 Linux/macOS 可用；Linux 由平台主题/portal 决定原生或回退
+  自绘，macOS 使用原生面板。限制是原生对话框**不能嵌入自定义控件**。
+- **统一替换（本批）**：
+  - 新增 `anylabeling/views/file_dialogs.py`：`choose_directory`/`choose_open_file`/
+    `choose_open_files`/`choose_save_file`，一律调用 Qt 静态 API、不设置
+    `DontUseNativeDialog`、返回值归一化。
+  - `file_session.open_file` 去掉 `FileDialogPreview` 子类，改用 `choose_open_file`；
+  - `file_session.save_file_dialog` 去掉“构造实例 + 再调用静态方法”的死配置，改用
+    `choose_save_file`（原实例上的 `setDefaultSuffix`/`setAcceptMode` 本来就不会生效）；
+  - 自动标注“加载自定义模型配置”去掉 `QFileDialog` 实例，改用 `choose_open_file`；
+  - **删除** `widgets/file_dialog_preview.py` 及其导出与测试（预览面板与非原生对话框绑定，
+    与“全部原生”互斥；如需预览，只能作为显式例外单独设计）。
+- **集中评估**：全仓库约 90 处对话框调用，其中绝大多数已经是 Qt 静态 API；真正需要改的
+  只有上述 3 处实例/子类。结论：**政策集中、调用点分阶段迁移**——新 helper 统一
+  native 政策与返回值，其余约 80 处保持静态调用不动，避免一次性大范围重写带来的回归；
+  后续按模块机械替换即可。
+- i18n：新增 1 条文案（`Select model configuration` → 选择模型配置），四语言 `.qm`
+  各 2752 条，zh/en 0 未翻译。
+
+### 3. 涉及文件
+
+- 新增 `anylabeling/views/file_dialogs.py`、`tests/test_widgets/test_file_dialogs.py`
+- 修改 `anylabeling/views/labeling/file_session.py`、
+  `anylabeling/views/labeling/widgets/auto_labeling/auto_labeling.py`、
+  `anylabeling/views/labeling/widgets/__init__.py`、翻译资源
+- 删除 `anylabeling/views/labeling/widgets/file_dialog_preview.py`、
+  `tests/test_widgets/test_file_dialog_preview.py`
+- 文档/版本：`app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、
+  `docs/dev/工业机器视觉数据平台-设计书-v1.6.md`、`docs/开始.md`
+
+### 4. 行为、接口与兼容性
+
+- “打开文件”对话框改为系统原生，**不再显示图片/JSON 预览面板**（原生限制）；
+- “保存标注”对话框行为不变（此前实例配置未生效，返回值逻辑一致）；
+- 自动标注自定义模型配置选择改为原生；
+- 其余文件/文件夹对话框保持原样（本来就调用 Qt 静态 API，默认原生）。
+
+### 5. 验证
+
+- `tests/test_widgets/test_file_dialogs.py` **6 passed**（四个助手均为 native、取消返回空、
+  打开/保存走 helper）；
+- `tests/test_widgets + test_dataset_db + test_utils + test_identity + test_i18n`：
+  **388 passed / 1 failed（既有计时抖动）/ 108 subtests**；
+- `tests/test_i18n` 17 passed；四语言 `.qm` 各 2752 条，zh/en 0 未翻译。
+- **未执行**：真实桌面点击“打开文件/保存”（本机无 GUI 会话），原生行为需在用户桌面确认。
+
+### 6. 已知限制
+
+- 原生对话框的 `DontResolveSymlinks`/`ShowDirsOnly` 等选项在部分平台会被忽略（Qt 文档行为）；
+- 预览面板功能随本批移除，如需恢复只能走非原生例外；
+- 约 80 处调用点尚未迁移到 helper（行为已经是原生，仅政策未集中）；
+- 推送仍受本机网络/凭据阻塞；本地 `main` 领先远端 13 个提交。
+
 ## 4.3.2+fork.59 — 2026-11-25
 
 ### 1. 背景与问题

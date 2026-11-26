@@ -55,7 +55,7 @@ def _unescape_filter_value(value):
         result.append(char)
         index += 1
     return "".join(result)
-from .widgets.file_dialog_preview import FileDialogPreview
+from ..file_dialogs import choose_open_file, choose_save_file
 
 
 class DatabaseLabelFile:
@@ -965,19 +965,15 @@ class FileSession:
         filters = self.host.tr("Image & Label files (%s)") % " ".join(
             formats + [f"*{LabelFile.suffix}"]
         )
-        file_dialog = FileDialogPreview(self.host)
-        file_dialog.setFileMode(QtWidgets.QFileDialog.FileMode.ExistingFile)
-        file_dialog.setNameFilter(filters)
-        file_dialog.setWindowTitle(
+        filename = choose_open_file(
+            self.host,
             self.host.tr("%s - Choose Image or Label file") % __appname__,
+            path,
+            filters,
         )
-        file_dialog.setWindowFilePath(path)
-        file_dialog.setViewMode(QtWidgets.QFileDialog.ViewMode.Detail)
-        if file_dialog.exec():
-            filename = file_dialog.selectedFiles()[0]
-            if filename:
-                self.host._clear_file_list()
-                self.host.load_file(filename)
+        if filename:
+            self.host._clear_file_list()
+            self.host.load_file(filename)
 
     def change_output_dir_dialog(self, _value=False):
         if getattr(self.host, "dataset_repository", None) is not None:
@@ -1054,24 +1050,7 @@ class FileSession:
                 )
             )
             return ""
-        caption = self.host.tr("%s - Choose File") % __appname__
         filters = self.host.tr("Label files (*%s)") % LabelFile.suffix
-        if self.host.output_dir:
-            file_dialog = QtWidgets.QFileDialog(
-                self.host, caption, self.host.output_dir, filters
-            )
-        else:
-            file_dialog = QtWidgets.QFileDialog(
-                self.host, caption, self.host.current_path(), filters
-            )
-        file_dialog.setDefaultSuffix(LabelFile.suffix[1:])
-        file_dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave)
-        file_dialog.setOption(
-            QtWidgets.QFileDialog.Option.DontConfirmOverwrite, False
-        )
-        file_dialog.setOption(
-            QtWidgets.QFileDialog.Option.DontUseNativeDialog, False
-        )
         basename = osp.basename(osp.splitext(self.host.filename)[0])
         if self.host.output_dir:
             default_labelfile_name = osp.join(
@@ -1081,15 +1060,12 @@ class FileSession:
             default_labelfile_name = osp.join(
                 self.host.current_path(), basename + LabelFile.suffix
             )
-        filename = file_dialog.getSaveFileName(
+        return choose_save_file(
             self.host,
             self.host.tr("Choose File"),
             default_labelfile_name,
-            self.host.tr("Label files (*%s)") % LabelFile.suffix,
+            filters,
         )
-        if isinstance(filename, tuple):
-            filename, _ = filename
-        return filename
 
     def _save_file(self, filename):
         if filename and self.host.save_labels(filename):
