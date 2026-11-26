@@ -12722,226 +12722,735 @@ You can download the models again in the new directory.</translation>
 </context><context>
     <name>UltralyticsDialog</name>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="242" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="241" />
         <source>Data</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="243" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="242" />
         <source>Config</source>
         <translation>Config</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="244" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="594" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="243" />
         <source>Train</source>
         <translation>Train</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="341" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="340" />
         <source>Background Task Running</source>
         <translation>Background Task Running</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="342" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="341" />
         <source>A training or export task is still running. Stop it and exit?</source>
         <translation>A training or export task is still running. Stop it and exit?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="437" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="451" />
         <source>Task Type:</source>
         <translation>Task Type:</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="476" />
-        <source>Valid Images:</source>
-        <translation>Valid Images:</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="473" />
+        <source>No dataset selected. Export the project first, then pick the generated data.yaml or folder here.</source>
+        <translation>No dataset selected. Export the project first, then pick the generated data.yaml or folder here.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="477" />
-        <source>Required:</source>
-        <translation>Required:</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="489" />
+        <source>Dataset error: %s</source>
+        <translation>Dataset error: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="568" />
-        <source>Dataset Summary:</source>
-        <translation>Dataset Summary:</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="512" />
+        <source>YOLO dataset</source>
+        <translation>YOLO dataset</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="571" />
-        <source>No images loaded. Select a task and click Next to train with an existing dataset.</source>
-        <translation>No images loaded. Select a task and click Next to train with an existing dataset.</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="514" />
+        <source>Classification folder</source>
+        <translation>Classification folder</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1677" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1597" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1586" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="516" />
+        <source>%s: %d images, %d objects, %d classes</source>
+        <translation>%s: %d images, %d objects, %d classes</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="524" />
+        <source>No train/val split: the ratio below partitions the images.</source>
+        <translation>No train/val split: the ratio below partitions the images.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="572" />
+        <source>The dataset already has %d train and %d val images, so the ratio is not used.</source>
+        <translation>The dataset already has %d train and %d val images, so the ratio is not used.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="584" />
+        <source>No train/val split: images are partitioned by this ratio.</source>
+        <translation>No train/val split: images are partitioned by this ratio.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="712" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="637" />
         <location filename="..\..\views\training\ultralytics_dialog.py" line="592" />
-        <source>Validation Error</source>
-        <translation>Validation Error</translation>
+        <source>Images</source>
+        <translation>Images</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="607" />
-        <source>Load Images</source>
-        <translation>Load Images</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="599" />
+        <source>Val</source>
+        <translation>Val</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1737" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="612" />
-        <source>Next</source>
-        <translation>Next</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="604" />
+        <source>Test</source>
+        <translation>Test</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1335" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="609" />
+        <source>None</source>
+        <translation>None</translation>
     </message>
     <message>
         <location filename="..\..\views\training\ultralytics_dialog.py" line="638" />
-        <source>Select Model File</source>
-        <translation>Select Model File</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="613" />
+        <source>Objects</source>
+        <translation>Objects</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="648" />
-        <source>Select Classification Dataset Directory</source>
-        <translation>Select Classification Dataset Directory</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="905" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="614" />
+        <source>Classes</source>
+        <translation>Classes</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="655" />
-        <source>Select Data File</source>
-        <translation>Select Data File</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="616" />
+        <source>Labeled images</source>
+        <translation>Labeled images</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="667" />
-        <source>Invalid Data File</source>
-        <translation>Invalid Data File</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="620" />
+        <source>Empty label files</source>
+        <translation>Empty label files</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="675" />
-        <source>Select Pose Config File</source>
-        <translation>Select Pose Config File</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="621" />
+        <source>Missing label files</source>
+        <translation>Missing label files</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="686" />
-        <source>Select Python Executable</source>
-        <translation>Select Python Executable</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="626" />
+        <source>Objects with an unknown class id</source>
+        <translation>Objects with an unknown class id</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="688" />
-        <source>All Files (*)</source>
-        <translation>All Files (*)</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="631" />
+        <source>Item</source>
+        <translation>Item</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="793" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="631" />
+        <source>Count</source>
+        <translation>Count</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="631" />
+        <source>Share</source>
+        <translation>Share</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="636" />
+        <source>Class</source>
+        <translation>Class</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="712" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="639" />
+        <source>Image share</source>
+        <translation>Image share</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="640" />
+        <source>Object share</source>
+        <translation>Object share</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="641" />
+        <source>Training class</source>
+        <translation>Training class</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="642" />
+        <source>Included</source>
+        <translation>Included</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="712" />
+        <source>Tag</source>
+        <translation>Tag</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="716" />
+        <source>Image tags come from the dataset database, which is not open in this window.</source>
+        <translation>Image tags come from the dataset database, which is not open in this window.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1117" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="722" />
         <source>Unavailable</source>
         <translation>Unavailable</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="795" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="731" />
+        <source>Tags belong to the dataset open in the labeling window, not to the file on disk.</source>
+        <translation>Tags belong to the dataset open in the labeling window, not to the file on disk.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="740" />
+        <source>No image tag in the current dataset.</source>
+        <translation>No image tag in the current dataset.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="782" />
+        <source>Training reads an exported dataset. Export this project first with the Export menu (YOLO HBB / OBB / Seg), then select the generated data.yaml or folder here.</source>
+        <translation>Training reads an exported dataset. Export this project first with the Export menu (YOLO HBB / OBB / Seg), then select the generated data.yaml or folder here.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="802" />
+        <source>Dataset</source>
+        <translation>Dataset</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="816" />
+        <source>Select YAML…</source>
+        <translation>Select YAML…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="820" />
+        <source>Select Folder…</source>
+        <translation>Select Folder…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="824" />
+        <source>Open Folder</source>
+        <translation>Open Folder</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="828" />
+        <source>Refresh</source>
+        <translation>Refresh</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="831" />
+        <source>Dataset:</source>
+        <translation>Dataset:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="847" />
+        <source>Dataset Ratio:</source>
+        <translation>Dataset Ratio:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="861" />
+        <source>Status:</source>
+        <translation>Status:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="877" />
+        <source>Give several classes the same training class name to merge them; clear “Included” to drop a class. The mapping is written to class_map.yaml next to the training view.</source>
+        <translation>Give several classes the same training class name to merge them; clear “Included” to drop a class. The mapping is written to class_map.yaml next to the training view.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="904" />
+        <source>Overview</source>
+        <translation>Overview</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="906" />
+        <source>Tags</source>
+        <translation>Tags</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="912" />
+        <source>Select Dataset YAML</source>
+        <translation>Select Dataset YAML</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="914" />
+        <source>YAML Files (*.yaml *.yml);;All Files (*)</source>
+        <translation>YAML Files (*.yaml *.yml);;All Files (*)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="922" />
+        <source>Select Dataset Folder</source>
+        <translation>Select Dataset Folder</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1998" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1916" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="946" />
+        <source>Validation Error</source>
+        <translation>Validation Error</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1855" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="947" />
+        <source>Select the training dataset first: export the project with the Export menu, then pick data.yaml here.</source>
+        <translation>Select the training dataset first: export the project with the Export menu, then pick data.yaml here.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2050" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="960" />
+        <source>Next</source>
+        <translation>Next</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="987" />
+        <source>Select Model File</source>
+        <translation>Select Model File</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="997" />
+        <source>Select Pose Config File</source>
+        <translation>Select Pose Config File</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1008" />
+        <source>Select Python Executable</source>
+        <translation>Select Python Executable</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1010" />
+        <source>All Files (*)</source>
+        <translation>All Files (*)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1051" />
+        <source>GPU %d: %s</source>
+        <translation>GPU %d: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1119" />
         <source>Detecting...</source>
         <translation>Detecting...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="836" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1160" />
         <source>Basic Settings</source>
         <translation>Basic Settings</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="946" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1180" />
+        <source>Project:</source>
+        <translation>Project:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1184" />
+        <source>Name:</source>
+        <translation>Name:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1210" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1202" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1194" />
+        <source>Browse</source>
+        <translation>Browse</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1198" />
+        <source>Env:</source>
+        <translation>Env:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1206" />
+        <source>Model:</source>
+        <translation>Model:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1215" />
+        <source>Pose Config:</source>
+        <translation>Pose Config:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1232" />
+        <source>Device:</source>
+        <translation>Device:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1256" />
         <source>Train Settings</source>
         <translation>Train Settings</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="950" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1260" />
         <source>Basic</source>
         <translation>Basic</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="986" />
-        <source>Class indices (e.g., 0,1,2) or leave empty for all</source>
-        <translation>Class indices (e.g., 0,1,2) or leave empty for all</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1262" />
+        <source>Epochs:</source>
+        <translation>Epochs:</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1009" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1270" />
+        <source>Batch:</source>
+        <translation>Batch:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1276" />
+        <source>Image Size:</source>
+        <translation>Image Size:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1282" />
+        <source>Workers:</source>
+        <translation>Workers:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1291" />
+        <source>Single Class</source>
+        <translation>Single Class</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1311" />
         <source>Advanced Settings</source>
         <translation>Advanced Settings</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1724" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1423" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1330" />
+        <source>Training Strategy</source>
+        <translation>Training Strategy</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1332" />
+        <source>Time (h):</source>
+        <translation>Time (h):</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1338" />
+        <source>Patience:</source>
+        <translation>Patience:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1346" />
+        <source>Close Mosaic:</source>
+        <translation>Close Mosaic:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1354" />
+        <source>Optimizer:</source>
+        <translation>Optimizer:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1359" />
+        <source>Cosine LR</source>
+        <translation>Cosine LR</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1364" />
+        <source>AMP</source>
+        <translation>AMP</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1368" />
+        <source>Multi Scale</source>
+        <translation>Multi Scale</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1378" />
+        <source>Learning Rate</source>
+        <translation>Learning Rate</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1380" />
+        <source>LR0:</source>
+        <translation>LR0:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1386" />
+        <source>LRF:</source>
+        <translation>LRF:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1392" />
+        <source>Momentum:</source>
+        <translation>Momentum:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1400" />
+        <source>Weight Decay:</source>
+        <translation>Weight Decay:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1411" />
+        <source>Warmup Parameters</source>
+        <translation>Warmup Parameters</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1413" />
+        <source>Warmup Epochs:</source>
+        <translation>Warmup Epochs:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1421" />
+        <source>Warmup Momentum:</source>
+        <translation>Warmup Momentum:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1429" />
+        <source>Warmup Bias LR:</source>
+        <translation>Warmup Bias LR:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1440" />
+        <source>Augmentation Settings</source>
+        <translation>Augmentation Settings</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1445" />
+        <source>HSV Hue:</source>
+        <translation>HSV Hue:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1453" />
+        <source>HSV Saturation:</source>
+        <translation>HSV Saturation:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1461" />
+        <source>HSV Value:</source>
+        <translation>HSV Value:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1469" />
+        <source>Rotation Degrees:</source>
+        <translation>Rotation Degrees:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1477" />
+        <source>Translate:</source>
+        <translation>Translate:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1485" />
+        <source>Scale:</source>
+        <translation>Scale:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1493" />
+        <source>Shear:</source>
+        <translation>Shear:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1501" />
+        <source>Perspective:</source>
+        <translation>Perspective:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1541" />
+        <source>Regularization</source>
+        <translation>Regularization</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1543" />
+        <source>Dropout:</source>
+        <translation>Dropout:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1551" />
+        <source>Fraction:</source>
+        <translation>Fraction:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1559" />
+        <source>Rectangular</source>
+        <translation>Rectangular</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1566" />
+        <source>Loss Weights</source>
+        <translation>Loss Weights</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1568" />
+        <source>Box:</source>
+        <translation>Box:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1574" />
+        <source>Cls:</source>
+        <translation>Cls:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1580" />
+        <source>DFL:</source>
+        <translation>DFL:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1586" />
+        <source>Pose:</source>
+        <translation>Pose:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1592" />
+        <source>Kobj:</source>
+        <translation>Kobj:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1601" />
+        <source>Checkpoint and Validation</source>
+        <translation>Checkpoint and Validation</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1603" />
+        <source>Save Period:</source>
+        <translation>Save Period:</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1610" />
+        <source>Disabled</source>
+        <translation>Disabled</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1614" />
+        <source>Validation</source>
+        <translation>Validation</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1617" />
+        <source>Plots</source>
+        <translation>Plots</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1622" />
+        <source>Save</source>
+        <translation>Save</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1625" />
+        <source>Resume</source>
+        <translation>Resume</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1630" />
+        <source>Cache</source>
+        <translation>Cache</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2037" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1723" />
         <source>Import Config</source>
         <translation>Import Config</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1548" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1433" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1843" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1733" />
         <source>Success</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1434" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1734" />
         <source>Config imported successfully</source>
         <translation>Config imported successfully</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2478" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1695" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1685" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1551" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1438" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2790" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2008" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1846" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1738" />
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1438" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1738" />
         <source>Failed to import config</source>
         <translation>Failed to import config</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1546" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1841" />
         <source>Configuration saved successfully to %s</source>
         <translation>Configuration saved successfully to %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1563" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1853" />
+        <source>Please select a task type first</source>
+        <translation>Please select a task type first</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1864" />
+        <source>The selected dataset is not usable.</source>
+        <translation>The selected dataset is not usable.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1868" />
+        <source>The dataset defines no class name.</source>
+        <translation>The dataset defines no class name.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1870" />
+        <source>The dataset contains no image.</source>
+        <translation>The dataset contains no image.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1874" />
+        <source>A classification task needs a folder whose sub folders are the classes.</source>
+        <translation>A classification task needs a folder whose sub folders are the classes.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1881" />
+        <source>This dataset is a classification folder; pick a data.yaml for detection, segmentation, OBB or pose.</source>
+        <translation>This dataset is a classification folder; pick a data.yaml for detection, segmentation, OBB or pose.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1886" />
+        <source>The dataset has no train/val split and only one image, so it cannot be partitioned.</source>
+        <translation>The dataset has no train/val split and only one image, so it cannot be partitioned.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1896" />
         <source>Training in Progress</source>
         <translation>Training in Progress</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1564" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1897" />
         <source>Training is currently in progress. Please stop the training first if you need to reconfigure.</source>
         <translation>Training is currently in progress. Please stop the training first if you need to reconfigure.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2325" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1573" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2640" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1906" />
         <source>Training environment detection is still in progress</source>
         <translation>Training environment detection is still in progress</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2328" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1576" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2643" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1909" />
         <source>Environment Error</source>
         <translation>Environment Error</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1591" />
-        <source>When no images are loaded, the data file must reference existing train and val directories.</source>
-        <translation>When no images are loaded, the data file must reference existing train and val directories.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1604" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1925" />
         <source>Training data directory is not writable: {path}
 {error}</source>
         <translation>Training data directory is not writable: {path}
 {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1608" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1929" />
         <source>Training Directory Error</source>
         <translation>Training Directory Error</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1624" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1945" />
         <source>Existing Model Detected</source>
         <translation>Existing Model Detected</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1625" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1946" />
         <source>A trained model already exists at this location.
 
 Do you want to:
@@ -12954,252 +13463,274 @@ Yes - Export the existing model directly
 No - Continue to retrain (will overwrite)</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1655" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1976" />
         <source>Directory Exists</source>
         <translation>Directory Exists</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1656" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1977" />
         <source>Project directory already exists! Do you want to overwrite it?
 If not, please manually modify the `Name` field value.</source>
         <translation>Project directory already exists! Do you want to overwrite it?
 If not, please manually modify the `Name` field value.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1686" />
-        <source>Please select a task type first</source>
-        <translation>Please select a task type first</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1696" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2009" />
         <source>Please select a valid pose configuration file for pose detection tasks</source>
         <translation>Please select a valid pose configuration file for pose detection tasks</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1705" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2018" />
         <source>Reset Training</source>
         <translation>Reset Training</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1706" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2019" />
         <source>Training traces detected. Do you want to reset the training tab?</source>
         <translation>Training traces detected. Do you want to reset the training tab?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1728" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2041" />
         <source>Save Config</source>
         <translation>Save Config</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2378" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1733" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2690" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2046" />
         <source>Previous</source>
         <translation>Previous</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2596" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1902" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1889" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1884" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1878" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2908" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2225" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2212" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2207" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2201" />
         <source>No image</source>
         <translation>No image</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1969" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2292" />
         <source>Training is about to start...</source>
         <translation>Training is about to start...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1982" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2305" />
         <source>Training completed successfully!</source>
         <translation>Training completed successfully!</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2004" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2327" />
         <source>Training stopped by user</source>
         <translation>Training stopped by user</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2020" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2343" />
         <source>Training Status</source>
         <translation>Training Status</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2023" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2346" />
         <source>Ready to train</source>
         <translation>Ready to train</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2028" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2351" />
         <source>Progress:</source>
         <translation>Progress:</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2042" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2365" />
         <source>Clear Logs</source>
         <translation>Clear Logs</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2043" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2366" />
         <source>Are you sure you want to clear all training logs?</source>
         <translation>Are you sure you want to clear all training logs?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2063" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2386" />
         <source>Training Logs</source>
         <translation>Training Logs</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2085" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2408" />
         <source>Copy</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2093" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2416" />
         <source>Clear</source>
         <translation>Clear</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2106" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2429" />
         <source>Training Images</source>
         <translation>Training Images</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2217" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2211" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2540" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2534" />
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2218" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2541" />
         <source>No training directory available</source>
         <translation>No training directory available</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2571" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2224" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2883" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2547" />
         <source>Confirm Stop</source>
         <translation>Confirm Stop</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2225" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2548" />
         <source>Are you sure you want to stop the training?</source>
         <translation>Are you sure you want to stop the training?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2233" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2556" />
         <source>Stopping training...</source>
         <translation>Stopping training...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2235" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2558" />
         <source>Cancel to stop training</source>
         <translation>Cancel to stop training</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2341" />
-        <source>Using workspace snapshot: {count} images</source>
-        <translation>Using workspace snapshot: {count} images</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2346" />
-        <source>Changes made during training will be used in the next run.</source>
-        <translation>Changes made during training will be used in the next run.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2350" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2662" />
         <source>Preparing training...</source>
         <translation>Preparing training...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2363" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2357" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2675" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2669" />
         <source>Training Error</source>
         <translation>Training Error</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2368" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2680" />
         <source>Open Directory</source>
         <translation>Open Directory</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2373" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2685" />
         <source>Stop Training</source>
         <translation>Stop Training</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2385" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2697" />
         <source>Start Training</source>
         <translation>Start Training</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2565" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2392" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2877" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2704" />
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2423" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2735" />
         <source>Export started...</source>
         <translation>Export started...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2428" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2740" />
         <source>Stop Export</source>
         <translation>Stop Export</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2447" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2748" />
+        <source>Export completed successfully! File saved to: %s</source>
+        <translation>Export completed successfully! File saved to: %s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2758" />
         <source>Export Successful</source>
         <translation>Export Successful</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2512" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2458" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2759" />
+        <source>Model successfully exported to %s format:
+%s</source>
+        <translation>Model successfully exported to %s format:
+%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2824" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2770" />
         <source>Export Error</source>
         <translation>Export Error</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2464" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2776" />
         <source>Export stopped by user</source>
         <translation>Export stopped by user</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2479" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2791" />
         <source>No training project available for export</source>
         <translation>No training project available for export</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2489" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2801" />
         <source>Model Not Found</source>
         <translation>Model Not Found</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2490" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2802" />
         <source>Model weights not found at: %s</source>
         <translation>Model weights not found at: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2546" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2529" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2858" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2841" />
         <source>Apply Error</source>
         <translation>Apply Error</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2547" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2859" />
         <source>Failed to load the exported model</source>
         <translation>Failed to load the exported model</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2572" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2884" />
         <source>Are you sure you want to stop the export?</source>
         <translation>Are you sure you want to stop the export?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2579" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2891" />
         <source>No export is in progress</source>
         <translation>No export is in progress</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Classify</source>
+        <translation>Classify</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Detect</source>
+        <translation>Detect</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>OBB</source>
+        <translation>OBB</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Pose</source>
+        <translation>Pose</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Segment</source>
+        <translation>Segment</translation>
     </message>
 </context><context>
     <name>UpdateController</name>

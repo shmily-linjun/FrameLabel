@@ -613,6 +613,7 @@ def test_basic_settings_adds_editable_project_and_environment():
         browse_pose_config_file=lambda: None,
         on_device_changed=lambda _value: None,
         apply_environment_result=lambda: None,
+        _on_project_edited=lambda _text: None,
     )
 
     UltralyticsDialog.init_basic_settings(dialog, layout)
@@ -649,3 +650,157 @@ def test_configuring_environment_updates_training_and_export_managers():
         ("export", ("/new/python", True)),
         ("detect", ()),
     ]
+
+
+def build_dataset(tmp_path):
+    root = tmp_path / "dataset"
+    for split, count in (("train", 3), ("val", 2)):
+        images = root / "images" / split
+        labels = root / "labels" / split
+        images.mkdir(parents=True)
+        labels.mkdir(parents=True)
+        for index in range(count):
+            name = f"{split}_{index}.jpg"
+            (images / name).write_bytes(b"\xff\xd8\xff")
+            content = (
+                "0 0.5 0.5 0.2 0.2\n1 0.4 0.4 0.1 0.1\n"
+                if index % 2 == 0
+                else "2 0.3 0.3 0.1 0.1\n"
+            )
+            (labels / f"{split}_{index}.txt").write_text(
+                content, encoding="utf-8"
+            )
+    data_yaml = root / "data.yaml"
+    data_yaml.write_text(
+        f"path: {str(root).replace(os.sep, '/')}\n"
+        "train: images/train\n"
+        "val: images/val\n"
+        "nc: 3\n"
+        "names:\n  0: bolt\n  1: nut\n  2: scratch\n",
+        encoding="utf-8",
+    )
+    return data_yaml
+
+
+def test_data_tab_loads_a_dataset_and_exposes_the_mapping(tmp_path, monkeypatch):
+    app = QApplication.instance() or QApplication([])
+    monkeypatch.setattr(UltralyticsDialog, "detect_environment", lambda self: None)
+    host = QWidget()
+    dialog = UltralyticsDialog(host)
+    try:
+        data_yaml = build_dataset(tmp_path)
+
+        tabs = [
+            dialog.tab_widget.tabText(index)
+            for index in range(dialog.tab_widget.count())
+        ]
+        assert tabs == ["Data", "Config", "Train"]
+        assert not hasattr(dialog, "load_images_button")
+        assert not dialog.export_hint.isHidden()
+
+        dialog.set_dataset_path(str(data_yaml))
+
+        assert dialog.dataset_snapshot is not None
+        assert dialog.dataset_snapshot.total_images == 5
+        assert dialog.export_hint.isHidden()
+        assert dialog.overview_table.rowCount() >= 8
+        assert dialog.classes_table.rowCount() == 3
+        headers = [
+            dialog.classes_table.horizontalHeaderItem(index).text()
+            for index in range(dialog.classes_table.columnCount())
+        ]
+        assert headers[-2:] == ["Training class", "Included"]
+        # a dataset that already has train/val must not offer a ratio
+        assert not dialog.config_widgets["dataset_ratio"].isEnabled()
+        assert "train" in dialog.dataset_ratio_hint.text()
+
+        dialog.classes_table.item(0, 5).setText("fastener")
+        dialog.classes_table.item(1, 5).setText("fastener")
+        dialog.classes_table.item(2, 6).setCheckState(
+            Qt.CheckState.Unchecked
+        )
+        app.processEvents()
+
+        mapping = dialog.get_current_class_mapping()
+        assert mapping["bolt"] == {"target": "fastener", "enabled": True}
+        assert mapping["nut"] == {"target": "fastener", "enabled": True}
+        assert mapping["scratch"]["enabled"] is False
+    finally:
+        dialog.close()
+        host.close()
+
+
+def test_task_type_moved_to_the_config_tab(tmp_path, monkeypatch):
+    app = QApplication.instance() or QApplication([])
+    monkeypatch.setattr(UltralyticsDialog, "detect_environment", lambda self: None)
+    host = QWidget()
+    dialog = UltralyticsDialog(host)
+    try:
+        data_yaml = build_dataset(tmp_path)
+        dialog.set_dataset_path(str(data_yaml))
+        dialog.go_to_specific_tab(1)
+        app.processEvents()
+
+        assert set(dialog.task_type_buttons) == {
+            "Classify",
+            "Detect",
+            "OBB",
+            "Segment",
+            "Pose",
+        }
+        # opening the config tab must not silently restore another dataset
+        assert dialog.config_widgets["data"].text() == str(data_yaml)
+
+        dialog.on_task_type_selected("Detect")
+        app.processEvents()
+        assert dialog.selected_task_type == "Detect"
+        assert dialog.config_widgets["project"].text().endswith("detect")
+        # the data file widget no longer lives in the config tab
+        assert "data" in dialog.config_widgets
+        assert "dataset_ratio" in dialog.config_widgets
+    finally:
+        dialog.close()
+        host.close()
+
+
+def test_training_args_consume_the_class_mapping(tmp_path, monkeypatch):
+    app = QApplication.instance() or QApplication([])
+    monkeypatch.setattr(UltralyticsDialog, "detect_environment", lambda self: None)
+    host = QWidget()
+    dialog = UltralyticsDialog(host)
+    try:
+        data_yaml = build_dataset(tmp_path)
+        dialog.set_dataset_path(str(data_yaml))
+        dialog.ensure_config_tab_initialized()
+        dialog.training_data_directory = str(tmp_path / "work")
+        dialog.selected_task_type = "Detect"
+        dialog.get_current_class_mapping = lambda: {
+            "bolt": {"target": "fastener", "enabled": True},
+            "nut": {"target": "fastener", "enabled": True},
+            "scratch": {"target": "scratch", "enabled": False},
+        }
+        config = dialog.get_current_config()
+        config["basic"].update(
+            {
+                "model": "yolo11n.pt",
+                "project": str(tmp_path / "runs"),
+                "name": "exp",
+                "device": "cpu",
+            }
+        )
+
+        args = dialog.get_training_args(config)
+
+        assert "views" in args["data"]
+        assert os.path.isfile(args["data"])
+        with open(args["data"], encoding="utf-8") as handle:
+            assert "nc: 1" in handle.read()
+        class_map = os.path.join(
+            os.path.dirname(args["data"]), "class_map.yaml"
+        )
+        assert os.path.isfile(class_map)
+        assert "fastener" in open(class_map, encoding="utf-8").read()
+        assert "classes" not in args
+    finally:
+        dialog.close()
+        host.close()

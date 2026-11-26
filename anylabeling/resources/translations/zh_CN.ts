@@ -12719,226 +12719,735 @@ You can download the models again in the new directory.</source>
 </context><context>
     <name>UltralyticsDialog</name>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="242" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="241" />
         <source>Data</source>
         <translation>数据</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="243" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="242" />
         <source>Config</source>
         <translation>配置</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="244" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="594" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="243" />
         <source>Train</source>
         <translation>训练</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="341" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="340" />
         <source>Background Task Running</source>
         <translation>后台任务正在运行</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="342" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="341" />
         <source>A training or export task is still running. Stop it and exit?</source>
         <translation>训练或导出任务仍在运行。是否停止任务并退出？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="437" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="451" />
         <source>Task Type:</source>
         <translation>任务类型：</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="476" />
-        <source>Valid Images:</source>
-        <translation>有效图片：</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="473" />
+        <source>No dataset selected. Export the project first, then pick the generated data.yaml or folder here.</source>
+        <translation>未选择数据集。请先用“导出”菜单导出项目，再在此选择生成的 data.yaml 或文件夹。</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="477" />
-        <source>Required:</source>
-        <translation>要求：</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="489" />
+        <source>Dataset error: %s</source>
+        <translation>数据集错误：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="568" />
-        <source>Dataset Summary:</source>
-        <translation>数据集概要：</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="512" />
+        <source>YOLO dataset</source>
+        <translation>YOLO 数据集</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="571" />
-        <source>No images loaded. Select a task and click Next to train with an existing dataset.</source>
-        <translation>未加载图片。请选择任务并点击“下一步”，以使用现有数据集进行训练。</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="514" />
+        <source>Classification folder</source>
+        <translation>分类文件夹</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1677" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1597" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1586" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="516" />
+        <source>%s: %d images, %d objects, %d classes</source>
+        <translation>%s：%d 张图片，%d 个对象，%d 个类别</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="524" />
+        <source>No train/val split: the ratio below partitions the images.</source>
+        <translation>数据集没有训练/验证划分：将按下方比例划分图片。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="572" />
+        <source>The dataset already has %d train and %d val images, so the ratio is not used.</source>
+        <translation>数据集已有 %d 张训练图片和 %d 张验证图片，比例不生效。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="584" />
+        <source>No train/val split: images are partitioned by this ratio.</source>
+        <translation>数据集没有训练/验证划分：将按此比例划分图片。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="712" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="637" />
         <location filename="..\..\views\training\ultralytics_dialog.py" line="592" />
-        <source>Validation Error</source>
-        <translation>验证错误</translation>
+        <source>Images</source>
+        <translation>图片</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="607" />
-        <source>Load Images</source>
-        <translation>加载图像</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="599" />
+        <source>Val</source>
+        <translation>验证</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1737" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="612" />
-        <source>Next</source>
-        <translation>下一步</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="604" />
+        <source>Test</source>
+        <translation>测试</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1335" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="609" />
+        <source>None</source>
+        <translation>空</translation>
     </message>
     <message>
         <location filename="..\..\views\training\ultralytics_dialog.py" line="638" />
-        <source>Select Model File</source>
-        <translation>选择模型文件</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="613" />
+        <source>Objects</source>
+        <translation>对象</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="648" />
-        <source>Select Classification Dataset Directory</source>
-        <translation>选择分类数据集目录</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="905" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="614" />
+        <source>Classes</source>
+        <translation>标签过滤</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="655" />
-        <source>Select Data File</source>
-        <translation>选择数据文件</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="616" />
+        <source>Labeled images</source>
+        <translation>有标注图片</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="667" />
-        <source>Invalid Data File</source>
-        <translation>无效的数据文件</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="620" />
+        <source>Empty label files</source>
+        <translation>空标注文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="675" />
-        <source>Select Pose Config File</source>
-        <translation>选择姿态估计任务配置文件</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="621" />
+        <source>Missing label files</source>
+        <translation>缺失标注文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="686" />
-        <source>Select Python Executable</source>
-        <translation>选择 Python 可执行文件</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="626" />
+        <source>Objects with an unknown class id</source>
+        <translation>类别编号未知的对象</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="688" />
-        <source>All Files (*)</source>
-        <translation>所有文件 (*)</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="631" />
+        <source>Item</source>
+        <translation>项目</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="793" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="631" />
+        <source>Count</source>
+        <translation>数量</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="631" />
+        <source>Share</source>
+        <translation>占比</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="636" />
+        <source>Class</source>
+        <translation>类别</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="712" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="639" />
+        <source>Image share</source>
+        <translation>图片占比</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="640" />
+        <source>Object share</source>
+        <translation>对象占比</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="641" />
+        <source>Training class</source>
+        <translation>训练类别</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="642" />
+        <source>Included</source>
+        <translation>参与训练</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="712" />
+        <source>Tag</source>
+        <translation>标签</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="716" />
+        <source>Image tags come from the dataset database, which is not open in this window.</source>
+        <translation>图片标签来自数据集数据库，本窗口未打开该数据库。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1117" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="722" />
         <source>Unavailable</source>
         <translation>不可用</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="795" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="731" />
+        <source>Tags belong to the dataset open in the labeling window, not to the file on disk.</source>
+        <translation>标签属于标注窗口中打开的数据集，不是磁盘上的训练数据集。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="740" />
+        <source>No image tag in the current dataset.</source>
+        <translation>当前数据集中没有图片标签。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="782" />
+        <source>Training reads an exported dataset. Export this project first with the Export menu (YOLO HBB / OBB / Seg), then select the generated data.yaml or folder here.</source>
+        <translation>训练读取的是已导出的数据集。请先用“导出”菜单（YOLO HBB / OBB / Seg）导出本项目，再在此选择生成的 data.yaml 或文件夹。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="802" />
+        <source>Dataset</source>
+        <translation>数据集</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="816" />
+        <source>Select YAML…</source>
+        <translation>选择 YAML…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="820" />
+        <source>Select Folder…</source>
+        <translation>选择文件夹…</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="824" />
+        <source>Open Folder</source>
+        <translation>打开文件夹</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="828" />
+        <source>Refresh</source>
+        <translation>刷新</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="831" />
+        <source>Dataset:</source>
+        <translation>数据集：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="847" />
+        <source>Dataset Ratio:</source>
+        <translation>划分比例：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="861" />
+        <source>Status:</source>
+        <translation>状态：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="877" />
+        <source>Give several classes the same training class name to merge them; clear “Included” to drop a class. The mapping is written to class_map.yaml next to the training view.</source>
+        <translation>把多个类别改成同一个训练类别名即合并；取消勾选“参与训练”即排除该类。映射会写入训练视图目录下的 class_map.yaml。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="904" />
+        <source>Overview</source>
+        <translation>统计总览</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="906" />
+        <source>Tags</source>
+        <translation>标签</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="912" />
+        <source>Select Dataset YAML</source>
+        <translation>选择数据集 YAML</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="914" />
+        <source>YAML Files (*.yaml *.yml);;All Files (*)</source>
+        <translation>YAML 文件 (*.yaml *.yml);;所有文件 (*)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="922" />
+        <source>Select Dataset Folder</source>
+        <translation>选择数据集文件夹</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1998" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1916" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="946" />
+        <source>Validation Error</source>
+        <translation>验证错误</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1855" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="947" />
+        <source>Select the training dataset first: export the project with the Export menu, then pick data.yaml here.</source>
+        <translation>请先选择训练数据集：用“导出”菜单导出项目，再在此选择 data.yaml。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2050" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="960" />
+        <source>Next</source>
+        <translation>下一步</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="987" />
+        <source>Select Model File</source>
+        <translation>选择模型文件</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="997" />
+        <source>Select Pose Config File</source>
+        <translation>选择姿态估计任务配置文件</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1008" />
+        <source>Select Python Executable</source>
+        <translation>选择 Python 可执行文件</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1010" />
+        <source>All Files (*)</source>
+        <translation>所有文件 (*)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1051" />
+        <source>GPU %d: %s</source>
+        <translation>GPU %d：%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1119" />
         <source>Detecting...</source>
         <translation>正在检测...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="836" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1160" />
         <source>Basic Settings</source>
         <translation>基础设置</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="946" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1180" />
+        <source>Project:</source>
+        <translation>项目：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1184" />
+        <source>Name:</source>
+        <translation>名称：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1210" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1202" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1194" />
+        <source>Browse</source>
+        <translation>浏览</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1198" />
+        <source>Env:</source>
+        <translation>环境：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1206" />
+        <source>Model:</source>
+        <translation>模型：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1215" />
+        <source>Pose Config:</source>
+        <translation>姿态配置：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1232" />
+        <source>Device:</source>
+        <translation>设备：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1256" />
         <source>Train Settings</source>
         <translation>训练设置</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="950" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1260" />
         <source>Basic</source>
         <translation>基础</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="986" />
-        <source>Class indices (e.g., 0,1,2) or leave empty for all</source>
-        <translation>类别索引（例如：0,1,2）或留空表示全部</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1262" />
+        <source>Epochs:</source>
+        <translation>训练轮数：</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1009" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1270" />
+        <source>Batch:</source>
+        <translation>批大小：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1276" />
+        <source>Image Size:</source>
+        <translation>图像尺寸：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1282" />
+        <source>Workers:</source>
+        <translation>工作线程：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1291" />
+        <source>Single Class</source>
+        <translation>单类别</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1311" />
         <source>Advanced Settings</source>
         <translation>高级设置</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1724" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1423" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1330" />
+        <source>Training Strategy</source>
+        <translation>训练策略</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1332" />
+        <source>Time (h):</source>
+        <translation>时长（小时）：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1338" />
+        <source>Patience:</source>
+        <translation>早停耐心值：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1346" />
+        <source>Close Mosaic:</source>
+        <translation>关闭马赛克增强：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1354" />
+        <source>Optimizer:</source>
+        <translation>优化器：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1359" />
+        <source>Cosine LR</source>
+        <translation>余弦学习率</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1364" />
+        <source>AMP</source>
+        <translation>混合精度</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1368" />
+        <source>Multi Scale</source>
+        <translation>多尺度</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1378" />
+        <source>Learning Rate</source>
+        <translation>学习率</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1380" />
+        <source>LR0:</source>
+        <translation>初始学习率：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1386" />
+        <source>LRF:</source>
+        <translation>最终学习率系数：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1392" />
+        <source>Momentum:</source>
+        <translation>动量：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1400" />
+        <source>Weight Decay:</source>
+        <translation>权重衰减：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1411" />
+        <source>Warmup Parameters</source>
+        <translation>预热参数</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1413" />
+        <source>Warmup Epochs:</source>
+        <translation>预热轮数：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1421" />
+        <source>Warmup Momentum:</source>
+        <translation>预热动量：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1429" />
+        <source>Warmup Bias LR:</source>
+        <translation>预热偏置学习率：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1440" />
+        <source>Augmentation Settings</source>
+        <translation>数据增强</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1445" />
+        <source>HSV Hue:</source>
+        <translation>HSV 色调：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1453" />
+        <source>HSV Saturation:</source>
+        <translation>HSV 饱和度：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1461" />
+        <source>HSV Value:</source>
+        <translation>HSV 明度：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1469" />
+        <source>Rotation Degrees:</source>
+        <translation>旋转角度：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1477" />
+        <source>Translate:</source>
+        <translation>平移：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1485" />
+        <source>Scale:</source>
+        <translation>缩放：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1493" />
+        <source>Shear:</source>
+        <translation>错切：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1501" />
+        <source>Perspective:</source>
+        <translation>透视：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1541" />
+        <source>Regularization</source>
+        <translation>正则化</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1543" />
+        <source>Dropout:</source>
+        <translation>Dropout：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1551" />
+        <source>Fraction:</source>
+        <translation>数据使用比例：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1559" />
+        <source>Rectangular</source>
+        <translation>矩形训练</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1566" />
+        <source>Loss Weights</source>
+        <translation>损失权重</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1568" />
+        <source>Box:</source>
+        <translation>框损失：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1574" />
+        <source>Cls:</source>
+        <translation>分类损失：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1580" />
+        <source>DFL:</source>
+        <translation>DFL 损失：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1586" />
+        <source>Pose:</source>
+        <translation>姿态损失：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1592" />
+        <source>Kobj:</source>
+        <translation>关键点目标性损失：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1601" />
+        <source>Checkpoint and Validation</source>
+        <translation>检查点与验证</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1603" />
+        <source>Save Period:</source>
+        <translation>保存周期：</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1610" />
+        <source>Disabled</source>
+        <translation>禁用</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1614" />
+        <source>Validation</source>
+        <translation>验证</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1617" />
+        <source>Plots</source>
+        <translation>绘图</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1622" />
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1625" />
+        <source>Resume</source>
+        <translation>断点续训</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1630" />
+        <source>Cache</source>
+        <translation>缓存</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2037" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1723" />
         <source>Import Config</source>
         <translation>导入配置</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1548" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1433" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1843" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1733" />
         <source>Success</source>
         <translation>成功</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1434" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1734" />
         <source>Config imported successfully</source>
         <translation>配置导入成功</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2478" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1695" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1685" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1551" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1438" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2790" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2008" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1846" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1738" />
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1438" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1738" />
         <source>Failed to import config</source>
         <translation>导入配置失败</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1546" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1841" />
         <source>Configuration saved successfully to %s</source>
         <translation>配置已成功保存到 %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1563" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1853" />
+        <source>Please select a task type first</source>
+        <translation>请先选择任务类型</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1864" />
+        <source>The selected dataset is not usable.</source>
+        <translation>所选数据集不可用。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1868" />
+        <source>The dataset defines no class name.</source>
+        <translation>数据集未定义任何类别名。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1870" />
+        <source>The dataset contains no image.</source>
+        <translation>数据集中没有图片。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1874" />
+        <source>A classification task needs a folder whose sub folders are the classes.</source>
+        <translation>分类任务需要选择以子文件夹为类别的目录。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1881" />
+        <source>This dataset is a classification folder; pick a data.yaml for detection, segmentation, OBB or pose.</source>
+        <translation>该数据集是分类文件夹；检测、分割、旋转框或姿态任务请选择 data.yaml。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1886" />
+        <source>The dataset has no train/val split and only one image, so it cannot be partitioned.</source>
+        <translation>数据集没有训练/验证划分且只有一张图片，无法划分。</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1896" />
         <source>Training in Progress</source>
         <translation>训练进行中</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1564" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1897" />
         <source>Training is currently in progress. Please stop the training first if you need to reconfigure.</source>
         <translation>训练正在进行中。如需重新配置，请先停止训练。</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2325" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1573" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2640" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1906" />
         <source>Training environment detection is still in progress</source>
         <translation>训练环境仍在检测中</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2328" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1576" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2643" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1909" />
         <source>Environment Error</source>
         <translation>环境错误</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1591" />
-        <source>When no images are loaded, the data file must reference existing train and val directories.</source>
-        <translation>未加载图片时，数据文件必须引用现有的 train 和 val 目录。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1604" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1925" />
         <source>Training data directory is not writable: {path}
 {error}</source>
         <translation>训练数据目录不可写：{path}
 {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1608" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1929" />
         <source>Training Directory Error</source>
         <translation>训练目录错误</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1624" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1945" />
         <source>Existing Model Detected</source>
         <translation>检测到已有模型</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1625" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1946" />
         <source>A trained model already exists at this location.
 
 Do you want to:
@@ -12951,252 +13460,274 @@ No - Continue to retrain (will overwrite)</source>
 否 - 继续重新训练（将覆盖原模型）</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1655" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1976" />
         <source>Directory Exists</source>
         <translation>目录已存在</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1656" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1977" />
         <source>Project directory already exists! Do you want to overwrite it?
 If not, please manually modify the `Name` field value.</source>
         <translation>项目目录已存在！是否要覆盖？
 如果不想覆盖，请手动修改"Name"字段的值。</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1686" />
-        <source>Please select a task type first</source>
-        <translation>请先选择任务类型</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1696" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2009" />
         <source>Please select a valid pose configuration file for pose detection tasks</source>
         <translation>请为姿态估计任务选择有效的姿态配置文件</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1705" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2018" />
         <source>Reset Training</source>
         <translation>重置训练</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1706" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2019" />
         <source>Training traces detected. Do you want to reset the training tab?</source>
         <translation>检测到训练记录。是否要重置训练标签页？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1728" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2041" />
         <source>Save Config</source>
         <translation>保存配置</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2378" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1733" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2690" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2046" />
         <source>Previous</source>
         <translation>上一步</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2596" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1902" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1889" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1884" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1878" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2908" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2225" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2212" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2207" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2201" />
         <source>No image</source>
         <translation>无图像</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1969" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2292" />
         <source>Training is about to start...</source>
         <translation>训练即将开始...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1982" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2305" />
         <source>Training completed successfully!</source>
         <translation>训练成功完成！</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2004" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2327" />
         <source>Training stopped by user</source>
         <translation>训练已被用户停止</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2020" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2343" />
         <source>Training Status</source>
         <translation>训练状态</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2023" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2346" />
         <source>Ready to train</source>
         <translation>准备训练</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2028" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2351" />
         <source>Progress:</source>
         <translation>进度：</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2042" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2365" />
         <source>Clear Logs</source>
         <translation>清除日志</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2043" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2366" />
         <source>Are you sure you want to clear all training logs?</source>
         <translation>确定要清除所有训练日志吗？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2063" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2386" />
         <source>Training Logs</source>
         <translation>训练日志</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2085" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2408" />
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2093" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2416" />
         <source>Clear</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2106" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2429" />
         <source>Training Images</source>
         <translation>训练图像</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2217" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2211" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2540" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2534" />
         <source>Info</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2218" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2541" />
         <source>No training directory available</source>
         <translation>无可用的训练目录</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2571" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2224" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2883" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2547" />
         <source>Confirm Stop</source>
         <translation>确认停止</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2225" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2548" />
         <source>Are you sure you want to stop the training?</source>
         <translation>确定要停止训练吗？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2233" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2556" />
         <source>Stopping training...</source>
         <translation>正在停止训练...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2235" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2558" />
         <source>Cancel to stop training</source>
         <translation>取消以停止训练</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2341" />
-        <source>Using workspace snapshot: {count} images</source>
-        <translation>正在使用工作区快照：{count} 张图片</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2346" />
-        <source>Changes made during training will be used in the next run.</source>
-        <translation>训练期间的更改将在下一次训练中使用。</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2350" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2662" />
         <source>Preparing training...</source>
         <translation>正在准备训练...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2363" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2357" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2675" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2669" />
         <source>Training Error</source>
         <translation>训练错误</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2368" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2680" />
         <source>Open Directory</source>
         <translation>打开目录</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2373" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2685" />
         <source>Stop Training</source>
         <translation>停止训练</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2385" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2697" />
         <source>Start Training</source>
         <translation>开始训练</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2565" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2392" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2877" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2704" />
         <source>Export</source>
         <translation>导出</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2423" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2735" />
         <source>Export started...</source>
         <translation>导出已开始...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2428" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2740" />
         <source>Stop Export</source>
         <translation>停止导出</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2447" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2748" />
+        <source>Export completed successfully! File saved to: %s</source>
+        <translation>导出成功！文件已保存到：%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2758" />
         <source>Export Successful</source>
         <translation>导出成功</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2512" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2458" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2759" />
+        <source>Model successfully exported to %s format:
+%s</source>
+        <translation>模型已成功导出为 %s 格式：
+%s</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2824" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2770" />
         <source>Export Error</source>
         <translation>导出错误</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2464" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2776" />
         <source>Export stopped by user</source>
         <translation>用户已停止导出</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2479" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2791" />
         <source>No training project available for export</source>
         <translation>没有可供导出的训练项目</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2489" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2801" />
         <source>Model Not Found</source>
         <translation>未找到模型</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2490" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2802" />
         <source>Model weights not found at: %s</source>
         <translation>未找到模型权重：%s</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2546" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2529" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2858" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2841" />
         <source>Apply Error</source>
         <translation>应用失败</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2547" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2859" />
         <source>Failed to load the exported model</source>
         <translation>无法加载导出的模型</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2572" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2884" />
         <source>Are you sure you want to stop the export?</source>
         <translation>确定要停止导出吗？</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2579" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2891" />
         <source>No export is in progress</source>
         <translation>当前没有正在进行的导出</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Classify</source>
+        <translation>分类</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Detect</source>
+        <translation>检测</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>OBB</source>
+        <translation>旋转框</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Pose</source>
+        <translation>姿态</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Segment</source>
+        <translation>分割</translation>
     </message>
 </context><context>
     <name>UpdateController</name>

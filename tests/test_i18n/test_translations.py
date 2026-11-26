@@ -346,6 +346,54 @@ def test_image_attributes_tag_library_is_translated():
         app.removeTranslator(translator)
 
 
+def test_training_dialog_labels_are_translated():
+    """Regression: the whole Ultralytics window used to stay English.
+
+    fork.63: the form labels, group titles, check boxes, task buttons and the
+    window title were bare strings (``layout.addRow("Project:", ...)``), and two
+    ``self.tr(f"...")`` calls could never be extracted.
+    """
+
+    from PyQt6 import QtCore, QtWidgets
+
+    app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+    translator = QtCore.QTranslator()
+    assert translator.load(str(TRANSLATIONS / "zh_CN.qm"))
+    app.installTranslator(translator)
+    try:
+        checks = {
+            "Project:": "项目：",
+            "Name:": "名称：",
+            "Dataset Ratio:": "划分比例：",
+            "Training Strategy": "训练策略",
+            "Training class": "训练类别",
+            "Detect": "检测",
+            "Browse": "浏览",
+        }
+        untranslated = {
+            text: QtCore.QCoreApplication.translate("UltralyticsDialog", text)
+            for text in checks
+            if QtCore.QCoreApplication.translate(
+                "UltralyticsDialog", text
+            )
+            == text
+        }
+        assert untranslated == {}
+        translated = {
+            text: QtCore.QCoreApplication.translate("UltralyticsDialog", text)
+            for text in checks
+        }
+        assert translated == checks
+        # formattable templates must survive translation + formatting
+        template = QtCore.QCoreApplication.translate(
+            "UltralyticsDialog", "%s: %d images, %d objects, %d classes"
+        )
+        rendered = template % ("YOLO 数据集", 3, 5, 2)
+        assert "3" in rendered and "5" in rendered and "2" in rendered
+    finally:
+        app.removeTranslator(translator)
+
+
 def test_scanner_resolves_dynamic_translation_patterns(tmp_path):
     """Dynamic call styles must stay extractable.
 

@@ -6,6 +6,66 @@
 采用 `+` 形式是 PEP 440 唯一合法写法；`4.3.2-fork.1` 等写法会被 `packaging.version` 判为非法，
 进而影响 `python -m build` 与 `update_checker` 的版本比较。
 
+## 4.3.2+fork.63 — 2026-11-26
+
+### 1. 背景与需求
+
+用户指出 “Ultralytics Training Platforms” 窗口的三类问题并要求改造：
+
+1. “数据”页左下角 `加载图像` 可以省略——训练最终使用的是“配置”页 `data` 指向的 yaml；
+2. 窗口仍有 `project`、`name` 等未翻译内容，要求判定是①窗口自身没写 `tr`、②遗漏、③翻译结构不合理，还是④其他原因；
+3. “数据”页改为数据集浏览与管理：①训练类别映射/合并在此展示与设置；②`data` 从“配置”页移入；③像数据集中心一样展示“概览/类别/标签”表格；④`dataset ratio` 迁入；
+4. 任务类型从“数据”页移到“配置”页，使“数据”只负责数据集加载/管理/浏览；
+5. 训练前硬提醒用户先导出数据集（不解释模块分离的原因）。
+
+后续确认：类别映射是**训练期临时映射、不改数据库**，但**会重写标签**（写在训练目录里的副本），并在训练目录留下映射表；旧的“数据集概要”整表移除；提醒形式为“模态一次 + 常驻提示条”。
+
+### 2. 主要实现
+
+- **训练输入改为磁盘数据集**：`UltralyticsDialog` 不再复制父窗口的 `image_list/output_dir/supported_shape`，也不再调用 `create_yolo_dataset()` 现场生成数据集；训练只消费 `data.yaml`（YOLO 导出契约）或分类 imagefolder。
+- **新模块 `services/auto_training/ultralytics/dataset_view.py`**（Qt-free、只读）：`DatasetSnapshot`、`locate_dataset_yaml()`、`inspect_dataset()`（按 `data.yaml`/`images`/`labels` mtime 缓存，`force=True` 刷新）、`dataset_entries()`、`label_path_for()`。提供 split 图片数、类别图片/对象数、有标注/空标签/缺失标签文件、未知类别编号等计数。
+- **新模块 `services/auto_training/ultralytics/training_view.py`**（Qt-free）：`plan_class_mapping()` 解析 `{源类别: {target, enabled}}` 为 `ClassMappingPlan`；`build_training_view()` 在“恒等映射 + 已有 train/val”时**零拷贝**返回源 `data.yaml`，否则派生训练视图：硬链接/软链接图片（失败才复制）、按 `index_to_target` 重写标签首列（保留其余列，排除类的对象整行丢弃、排除后无对象的图片写空标签文件）、写新 `data.yaml` 与 `class_map.yaml`（映射、合并、排除、是否切分、比例与统计）。派生划分用固定种子 `random.Random(0)`，同一数据集重训可复现。
+- **“数据”页重构**：导出提示条 → `数据集` 组（路径、`选择 YAML…`、`选择文件夹…`、`打开文件夹`、`刷新`、`划分比例` + 状态说明）→ “概览/类别/标签”三 tab（表头与数据集中心一致，类别表新增可编辑的“训练类别”与可勾选的“参与训练”）→ 底部仅保留 `下一步`。移除 `加载图像`、旧的“数据集概要”表与“有效图片 N/要求 M”提示。
+- **“配置”页**：任务类型按钮行迁入（按钮文案随界面翻译）；`Project/Name/Env/Model/Device/Pose Config` 保留，`data`/`Dataset Ratio` 移出；`Classes:` 索引输入框、`Skip Empty Files`、`Only Checked Files` 随工作区快照路径一并移除（类别裁剪改由映射表“参与训练”决定）。
+- **校验与衔接**：`validate_training_dataset()` 在进入训练前检查任务类型、数据集可用性（能否解析、是否有图片/类别名、分类与检测模式是否匹配、单图无划分不可切分）；`proceed_to_config()` 未选数据集时直接提示先导出；`project` 默认值改在任务类型选择时推导，用户手改后不再覆盖（`textEdited` → `_auto_project=False`）；打开“配置”页恢复历史配置时不再覆盖“数据”页已选的数据集（`load_default_config()` 传 `skip=("data","dataset_ratio")`）。
+- **提醒**：无可用数据集时“数据”页顶部常驻提示条（说明先导出再选 `data.yaml`）；未提供自动跳转导出（导出格式/目录属标注模块动作）。
+- **顺手修正**：`start_training()` 停止态分支的 `self.training_status == "idle"` 改为赋值（结构报告 §13.1 已登记为待修）。
+- **翻译治理**：窗口内所有裸字符串改为 `self.tr`（含 `Project:/Name:/Env:/Model:/Pose Config:/Device:/Dataset Ratio:`、各 group 标题、`Epochs:/Batch:/…`、复选框、`None`/`Disabled` 的 specialValueText、`TASK_TYPES` 常量循环、`GPU %d: %s`、窗口标题 `DEFAULT_WINDOW_TITLE`）；`self.tr(f"…")` 两处改为 `%s` + `%` 格式化（`translation_scan` 不解析 f-string，按原写法永远无法翻译）；新增 100 条 zh_CN 译文。
+
+### 3. 行为与兼容性
+
+- **接口/契约变化**：训练输入契约从“内存快照或 yaml”变为“仅磁盘数据集”；`settings.json` 的 `basic.data`/`basic.dataset_ratio` 键名与语义保留（只是控件位置变化），无需迁移；`train.classes`、`checkpoint.skip_empty_files`、`checkpoint.only_checked_files` 不再写入（旧配置里的同名字段被忽略）。
+- 训练数据目录下会新增 `views/<task>/<数据集>_<时间戳>/`（含 `data.yaml`、`class_map.yaml`、`images/`、`labels/`）；两秒内重复训练会加后缀避免混写。该目录不会自动清理。
+- 类别映射不改数据集自身标注与“类别”页；恒等映射且已有划分时不产生任何副本。
+- `dataset_ratio` 对已划分数据集不再生效（控件禁用并显示现有数量），避免静默重划用户的手工划分。
+- `create_yolo_dataset()` 与 `validate_task_requirements()`/`get_statistics_table_data()` 仍保留在服务层（供 T4 训练包导出与既有测试使用），只是训练窗口不再调用。
+- 文档：设计书改名 `工业机器视觉数据平台-设计书.md`（原 `-v1.6.md`，内容零差异），相关交叉引用同步更新。
+
+### 4. 涉及文件
+
+- 新增 `anylabeling/services/auto_training/ultralytics/dataset_view.py`、`anylabeling/services/auto_training/ultralytics/training_view.py`、`tests/test_auto_training/test_dataset_view.py`、`tests/test_auto_training/test_training_view.py`
+- 修改 `anylabeling/views/training/ultralytics_dialog.py`（数据/配置两页重构、校验、翻译）、`tests/test_auto_training/test_dataset.py`、`tests/test_auto_training/test_dialog.py`、`tests/test_i18n/test_translations.py`
+- 文档/版本/翻译：`app_info.py`、`CHANGELOG-fork.md`、`docs/dev/CODE_STRUCTURE_REPORT.md`、`docs/dev/工业机器视觉数据平台-设计书.md`、`docs/开始.md`、`docs/dev/数据库设计-讨论稿.md`、`docs/user/zh_cn/user_guide.md`、四语言 `.ts/.qm`
+
+### 5. 验证
+
+- `tests/test_auto_training`：**105 passed / 3 failed**（新增 20 例：数据集计数与缓存、无划分/分类目录、未知类别、映射计划、标签重写与 `class_map.yaml`、确定性切分、同秒目录不冲突、分类视图、全排除拒绝；3 条失败为 §13.1 既有基线——正则 `match` 转义、`~` 展开依赖 HOME、静默进程停止时序）
+- `tests/test_i18n + test_utils + test_dataset_db`：**274 passed / 103 subtests**（含新增 `test_training_dialog_labels_are_translated`）
+- `tests/test_widgets + test_labeling`：**359 passed / 11 failed**（10 条既有测试债 + 1 条计时抖动，与 fork.61/62 记录一致）
+- 离屏对话框冒烟：三 tab、数据集概览/类别表、比例禁用提示、映射编辑被捕获、`get_training_args()` 返回派生视图（`nc: 1`）并写出 `class_map.yaml`、传参无 `classes`
+- 服务冒烟：恒等零拷贝、合并/排除后标签重写与空标签文件、无划分 0.8 切出 8/2
+- 翻译：`.ts` 2771 → 2875 条，zh/en 0 未翻译，ja/ko 133 条未翻译（基线 128）；`translation_scan` 3455 条 0 未解析；重跑生成器四次四语言 `.ts/.qm` 哈希零变化（幂等）
+- **未执行**：真实桌面点击训练窗口、真实 Ultralytics 训练（本机无 GPU/GUI 会话）
+- 环境限制：本机沙箱下 `os.mkdir(path, 0o700)` 生成的目录对沙箱令牌不可列举，pytest 无法创建 `tmp_path`；验证时用 `temporary/fork63/shim/sitecustomize.py` 放宽 `os.mkdir` 的 mode（同 fork.31 记录），该文件仅用于测试运行，未提交。
+
+### 6. 已知限制
+
+- 类别映射是训练期视图，不落库、无版本快照；设计书 §6.1 的映射表 + 版本快照仍待 T4 训练包导出落地；
+- 派生视图会链接图片并重写标签，超大类别映射会产生一次全量遍历；无划分时切分需读取每个标签文件；
+- “标签”表来自当前打开的数据集库，与所选训练数据集可能不是同一份数据，界面已注明来源，但不会自动校验两者一致；
+- 分类任务的映射合并会为每个类别建目录并链接/复制图片，跨卷时退化为复制；
+- `UltralyticsDialog` 由 2604 行增至约 2916 行（90 个方法），已超出项目“1000–2000 行不算上帝类”的口径；本批为控制风险未再拆分，建议后续把“数据”页（数据集来源 + 三张表 + 映射）抽成 `views/training/widgets/dataset_panel.py` 之类的独立控件。
+
 ## 4.3.2+fork.62 — 2026-11-26
 
 ### 1. 背景与需求

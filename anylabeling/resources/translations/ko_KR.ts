@@ -12695,226 +12695,735 @@ You can download the models again in the new directory.</source>
 </context><context>
     <name>UltralyticsDialog</name>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="242" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="241" />
         <source>Data</source>
         <translation>데이터</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="243" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="242" />
         <source>Config</source>
         <translation>설정</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="244" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="594" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="243" />
         <source>Train</source>
         <translation>훈련</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="341" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="340" />
         <source>Background Task Running</source>
         <translation>백그라운드 작업 실행 중</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="342" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="341" />
         <source>A training or export task is still running. Stop it and exit?</source>
         <translation>학습 또는 내보내기 작업이 아직 실행 중입니다. 중지하고 종료하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="437" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="451" />
         <source>Task Type:</source>
         <translation>작업 유형:</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="476" />
-        <source>Valid Images:</source>
-        <translation>유효한 이미지:</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="473" />
+        <source>No dataset selected. Export the project first, then pick the generated data.yaml or folder here.</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="477" />
-        <source>Required:</source>
-        <translation>필요 수:</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="489" />
+        <source>Dataset error: %s</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="568" />
-        <source>Dataset Summary:</source>
-        <translation>데이터셋 요약:</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="512" />
+        <source>YOLO dataset</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="571" />
-        <source>No images loaded. Select a task and click Next to train with an existing dataset.</source>
-        <translation>불러온 이미지가 없습니다. 기존 데이터셋으로 학습하려면 작업을 선택하고 다음을 클릭하세요.</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="514" />
+        <source>Classification folder</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1677" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1597" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1586" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="516" />
+        <source>%s: %d images, %d objects, %d classes</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="524" />
+        <source>No train/val split: the ratio below partitions the images.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="572" />
+        <source>The dataset already has %d train and %d val images, so the ratio is not used.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="584" />
+        <source>No train/val split: images are partitioned by this ratio.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="712" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="637" />
         <location filename="..\..\views\training\ultralytics_dialog.py" line="592" />
-        <source>Validation Error</source>
-        <translation>유효성 검사 오류</translation>
+        <source>Images</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="607" />
-        <source>Load Images</source>
-        <translation>이미지 불러오기</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="599" />
+        <source>Val</source>
+        <translation>Val</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1737" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="612" />
-        <source>Next</source>
-        <translation>다음</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="604" />
+        <source>Test</source>
+        <translation>Test</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1335" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="609" />
+        <source>None</source>
+        <translation>없음</translation>
     </message>
     <message>
         <location filename="..\..\views\training\ultralytics_dialog.py" line="638" />
-        <source>Select Model File</source>
-        <translation>모델 파일 선택</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="613" />
+        <source>Objects</source>
+        <translation>객체</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="648" />
-        <source>Select Classification Dataset Directory</source>
-        <translation>분류 데이터셋 디렉터리 선택</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="905" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="614" />
+        <source>Classes</source>
+        <translation>레이블 필터</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="655" />
-        <source>Select Data File</source>
-        <translation>데이터 파일 선택</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="616" />
+        <source>Labeled images</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="667" />
-        <source>Invalid Data File</source>
-        <translation>잘못된 데이터 파일</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="620" />
+        <source>Empty label files</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="675" />
-        <source>Select Pose Config File</source>
-        <translation>포즈 설정 파일 선택</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="621" />
+        <source>Missing label files</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="686" />
-        <source>Select Python Executable</source>
-        <translation>Python 실행 파일 선택</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="626" />
+        <source>Objects with an unknown class id</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="688" />
-        <source>All Files (*)</source>
-        <translation>모든 파일 (*)</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="631" />
+        <source>Item</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="793" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="631" />
+        <source>Count</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="631" />
+        <source>Share</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="636" />
+        <source>Class</source>
+        <translation>클래스</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="712" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="639" />
+        <source>Image share</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="640" />
+        <source>Object share</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="641" />
+        <source>Training class</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="642" />
+        <source>Included</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="712" />
+        <source>Tag</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="716" />
+        <source>Image tags come from the dataset database, which is not open in this window.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1117" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="722" />
         <source>Unavailable</source>
         <translation>사용할 수 없음</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="795" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="731" />
+        <source>Tags belong to the dataset open in the labeling window, not to the file on disk.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="740" />
+        <source>No image tag in the current dataset.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="782" />
+        <source>Training reads an exported dataset. Export this project first with the Export menu (YOLO HBB / OBB / Seg), then select the generated data.yaml or folder here.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="802" />
+        <source>Dataset</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="816" />
+        <source>Select YAML…</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="820" />
+        <source>Select Folder…</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="824" />
+        <source>Open Folder</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="828" />
+        <source>Refresh</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="831" />
+        <source>Dataset:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="847" />
+        <source>Dataset Ratio:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="861" />
+        <source>Status:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="877" />
+        <source>Give several classes the same training class name to merge them; clear “Included” to drop a class. The mapping is written to class_map.yaml next to the training view.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="904" />
+        <source>Overview</source>
+        <translation>개요</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="906" />
+        <source>Tags</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="912" />
+        <source>Select Dataset YAML</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="914" />
+        <source>YAML Files (*.yaml *.yml);;All Files (*)</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="922" />
+        <source>Select Dataset Folder</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1998" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1916" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="946" />
+        <source>Validation Error</source>
+        <translation>유효성 검사 오류</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1855" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="947" />
+        <source>Select the training dataset first: export the project with the Export menu, then pick data.yaml here.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2050" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="960" />
+        <source>Next</source>
+        <translation>다음</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="987" />
+        <source>Select Model File</source>
+        <translation>모델 파일 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="997" />
+        <source>Select Pose Config File</source>
+        <translation>포즈 설정 파일 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1008" />
+        <source>Select Python Executable</source>
+        <translation>Python 실행 파일 선택</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1010" />
+        <source>All Files (*)</source>
+        <translation>모든 파일 (*)</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1051" />
+        <source>GPU %d: %s</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1119" />
         <source>Detecting...</source>
         <translation>감지 중...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="836" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1160" />
         <source>Basic Settings</source>
         <translation>기본 설정</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="946" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1180" />
+        <source>Project:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1184" />
+        <source>Name:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1210" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1202" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1194" />
+        <source>Browse</source>
+        <translation>찾아보기</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1198" />
+        <source>Env:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1206" />
+        <source>Model:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1215" />
+        <source>Pose Config:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1232" />
+        <source>Device:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1256" />
         <source>Train Settings</source>
         <translation>훈련 설정</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="950" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1260" />
         <source>Basic</source>
         <translation>기본</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="986" />
-        <source>Class indices (e.g., 0,1,2) or leave empty for all</source>
-        <translation>클래스 인덱스(예: 0,1,2)를 입력하거나 전체를 대상으로 하려면 비워 두세요.</translation>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1262" />
+        <source>Epochs:</source>
+        <translation type="unfinished" />
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1009" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1270" />
+        <source>Batch:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1276" />
+        <source>Image Size:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1282" />
+        <source>Workers:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1291" />
+        <source>Single Class</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1311" />
         <source>Advanced Settings</source>
         <translation>고급 설정</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1724" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1423" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1330" />
+        <source>Training Strategy</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1332" />
+        <source>Time (h):</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1338" />
+        <source>Patience:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1346" />
+        <source>Close Mosaic:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1354" />
+        <source>Optimizer:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1359" />
+        <source>Cosine LR</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1364" />
+        <source>AMP</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1368" />
+        <source>Multi Scale</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1378" />
+        <source>Learning Rate</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1380" />
+        <source>LR0:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1386" />
+        <source>LRF:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1392" />
+        <source>Momentum:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1400" />
+        <source>Weight Decay:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1411" />
+        <source>Warmup Parameters</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1413" />
+        <source>Warmup Epochs:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1421" />
+        <source>Warmup Momentum:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1429" />
+        <source>Warmup Bias LR:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1440" />
+        <source>Augmentation Settings</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1445" />
+        <source>HSV Hue:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1453" />
+        <source>HSV Saturation:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1461" />
+        <source>HSV Value:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1469" />
+        <source>Rotation Degrees:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1477" />
+        <source>Translate:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1485" />
+        <source>Scale:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1493" />
+        <source>Shear:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1501" />
+        <source>Perspective:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1541" />
+        <source>Regularization</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1543" />
+        <source>Dropout:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1551" />
+        <source>Fraction:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1559" />
+        <source>Rectangular</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1566" />
+        <source>Loss Weights</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1568" />
+        <source>Box:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1574" />
+        <source>Cls:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1580" />
+        <source>DFL:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1586" />
+        <source>Pose:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1592" />
+        <source>Kobj:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1601" />
+        <source>Checkpoint and Validation</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1603" />
+        <source>Save Period:</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1610" />
+        <source>Disabled</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1614" />
+        <source>Validation</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1617" />
+        <source>Plots</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1622" />
+        <source>Save</source>
+        <translation>저장</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1625" />
+        <source>Resume</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1630" />
+        <source>Cache</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2037" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1723" />
         <source>Import Config</source>
         <translation>설정 가져오기</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1548" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1433" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1843" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1733" />
         <source>Success</source>
         <translation>성공</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1434" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1734" />
         <source>Config imported successfully</source>
         <translation>설정을 성공적으로 가져왔습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2478" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1695" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1685" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1551" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1438" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2790" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2008" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1846" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1738" />
         <source>Error</source>
         <translation>오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1438" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1738" />
         <source>Failed to import config</source>
         <translation>설정 가져오기에 실패했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1546" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1841" />
         <source>Configuration saved successfully to %s</source>
         <translation>설정이 %s에 성공적으로 저장되었습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1563" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1853" />
+        <source>Please select a task type first</source>
+        <translation>먼저 작업 유형을 선택하세요.</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1864" />
+        <source>The selected dataset is not usable.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1868" />
+        <source>The dataset defines no class name.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1870" />
+        <source>The dataset contains no image.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1874" />
+        <source>A classification task needs a folder whose sub folders are the classes.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1881" />
+        <source>This dataset is a classification folder; pick a data.yaml for detection, segmentation, OBB or pose.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1886" />
+        <source>The dataset has no train/val split and only one image, so it cannot be partitioned.</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1896" />
         <source>Training in Progress</source>
         <translation>훈련 진행 중</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1564" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1897" />
         <source>Training is currently in progress. Please stop the training first if you need to reconfigure.</source>
         <translation>현재 훈련이 진행 중입니다. 설정을 다시 하려면 먼저 훈련을 중지하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2325" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1573" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2640" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1906" />
         <source>Training environment detection is still in progress</source>
         <translation>학습 환경을 감지하는 중입니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2328" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1576" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2643" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1909" />
         <source>Environment Error</source>
         <translation>환경 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1591" />
-        <source>When no images are loaded, the data file must reference existing train and val directories.</source>
-        <translation>이미지를 불러오지 않은 경우 데이터 파일은 기존 train 및 val 디렉터리를 참조해야 합니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1604" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1925" />
         <source>Training data directory is not writable: {path}
 {error}</source>
         <translation>학습 데이터 디렉터리에 쓸 수 없습니다: {path}
 {error}</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1608" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1929" />
         <source>Training Directory Error</source>
         <translation>학습 디렉터리 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1624" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1945" />
         <source>Existing Model Detected</source>
         <translation>기존 모델이 감지되었습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1625" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1946" />
         <source>A trained model already exists at this location.
 
 Do you want to:
@@ -12927,252 +13436,273 @@ No - Continue to retrain (will overwrite)</source>
 아니요 - 재학습 계속하기(덮어씀)</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1655" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1976" />
         <source>Directory Exists</source>
         <translation>디렉터리가 이미 존재합니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1656" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="1977" />
         <source>Project directory already exists! Do you want to overwrite it?
 If not, please manually modify the `Name` field value.</source>
         <translation>프로젝트 디렉터리가 이미 존재합니다. 덮어쓰시겠습니까?
 그렇지 않다면 `Name` 필드 값을 직접 수정하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1686" />
-        <source>Please select a task type first</source>
-        <translation>먼저 작업 유형을 선택하세요.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1696" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2009" />
         <source>Please select a valid pose configuration file for pose detection tasks</source>
         <translation>포즈 감지 작업에 사용할 올바른 포즈 설정 파일을 선택하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1705" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2018" />
         <source>Reset Training</source>
         <translation>훈련 초기화</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1706" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2019" />
         <source>Training traces detected. Do you want to reset the training tab?</source>
         <translation>훈련 기록이 감지되었습니다. 훈련 탭을 초기화하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1728" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2041" />
         <source>Save Config</source>
         <translation>설정 저장</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2378" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1733" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2690" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2046" />
         <source>Previous</source>
         <translation>이전</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2596" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1902" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1889" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1884" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1878" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2908" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2225" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2212" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2207" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2201" />
         <source>No image</source>
         <translation>이미지 없음</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1969" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2292" />
         <source>Training is about to start...</source>
         <translation>훈련을 시작하는 중...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="1982" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2305" />
         <source>Training completed successfully!</source>
         <translation>훈련이 성공적으로 완료되었습니다!</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2004" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2327" />
         <source>Training stopped by user</source>
         <translation>사용자가 훈련을 중지했습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2020" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2343" />
         <source>Training Status</source>
         <translation>훈련 상태</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2023" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2346" />
         <source>Ready to train</source>
         <translation>훈련 준비 완료</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2028" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2351" />
         <source>Progress:</source>
         <translation>진행률:</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2042" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2365" />
         <source>Clear Logs</source>
         <translation>로그 지우기</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2043" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2366" />
         <source>Are you sure you want to clear all training logs?</source>
         <translation>모든 훈련 로그를 지우시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2063" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2386" />
         <source>Training Logs</source>
         <translation>훈련 로그</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2085" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2408" />
         <source>Copy</source>
         <translation>복사</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2093" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2416" />
         <source>Clear</source>
         <translation>지우기</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2106" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2429" />
         <source>Training Images</source>
         <translation>훈련 이미지</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2217" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2211" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2540" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2534" />
         <source>Info</source>
         <translation>정보</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2218" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2541" />
         <source>No training directory available</source>
         <translation>사용할 수 있는 훈련 디렉터리가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2571" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2224" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2883" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2547" />
         <source>Confirm Stop</source>
         <translation>중지 확인</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2225" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2548" />
         <source>Are you sure you want to stop the training?</source>
         <translation>훈련을 중지하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2233" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2556" />
         <source>Stopping training...</source>
         <translation>훈련 중지 중...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2235" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2558" />
         <source>Cancel to stop training</source>
         <translation>취소를 눌러 훈련을 중지하세요.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2341" />
-        <source>Using workspace snapshot: {count} images</source>
-        <translation>작업 공간 스냅샷 사용 중: 이미지 {count}개</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2346" />
-        <source>Changes made during training will be used in the next run.</source>
-        <translation>학습 중 변경 사항은 다음 실행에 사용됩니다.</translation>
-    </message>
-    <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2350" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2662" />
         <source>Preparing training...</source>
         <translation>훈련 준비 중...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2363" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2357" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2675" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2669" />
         <source>Training Error</source>
         <translation>훈련 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2368" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2680" />
         <source>Open Directory</source>
         <translation>디렉터리 열기</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2373" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2685" />
         <source>Stop Training</source>
         <translation>훈련 중지</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2385" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2697" />
         <source>Start Training</source>
         <translation>훈련 시작</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2565" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2392" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2877" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2704" />
         <source>Export</source>
         <translation>내보내기</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2423" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2735" />
         <source>Export started...</source>
         <translation>내보내기를 시작했습니다...</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2428" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2740" />
         <source>Stop Export</source>
         <translation>내보내기 중지</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2447" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2748" />
+        <source>Export completed successfully! File saved to: %s</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2758" />
         <source>Export Successful</source>
         <translation>내보내기 성공</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2512" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2458" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2759" />
+        <source>Model successfully exported to %s format:
+%s</source>
+        <translation type="unfinished" />
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2824" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2770" />
         <source>Export Error</source>
         <translation>내보내기 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2464" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2776" />
         <source>Export stopped by user</source>
         <translation>사용자가 내보내기를 중지했습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2479" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2791" />
         <source>No training project available for export</source>
         <translation>내보낼 훈련 프로젝트가 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2489" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2801" />
         <source>Model Not Found</source>
         <translation>모델을 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2490" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2802" />
         <source>Model weights not found at: %s</source>
         <translation>모델 가중치를 찾을 수 없습니다: %s</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2546" />
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2529" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2858" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2841" />
         <source>Apply Error</source>
         <translation>적용 오류</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2547" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2859" />
         <source>Failed to load the exported model</source>
         <translation>내보낸 모델을 불러오지 못했습니다</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2572" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2884" />
         <source>Are you sure you want to stop the export?</source>
         <translation>내보내기를 중지하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="..\..\views\training\ultralytics_dialog.py" line="2579" />
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="2891" />
         <source>No export is in progress</source>
         <translation>진행 중인 내보내기가 없습니다</translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Classify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Detect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>OBB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Pose</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="..\..\views\training\ultralytics_dialog.py" line="453" />
+        <source>Segment</source>
+        <translation type="unfinished"></translation>
     </message>
 </context><context>
     <name>UpdateController</name>

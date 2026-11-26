@@ -1,3 +1,4 @@
+import os
 from types import SimpleNamespace
 
 import pytest
@@ -187,27 +188,27 @@ def test_task_validation_allows_existing_dataset_flow_without_images(
     assert not validate_task_requirements("Detect", ["image.jpg"])[0]
 
 
-def test_empty_dataset_summary_displays_existing_dataset_guidance():
-    visibility = []
+def test_reload_dataset_without_a_path_shows_export_guidance():
+    calls = []
     dialog = SimpleNamespace(
-        image_list=[],
-        summary_table=SimpleNamespace(
-            clear=lambda: visibility.append("cleared"),
-            setVisible=lambda visible: visibility.append(("table", visible)),
-        ),
-        empty_dataset_hint=SimpleNamespace(
-            setVisible=lambda visible: visibility.append(("hint", visible))
-        ),
-        _summary_view_mode="detect",
+        config_widgets={"data": SimpleNamespace(text=lambda: "  ")},
+        dataset_status_label=SimpleNamespace(setText=calls.append),
+        export_hint=SimpleNamespace(setVisible=calls.append),
+        _clear_dataset_tables=lambda: calls.append("cleared"),
+        update_ratio_state=lambda _snapshot: calls.append("ratio"),
+        tr=lambda text: text,
     )
 
-    UltralyticsDialog.refresh_dataset_summary(dialog)
+    UltralyticsDialog.reload_dataset(dialog)
 
-    assert visibility == ["cleared", ("table", False), ("hint", True)]
-    assert dialog._summary_view_mode is None
+    assert dialog.dataset_snapshot is None
+    assert dialog.class_mapping == {}
+    assert calls[0] == "cleared"
+    assert "Export the project first" in calls[1]
+    assert calls[-2:] == [True, "ratio"]
 
 
-def test_config_next_rejects_unprepared_yaml_without_loaded_images(
+def test_config_next_rejects_a_dataset_without_image_folder(
     monkeypatch, tmp_path
 ):
     data_path = tmp_path / "data.yaml"
@@ -222,11 +223,13 @@ def test_config_next_rejects_unprepared_yaml_without_loaded_images(
         environment_ready=True,
         environment_error=None,
         selected_task_type="Detect",
-        _uses_existing_dataset=lambda path: is_prepared_dataset(path),
-        image_list=[],
+        _dataset_path_for_inspection=lambda path: path,
         names=[],
         tr=lambda text: text,
         append_training_log=lambda _message: None,
+    )
+    dialog.validate_training_dataset = lambda path: (
+        UltralyticsDialog.validate_training_dataset(dialog, path)
     )
     monkeypatch.setattr(
         "anylabeling.views.training.ultralytics_dialog.QMessageBox.warning",
@@ -236,10 +239,34 @@ def test_config_next_rejects_unprepared_yaml_without_loaded_images(
     UltralyticsDialog.start_training(dialog)
 
     assert len(warnings) == 1
-    assert warnings[0].startswith(
-        "When no images are loaded, the data file must reference existing train and val directories."
+    assert warnings[0].startswith("The selected dataset is not usable.")
+    assert "no image folder" in warnings[0]
+
+
+def test_config_next_requires_a_task_type(monkeypatch, tmp_path):
+    warnings = []
+    dialog = SimpleNamespace(
+        training_status="idle",
+        get_current_config=lambda: {"basic": {"env": "", "data": "x"}},
+        configure_training_environment=lambda _value: None,
+        environment_ready=True,
+        environment_error=None,
+        selected_task_type=None,
+        names=[],
+        tr=lambda text: text,
+        append_training_log=lambda _message: None,
     )
-    assert "Dataset YAML must define 'path'" in warnings[0]
+    dialog.validate_training_dataset = lambda path: (
+        UltralyticsDialog.validate_training_dataset(dialog, path)
+    )
+    monkeypatch.setattr(
+        "anylabeling.views.training.ultralytics_dialog.QMessageBox.warning",
+        lambda _parent, _title, message: warnings.append(message),
+    )
+
+    UltralyticsDialog.start_training(dialog)
+
+    assert warnings == ["Please select a task type first"]
 
 
 def test_get_training_args_reuses_prepared_dataset(monkeypatch, tmp_path):
@@ -254,13 +281,21 @@ def test_get_training_args_reuses_prepared_dataset(monkeypatch, tmp_path):
         "names: [cat]\n",
         encoding="utf-8",
     )
+    for split in ("train", "val"):
+        image = dataset_root / "images" / split / "a.jpg"
+        image.write_bytes(b"\xff\xd8\xff")
+        label_dir = dataset_root / "labels" / split
+        label_dir.mkdir(parents=True, exist_ok=True)
+        (label_dir / "a.txt").write_text(
+            "0 0.5 0.5 0.2 0.2\n", encoding="utf-8"
+        )
     logs = []
     dialog = SimpleNamespace(
         selected_task_type="Detect",
-        image_list=[],
-        output_dir="",
+        training_data_directory=str(tmp_path / "work"),
         append_training_log=logs.append,
-        _uses_existing_dataset=lambda path: is_prepared_dataset(path),
+        get_current_class_mapping=lambda: {},
+        _dataset_path_for_inspection=lambda path: path,
     )
     config = {
         "basic": {
@@ -274,76 +309,65 @@ def test_get_training_args_reuses_prepared_dataset(monkeypatch, tmp_path):
         },
         "checkpoint": {},
     }
-    monkeypatch.setattr(
-        "anylabeling.views.training.ultralytics_dialog.create_yolo_dataset",
-        lambda *_args, **_kwargs: pytest.fail("dataset was copied"),
-    )
 
     train_args = UltralyticsDialog.get_training_args(dialog, config)
 
     assert train_args["data"] == str(data_path)
-    assert not any("Using existing dataset" in log for log in logs)
+    assert not any("Training view" in log for log in logs)
 
 
-def test_get_training_args_uses_resolved_wsl_dataset(monkeypatch):
-    dialog = SimpleNamespace(
-        selected_task_type="Detect",
-        append_training_log=lambda _message: None,
-        _uses_existing_dataset=lambda _path: True,
-    )
-    config = {
-        "basic": {
-            "data": "//wsl.localhost/Ubuntu-24.04/data.yaml",
-            "model": "yolo11n.pt",
-            "project": "/runs",
-            "name": "exp",
-            "device": "cpu",
-        },
-        "checkpoint": {},
-    }
+def test_dataset_path_resolution_falls_back_to_the_raw_path(monkeypatch):
+    dialog = SimpleNamespace()
     monkeypatch.setattr(
         "anylabeling.views.training.ultralytics_dialog.resolve_prepared_dataset",
         lambda _path: ("C:/resolved/data.yaml", ""),
     )
 
-    train_args = UltralyticsDialog.get_training_args(dialog, config)
+    assert (
+        UltralyticsDialog._dataset_path_for_inspection(dialog, "/raw/data.yaml")
+        == "C:/resolved/data.yaml"
+    )
 
-    assert train_args["data"] == "C:/resolved/data.yaml"
+    monkeypatch.setattr(
+        "anylabeling.views.training.ultralytics_dialog.resolve_prepared_dataset",
+        lambda _path: (None, "Dataset YAML must define 'path'"),
+    )
+
+    assert (
+        UltralyticsDialog._dataset_path_for_inspection(dialog, "/raw/data.yaml")
+        == "/raw/data.yaml"
+    )
 
 
-@pytest.mark.parametrize(
-    ("existing_dataset", "expected_logs"),
-    [
-        (
-            True,
-            ["Using custom dataset: /data/data.yaml", "Preparing training..."],
-        ),
-        (
-            False,
-            [
-                "Using workspace snapshot: 0 images",
-                "Changes made during training will be used in the next run.",
-                "Preparing training...",
-            ],
-        ),
-    ],
-)
-def test_training_logs_data_source_before_preparation(
-    existing_dataset, expected_logs, tmp_path
+@pytest.mark.parametrize("prepared", [True, False])
+def test_training_logs_the_dataset_before_preparation(
+    prepared, tmp_path, monkeypatch
 ):
+    dataset_root = str(tmp_path / "dataset")
+    if prepared:
+        for split in ("train", "val"):
+            os.makedirs(os.path.join(dataset_root, "images", split))
+    else:
+        os.makedirs(os.path.join(dataset_root, "images", "none"))
+    data_path = os.path.join(dataset_root, "data.yaml")
+    with open(data_path, "w", encoding="utf-8") as handle:
+        handle.write(
+            f"path: {dataset_root.replace(os.sep, '/')}\n"
+            + ("train: images/train\nval: images/val\n" if prepared else "")
+            + "names: [cat]\n"
+        )
     logs = []
     dialog = SimpleNamespace(
         environment_ready=True,
         environment_error=None,
-        image_list=[],
         get_current_config=lambda: {
             "basic": {
                 "project": str(tmp_path),
                 "name": "exp",
-                "data": "/data/data.yaml",
+                "data": data_path,
             }
         },
-        _uses_existing_dataset=lambda _path: existing_dataset,
+        _dataset_path_for_inspection=lambda path: path,
         append_training_log=logs.append,
         get_training_args=lambda _config: {},
         training_manager=SimpleNamespace(
@@ -354,4 +378,6 @@ def test_training_logs_data_source_before_preparation(
 
     UltralyticsDialog.start_training_from_train_tab(dialog)
 
-    assert logs[: len(expected_logs)] == expected_logs
+    assert logs[0].startswith("Dataset: ")
+    assert "images, 1 classes" in logs[0]
+    assert logs[1] == "Preparing training..."

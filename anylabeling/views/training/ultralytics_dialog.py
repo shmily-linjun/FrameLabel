@@ -7,9 +7,10 @@ import re
 import shutil
 import subprocess
 
-from PyQt6.QtCore import Qt, QTimer, QSize, pyqtSignal
-from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtCore import Qt, QTimer, QSize, QUrl, pyqtSignal
+from PyQt6.QtGui import QDesktopServices, QIcon, QPixmap
 from PyQt6.QtWidgets import (
+    QAbstractItemView,
     QDialog,
     QVBoxLayout,
     QHBoxLayout,
@@ -20,10 +21,10 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QScrollArea,
     QGroupBox,
-    QFileDialog,
     QFormLayout,
     QGridLayout,
     QProgressBar,
+    QTableWidgetItem,
     QTextEdit,
     QApplication,
     QSizePolicy,
@@ -36,6 +37,11 @@ from anylabeling.views.labeling.utils.theme import get_theme
 from anylabeling.views.training.widgets.ultralytics_widgets import *
 from anylabeling.services.auto_training.ultralytics._io import *
 from anylabeling.services.auto_training.ultralytics.config import *
+from anylabeling.services.auto_training.ultralytics.dataset_view import (
+    clear_cache as clear_dataset_cache,
+    inspect_dataset,
+    locate_dataset_yaml,
+)
 from anylabeling.services.auto_training.ultralytics.exporter import (
     ExportEventRedirector,
     ExportLogRedirector,
@@ -50,10 +56,6 @@ from anylabeling.services.auto_training.ultralytics.environment import (
     resolve_training_python,
 )
 from anylabeling.services.auto_training.ultralytics.general import (
-    create_yolo_dataset,
-    format_classes_display,
-    is_prepared_dataset,
-    parse_string_to_digit_list,
     resolve_prepared_dataset,
 )
 from anylabeling.services.auto_training.ultralytics.style import *
@@ -62,11 +64,11 @@ from anylabeling.services.auto_training.ultralytics.trainer import (
     TrainingLogRedirector,
     get_training_manager,
 )
-from anylabeling.services.auto_training.ultralytics.utils import *
+from anylabeling.services.auto_training.ultralytics.training_view import (
+    build_training_view,
+)
 from anylabeling.services.auto_training.ultralytics.validators import (
     validate_basic_config,
-    validate_data_file,
-    validate_task_requirements,
 )
 from anylabeling.views.file_dialogs import choose_directory, choose_open_file
 
@@ -144,15 +146,13 @@ class UltralyticsDialog(QDialog):
         self.resize(*DEFAULT_WINDOW_SIZE)
         self.setMinimumSize(*DEFAULT_WINDOW_SIZE)
 
-        self.image_list = list(parent.image_list)
-        self.output_dir = parent.output_dir
-        self.supported_shape = parent.supported_shape
         self.selected_task_type = None
         self.config_widgets = {}
-        self._classification_cache = None
-        self._detection_cache = None
-        self._valid_image_count_cache = {}
-        self._summary_view_mode = None
+        self.dataset_snapshot = None
+        self.class_mapping = {}
+        self._mapping_source = None
+        self._populating_classes = False
+        self._auto_project = True
         self._config_tab_initialized = False
         self._train_tab_initialized = False
         self.task_type_buttons = {}
@@ -229,8 +229,7 @@ class UltralyticsDialog(QDialog):
 
         self.init_ui()
         self.setStyleSheet(get_ultralytics_dialog_style())
-        self.refresh_dataset_summary()
-        self.update_labeled_images_hint()
+        self.reload_dataset()
         self.detect_environment()
 
     def init_ui(self):
@@ -420,8 +419,23 @@ class UltralyticsDialog(QDialog):
             else:
                 self.hide_pose_config()
 
-        self.refresh_dataset_summary()
-        self.update_labeled_images_hint()
+        self.apply_default_project()
+
+    def apply_default_project(self):
+        """Point ``project`` at the per task default while it is untouched."""
+
+        if "project" not in self.config_widgets:
+            return
+        if not self._auto_project:
+            return
+        task = (
+            self.selected_task_type.lower()
+            if self.selected_task_type
+            else "detect"
+        )
+        self.config_widgets["project"].setText(
+            os.path.join(get_default_project_dir(), task)
+        )
 
     def create_task_handler(self, task_type):
         def handler():
@@ -436,177 +450,511 @@ class UltralyticsDialog(QDialog):
         task_type_layout = QHBoxLayout()
         task_type_layout.addWidget(QLabel(self.tr("Task Type:")))
         for task_type in TASK_TYPES:
-            button = CustomQPushButton(task_type)
+            button = CustomQPushButton(self.tr(task_type))
             button.clicked.connect(self.create_task_handler(task_type))
             task_type_layout.addWidget(button)
             self.task_type_buttons[task_type] = button
 
         task_type_layout.addStretch()
-        self.labeled_images_hint = QLabel()
-        self.labeled_images_hint.setVisible(False)
-        self.labeled_images_hint.setStyleSheet(
-            f"color: {get_theme()['text_secondary']}; font-size: 10px;"
-        )
-        task_type_layout.addWidget(self.labeled_images_hint)
         config_layout.addLayout(task_type_layout)
         parent_layout.addWidget(config_widget)
 
-    def update_labeled_images_hint(self):
-        if not self.selected_task_type:
-            self.labeled_images_hint.setVisible(False)
+    # -- dataset tab -------------------------------------------------------
+    def reload_dataset(self, force=False):
+        """Inspect the selected dataset and refill the overview tables."""
+
+        path = self.config_widgets["data"].text().strip()
+        if not path:
+            self.dataset_snapshot = None
+            self.class_mapping = {}
+            self._mapping_source = None
+            self._clear_dataset_tables()
+            self.dataset_status_label.setText(
+                self.tr(
+                    "No dataset selected. Export the project first, then pick "
+                    "the generated data.yaml or folder here."
+                )
+            )
+            self.export_hint.setVisible(True)
+            self.update_ratio_state(None)
             return
 
-        if self.selected_task_type not in self._valid_image_count_cache:
-            self._valid_image_count_cache[self.selected_task_type] = (
-                get_task_valid_images(
-                    self.image_list,
-                    self.selected_task_type,
-                    self.output_dir,
+        snapshot = inspect_dataset(
+            self._dataset_path_for_inspection(path), force=force
+        )
+        self.dataset_snapshot = snapshot
+        if not snapshot.ok:
+            self._clear_dataset_tables()
+            self.dataset_status_label.setText(
+                self.tr("Dataset error: %s") % snapshot.error
+            )
+            self.export_hint.setVisible(True)
+            self.update_ratio_state(None)
+            return
+
+        self.sync_class_mapping(snapshot)
+        self.load_overview_rows(snapshot)
+        self.load_class_rows(snapshot)
+        self.load_tag_rows(snapshot)
+        self.dataset_status_label.setText(self.describe_dataset(snapshot))
+        self.export_hint.setVisible(False)
+        self.update_ratio_state(snapshot)
+
+    def _dataset_path_for_inspection(self, path):
+        """Resolve path variants (for example WSL UNC paths) before reading."""
+
+        resolved, _ = resolve_prepared_dataset(path)
+        return resolved or path
+
+    def describe_dataset(self, snapshot):
+        source = snapshot.data_yaml or snapshot.root
+        mode = (
+            self.tr("YOLO dataset")
+            if snapshot.mode == "yaml"
+            else self.tr("Classification folder")
+        )
+        summary = self.tr("%s: %d images, %d objects, %d classes") % (
+            mode,
+            snapshot.total_images,
+            snapshot.total_objects,
+            len(snapshot.names),
+        )
+        text = "%s · %s" % (summary, source)
+        if not snapshot.prepared:
+            text += " · " + self.tr(
+                "No train/val split: the ratio below partitions the images."
+            )
+        return text
+
+    def sync_class_mapping(self, snapshot):
+        """Keep the per class mapping while the same dataset stays selected."""
+
+        if self._mapping_source != snapshot.source:
+            self.class_mapping = {}
+            self._mapping_source = snapshot.source
+        for name in snapshot.names:
+            self.class_mapping.setdefault(
+                name, {"target": name, "enabled": True}
+            )
+        for name in list(self.class_mapping):
+            if name not in snapshot.names:
+                del self.class_mapping[name]
+
+    def _clear_dataset_tables(self):
+        for table in (
+            self.overview_table,
+            self.classes_table,
+            self.tags_table,
+        ):
+            table.clear()
+            table.setRowCount(0)
+            table.setColumnCount(0)
+        self.tags_source_label.setText("")
+
+    def _share(self, count, total):
+        if not total:
+            return "-"
+        return "%.1f%%" % (count * 100.0 / total)
+
+    def update_ratio_state(self, snapshot):
+        """Enable the ratio only when the dataset has no usable split."""
+
+        slider = self.config_widgets.get("dataset_ratio")
+        if slider is None:
+            return
+        if snapshot is None or not snapshot.ok:
+            slider.setEnabled(True)
+            self.dataset_ratio_hint.setText("")
+            return
+        if snapshot.prepared:
+            slider.setEnabled(False)
+            self.dataset_ratio_hint.setText(
+                self.tr(
+                    "The dataset already has %d train and %d val images, so "
+                    "the ratio is not used."
+                )
+                % (
+                    snapshot.split_images("train"),
+                    snapshot.split_images("val"),
+                )
+            )
+        else:
+            slider.setEnabled(True)
+            self.dataset_ratio_hint.setText(
+                self.tr(
+                    "No train/val split: images are partitioned by this ratio."
                 )
             )
 
-        valid_images = self._valid_image_count_cache[self.selected_task_type]
-        theme = get_theme()
-        color = (
-            theme["success"]
-            if valid_images >= MIN_LABELED_IMAGES_THRESHOLD
-            else theme["error"]
-        )
-        self.labeled_images_hint.setText(
-            f'{self.tr("Valid Images:")} {valid_images} | '
-            f'{self.tr("Required:")} <span style="color: {color};">'
-            f"{MIN_LABELED_IMAGES_THRESHOLD}</span>"
-        )
-        self.labeled_images_hint.setVisible(True)
+    def load_overview_rows(self, snapshot):
+        total = snapshot.total_images
+        rows = [
+            [self.tr("Images"), snapshot.total_images, ""],
+            [
+                self.tr("Train"),
+                snapshot.split_images("train"),
+                self._share(snapshot.split_images("train"), total),
+            ],
+            [
+                self.tr("Val"),
+                snapshot.split_images("val"),
+                self._share(snapshot.split_images("val"), total),
+            ],
+            [
+                self.tr("Test"),
+                snapshot.split_images("test"),
+                self._share(snapshot.split_images("test"), total),
+            ],
+            [
+                self.tr("None"),
+                snapshot.split_images("none"),
+                self._share(snapshot.split_images("none"), total),
+            ],
+            [self.tr("Objects"), snapshot.total_objects, ""],
+            [self.tr("Classes"), len(snapshot.names), ""],
+            [
+                self.tr("Labeled images"),
+                snapshot.labeled_images,
+                self._share(snapshot.labeled_images, total),
+            ],
+            [self.tr("Empty label files"), snapshot.empty_label_images, ""],
+            [self.tr("Missing label files"), snapshot.missing_labels, ""],
+        ]
+        if snapshot.unknown_class_ids:
+            rows.append(
+                [
+                    self.tr("Objects with an unknown class id"),
+                    snapshot.unknown_class_ids,
+                    "",
+                ]
+            )
+        headers = [self.tr("Item"), self.tr("Count"), self.tr("Share")]
+        self.overview_table.load_data([headers] + rows)
 
-    def refresh_dataset_summary(self):
-        if not self.image_list:
-            self.summary_table.clear()
-            self.summary_table.setVisible(False)
-            self.empty_dataset_hint.setVisible(True)
-            self._summary_view_mode = None
+    def load_class_rows(self, snapshot):
+        headers = [
+            self.tr("Class"),
+            self.tr("Images"),
+            self.tr("Objects"),
+            self.tr("Image share"),
+            self.tr("Object share"),
+            self.tr("Training class"),
+            self.tr("Included"),
+        ]
+        table = self.classes_table
+        self._populating_classes = True
+        try:
+            table.clear()
+            table.setColumnCount(len(headers))
+            table.setHorizontalHeaderLabels(headers)
+            table.setRowCount(len(snapshot.categories))
+            for row, category in enumerate(snapshot.categories):
+                values = [
+                    category.name,
+                    str(category.image_count),
+                    str(category.object_count),
+                    self._share(category.image_count, snapshot.total_images),
+                    self._share(
+                        category.object_count, snapshot.total_objects
+                    ),
+                ]
+                for column, value in enumerate(values):
+                    item = QTableWidgetItem(value)
+                    alignment = (
+                        Qt.AlignmentFlag.AlignLeft
+                        if column == 0
+                        else Qt.AlignmentFlag.AlignCenter
+                    )
+                    item.setTextAlignment(
+                        alignment | Qt.AlignmentFlag.AlignVCenter
+                    )
+                    item.setFlags(
+                        item.flags() & ~Qt.ItemFlag.ItemIsEditable
+                    )
+                    table.setItem(row, column, item)
+                entry = self.class_mapping.get(
+                    category.name,
+                    {"target": category.name, "enabled": True},
+                )
+                target_item = QTableWidgetItem(entry["target"])
+                target_item.setTextAlignment(
+                    Qt.AlignmentFlag.AlignCenter
+                    | Qt.AlignmentFlag.AlignVCenter
+                )
+                target_item.setFlags(
+                    target_item.flags() | Qt.ItemFlag.ItemIsEditable
+                )
+                table.setItem(row, 5, target_item)
+                included_item = QTableWidgetItem()
+                included_item.setFlags(
+                    Qt.ItemFlag.ItemIsUserCheckable
+                    | Qt.ItemFlag.ItemIsEnabled
+                    | Qt.ItemFlag.ItemIsSelectable
+                )
+                included_item.setCheckState(
+                    Qt.CheckState.Checked
+                    if entry["enabled"]
+                    else Qt.CheckState.Unchecked
+                )
+                table.setItem(row, 6, included_item)
+            table.setEditTriggers(
+                QAbstractItemView.EditTrigger.DoubleClicked
+                | QAbstractItemView.EditTrigger.SelectedClicked
+            )
+            table.setSelectionMode(
+                QAbstractItemView.SelectionMode.SingleSelection
+            )
+            table.resizeColumnsToContents()
+        finally:
+            self._populating_classes = False
+
+    def load_tag_rows(self, snapshot):
+        headers = [self.tr("Tag"), self.tr("Images"), self.tr("Image share")]
+        repository = getattr(self.parent(), "dataset_repository", None)
+        if repository is None:
+            self.tags_source_label.setText(
+                self.tr(
+                    "Image tags come from the dataset database, which is not "
+                    "open in this window."
+                )
+            )
+            self.tags_table.load_data(
+                [headers, [self.tr("Unavailable"), "", ""]]
+            )
             return
-
-        self.empty_dataset_hint.setVisible(False)
-        self.summary_table.setVisible(True)
-        summary_view_mode = (
-            "classify" if self.selected_task_type == "Classify" else "detect"
+        try:
+            tags = repository.tag_counts()
+        except Exception as error:  # noqa: BLE001 - the table must not break
+            logger.warning(f"Failed to read image tags: {error}")
+            tags = []
+        self.tags_source_label.setText(
+            self.tr(
+                "Tags belong to the dataset open in the labeling window, not "
+                "to the file on disk."
+            )
         )
-        if self._summary_view_mode == summary_view_mode:
+        if not tags:
+            self.tags_table.load_data(
+                [
+                    headers,
+                    [self.tr("No image tag in the current dataset."), "", ""],
+                ]
+            )
             return
+        rows = [
+            [
+                row["tag"],
+                row["image_count"],
+                self._share(row["image_count"], snapshot.total_images),
+            ]
+            for row in tags
+        ]
+        self.tags_table.load_data([headers] + rows)
 
-        if summary_view_mode == "classify":
-            table_data = self._get_classification_table_data()
-        else:
-            table_data = self._get_detection_table_data()
-
-        self.summary_table.load_data(table_data)
-        self._summary_view_mode = summary_view_mode
-
-    def _get_classification_table_data(self):
-        if self._classification_cache is None:
-            self._classification_cache = self._compute_classification_data()
-        return self._classification_cache
-
-    def _get_detection_table_data(self):
-        if self._detection_cache is None:
-            self._detection_cache = self._compute_detection_data()
-        return self._detection_cache
-
-    def _compute_classification_data(self):
-        headers = ["Label"] + self.supported_shape + ["Total"]
-
-        # Get classification statistics
-        classify_shapes = TASK_SHAPE_MAPPINGS.get("Classify", ["flags"])
-        label_infos = get_label_infos(
-            self.image_list, classify_shapes, self.output_dir
+    def on_class_item_changed(self, item):
+        if self._populating_classes:
+            return
+        name_item = self.classes_table.item(item.row(), 0)
+        if name_item is None:
+            return
+        name = name_item.text()
+        entry = self.class_mapping.setdefault(
+            name, {"target": name, "enabled": True}
         )
-        if not label_infos:
-            return [headers]
-
-        table_data = [headers]
-        total_counts = [0] * len(self.supported_shape)
-        total_images = 0
-
-        for label, infos in sorted(label_infos.items()):
-            # All shape columns are 0 for classification
-            shape_counts = [0] * len(self.supported_shape)
-            image_count = infos.get("_total", 0)
-            total_images += image_count
-
-            row = [label] + [str(c) for c in shape_counts] + [str(image_count)]
-            table_data.append(row)
-
-        total_row = (
-            ["Total"] + [str(c) for c in total_counts] + [str(total_images)]
-        )
-        table_data.append(total_row)
-
-        return table_data
-
-    def _compute_detection_data(self):
-        return get_statistics_table_data(
-            self.image_list, self.supported_shape, self.output_dir
-        )
+        if item.column() == 5:
+            entry["target"] = item.text().strip() or name
+            self._populating_classes = True
+            try:
+                item.setText(entry["target"])
+            finally:
+                self._populating_classes = False
+        elif item.column() == 6:
+            entry["enabled"] = item.checkState() == Qt.CheckState.Checked
 
     def clear_cache(self):
-        self._classification_cache = None
-        self._detection_cache = None
-        self._valid_image_count_cache.clear()
-        self._summary_view_mode = None
+        clear_dataset_cache()
+        self.dataset_snapshot = None
+        self._mapping_source = None
 
-    def load_images(self):
-        self.parent().open_folder_dialog()
-        self.image_list = list(self.parent().image_list)
-        self.clear_cache()
-        self.refresh_dataset_summary()
-        self.update_labeled_images_hint()
-
-    def init_dataset_summary(self, parent_layout):
-        summary_widget = QWidget()
-        summary_layout = QVBoxLayout(summary_widget)
-        summary_layout.addWidget(QLabel(self.tr("Dataset Summary:")))
-
-        self.empty_dataset_hint = QLabel(
+    def init_export_hint(self, parent_layout):
+        theme = get_theme()
+        self.export_hint = QLabel(
             self.tr(
-                "No images loaded. Select a task and click Next to train with an existing dataset."
+                "Training reads an exported dataset. Export this project "
+                "first with the Export menu (YOLO HBB / OBB / Seg), then "
+                "select the generated data.yaml or folder here."
             )
         )
-        self.empty_dataset_hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.empty_dataset_hint.setWordWrap(True)
-        self.empty_dataset_hint.setStyleSheet(
+        self.export_hint.setObjectName("trainingExportHint")
+        self.export_hint.setWordWrap(True)
+        self.export_hint.setStyleSheet(
+            "QLabel#trainingExportHint {"
+            f"color: {theme['warning_text']};"
+            f"background: {theme['surface']};"
+            f"border: 1px solid {theme['warning']};"
+            "border-radius: 6px;"
+            "padding: 8px;"
+            "}"
+        )
+        parent_layout.addWidget(self.export_hint)
+
+    def init_dataset_source(self, parent_layout):
+        group = QGroupBox(self.tr("Dataset"))
+        layout = QFormLayout(group)
+        layout.setFieldGrowthPolicy(
+            QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow
+        )
+        layout.setRowWrapPolicy(QFormLayout.RowWrapPolicy.DontWrapRows)
+
+        path_layout = QHBoxLayout()
+        self.config_widgets["data"] = CustomLineEdit()
+        self.config_widgets["data"].editingFinished.connect(
+            self.reload_dataset
+        )
+        path_layout.addWidget(self.config_widgets["data"])
+
+        file_btn = SecondaryButton(self.tr("Select YAML…"))
+        file_btn.clicked.connect(self.browse_dataset_file)
+        path_layout.addWidget(file_btn)
+
+        folder_btn = SecondaryButton(self.tr("Select Folder…"))
+        folder_btn.clicked.connect(self.browse_dataset_folder)
+        path_layout.addWidget(folder_btn)
+
+        open_btn = SecondaryButton(self.tr("Open Folder"))
+        open_btn.clicked.connect(self.open_dataset_folder)
+        path_layout.addWidget(open_btn)
+
+        refresh_btn = SecondaryButton(self.tr("Refresh"))
+        refresh_btn.clicked.connect(lambda: self.reload_dataset(force=True))
+        path_layout.addWidget(refresh_btn)
+        layout.addRow(self.tr("Dataset:"), path_layout)
+
+        ratio_layout = QHBoxLayout()
+        self.config_widgets["dataset_ratio"] = CustomSlider(
+            Qt.Orientation.Horizontal
+        )
+        self.config_widgets["dataset_ratio"].setRange(5, 95)
+        self.config_widgets["dataset_ratio"].setValue(80)
+        self.dataset_ratio_label = QLabel("0.8")
+        self.config_widgets["dataset_ratio"].valueChanged.connect(
+            lambda value: self.dataset_ratio_label.setText(
+                str(value / 100.0)
+            )
+        )
+        ratio_layout.addWidget(self.config_widgets["dataset_ratio"])
+        ratio_layout.addWidget(self.dataset_ratio_label)
+        layout.addRow(self.tr("Dataset Ratio:"), ratio_layout)
+
+        self.dataset_ratio_hint = QLabel()
+        self.dataset_ratio_hint.setWordWrap(True)
+        self.dataset_ratio_hint.setStyleSheet(
+            f"color: {get_theme()['text_secondary']}; font-size: 11px;"
+        )
+        layout.addRow("", self.dataset_ratio_hint)
+
+        self.dataset_status_label = QLabel()
+        self.dataset_status_label.setWordWrap(True)
+        self.dataset_status_label.setStyleSheet(
             f"color: {get_theme()['text_secondary']};"
         )
-        summary_layout.addWidget(self.empty_dataset_hint, 1)
+        layout.addRow(self.tr("Status:"), self.dataset_status_label)
+        parent_layout.addWidget(group)
 
-        self.summary_table = CustomTable()
-        summary_layout.addWidget(self.summary_table)
-        parent_layout.addWidget(summary_widget, 1)
+    def init_dataset_tables(self, parent_layout):
+        self.dataset_tabs = QTabWidget()
+
+        overview_page = QWidget()
+        overview_layout = QVBoxLayout(overview_page)
+        overview_layout.setContentsMargins(0, 4, 0, 0)
+        self.overview_table = CustomTable()
+        overview_layout.addWidget(self.overview_table)
+
+        classes_page = QWidget()
+        classes_layout = QVBoxLayout(classes_page)
+        classes_layout.setContentsMargins(0, 4, 0, 0)
+        mapping_hint = QLabel(
+            self.tr(
+                "Give several classes the same training class name to merge "
+                "them; clear “Included” to drop a class. The mapping is "
+                "written to class_map.yaml next to the training view."
+            )
+        )
+        mapping_hint.setWordWrap(True)
+        mapping_hint.setStyleSheet(
+            f"color: {get_theme()['text_secondary']}; font-size: 11px;"
+        )
+        classes_layout.addWidget(mapping_hint)
+        self.classes_table = CustomTable()
+        self.classes_table.itemChanged.connect(self.on_class_item_changed)
+        classes_layout.addWidget(self.classes_table)
+
+        tags_page = QWidget()
+        tags_layout = QVBoxLayout(tags_page)
+        tags_layout.setContentsMargins(0, 4, 0, 0)
+        self.tags_source_label = QLabel()
+        self.tags_source_label.setWordWrap(True)
+        self.tags_source_label.setStyleSheet(
+            f"color: {get_theme()['text_secondary']}; font-size: 11px;"
+        )
+        tags_layout.addWidget(self.tags_source_label)
+        self.tags_table = CustomTable()
+        tags_layout.addWidget(self.tags_table)
+
+        self.dataset_tabs.addTab(overview_page, self.tr("Overview"))
+        self.dataset_tabs.addTab(classes_page, self.tr("Classes"))
+        self.dataset_tabs.addTab(tags_page, self.tr("Tags"))
+        parent_layout.addWidget(self.dataset_tabs, 1)
+
+    def browse_dataset_file(self):
+        file_path = choose_open_file(
+            self,
+            self.tr("Select Dataset YAML"),
+            "",
+            self.tr("YAML Files (*.yaml *.yml);;All Files (*)"),
+        )
+        if file_path:
+            self.set_dataset_path(file_path)
+
+    def browse_dataset_folder(self):
+        folder = choose_directory(
+            self,
+            self.tr("Select Dataset Folder"),
+            self.config_widgets["data"].text().strip(),
+        )
+        if not folder:
+            return
+        self.set_dataset_path(locate_dataset_yaml(folder) or folder)
+
+    def set_dataset_path(self, path):
+        self.config_widgets["data"].setText(path)
+        self.reload_dataset()
+
+    def open_dataset_folder(self):
+        path = self.config_widgets["data"].text().strip()
+        if not path:
+            return
+        if os.path.isfile(path):
+            path = os.path.dirname(path)
+        if os.path.isdir(path):
+            QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
     def proceed_to_config(self):
-        is_valid, error_message = validate_task_requirements(
-            self.selected_task_type, self.image_list, self.output_dir
-        )
-        if not is_valid:
+        if not self.config_widgets["data"].text().strip():
             QMessageBox.warning(
-                self, self.tr("Validation Error"), error_message
+                self,
+                self.tr("Validation Error"),
+                self.tr(
+                    "Select the training dataset first: export the project "
+                    "with the Export menu, then pick data.yaml here."
+                ),
             )
             return
-
         self.ensure_config_tab_initialized()
-        project = os.path.join(
-            get_default_project_dir(), self.selected_task_type.lower()
-        )
-        self.config_widgets["project"].setText(project)
-
         self.go_to_specific_tab(1)
 
-    def init_actions(self, parent_layout):
+    def init_data_actions(self, parent_layout):
         actions_layout = QHBoxLayout()
-
-        self.load_images_button = SecondaryButton(self.tr("Load Images"))
-        self.load_images_button.clicked.connect(self.load_images)
-        actions_layout.addWidget(self.load_images_button)
         actions_layout.addStretch()
 
         self.next_button = PrimaryButton(self.tr("Next"))
@@ -621,15 +969,16 @@ class UltralyticsDialog(QDialog):
         scroll_widget = QWidget()
         scroll_layout = QVBoxLayout(scroll_widget)
 
-        self.init_task_configuration(scroll_layout)
-        self.init_dataset_summary(scroll_layout)
+        self.init_export_hint(scroll_layout)
+        self.init_dataset_source(scroll_layout)
+        self.init_dataset_tables(scroll_layout)
 
         scroll_layout.addStretch()
         scroll_area.setWidget(scroll_widget)
         scroll_area.setWidgetResizable(True)
         layout.addWidget(scroll_area)
 
-        self.init_actions(layout)
+        self.init_data_actions(layout)
 
     # Config Tab
     def browse_model_file(self):
@@ -641,33 +990,6 @@ class UltralyticsDialog(QDialog):
         )
         if file_path:
             self.config_widgets["model"].setText(file_path)
-
-    def browse_data_file(self):
-        if self.selected_task_type == "Classify":
-            dir_path = choose_directory(
-                self, self.tr("Select Classification Dataset Directory"), ""
-            )
-            if dir_path:
-                self.config_widgets["data"].setText(dir_path)
-        else:
-            file_path = choose_open_file(
-                self,
-                self.tr("Select Data File"),
-                "",
-                "Text Files (*.yaml);;All Files (*)",
-            )
-            if file_path:
-                is_valid, result = validate_data_file(file_path)
-                if is_valid:
-                    self.config_widgets["data"].setText(file_path)
-                    self.names = result
-                    logger.info(f"Data file loaded successfully: {file_path}")
-                else:
-                    QMessageBox.warning(
-                        self, self.tr("Invalid Data File"), result
-                    )
-                    self.config_widgets["data"].clear()
-                    self.names = []
 
     def browse_pose_config_file(self):
         file_path = choose_open_file(
@@ -725,7 +1047,9 @@ class UltralyticsDialog(QDialog):
 
         for gpu in gpus:
             index = gpu["index"]
-            checkbox = CustomCheckBox(f"GPU {index}: {gpu['name']}")
+            checkbox = CustomCheckBox(
+                self.tr("GPU %d: %s") % (index, gpu["name"])
+            )
             checkbox.setProperty("gpu_index", index)
             checkbox.setMaximumHeight(20)
             is_available = bool(gpu.get("available"))
@@ -850,11 +1174,14 @@ class UltralyticsDialog(QDialog):
             get_default_project_dir(), selected_task_type
         )
         self.config_widgets["project"].setText(text_project)
-        layout.addRow("Project:", self.config_widgets["project"])
+        self.config_widgets["project"].textEdited.connect(
+            self._on_project_edited
+        )
+        layout.addRow(self.tr("Project:"), self.config_widgets["project"])
 
         self.config_widgets["name"] = CustomLineEdit()
         self.config_widgets["name"].setText("exp")
-        layout.addRow("Name:", self.config_widgets["name"])
+        layout.addRow(self.tr("Name:"), self.config_widgets["name"])
 
         env_layout = QHBoxLayout()
         self.config_widgets["env"] = CustomLineEdit()
@@ -864,36 +1191,28 @@ class UltralyticsDialog(QDialog):
                 self.config_widgets["env"].text()
             )
         )
-        env_browse_btn = SecondaryButton("Browse")
+        env_browse_btn = SecondaryButton(self.tr("Browse"))
         env_browse_btn.clicked.connect(self.browse_training_environment)
         env_layout.addWidget(self.config_widgets["env"])
         env_layout.addWidget(env_browse_btn)
-        layout.addRow("Env:", env_layout)
+        layout.addRow(self.tr("Env:"), env_layout)
 
         model_layout = QHBoxLayout()
         self.config_widgets["model"] = CustomLineEdit()
-        model_browse_btn = SecondaryButton("Browse")
+        model_browse_btn = SecondaryButton(self.tr("Browse"))
         model_browse_btn.clicked.connect(self.browse_model_file)
         model_layout.addWidget(self.config_widgets["model"])
         model_layout.addWidget(model_browse_btn)
-        layout.addRow("Model:", model_layout)
-
-        data_layout = QHBoxLayout()
-        self.config_widgets["data"] = CustomLineEdit()
-        data_browse_btn = SecondaryButton("Browse")
-        data_browse_btn.clicked.connect(self.browse_data_file)
-        data_layout.addWidget(self.config_widgets["data"])
-        data_layout.addWidget(data_browse_btn)
-        layout.addRow("Data:", data_layout)
+        layout.addRow(self.tr("Model:"), model_layout)
 
         pose_config_layout = QHBoxLayout()
         self.config_widgets["pose_config"] = CustomLineEdit()
-        pose_config_browse_btn = SecondaryButton("Browse")
+        pose_config_browse_btn = SecondaryButton(self.tr("Browse"))
         pose_config_browse_btn.clicked.connect(self.browse_pose_config_file)
         pose_config_layout.addWidget(self.config_widgets["pose_config"])
         pose_config_layout.addWidget(pose_config_browse_btn)
 
-        self.pose_config_label = QLabel("Pose Config:")
+        self.pose_config_label = QLabel(self.tr("Pose Config:"))
         layout.addRow(self.pose_config_label, pose_config_layout)
         self.pose_config_layout = pose_config_layout
 
@@ -910,24 +1229,15 @@ class UltralyticsDialog(QDialog):
         )
         device_layout.addWidget(self.config_widgets["device"])
         device_layout.addWidget(self.device_checkboxes)
-        layout.addRow("Device:", device_layout)
+        layout.addRow(self.tr("Device:"), device_layout)
         self.apply_environment_result()
 
-        dataset_layout = QHBoxLayout()
-        self.config_widgets["dataset_ratio"] = CustomSlider(
-            Qt.Orientation.Horizontal
-        )
-        self.config_widgets["dataset_ratio"].setRange(5, 95)
-        self.config_widgets["dataset_ratio"].setValue(80)
-        self.dataset_ratio_label = QLabel("0.8")
-        self.config_widgets["dataset_ratio"].valueChanged.connect(
-            lambda v: self.dataset_ratio_label.setText(str(v / 100.0))
-        )
-        dataset_layout.addWidget(self.config_widgets["dataset_ratio"])
-        dataset_layout.addWidget(self.dataset_ratio_label)
-        layout.addRow("Dataset Ratio:", dataset_layout)
-
         parent_layout.addWidget(group)
+
+    def _on_project_edited(self, _text):
+        """Stop overriding the project path once the operator types in it."""
+
+        self._auto_project = False
 
     def toggle_advanced_settings(self):
         """Toggle the visibility of advanced settings"""
@@ -949,7 +1259,7 @@ class UltralyticsDialog(QDialog):
         # Basic settings
         basic_group = QGroupBox(self.tr("Basic"))
         basic_layout = QHBoxLayout(basic_group)
-        basic_layout.addWidget(QLabel("Epochs:"))
+        basic_layout.addWidget(QLabel(self.tr("Epochs:")))
         self.config_widgets["epochs"] = CustomSpinBox()
         self.config_widgets["epochs"].setRange(1, 10000)
         self.config_widgets["epochs"].setValue(
@@ -957,19 +1267,19 @@ class UltralyticsDialog(QDialog):
         )
         basic_layout.addWidget(self.config_widgets["epochs"])
 
-        basic_layout.addWidget(QLabel("Batch:"))
+        basic_layout.addWidget(QLabel(self.tr("Batch:")))
         self.config_widgets["batch"] = CustomSpinBox()
         self.config_widgets["batch"].setRange(-1, 8192)
         self.config_widgets["batch"].setValue(DEFAULT_TRAINING_CONFIG["batch"])
         basic_layout.addWidget(self.config_widgets["batch"])
 
-        basic_layout.addWidget(QLabel("Image Size:"))
+        basic_layout.addWidget(QLabel(self.tr("Image Size:")))
         self.config_widgets["imgsz"] = CustomSpinBox()
         self.config_widgets["imgsz"].setRange(32, 8192)
         self.config_widgets["imgsz"].setValue(DEFAULT_TRAINING_CONFIG["imgsz"])
         basic_layout.addWidget(self.config_widgets["imgsz"])
 
-        basic_layout.addWidget(QLabel("Workers:"))
+        basic_layout.addWidget(QLabel(self.tr("Workers:")))
         self.config_widgets["workers"] = CustomSpinBox()
         self.config_widgets["workers"].setRange(0, NUM_WORKERS)
         self.config_widgets["workers"].setValue(
@@ -977,17 +1287,9 @@ class UltralyticsDialog(QDialog):
         )
         basic_layout.addWidget(self.config_widgets["workers"])
 
-        basic_layout.addWidget(QLabel("Classes:"))
-        self.config_widgets["classes"] = CustomLineEdit()
-        self.config_widgets["classes"].setText(
-            DEFAULT_TRAINING_CONFIG["classes"]
+        self.config_widgets["single_cls"] = CustomCheckBox(
+            self.tr("Single Class")
         )
-        self.config_widgets["classes"].setPlaceholderText(
-            self.tr("Class indices (e.g., 0,1,2) or leave empty for all")
-        )
-        basic_layout.addWidget(self.config_widgets["classes"])
-
-        self.config_widgets["single_cls"] = CustomCheckBox("Single Class")
         self.config_widgets["single_cls"].setChecked(
             DEFAULT_TRAINING_CONFIG["single_cls"]
         )
@@ -1025,15 +1327,15 @@ class UltralyticsDialog(QDialog):
         advanced_layout = QVBoxLayout(self.advanced_content_widget)
 
         # 1. Training Strategy
-        strategy_group = QGroupBox("Training Strategy")
+        strategy_group = QGroupBox(self.tr("Training Strategy"))
         strat_layout = QHBoxLayout(strategy_group)
-        strat_layout.addWidget(QLabel("Time (h):"))
+        strat_layout.addWidget(QLabel(self.tr("Time (h):")))
         self.config_widgets["time"] = CustomDoubleSpinBox()
         self.config_widgets["time"].setValue(DEFAULT_TRAINING_CONFIG["time"])
-        self.config_widgets["time"].setSpecialValueText("None")
+        self.config_widgets["time"].setSpecialValueText(self.tr("None"))
         strat_layout.addWidget(self.config_widgets["time"])
 
-        strat_layout.addWidget(QLabel("Patience:"))
+        strat_layout.addWidget(QLabel(self.tr("Patience:")))
         self.config_widgets["patience"] = CustomSpinBox()
         self.config_widgets["patience"].setRange(1, 10000)
         self.config_widgets["patience"].setValue(
@@ -1041,7 +1343,7 @@ class UltralyticsDialog(QDialog):
         )
         strat_layout.addWidget(self.config_widgets["patience"])
 
-        strat_layout.addWidget(QLabel("Close Mosaic:"))
+        strat_layout.addWidget(QLabel(self.tr("Close Mosaic:")))
         self.config_widgets["close_mosaic"] = CustomSpinBox()
         self.config_widgets["close_mosaic"].setRange(0, 1000)
         self.config_widgets["close_mosaic"].setValue(
@@ -1049,20 +1351,22 @@ class UltralyticsDialog(QDialog):
         )
         strat_layout.addWidget(self.config_widgets["close_mosaic"])
 
-        strat_layout.addWidget(QLabel("Optimizer:"))
+        strat_layout.addWidget(QLabel(self.tr("Optimizer:")))
         self.config_widgets["optimizer"] = CustomComboBox()
         self.config_widgets["optimizer"].addItems(OPTIMIZER_OPTIONS)
         strat_layout.addWidget(self.config_widgets["optimizer"])
 
-        self.config_widgets["cos_lr"] = CustomCheckBox("Cosine LR")
+        self.config_widgets["cos_lr"] = CustomCheckBox(self.tr("Cosine LR"))
         self.config_widgets["cos_lr"].setChecked(
             DEFAULT_TRAINING_CONFIG["cos_lr"]
         )
         strat_layout.addWidget(self.config_widgets["cos_lr"])
-        self.config_widgets["amp"] = CustomCheckBox("AMP")
+        self.config_widgets["amp"] = CustomCheckBox(self.tr("AMP"))
         self.config_widgets["amp"].setChecked(DEFAULT_TRAINING_CONFIG["amp"])
         strat_layout.addWidget(self.config_widgets["amp"])
-        self.config_widgets["multi_scale"] = CustomCheckBox("Multi Scale")
+        self.config_widgets["multi_scale"] = CustomCheckBox(
+            self.tr("Multi Scale")
+        )
         self.config_widgets["multi_scale"].setChecked(
             DEFAULT_TRAINING_CONFIG["multi_scale"]
         )
@@ -1071,21 +1375,21 @@ class UltralyticsDialog(QDialog):
         advanced_layout.addWidget(strategy_group)
 
         # 2. Learning Rate
-        lr_group = QGroupBox("Learning Rate")
+        lr_group = QGroupBox(self.tr("Learning Rate"))
         lr_layout = QHBoxLayout(lr_group)
-        lr_layout.addWidget(QLabel("LR0:"))
+        lr_layout.addWidget(QLabel(self.tr("LR0:")))
         self.config_widgets["lr0"] = CustomDoubleSpinBox()
         self.config_widgets["lr0"].setDecimals(6)
         self.config_widgets["lr0"].setValue(DEFAULT_TRAINING_CONFIG["lr0"])
         lr_layout.addWidget(self.config_widgets["lr0"])
 
-        lr_layout.addWidget(QLabel("LRF:"))
+        lr_layout.addWidget(QLabel(self.tr("LRF:")))
         self.config_widgets["lrf"] = CustomDoubleSpinBox()
         self.config_widgets["lrf"].setDecimals(6)
         self.config_widgets["lrf"].setValue(DEFAULT_TRAINING_CONFIG["lrf"])
         lr_layout.addWidget(self.config_widgets["lrf"])
 
-        lr_layout.addWidget(QLabel("Momentum:"))
+        lr_layout.addWidget(QLabel(self.tr("Momentum:")))
         self.config_widgets["momentum"] = CustomDoubleSpinBox()
         self.config_widgets["momentum"].setDecimals(3)
         self.config_widgets["momentum"].setValue(
@@ -1093,7 +1397,7 @@ class UltralyticsDialog(QDialog):
         )
         lr_layout.addWidget(self.config_widgets["momentum"])
 
-        lr_layout.addWidget(QLabel("Weight Decay:"))
+        lr_layout.addWidget(QLabel(self.tr("Weight Decay:")))
         self.config_widgets["weight_decay"] = CustomDoubleSpinBox()
         self.config_widgets["weight_decay"].setDecimals(6)
         self.config_widgets["weight_decay"].setValue(
@@ -1104,9 +1408,9 @@ class UltralyticsDialog(QDialog):
         advanced_layout.addWidget(lr_group)
 
         # 3. Warmup Parameters
-        warmup_group = QGroupBox("Warmup Parameters")
+        warmup_group = QGroupBox(self.tr("Warmup Parameters"))
         warmup_layout = QHBoxLayout(warmup_group)
-        warmup_layout.addWidget(QLabel("Warmup Epochs:"))
+        warmup_layout.addWidget(QLabel(self.tr("Warmup Epochs:")))
         self.config_widgets["warmup_epochs"] = CustomDoubleSpinBox()
         self.config_widgets["warmup_epochs"].setDecimals(1)
         self.config_widgets["warmup_epochs"].setValue(
@@ -1114,7 +1418,7 @@ class UltralyticsDialog(QDialog):
         )
         warmup_layout.addWidget(self.config_widgets["warmup_epochs"])
 
-        warmup_layout.addWidget(QLabel("Warmup Momentum:"))
+        warmup_layout.addWidget(QLabel(self.tr("Warmup Momentum:")))
         self.config_widgets["warmup_momentum"] = CustomDoubleSpinBox()
         self.config_widgets["warmup_momentum"].setDecimals(3)
         self.config_widgets["warmup_momentum"].setValue(
@@ -1122,7 +1426,7 @@ class UltralyticsDialog(QDialog):
         )
         warmup_layout.addWidget(self.config_widgets["warmup_momentum"])
 
-        warmup_layout.addWidget(QLabel("Warmup Bias LR:"))
+        warmup_layout.addWidget(QLabel(self.tr("Warmup Bias LR:")))
         self.config_widgets["warmup_bias_lr"] = CustomDoubleSpinBox()
         self.config_widgets["warmup_bias_lr"].setDecimals(3)
         self.config_widgets["warmup_bias_lr"].setValue(
@@ -1133,12 +1437,12 @@ class UltralyticsDialog(QDialog):
         advanced_layout.addWidget(warmup_group)
 
         # 4. Augmentation Settings
-        augment_group = QGroupBox("Augmentation Settings")
+        augment_group = QGroupBox(self.tr("Augmentation Settings"))
         augment_layout = QVBoxLayout(augment_group)
         augment_params = [
             (
                 "hsv_h",
-                "HSV Hue:",
+                self.tr("HSV Hue:"),
                 DEFAULT_TRAINING_CONFIG["hsv_h"],
                 0.0,
                 1.0,
@@ -1146,7 +1450,7 @@ class UltralyticsDialog(QDialog):
             ),
             (
                 "hsv_s",
-                "HSV Saturation:",
+                self.tr("HSV Saturation:"),
                 DEFAULT_TRAINING_CONFIG["hsv_s"],
                 0.0,
                 1.0,
@@ -1154,7 +1458,7 @@ class UltralyticsDialog(QDialog):
             ),
             (
                 "hsv_v",
-                "HSV Value:",
+                self.tr("HSV Value:"),
                 DEFAULT_TRAINING_CONFIG["hsv_v"],
                 0.0,
                 1.0,
@@ -1162,7 +1466,7 @@ class UltralyticsDialog(QDialog):
             ),
             (
                 "degrees",
-                "Rotation Degrees:",
+                self.tr("Rotation Degrees:"),
                 DEFAULT_TRAINING_CONFIG["degrees"],
                 -180.0,
                 180.0,
@@ -1170,16 +1474,23 @@ class UltralyticsDialog(QDialog):
             ),
             (
                 "translate",
-                "Translate:",
+                self.tr("Translate:"),
                 DEFAULT_TRAINING_CONFIG["translate"],
                 0.0,
                 1.0,
                 3,
             ),
-            ("scale", "Scale:", DEFAULT_TRAINING_CONFIG["scale"], 0.0, 2.0, 3),
+            (
+                "scale",
+                self.tr("Scale:"),
+                DEFAULT_TRAINING_CONFIG["scale"],
+                0.0,
+                2.0,
+                3,
+            ),
             (
                 "shear",
-                "Shear:",
+                self.tr("Shear:"),
                 DEFAULT_TRAINING_CONFIG["shear"],
                 -45.0,
                 45.0,
@@ -1187,7 +1498,7 @@ class UltralyticsDialog(QDialog):
             ),
             (
                 "perspective",
-                "Perspective:",
+                self.tr("Perspective:"),
                 DEFAULT_TRAINING_CONFIG["perspective"],
                 0.0,
                 0.001,
@@ -1227,9 +1538,9 @@ class UltralyticsDialog(QDialog):
         advanced_layout.addWidget(augment_group)
 
         # 5. Regularization
-        reg_group = QGroupBox("Regularization")
+        reg_group = QGroupBox(self.tr("Regularization"))
         reg_layout = QHBoxLayout(reg_group)
-        reg_layout.addWidget(QLabel("Dropout:"))
+        reg_layout.addWidget(QLabel(self.tr("Dropout:")))
         self.config_widgets["dropout"] = CustomDoubleSpinBox()
         self.config_widgets["dropout"].setDecimals(3)
         self.config_widgets["dropout"].setValue(
@@ -1237,7 +1548,7 @@ class UltralyticsDialog(QDialog):
         )
         reg_layout.addWidget(self.config_widgets["dropout"])
 
-        reg_layout.addWidget(QLabel("Fraction:"))
+        reg_layout.addWidget(QLabel(self.tr("Fraction:")))
         self.config_widgets["fraction"] = CustomDoubleSpinBox()
         self.config_widgets["fraction"].setDecimals(3)
         self.config_widgets["fraction"].setValue(
@@ -1245,40 +1556,40 @@ class UltralyticsDialog(QDialog):
         )
         reg_layout.addWidget(self.config_widgets["fraction"])
 
-        self.config_widgets["rect"] = CustomCheckBox("Rectangular")
+        self.config_widgets["rect"] = CustomCheckBox(self.tr("Rectangular"))
         self.config_widgets["rect"].setChecked(DEFAULT_TRAINING_CONFIG["rect"])
         reg_layout.addWidget(self.config_widgets["rect"])
         reg_layout.addStretch()
         advanced_layout.addWidget(reg_group)
 
         # 6. Loss Weights
-        loss_group = QGroupBox("Loss Weights")
+        loss_group = QGroupBox(self.tr("Loss Weights"))
         loss_layout = QHBoxLayout(loss_group)
-        loss_layout.addWidget(QLabel("Box:"))
+        loss_layout.addWidget(QLabel(self.tr("Box:")))
         self.config_widgets["box"] = CustomDoubleSpinBox()
         self.config_widgets["box"].setDecimals(2)
         self.config_widgets["box"].setValue(DEFAULT_TRAINING_CONFIG["box"])
         loss_layout.addWidget(self.config_widgets["box"])
 
-        loss_layout.addWidget(QLabel("Cls:"))
+        loss_layout.addWidget(QLabel(self.tr("Cls:")))
         self.config_widgets["cls"] = CustomDoubleSpinBox()
         self.config_widgets["cls"].setDecimals(2)
         self.config_widgets["cls"].setValue(DEFAULT_TRAINING_CONFIG["cls"])
         loss_layout.addWidget(self.config_widgets["cls"])
 
-        loss_layout.addWidget(QLabel("DFL:"))
+        loss_layout.addWidget(QLabel(self.tr("DFL:")))
         self.config_widgets["dfl"] = CustomDoubleSpinBox()
         self.config_widgets["dfl"].setDecimals(2)
         self.config_widgets["dfl"].setValue(DEFAULT_TRAINING_CONFIG["dfl"])
         loss_layout.addWidget(self.config_widgets["dfl"])
 
-        loss_layout.addWidget(QLabel("Pose:"))
+        loss_layout.addWidget(QLabel(self.tr("Pose:")))
         self.config_widgets["pose"] = CustomDoubleSpinBox()
         self.config_widgets["pose"].setDecimals(2)
         self.config_widgets["pose"].setValue(DEFAULT_TRAINING_CONFIG["pose"])
         loss_layout.addWidget(self.config_widgets["pose"])
 
-        loss_layout.addWidget(QLabel("Kobj:"))
+        loss_layout.addWidget(QLabel(self.tr("Kobj:")))
         self.config_widgets["kobj"] = CustomDoubleSpinBox()
         self.config_widgets["kobj"].setDecimals(2)
         self.config_widgets["kobj"].setValue(DEFAULT_TRAINING_CONFIG["kobj"])
@@ -1287,48 +1598,40 @@ class UltralyticsDialog(QDialog):
         advanced_layout.addWidget(loss_group)
 
         # 7. Checkpoint and Validation
-        ckpt_group = QGroupBox("Checkpoint and Validation")
+        ckpt_group = QGroupBox(self.tr("Checkpoint and Validation"))
         ckpt_layout = QHBoxLayout(ckpt_group)
-        ckpt_layout.addWidget(QLabel("Save Period:"))
+        ckpt_layout.addWidget(QLabel(self.tr("Save Period:")))
         self.config_widgets["save_period"] = CustomSpinBox()
         self.config_widgets["save_period"].setRange(-1, 1000)
         self.config_widgets["save_period"].setValue(
             DEFAULT_TRAINING_CONFIG["save_period"]
         )
-        self.config_widgets["save_period"].setSpecialValueText("Disabled")
+        self.config_widgets["save_period"].setSpecialValueText(
+            self.tr("Disabled")
+        )
         ckpt_layout.addWidget(self.config_widgets["save_period"])
 
-        self.config_widgets["val"] = CustomCheckBox("Validation")
+        self.config_widgets["val"] = CustomCheckBox(self.tr("Validation"))
         self.config_widgets["val"].setChecked(DEFAULT_TRAINING_CONFIG["val"])
         ckpt_layout.addWidget(self.config_widgets["val"])
-        self.config_widgets["plots"] = CustomCheckBox("Plots")
+        self.config_widgets["plots"] = CustomCheckBox(self.tr("Plots"))
         self.config_widgets["plots"].setChecked(
             DEFAULT_TRAINING_CONFIG["plots"]
         )
         ckpt_layout.addWidget(self.config_widgets["plots"])
-        self.config_widgets["save"] = CustomCheckBox("Save")
+        self.config_widgets["save"] = CustomCheckBox(self.tr("Save"))
         self.config_widgets["save"].setChecked(DEFAULT_TRAINING_CONFIG["save"])
         ckpt_layout.addWidget(self.config_widgets["save"])
-        self.config_widgets["resume"] = CustomCheckBox("Resume")
+        self.config_widgets["resume"] = CustomCheckBox(self.tr("Resume"))
         self.config_widgets["resume"].setChecked(
             DEFAULT_TRAINING_CONFIG["resume"]
         )
         ckpt_layout.addWidget(self.config_widgets["resume"])
-        self.config_widgets["cache"] = CustomCheckBox("Cache")
+        self.config_widgets["cache"] = CustomCheckBox(self.tr("Cache"))
         self.config_widgets["cache"].setChecked(
             DEFAULT_TRAINING_CONFIG["cache"]
         )
         ckpt_layout.addWidget(self.config_widgets["cache"])
-        self.config_widgets["skip_empty_files"] = CustomCheckBox(
-            "Skip Empty Files"
-        )
-        self.config_widgets["skip_empty_files"].setChecked(False)
-        ckpt_layout.addWidget(self.config_widgets["skip_empty_files"])
-        self.config_widgets["only_checked_files"] = CustomCheckBox(
-            "Only Checked Files"
-        )
-        self.config_widgets["only_checked_files"].setChecked(False)
-        ckpt_layout.addWidget(self.config_widgets["only_checked_files"])
         ckpt_layout.addStretch()
         advanced_layout.addWidget(ckpt_group)
 
@@ -1336,7 +1639,7 @@ class UltralyticsDialog(QDialog):
         layout.addWidget(advanced_container)
         parent_layout.addWidget(group)
 
-    def load_config_to_ui(self, config):
+    def load_config_to_ui(self, config, skip=()):
         def set_widget_value(key, value):
             if key not in self.config_widgets:
                 return
@@ -1346,10 +1649,7 @@ class UltralyticsDialog(QDialog):
 
             try:
                 if widget_type == "CustomLineEdit":
-                    if key == "classes":
-                        widget.setText(format_classes_display(value))
-                    else:
-                        widget.setText(str(value) if value is not None else "")
+                    widget.setText(str(value) if value is not None else "")
                 elif widget_type in ["CustomSpinBox", "CustomDoubleSpinBox"]:
                     widget.setValue(value)
                 elif widget_type == "CustomComboBox":
@@ -1380,6 +1680,8 @@ class UltralyticsDialog(QDialog):
         for section in sections_to_process:
             if section in config:
                 for key, value in config[section].items():
+                    if key in skip:
+                        continue
                     if key == "dataset_ratio":
                         if 0 <= value <= 1:
                             self.config_widgets[key].setValue(int(value * 100))
@@ -1401,21 +1703,19 @@ class UltralyticsDialog(QDialog):
                     elif key == "pose_config":
                         if value:
                             self.config_widgets[key].setText(value)
-                    elif key in (
-                        "skip_empty_files",
-                        "only_checked_files",
-                    ):
-                        set_widget_value(key, value)
                     else:
                         set_widget_value(key, value)
 
         for key, value in config.items():
+            if key in skip:
+                continue
             if key not in sections_to_process and key in self.config_widgets:
                 set_widget_value(key, value)
 
         basic_config = config.get("basic", {})
         if "env" in basic_config:
             self.configure_training_environment(basic_config["env"])
+        self.reload_dataset()
 
     def import_config(self):
         file_path = choose_open_file(
@@ -1480,9 +1780,6 @@ class UltralyticsDialog(QDialog):
                 "imgsz": get_widget_value("imgsz"),
                 "workers": get_widget_value("workers"),
                 "single_cls": get_widget_value("single_cls"),
-                "classes": parse_string_to_digit_list(
-                    get_widget_value("classes")
-                ),
             },
             "strategy": {
                 "time": get_widget_value("time"),
@@ -1533,8 +1830,6 @@ class UltralyticsDialog(QDialog):
                 "save": get_widget_value("save"),
                 "resume": get_widget_value("resume"),
                 "cache": get_widget_value("cache"),
-                "skip_empty_files": get_widget_value("skip_empty_files"),
-                "only_checked_files": get_widget_value("only_checked_files"),
             },
         }
 
@@ -1551,10 +1846,48 @@ class UltralyticsDialog(QDialog):
                 self, self.tr("Error"), f"Failed to save config: {str(e)}"
             )
 
-    def _uses_existing_dataset(self, data_path):
-        return (
-            self.selected_task_type == "Classify" and os.path.isdir(data_path)
-        ) or is_prepared_dataset(data_path)
+    def validate_training_dataset(self, data_path):
+        """Return ``(snapshot, "")`` or ``(None, message)`` for the dataset."""
+
+        if not self.selected_task_type:
+            return None, self.tr("Please select a task type first")
+        if not data_path:
+            return None, self.tr(
+                "Select the training dataset first: export the project with "
+                "the Export menu, then pick data.yaml here."
+            )
+        snapshot = inspect_dataset(
+            self._dataset_path_for_inspection(data_path)
+        )
+        if not snapshot.ok:
+            return None, "%s\n%s" % (
+                self.tr("The selected dataset is not usable."),
+                snapshot.error,
+            )
+        if not snapshot.names:
+            return None, self.tr("The dataset defines no class name.")
+        if not snapshot.total_images:
+            return None, self.tr("The dataset contains no image.")
+        if self.selected_task_type == "Classify" and snapshot.mode != (
+            "imagefolder"
+        ):
+            return None, self.tr(
+                "A classification task needs a folder whose sub folders are "
+                "the classes."
+            )
+        if self.selected_task_type != "Classify" and snapshot.mode == (
+            "imagefolder"
+        ):
+            return None, self.tr(
+                "This dataset is a classification folder; pick a data.yaml "
+                "for detection, segmentation, OBB or pose."
+            )
+        if not snapshot.prepared and snapshot.total_images < 2:
+            return None, self.tr(
+                "The dataset has no train/val split and only one image, so it "
+                "cannot be partitioned."
+            )
+        return snapshot, ""
 
     def start_training(self):
         if self.training_status == "training":
@@ -1577,26 +1910,14 @@ class UltralyticsDialog(QDialog):
             return
 
         data_path = config["basic"].get("data", "").strip()
-        existing_dataset = self._uses_existing_dataset(data_path)
-        if not (
-            self.selected_task_type == "Classify" and os.path.isdir(data_path)
-        ):
-            is_valid, result = validate_data_file(data_path)
-            if not is_valid:
-                QMessageBox.warning(self, self.tr("Validation Error"), result)
-                self.append_training_log(f"Validation Error: {result}")
-                return
-            self.names = result
-        if not self.image_list and not existing_dataset:
-            message = self.tr(
-                "When no images are loaded, the data file must reference existing train and val directories."
+        snapshot, error_message = self.validate_training_dataset(data_path)
+        if snapshot is None:
+            QMessageBox.warning(
+                self, self.tr("Validation Error"), error_message
             )
-            _, dataset_error = resolve_prepared_dataset(data_path)
-            if dataset_error:
-                message = f"{message}\n{dataset_error}"
-            QMessageBox.warning(self, self.tr("Validation Error"), message)
-            self.append_training_log(f"Validation Error: {message}")
+            self.append_training_log(f"Validation Error: {error_message}")
             return
+        self.names = list(snapshot.names)
 
         try:
             prepare_training_data_directory(self.training_data_directory)
@@ -1679,14 +2000,6 @@ class UltralyticsDialog(QDialog):
             self.append_training_log(f"Validation Error: {error_message}")
             return
 
-        if not self.selected_task_type:
-            QMessageBox.warning(
-                self,
-                self.tr("Error"),
-                self.tr("Please select a task type first"),
-            )
-            return
-
         if self.selected_task_type.lower() == "pose":
             pose_config = config["basic"].get("pose_config", "")
             if not pose_config or not os.path.exists(pose_config):
@@ -1713,7 +2026,7 @@ class UltralyticsDialog(QDialog):
                 self.reset_train_tab()
         elif self.training_status == "stop":
             self.start_training_button.setVisible(True)
-            self.training_status == "idle"
+            self.training_status = "idle"
 
         save_config(config)
         self.go_to_specific_tab(2)
@@ -1742,7 +2055,16 @@ class UltralyticsDialog(QDialog):
 
     def load_default_config(self):
         config = load_config()
-        self.load_config_to_ui(config)
+        # The dataset is picked in the "Data" tab, which the operator may have
+        # used before opening this tab; restoring the saved path over it would
+        # silently switch the training input.
+        skip = (
+            ("data", "dataset_ratio")
+            if self.config_widgets.get("data") is not None
+            and self.config_widgets["data"].text().strip()
+            else ()
+        )
+        self.load_config_to_ui(config, skip=skip)
 
     def init_config_tab(self):
         layout = QVBoxLayout(self.config_tab)
@@ -1751,6 +2073,7 @@ class UltralyticsDialog(QDialog):
         scroll_widget = QWidget()
         scroll_layout = QVBoxLayout(scroll_widget)
 
+        self.init_task_configuration(scroll_layout)
         self.init_basic_settings(scroll_layout)
         self.init_train_settings(scroll_layout)
 
@@ -2234,31 +2557,26 @@ class UltralyticsDialog(QDialog):
             else:
                 self.append_training_log(self.tr("Cancel to stop training"))
 
+    def get_current_class_mapping(self):
+        return {
+            name: dict(entry) for name, entry in self.class_mapping.items()
+        }
+
     def get_training_args(self, config):
         try:
-            data_path = config["basic"]["data"]
-            if not self._uses_existing_dataset(data_path):
-                temp_dir = create_yolo_dataset(
-                    self.image_list,
-                    self.selected_task_type,
-                    config["basic"]["dataset_ratio"],
-                    config["basic"]["data"],
-                    self.output_dir,
-                    config["basic"].get("pose_config"),
-                    config["checkpoint"].get("skip_empty_files", False),
-                    config["checkpoint"].get("only_checked_files", False),
-                )
-                logger.info(f"Successfully created YOLO dataset at {temp_dir}")
-                self.append_training_log(f"Created dataset: {temp_dir}")
-
-                if self.selected_task_type == "Classify":
-                    data_path = temp_dir
-                else:
-                    data_path = os.path.join(temp_dir, "data.yaml")
-            elif self.selected_task_type != "Classify":
-                resolved_data_path, _ = resolve_prepared_dataset(data_path)
-                if resolved_data_path:
-                    data_path = resolved_data_path
+            snapshot = inspect_dataset(
+                self._dataset_path_for_inspection(config["basic"]["data"])
+            )
+            view = build_training_view(
+                snapshot=snapshot,
+                mapping=self.get_current_class_mapping(),
+                ratio=config["basic"].get("dataset_ratio", 0.8),
+                dest_root=self.training_data_directory,
+                task_type=self.selected_task_type or "Detect",
+            )
+            for note in view.notes:
+                self.append_training_log(note)
+            data_path = view.data_yaml
 
             device_value = config["basic"]["device"]
             if device_value == "cuda" and hasattr(self, "device_checkboxes"):
@@ -2297,11 +2615,8 @@ class UltralyticsDialog(QDialog):
                 "checkpoint",
             ]:
                 advanced_params.update(config.get(section, {}))
-            # Exclude X-AnyLabeling specific parameters not recognized by ultralytics
-            xany_params_to_exclude = {"skip_empty_files", "only_checked_files"}
             for key, value in advanced_params.items():
-                if key not in xany_params_to_exclude:
-                    train_args[key] = value
+                train_args[key] = value
             self.total_epochs = train_args.get("epochs", 100)
 
             # Log the training command
@@ -2333,20 +2648,17 @@ class UltralyticsDialog(QDialog):
         self.current_project_path = os.path.join(project_path, name)
 
         try:
-            data_path = config["basic"]["data"]
-            if self._uses_existing_dataset(data_path):
-                self.append_training_log(f"Using custom dataset: {data_path}")
-            else:
-                self.append_training_log(
-                    self.tr("Using workspace snapshot: {count} images").format(
-                        count=len(self.image_list)
-                    )
+            snapshot = inspect_dataset(
+                self._dataset_path_for_inspection(config["basic"]["data"])
+            )
+            self.append_training_log(
+                "Dataset: %s (%d images, %d classes)"
+                % (
+                    snapshot.data_yaml or snapshot.root,
+                    snapshot.total_images,
+                    len(snapshot.names),
                 )
-                self.append_training_log(
-                    self.tr(
-                        "Changes made during training will be used in the next run."
-                    )
-                )
+            )
             self.append_training_log(self.tr("Preparing training..."))
             train_args = self.get_training_args(config)
             success, message = self.training_manager.start_training(train_args)
@@ -2433,9 +2745,8 @@ class UltralyticsDialog(QDialog):
             exported_path = data.get("exported_path", "")
             export_format = data.get("format", "onnx")
             self.append_training_log(
-                self.tr(
-                    f"Export completed successfully! File saved to: {exported_path}"
-                )
+                self.tr("Export completed successfully! File saved to: %s")
+                % exported_path
             )
             export_dialog = getattr(self, "export_dialog", None)
             if export_format == "onnx" and export_dialog is not None:
@@ -2446,8 +2757,9 @@ class UltralyticsDialog(QDialog):
                     self,
                     self.tr("Export Successful"),
                     self.tr(
-                        f"Model successfully exported to {export_format.upper()} format:\n{exported_path}"
-                    ),
+                        "Model successfully exported to %s format:\n%s"
+                    )
+                    % (export_format.upper(), exported_path),
                 )
                 if export_dialog is not None:
                     export_dialog.accept()
